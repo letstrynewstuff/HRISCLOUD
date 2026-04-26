@@ -1,0 +1,214 @@
+
+/* src/index.css */
+
+
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap');
+
+@keyframes shimmer {
+  0% { background-position: 200% 0 }
+  100% { background-position: -200% 0 }
+}
+
+@keyframes pulse-dot {
+  0%,100% { opacity:1; transform:scale(1) }
+  50% { opacity:.5; transform:scale(1.3) }
+}
+
+@keyframes float {
+  0%,100% { transform:translateY(0) }
+  50% { transform:translateY(-6px) }
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 99px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translate(46px) rotate(0deg); }
+  to { transform: rotate(360deg) translate(46px) rotate(-360deg); }
+}
+
+.animate-spin {
+  animation: spin 1.6s linear infinite;
+}
+
+.animate-pulse {
+  animation: pulse 1.8s ease-in-out infinite;
+}
+/* src/styles/admin.css
+ *
+ * Global styles for the Admin panel.
+ * Imported by AdminSideNavbar.jsx → available to all admin pages.
+ *
+ * Contents:
+ *  1. Shimmer skeleton animation
+ *  2. Custom scrollbar (admin sidebar + overflow areas)
+ *  3. Tailwind accent utilities for the admin palette
+ */
+
+/* ── 1. Shimmer animation ──────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    #f0f2f8 25%,
+    #e8ebf4 50%,
+    #f0f2f8 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* ── 2. Custom scrollbar — admin sidebar ─────────────────────
+   Applied via className="admin-scroll" on the <nav> element.  */
+.admin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+.admin-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.admin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+}
+
+.admin-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* Main content area scrollbar */
+.admin-main-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #e4e7f0 transparent;
+}
+
+.admin-main-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.admin-main-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-main-scroll::-webkit-scrollbar-thumb {
+  background: #e4e7f0;
+  border-radius: 4px;
+}
+
+.admin-main-scroll::-webkit-scrollbar-thumb:hover {
+  background: #c7cce0;
+}
+
+/* ── 3. Countdown tile flip animation ────────────────────────
+   Applied to the payroll countdown tiles.                     */
+@keyframes countFlip {
+  0%   { transform: translateY(-8px); opacity: 0; }
+  100% { transform: translateY(0);    opacity: 1; }
+}
+
+.count-flip {
+  animation: countFlip 0.15s ease-out;
+}
+
+/* ── 4. Live pulse dot ───────────────────────────────────────
+   Used for the "Live" indicator in the dashboard header.      */
+@keyframes livePulse {
+  0%, 100% { opacity: 1;   transform: scale(1);   }
+  50%       { opacity: 0.4; transform: scale(0.85); }
+}
+
+.live-dot {
+  animation: livePulse 2s ease-in-out infinite;
+}
+
+/* ── 5. Notification badge bounce ───────────────────────────── */
+@keyframes badgeBounce {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.2); }
+}
+
+.badge-bounce {
+  animation: badgeBounce 2s ease-in-out infinite;
+}
+
+/* ── 6. Card hover lift ─────────────────────────────────────── */
+.admin-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.admin-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.10);
+}
+
+/* ── 7. Input focus ring ─────────────────────────────────────── */
+.admin-input:focus {
+  outline: none;
+  border-color: #4F46E5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+/* ── 8. Gradient text utility ───────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #4F46E5, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── 9. Table row hover ─────────────────────────────────────── */
+.admin-table-row {
+  transition: background 0.12s ease;
+}
+
+.admin-table-row:hover {
+  background: #f7f8fc;
+}
+
+/* ── 10. Sidebar nav item tooltip ──────────────────────────── */
+.nav-tooltip {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.group:hover .nav-tooltip {
+  opacity: 1;
+}

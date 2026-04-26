@@ -1,0 +1,351 @@
+
+
+// // src/components/sideNavbar.jsx
+// // Production-ready employee sidebar.
+// // — Real user from AuthContext
+// // — Role-aware: if manager, "Profile" nav item links to /managerprofile
+// // — Functional logout
+// // — Collapsed state supported
+
+// import { motion as Motion, AnimatePresence } from "framer-motion";
+// import {
+//   Shield, Settings, HelpCircle, Home, Clock, Plane,
+//   DollarSign, FileText, BarChart2, Users, BookOpen,
+//   Heart, ClipboardList, Bell, LogOut, ChevronLeft,
+//   ChevronRight, User, Award,
+// } from "lucide-react";
+// import { NavLink } from "react-router-dom";
+// import { useAuth } from "./AuthContext";
+// import C from "../styles/colors";
+
+// // ── Base nav items — same for all employees ──
+// const BASE_NAV = [
+//   { label: "Home",          icon: Home,         path: "/dashboard" },
+//   { label: "Attendance",    icon: Clock,         path: "/attendance" },
+//   { label: "Leave",         icon: Plane,         path: "/leave" },
+//   { label: "Payslips",      icon: DollarSign,    path: "/payslips" },
+//   { label: "Documents",     icon: FileText,      path: "/documents" },
+//   { label: "Performance",   icon: BarChart2,     path: "/performance" },
+//   { label: "Team",          icon: Users,         path: "/team" },
+//   { label: "Training",      icon: BookOpen,      path: "/training" },
+//   { label: "Benefits",      icon: Heart,         path: "/benefits" },
+//   { label: "Requests",      icon: ClipboardList, path: "/requests" },
+//   { label: "Announcements", icon: Bell,          path: "/announcements" },
+// ];
+
+// export default function SideNavbar({ sidebarOpen, collapsed = false, onToggleCollapse }) {
+//   const { employee, logout } = useAuth();
+
+//   // Safe fallback
+//   const emp = employee ?? { initials: "?", name: "Loading…", role: "Employee" };
+
+//   // Detect manager: role field from auth or from employee object
+//   const isManager = emp.role === "manager" || emp.isManager === true;
+
+//   // Build nav items — append role-aware Profile link
+//   const navItems = [
+//     ...BASE_NAV,
+//     {
+//       label: isManager ? "Manager Dashboard" : "My Profile",
+//       icon: isManager ? Award : User,
+//       path: isManager ? "/managerprofile" : "/employeeprofile",
+//     },
+//   ];
+
+//   if (!sidebarOpen) return null;
+
+//   return (
+//     <AnimatePresence>
+//       <Motion.aside
+//         key="sidebar"
+//         initial={{ x: -260, opacity: 0 }}
+//         animate={{ x: 0, opacity: 1 }}
+//         exit={{ x: -260, opacity: 0 }}
+//         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+//         className="hidden md:flex flex-col h-full shrink-0 overflow-hidden"
+//         style={{ width: collapsed ? 64 : 240, background: C.navy, transition: "width 0.3s ease" }}
+//       >
+//         {/* ── Logo ── */}
+//         <div className="px-4 pt-6 pb-5 flex items-center gap-3 shrink-0">
+//           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.primary }}>
+//             <Shield size={18} color="#fff" />
+//           </div>
+//           {!collapsed && (
+//             <span className="text-white font-bold text-sm truncate">HRISCloud</span>
+//           )}
+//           {onToggleCollapse && (
+//             <button onClick={onToggleCollapse} className="ml-auto text-white/40 hover:text-white/80 transition-colors" style={{ background: "none", border: "none", cursor: "pointer" }}>
+//               {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+//             </button>
+//           )}
+//         </div>
+
+//         {/* ── Nav ── */}
+//         <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+//           {navItems.map((item) => {
+//             const Icon = item.icon;
+//             // Manager Dashboard item gets a special highlight
+//             const isManagerItem = item.path === "/managerprofile";
+//             return (
+//               <NavLink key={item.label} to={item.path} end={item.path === "/dashboard"}>
+//                 {({ isActive }) => (
+//                   <Motion.div
+//                     whileHover={{ x: collapsed ? 0 : 4 }}
+//                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors"
+//                     style={{
+//                       background: isActive
+//                         ? "rgba(79,70,229,0.30)"
+//                         : isManagerItem && !isActive
+//                         ? "rgba(245,158,11,0.10)"   // subtle gold tint for manager link
+//                         : "transparent",
+//                       color: isActive
+//                         ? "#fff"
+//                         : isManagerItem
+//                         ? "rgba(253,230,138,0.85)"  // warm gold text for manager
+//                         : "rgba(255,255,255,0.55)",
+//                       cursor: "pointer",
+//                       border: isManagerItem && !isActive ? "1px solid rgba(245,158,11,0.25)" : "1px solid transparent",
+//                     }}
+//                     title={collapsed ? item.label : undefined}
+//                   >
+//                     <Icon size={16} className="shrink-0" />
+//                     {!collapsed && <span className="truncate">{item.label}</span>}
+//                     {!collapsed && isManagerItem && isManager && (
+//                       <span style={{ marginLeft: "auto", background: "rgba(245,158,11,0.25)", color: "#FDE68A", fontSize: 8, fontWeight: 800, padding: "1px 6px", borderRadius: 99 }}>MGR</span>
+//                     )}
+//                   </Motion.div>
+//                 )}
+//               </NavLink>
+//             );
+//           })}
+//         </nav>
+
+//         {/* ── Footer links ── */}
+//         <div className="px-2 pb-2 space-y-0.5 shrink-0">
+//           <NavLink to="/settings">
+//             {({ isActive }) => (
+//               <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.45)", cursor: "pointer" }} title={collapsed ? "Settings" : undefined}>
+//                 <Settings size={16} className="shrink-0" />
+//                 {!collapsed && <span>Settings</span>}
+//               </div>
+//             )}
+//           </NavLink>
+//           <NavLink to="/help">
+//             {({ isActive }) => (
+//               <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.35)", cursor: "pointer" }} title={collapsed ? "Help" : undefined}>
+//                 <HelpCircle size={16} className="shrink-0" />
+//                 {!collapsed && <span>Help</span>}
+//               </div>
+//             )}
+//           </NavLink>
+//         </div>
+
+//         {/* ── User card + Logout ── */}
+//         <div className="m-2 shrink-0">
+//           <div className="p-3 rounded-xl flex gap-3 items-center" style={{ background: "rgba(255,255,255,0.08)" }}>
+//             {emp.avatar ? (
+//               <img src={emp.avatar} alt={emp.name} className="w-9 h-9 rounded-full object-cover shrink-0" />
+//             ) : (
+//               <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{ background: C.primary }}>
+//                 {emp.initials}
+//               </div>
+//             )}
+
+//             {!collapsed && (
+//               <div className="flex-1 min-w-0">
+//                 <div className="flex items-center gap-1.5">
+//                   <p className="text-white text-xs font-semibold truncate">{emp.name}</p>
+//                   {isManager && (
+//                     <span style={{ background: "rgba(245,158,11,0.25)", color: "#FDE68A", fontSize: 7, fontWeight: 800, padding: "1px 5px", borderRadius: 99, flexShrink: 0 }}>MGR</span>
+//                   )}
+//                 </div>
+//                 <p className="text-white/50 text-[11px] truncate">{emp.role}</p>
+//               </div>
+//             )}
+
+//             {/* Logout */}
+//             <Motion.button
+//               whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+//               onClick={logout}
+//               title="Logout"
+//               className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+//               style={{ background: "rgba(239,68,68,0.18)", border: "1px solid rgba(239,68,68,0.25)", cursor: "pointer" }}
+//             >
+//               <LogOut size={13} color="#FCA5A5" />
+//             </Motion.button>
+//           </div>
+//         </div>
+//       </Motion.aside>
+//     </AnimatePresence>
+//   );
+// }
+
+
+// src/components/sideNavbar.jsx
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import {
+  Shield, Settings, HelpCircle, Home, Clock, Plane,
+  DollarSign, FileText, BarChart2, Users, BookOpen,
+  Heart, ClipboardList, Bell, LogOut, ChevronLeft,
+  ChevronRight, User, Award,
+} from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import C from "../styles/colors";
+
+const BASE_NAV = [
+  { label: "Home",          icon: Home,          path: "/dashboard" },
+  { label: "Attendance",    icon: Clock,         path: "/attendance" },
+  { label: "Leave",         icon: Plane,         path: "/leave" },
+  { label: "Payslips",      icon: DollarSign,    path: "/payslips" },
+  { label: "Documents",     icon: FileText,      path: "/documents" },
+  { label: "Performance",   icon: BarChart2,     path: "/performance" },
+  { label: "Team",          icon: Users,         path: "/team" },
+  { label: "Training",      icon: BookOpen,      path: "/training" },
+  { label: "Benefits",      icon: Heart,         path: "/benefits" },
+  { label: "Requests",      icon: ClipboardList, path: "/requests" },
+  { label: "Announcements", icon: Bell,          path: "/announcements" },
+];
+
+export default function SideNavbar({ sidebarOpen, collapsed = false, onToggleCollapse }) {
+  const { employee, logout } = useAuth();
+
+  const emp = employee ?? { initials: "?", name: "Loading…", role: "Employee" };
+  const isManager = emp.role === "manager" || emp.isManager === true;
+
+  const navItems = [
+    ...BASE_NAV,
+    {
+      label: isManager ? "Manager Dashboard" : "My Profile",
+      icon: isManager ? Award : User,
+      path: isManager ? "/managerprofile" : "/employeeprofile",
+    },
+  ];
+
+  return (
+    <AnimatePresence>
+      {/* Moved the sidebarOpen check inside AnimatePresence for smooth closing */}
+      {sidebarOpen && (
+        <Motion.aside
+          key="sidebar"
+          initial={{ x: -260, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          exit={{ x: -260, opacity: 0 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          // CHANGED: Removed "hidden", added "fixed inset-y-0 z-50 md:relative" for mobile overlay
+          className="flex flex-col h-full shrink-0 overflow-hidden fixed inset-y-0 left-0 z-50 md:relative"
+          style={{ width: collapsed ? 64 : 240, background: C.navy, transition: "width 0.3s ease" }}
+        >
+          {/* ── Logo ── */}
+          <div className="px-4 pt-6 pb-5 flex items-center gap-3 shrink-0">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.primary }}>
+              <Shield size={18} color="#fff" />
+            </div>
+            {!collapsed && (
+              <span className="text-white font-bold text-sm truncate">HRISCloud</span>
+            )}
+            {onToggleCollapse && (
+              <button onClick={onToggleCollapse} className="ml-auto text-white/40 hover:text-white/80 transition-colors hidden md:block" style={{ background: "none", border: "none", cursor: "pointer" }}>
+                {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+              </button>
+            )}
+          </div>
+
+          {/* ── Nav ── */}
+          <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isManagerItem = item.path === "/managerprofile";
+              return (
+                <NavLink key={item.label} to={item.path} end={item.path === "/dashboard"}>
+                  {({ isActive }) => (
+                    <Motion.div
+                      whileHover={{ x: collapsed ? 0 : 4 }}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors"
+                      style={{
+                        background: isActive
+                          ? "rgba(79,70,229,0.30)"
+                          : isManagerItem && !isActive
+                          ? "rgba(245,158,11,0.10)" 
+                          : "transparent",
+                        color: isActive
+                          ? "#fff"
+                          : isManagerItem
+                          ? "rgba(253,230,138,0.85)"
+                          : "rgba(255,255,255,0.55)",
+                        cursor: "pointer",
+                        border: isManagerItem && !isActive ? "1px solid rgba(245,158,11,0.25)" : "1px solid transparent",
+                      }}
+                      title={collapsed ? item.label : undefined}
+                    >
+                      <Icon size={16} className="shrink-0" />
+                      {!collapsed && <span className="truncate">{item.label}</span>}
+                      {!collapsed && isManagerItem && isManager && (
+                        <span style={{ marginLeft: "auto", background: "rgba(245,158,11,0.25)", color: "#FDE68A", fontSize: 8, fontWeight: 800, padding: "1px 6px", borderRadius: 99 }}>MGR</span>
+                      )}
+                    </Motion.div>
+                  )}
+                </NavLink>
+              );
+            })}
+          </nav>
+
+          {/* ── Footer links ── */}
+          <div className="px-2 pb-2 space-y-0.5 shrink-0">
+            <NavLink to="/settings">
+              {({ isActive }) => (
+                <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.45)", cursor: "pointer" }} title={collapsed ? "Settings" : undefined}>
+                  <Settings size={16} className="shrink-0" />
+                  {!collapsed && <span>Settings</span>}
+                </div>
+              )}
+            </NavLink>
+            <NavLink to="/help">
+              {({ isActive }) => (
+                <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm" style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.35)", cursor: "pointer" }} title={collapsed ? "Help" : undefined}>
+                  <HelpCircle size={16} className="shrink-0" />
+                  {!collapsed && <span>Help</span>}
+                </div>
+              )}
+            </NavLink>
+          </div>
+
+          {/* ── User card + Logout ── */}
+          <div className="m-2 shrink-0">
+            <div className="p-3 rounded-xl flex gap-3 items-center" style={{ background: "rgba(255,255,255,0.08)" }}>
+              {emp.avatar ? (
+                <img src={emp.avatar} alt={emp.name} className="w-9 h-9 rounded-full object-cover shrink-0" />
+              ) : (
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{ background: C.primary }}>
+                  {emp.initials}
+                </div>
+              )}
+
+              {!collapsed && (
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-white text-xs font-semibold truncate">{emp.name}</p>
+                    {isManager && (
+                      <span style={{ background: "rgba(245,158,11,0.25)", color: "#FDE68A", fontSize: 7, fontWeight: 800, padding: "1px 5px", borderRadius: 99, flexShrink: 0 }}>MGR</span>
+                    )}
+                  </div>
+                  <p className="text-white/50 text-[11px] truncate">{emp.role}</p>
+                </div>
+              )}
+
+              <Motion.button
+                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+                onClick={logout}
+                title="Logout"
+                className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: "rgba(239,68,68,0.18)", border: "1px solid rgba(239,68,68,0.25)", cursor: "pointer" }}
+              >
+                <LogOut size={13} color="#FCA5A5" />
+              </Motion.button>
+            </div>
+          </div>
+        </Motion.aside>
+      )}
+    </AnimatePresence>
+  );
+}
