@@ -262,7 +262,7 @@ function LeftPanel() {
               className="text-white font-bold text-lg leading-none"
               style={{ fontFamily: "Sora, sans-serif" }}
             >
-              HRISCloud
+              BantaHR
             </p>
             <p
               className="text-[11px] font-semibold uppercase tracking-widest"
