@@ -6,6 +6,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
+import BantaHRLogo from "../styles/BantaHRLogo";
 import {
   Eye,
   EyeOff,
@@ -265,7 +266,7 @@ const LeftPanel = () => (
     />
 
     {/* Logo */}
-    <div className="relative z-10 px-10 pt-10">
+    {/* <div className="relative z-10 px-10 pt-10">
       <div className="flex items-center gap-3 mb-3">
         <div
           className="w-10 h-10 rounded-2xl flex items-center justify-center"
@@ -291,7 +292,8 @@ const LeftPanel = () => (
           </p>
         </div>
       </div>
-    </div>
+    </div> */}
+         <BantaHRLogo variant="light" size="lg" />
 
     {/* Hero text */}
     <div className="relative z-10 flex-1 flex flex-col justify-center px-10">
@@ -588,7 +590,7 @@ export default function LoginPage() {
           Welcome back
         </h1>
         <p className="text-sm" style={{ color: C.textMuted }}>
-          Sign in to your HRISCloud account
+          Sign in to your BantaHR account
         </p>
       </div>
 
@@ -617,7 +619,7 @@ export default function LoginPage() {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="your.name@hriscloud.ng"
+        placeholder="your.name@bantahr.ng"
         error={errors.email}
         icon={Mail}
         autoFocus
@@ -753,7 +755,7 @@ export default function LoginPage() {
         type="email"
         value={forgotEmail}
         onChange={(e) => setForgotEmail(e.target.value)}
-        placeholder="your.name@hriscloud.ng"
+        placeholder="your.name@bantahr.ng"
         error={errors.forgotEmail}
         icon={Mail}
         autoFocus

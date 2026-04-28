@@ -133,12 +133,16 @@
 // src/api/service/superAdminApi.js
 import axios from "axios";
 
-// ─── 1. Setup Dedicated Super Admin Instance ─────────────────────────
+// // ─── 1. Setup Dedicated Super Admin Instance ─────────────────────────
+// const BASE_URL =
+//   import.meta.env.VITE_API_BASE_URL ||
+//   (import.meta.env.MODE === "development"
+//     ? "http://localhost:5000/api"
+//     : "https://your-production-api.com/api");
+// ─── Base URL ────────────────────────────────────────────────
 const BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.MODE === "development"
-    ? "http://localhost:5000/api"
-    : "https://your-production-api.com/api");
+  "http://localhost:5000/api";
 
 const superAdminAPI = axios.create({
   baseURL: BASE_URL,

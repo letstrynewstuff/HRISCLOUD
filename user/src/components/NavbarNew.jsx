@@ -1,4 +1,4 @@
-// src/components/sideNavbar.jsx
+// src/components/SideNavbar.jsx
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import {
   Shield,
@@ -41,7 +41,7 @@ const BASE_NAV = [
 ];
 
 // Added setSidebarOpen to the props
-export default function SideNavbar({
+export default function NavbarNew({
   sidebarOpen,
   setSidebarOpen,
   collapsed = false,
@@ -77,7 +77,6 @@ export default function SideNavbar({
             transition: "width 0.3s ease",
           }}
         >
-      
           {/* ── Logo & Mobile Close Button ── */}
           <div className="px-4 pt-6 pb-5 flex items-center gap-3 shrink-0">
             <div
