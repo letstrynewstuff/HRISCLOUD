@@ -26,6 +26,7 @@ import approvalRouter from "./routes/approval.routes.js";
 import documentRouter from "./routes/document.routes.js";
 import benefitsRouter from "./routes/benefits.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
+import superAdminRoutes from "./routes/super_admin.routes.js";
 
 const app = express();
 
@@ -74,6 +75,7 @@ app.use("/api/approvals", approvalRouter);
 app.use("/api/documents", documentRouter);
 app.use("/api/benefits", benefitsRouter);
 app.use("/api/chat", chatRoutes);
+app.use("/api/super-admin", superAdminRoutes);
 // ─────────────────────────────────────────
 // 404 Handler
 // ─────────────────────────────────────────

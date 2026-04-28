@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import SideNavbar from "../components/sideNavbar";
+// import SideNavbar from "../components/SideNavbar";
 import {
   Bell,
   Search,
@@ -286,7 +286,7 @@ export default function AnnouncementsPage() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
-        <SideNavbar
+        {/* <SideNavbar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           COLORS={C}
@@ -299,7 +299,7 @@ export default function AnnouncementsPage() {
             initials,
             id: profile?.employee_code ?? "—",
           }}
-        />
+        /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* ── TOP NAV ── */}

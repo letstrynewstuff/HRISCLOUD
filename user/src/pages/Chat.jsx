@@ -13,7 +13,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import SideNavbar from "../components/sideNavbar";
+// import SideNavbar from "../components/SideNavbar";
 import Loader from "../components/Loader";
 import { useAuth } from "../components/AuthContext";
 import { chatApi } from "../api/service/chatApi";
@@ -833,11 +833,11 @@ const handleSend = async () => {
             onClick={() => setSidebarOpen(false)} // <-- This is the magic close button
           />
         )}
-        <SideNavbar
+        {/* <SideNavbar
           sidebarOpen={sidebarOpen}
           // If you are using the collapse feature, add this:
           // onToggleCollapse={() => setCollapsed(!collapsed)}
-        />
+        /> */}
 
         <div className="flex-1 flex min-w-0 overflow-hidden">
           {/* ── Mobile top bar ── */}

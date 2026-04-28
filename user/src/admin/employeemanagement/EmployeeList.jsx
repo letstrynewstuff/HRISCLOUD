@@ -5,7 +5,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSideNavbar from "../AdminSideNavbar";
 import { getEmployees } from "../../api/service/employeeApi";
 import { C } from "./sharedData";
 import {
@@ -269,13 +269,13 @@ export default function EmployeeList({ ADMIN }) {
       }}
     >
       {/* Sidebar */}
-      <AdminSideNavbar
+      {/* <AdminSideNavbar
         ADMIN={ADMIN}
         sidebarOpen={sidebarOpen}
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
         pendingApprovals={0}
-      />
+      /> */}
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">

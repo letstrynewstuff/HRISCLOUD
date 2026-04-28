@@ -42,7 +42,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSideNavbar from "../AdminSideNavbar";
 import {
   Users,
   Search,
@@ -228,13 +228,13 @@ export default function AdminEmployeeManagementPage() {
     >
       <div className="flex h-screen overflow-hidden">
         {/* ══ SIDEBAR ══ */}
-        <AdminSideNavbar
+        {/* <AdminSideNavbar
           sidebarOpen={sidebarOpen}
           collapsed={sidebarCollapsed}
           setCollapsed={setSidebarCollapsed}
           ADMIN={ADMIN}
           pendingApprovals={stats.pending}
-        />
+        /> */}
 
         {/* ══ MAIN ══ */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">

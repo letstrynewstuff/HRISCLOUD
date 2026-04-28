@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import SideNavbar from "../components/sideNavbar";
+// import SideNavbar from "../components/SideNavbar";
 import {
   DollarSign,
   Download,
@@ -204,7 +204,7 @@ export default function PayslipsPage() {
           try {
             const res = await getMyPayslip(m.value, selectedYear);
             if (res?.data) results.push(res.data);
-          } catch (err) {
+          } catch {
             // Silently handle 404s
           }
         }),
@@ -233,10 +233,6 @@ export default function PayslipsPage() {
     0,
   );
   const ytdNet = payslips.reduce((s, p) => s + (p.netSalary ?? 0), 0);
-  const chartData = [...payslips]
-    .reverse()
-    .slice(-6)
-    .map((p) => p.netSalary ?? 0);
 
   const disp = (n) => (masked ? mask() : fmt(n));
   const dispShort = (n) => (masked ? "••••" : fmtShort(n));
@@ -317,7 +313,7 @@ export default function PayslipsPage() {
       style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
     >
       <div className="flex h-screen overflow-hidden">
-        <SideNavbar sidebarOpen={sidebarOpen} employee={employee} />
+        {/* <SideNavbar sidebarOpen={sidebarOpen} employee={employee} /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}

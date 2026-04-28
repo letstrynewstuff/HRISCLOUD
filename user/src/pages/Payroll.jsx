@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { Motion, AnimatePresence } from "framer-motion";
-import SideNavbar from "../components/sideNavbar";
+// import SideNavbar from "../components/SideNavbar";
 import {
   DollarSign,
   TrendingUp,
@@ -171,7 +171,7 @@ export default function Payroll() {
       style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
     >
       <div className="flex h-screen overflow-hidden">
-        <SideNavbar sidebarOpen={sidebarOpen} employee={employee} />
+        {/* <SideNavbar sidebarOpen={sidebarOpen} employee={employee} /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}

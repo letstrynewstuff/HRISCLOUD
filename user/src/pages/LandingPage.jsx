@@ -1,10 +1,11 @@
 // src/pages/LandingPage.jsx
-// HRISCloud — modern enterprise landing page
-// No login / register links — only "Request a Demo"
-// Fully mobile-responsive
+// BantaHR — All-in-one HRIS for African businesses
+// No login link — only "Request a Demo"
 
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+
+import BantaHRLogo from "../styles/BantaHRLogo";
 import {
   Users,
   Clock,
@@ -26,9 +27,13 @@ import {
   Heart,
   Play,
   CheckCircle2,
+  MessageSquare,
+  Bell,
+  UserCheck,
+  FolderOpen,
+  PieChart,
 } from "lucide-react";
 
-// ── Colour system ─────────────────────────────────────────────
 const T = {
   navy: "#0F1629",
   navyMid: "#1A2545",
@@ -37,6 +42,7 @@ const T = {
   indigoLight: "#6366F1",
   indigoPale: "#EEF2FF",
   cyan: "#06B6D4",
+  teal: "#0D9488",
   sand: "#F5F0E8",
   sandDark: "#E8E0CC",
   white: "#FFFFFF",
@@ -48,65 +54,85 @@ const T = {
   success: "#10B981",
 };
 
-// ── Feature data ──────────────────────────────────────────────
 const FEATURES = [
   {
     icon: Users,
     title: "Employee Management",
-    desc: "Centralise employee records, org charts, onboarding, and offboarding in one seamless hub.",
+    desc: "Centralise every employee record — contracts, role history, org charts, onboarding checklists and offboarding flows — in one secure hub. HR admins get full visibility; employees can view and request updates to their own profiles.",
     color: T.indigo,
     bg: T.indigoPale,
   },
   {
     icon: Clock,
     title: "Attendance & Leave",
-    desc: "Real-time clock-in with geofencing, automated leave balances, and smart approval workflows.",
+    desc: "Real-time clock-in with location awareness, automated leave balance calculations, and intelligent approval workflows. Managers approve or decline leave requests in one tap, and the system updates balances instantly.",
     color: T.cyan,
     bg: "#ECFEFF",
   },
   {
     icon: DollarSign,
     title: "Payroll Processing",
-    desc: "Run accurate, compliant Nigerian payroll in minutes — PAYE, pension, NHF all automated.",
+    desc: "Run fully compliant Nigerian payroll in minutes — PAYE, pension (PFA), NHF, and NSITF all automated. Generate payslips, process bulk payments, and stay audit-ready with detailed payroll reports every cycle.",
     color: T.success,
     bg: "#D1FAE5",
   },
   {
     icon: TrendingUp,
     title: "Performance Management",
-    desc: "Set OKRs and KPIs, run appraisal cycles, and track employee growth with actionable insights.",
+    desc: "Set team and individual OKRs, run structured appraisal cycles, and track employee growth with real-time dashboards. Managers give continuous feedback; employees see exactly where they stand and what to improve.",
     color: "#F59E0B",
     bg: "#FEF3C7",
   },
   {
     icon: FileText,
     title: "Document Management",
-    desc: "Digital contracts, e-signatures, and secure document storage — all GDPR-compliant.",
+    desc: "Create, send, and e-sign offer letters, contracts, and HR policy documents digitally. Employees receive documents in their portal, sign electronically, and all records are stored securely with full audit trails.",
     color: "#8B5CF6",
     bg: "#EDE9FE",
   },
   {
     icon: BarChart2,
     title: "HR Analytics",
-    desc: "Live dashboards and reports that turn your workforce data into strategic business decisions.",
+    desc: "Live dashboards that turn your workforce data into strategic decisions — headcount trends, attrition rates, department costs, and custom reports. Export to PDF or Excel for board-level presentations.",
     color: "#EC4899",
     bg: "#FDF2F8",
+  },
+  {
+    icon: MessageSquare,
+    title: "Team Chat",
+    desc: "Built-in messaging so your workforce stays connected. Managers create team channels for group announcements; employees send direct messages and share documents — all within the same platform, no external tools needed.",
+    color: "#F97316",
+    bg: "#FFF7ED",
+  },
+  {
+    icon: Bell,
+    title: "Announcements",
+    desc: "HR admins broadcast company-wide or department-specific announcements with rich text, file attachments, and scheduled publishing. Pin important notices so they stay visible, and track who has read each announcement.",
+    color: T.teal,
+    bg: "#F0FDFA",
+  },
+  {
+    icon: UserCheck,
+    title: "Offboarding",
+    desc: "Structure every exit with automated offboarding checklists — asset returns, system access revocation, exit interviews, and final payroll. Reduce admin chaos and ensure every departure is handled professionally.",
+    color: "#6366F1",
+    bg: "#EEF2FF",
   },
 ];
 
 const STATS = [
-  { value: "500+", label: "Companies onboarded", suffix: "" },
-  { value: "95%", label: "Customer satisfaction", suffix: "" },
-  { value: "40%", label: "HR time saved", suffix: "" },
-  { value: "₦2B+", label: "Payroll processed", suffix: "" },
+  { value: "500+", label: "Companies onboarded" },
+  { value: "95%", label: "Customer satisfaction" },
+  { value: "40%", label: "HR time saved" },
+  { value: "₦2B+", label: "Payroll processed" },
 ];
 
 const TESTIMONIALS = [
   {
     quote:
-      "HRISCloud cut our monthly payroll processing from 3 days to 45 minutes. The ROI was immediate.",
+      "BantaHR cut our monthly payroll processing from 3 days to 45 minutes. The ROI was immediate.",
     name: "Adaeze Okonkwo",
-    title: "Head of People Operations, Flutterwave",
+    // title: "Head of People Operations, Flutterwave",
     avatar: "AO",
     color: T.indigo,
     rating: 5,
@@ -115,74 +141,67 @@ const TESTIMONIALS = [
     quote:
       "Finally an HR platform built for African businesses — the leave management alone is worth every kobo.",
     name: "Emeka Eze",
-    title: "HR Director, Dangote Group",
+    // title: "HR Director, Da",
     avatar: "EE",
     color: T.cyan,
     rating: 5,
   },
   {
     quote:
-      "Our team of 300 now manage their own HR needs. We've reduced admin overhead by 60%.",
+      "Our team of 300 now manages their own HR needs. We've reduced admin overhead by 60%.",
     name: "Fatima Bello",
-    title: "COO, Kuda Bank",
+    // title: "COO, Kuda Bank",
     avatar: "FB",
     color: "#10B981",
     rating: 5,
   },
 ];
 
+// ₦1,000 per employee per month · Custom Enterprise
 const PLANS = [
   {
-    name: "Starter",
-    price: "₦15,000",
-    per: "/ month",
-    desc: "Perfect for growing teams up to 50 employees.",
-    features: [
-      "Up to 50 employees",
-      "Core HR & Attendance",
-      "Payroll processing",
-      "Leave management",
-      "Email support",
-    ],
-    cta: "Request Demo",
-    highlighted: false,
-  },
-  {
     name: "Growth",
-    price: "₦35,000",
-    per: "/ month",
-    desc: "The complete HRIS suite for scaling businesses.",
+    price: "₦1,000",
+    per: "/ employee / month",
+    minNote: "Minimum 1 employees",
+    desc: "Everything your growing team needs to run HR professionally.",
+    // example: "e.g. 50 employees = ₦50,000/mo",
     features: [
-      "Up to 250 employees",
-      "Everything in Starter",
-      "Performance management",
-      "Training & development",
-      "Analytics dashboard",
-      "Priority support",
+      "Unlimited employees (min. 10)",
+      "Employee Management",
+      "Attendance & Leave",
+      "Payroll Processing",
+      "Document Management",
+      "Team Chat & Announcements",
+      "HR Analytics Dashboard",
+      "Email & chat support",
     ],
     cta: "Request Demo",
     highlighted: true,
-    badge: "Most Popular",
+    badge: "Simple Pricing",
   },
   {
     name: "Enterprise",
-    price: "Custom",
+    price: "Let's Talk",
     per: "",
-    desc: "Tailored solutions for large organisations.",
+    // minNote: "For 500+ employees",
+    desc: "Custom contracts, SLA guarantees, and dedicated support for large organisations.",
+    example: "Volume discounts available",
     features: [
-      "Unlimited employees",
       "Everything in Growth",
-      "Custom integrations",
-      "Dedicated CSM",
-      "SLA guarantee",
-      "On-site training",
+      "Custom integrations & API access",
+      "Dedicated Customer Success Manager",
+      "SLA guarantee (99.9% uptime)",
+      "On-site training & onboarding",
+      "Custom reporting & exports",
+      "Multi-entity / subsidiary support",
+      "Priority 24/7 support",
     ],
     cta: "Contact Sales",
     highlighted: false,
   },
 ];
 
-// ── Helpers ───────────────────────────────────────────────────
 function useScrollReveal() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -191,7 +210,7 @@ function useScrollReveal() {
       ([entry]) => {
         if (entry.isIntersecting) setVisible(true);
       },
-      { threshold: 0.12 },
+      { threshold: 0.1 },
     );
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
@@ -207,8 +226,8 @@ function Reveal({ children, delay = 0, className = "" }) {
       className={className}
       style={{
         opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(32px)",
-        transition: `opacity 0.65s ease ${delay}ms, transform 0.65s ease ${delay}ms`,
+        transform: visible ? "translateY(0)" : "translateY(28px)",
+        transition: `opacity 0.6s ease ${delay}ms, transform 0.6s ease ${delay}ms`,
       }}
     >
       {children}
@@ -216,9 +235,6 @@ function Reveal({ children, delay = 0, className = "" }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════════════
 export default function LandingPage() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -226,38 +242,34 @@ export default function LandingPage() {
   const [heroVisible, setHeroVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setHeroVisible(true), 80);
-    const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll);
+    const t = setTimeout(() => setHeroVisible(true), 80);
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
     return () => {
-      clearTimeout(timer);
-      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(t);
+      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
   const goDemo = () => navigate("/request-demo");
-
   const NAV = ["Features", "Pricing", "Testimonials", "About"];
 
   return (
     <div
       style={{
-        fontFamily: "'DM Sans', 'Sora', system-ui, sans-serif",
+        fontFamily: "'DM Sans','Sora',system-ui,sans-serif",
         color: T.text,
         background: T.white,
         overflowX: "hidden",
       }}
     >
-      {/* Google Fonts */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap"
         rel="stylesheet"
       />
 
-      {/* ════════════════════════════════════
-          NAVBAR
-      ════════════════════════════════════ */}
+      {/* ── NAVBAR ── */}
       <nav
         style={{
           position: "fixed",
@@ -267,7 +279,7 @@ export default function LandingPage() {
           zIndex: 100,
           background: scrolled ? "rgba(15,22,41,0.97)" : "transparent",
           backdropFilter: scrolled ? "blur(16px)" : "none",
-          borderBottom: scrolled ? `1px solid rgba(255,255,255,0.08)` : "none",
+          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.08)" : "none",
           transition: "all 0.3s ease",
           padding: "0 1.5rem",
         }}
@@ -282,42 +294,17 @@ export default function LandingPage() {
             gap: 32,
           }}
         >
-          {/* Logo */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-              flexShrink: 0,
-            }}
-          >
-            <div
-              style={{
-                width: 36,
-                height: 36,
-                borderRadius: 10,
-                background: "linear-gradient(135deg,#6366F1,#4F46E5)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Shield size={18} color="#fff" />
-            </div>
-            <span
-              style={{
-                fontFamily: "Sora,sans-serif",
-                fontWeight: 700,
-                fontSize: 18,
-                color: "#fff",
-                letterSpacing: "-0.3px",
-              }}
-            >
-              HRISCloud
-            </span>
-          </div>
+          {/* Logo — actual image, sized to fit */}
+          {/* <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
+            <img
+              src={logoImg}
+              alt="BantaHR"
+              style={{ height: 42, width: "auto", objectFit: "contain" }}
+            />
+          </div> */}
+          <BantaHRLogo variant="light" size="md" />
 
-          {/* Desktop nav links */}
+          {/* Desktop nav */}
           <div
             style={{
               display: "flex",
@@ -349,7 +336,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          {/* CTA */}
+          {/* CTA — Request Demo only, no login */}
           <div
             style={{
               display: "flex",
@@ -358,19 +345,6 @@ export default function LandingPage() {
               marginLeft: "auto",
             }}
           >
-            <a
-              href="/login"
-              style={{
-                color: "rgba(255,255,255,0.75)",
-                textDecoration: "none",
-                fontSize: 14,
-                fontWeight: 500,
-                display: "none",
-              }}
-              className="desktop-login"
-            >
-              Sign In
-            </a>
             <button
               onClick={goDemo}
               style={{
@@ -383,22 +357,21 @@ export default function LandingPage() {
                 fontWeight: 600,
                 cursor: "pointer",
                 whiteSpace: "nowrap",
-                boxShadow: `0 4px 14px rgba(79,70,229,0.4)`,
+                boxShadow: "0 4px 14px rgba(79,70,229,0.4)",
                 transition: "transform 0.15s, box-shadow 0.15s",
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = "translateY(-1px)";
-                e.target.style.boxShadow = `0 6px 20px rgba(79,70,229,0.5)`;
+                e.target.style.boxShadow = "0 6px 20px rgba(79,70,229,0.5)";
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = `0 4px 14px rgba(79,70,229,0.4)`;
+                e.target.style.boxShadow = "0 4px 14px rgba(79,70,229,0.4)";
               }}
             >
               Request a Demo
             </button>
 
-            {/* Mobile hamburger */}
             <button
               onClick={() => setMenuOpen((p) => !p)}
               style={{
@@ -426,7 +399,7 @@ export default function LandingPage() {
           <div
             style={{
               background: T.navyMid,
-              borderTop: `1px solid rgba(255,255,255,0.08)`,
+              borderTop: "1px solid rgba(255,255,255,0.08)",
               padding: "1.5rem",
               display: "flex",
               flexDirection: "column",
@@ -444,7 +417,7 @@ export default function LandingPage() {
                   fontSize: 16,
                   fontWeight: 500,
                   padding: "12px 0",
-                  borderBottom: `1px solid rgba(255,255,255,0.06)`,
+                  borderBottom: "1px solid rgba(255,255,255,0.06)",
                 }}
               >
                 {n}
@@ -473,9 +446,7 @@ export default function LandingPage() {
         )}
       </nav>
 
-      {/* ════════════════════════════════════
-          HERO
-      ════════════════════════════════════ */}
+      {/* ── HERO ── */}
       <section
         style={{
           background: `linear-gradient(150deg, ${T.navy} 0%, ${T.navyMid} 60%, ${T.navyLight} 100%)`,
@@ -489,7 +460,7 @@ export default function LandingPage() {
           overflow: "hidden",
         }}
       >
-        {/* Background decorative circles */}
+        {/* Background decorations */}
         <div
           style={{
             position: "absolute",
@@ -498,7 +469,8 @@ export default function LandingPage() {
             width: 500,
             height: 500,
             borderRadius: "50%",
-            background: `radial-gradient(circle, rgba(79,70,229,0.15), transparent 70%)`,
+            background:
+              "radial-gradient(circle,rgba(79,70,229,0.15),transparent 70%)",
             pointerEvents: "none",
           }}
         />
@@ -510,16 +482,17 @@ export default function LandingPage() {
             width: 400,
             height: 400,
             borderRadius: "50%",
-            background: `radial-gradient(circle, rgba(6,182,212,0.12), transparent 70%)`,
+            background:
+              "radial-gradient(circle,rgba(6,182,212,0.12),transparent 70%)",
             pointerEvents: "none",
           }}
         />
-        {/* Grid overlay */}
         <div
           style={{
             position: "absolute",
             inset: 0,
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)",
             backgroundSize: "48px 48px",
             pointerEvents: "none",
           }}
@@ -565,8 +538,8 @@ export default function LandingPage() {
           {/* Headline */}
           <h1
             style={{
-              fontFamily: "Sora, sans-serif",
-              fontSize: "clamp(2.4rem, 6vw, 4.2rem)",
+              fontFamily: "Sora,sans-serif",
+              fontSize: "clamp(2.4rem,6vw,4.2rem)",
               fontWeight: 800,
               lineHeight: 1.1,
               letterSpacing: "-1.5px",
@@ -580,7 +553,7 @@ export default function LandingPage() {
             The HR Platform That{" "}
             <span
               style={{
-                background: `linear-gradient(135deg, ${T.indigoLight}, ${T.cyan})`,
+                background: `linear-gradient(135deg,${T.indigoLight},${T.cyan})`,
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -591,10 +564,9 @@ export default function LandingPage() {
             for Your Business
           </h1>
 
-          {/* Sub */}
           <p
             style={{
-              fontSize: "clamp(1rem, 2vw, 1.2rem)",
+              fontSize: "clamp(1rem,2vw,1.2rem)",
               color: "rgba(255,255,255,0.65)",
               lineHeight: 1.7,
               maxWidth: 620,
@@ -608,7 +580,7 @@ export default function LandingPage() {
             your people — all in one modern HRIS built for Nigeria and Africa.
           </p>
 
-          {/* CTAs */}
+          {/* Single CTA */}
           <div
             style={{
               display: "flex",
@@ -635,44 +607,21 @@ export default function LandingPage() {
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                boxShadow: `0 8px 28px rgba(79,70,229,0.5)`,
-                transition: "transform 0.2s, box-shadow 0.2s",
+                boxShadow: "0 8px 28px rgba(79,70,229,0.5)",
+                transition: "transform 0.2s,box-shadow 0.2s",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = `0 12px 36px rgba(79,70,229,0.6)`;
+                e.currentTarget.style.boxShadow =
+                  "0 12px 36px rgba(79,70,229,0.6)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = `0 8px 28px rgba(79,70,229,0.5)`;
+                e.currentTarget.style.boxShadow =
+                  "0 8px 28px rgba(79,70,229,0.5)";
               }}
             >
               Request a Demo <ArrowRight size={17} />
-            </button>
-            <button
-              style={{
-                background: "rgba(255,255,255,0.08)",
-                color: "#fff",
-                border: "1px solid rgba(255,255,255,0.18)",
-                borderRadius: 12,
-                padding: "16px 32px",
-                fontSize: 16,
-                fontWeight: 600,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-                backdropFilter: "blur(8px)",
-                transition: "background 0.2s",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "rgba(255,255,255,0.14)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "rgba(255,255,255,0.08)")
-              }
-            >
-              <Play size={15} /> Watch 2-min Tour
             </button>
           </div>
 
@@ -713,16 +662,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════
-          STATS BAND
-      ════════════════════════════════════ */}
+      {/* ── STATS BAND ── */}
       <section style={{ background: T.indigo, padding: "56px 1.5rem" }}>
         <div
           style={{
             maxWidth: 1100,
             margin: "0 auto",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
             gap: 32,
           }}
         >
@@ -756,9 +703,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════
-          FEATURES
-      ════════════════════════════════════ */}
+      {/* ── FEATURES / ABOUT ── */}
       <section
         id="features"
         style={{ background: T.offWhite, padding: "100px 1.5rem" }}
@@ -798,8 +743,8 @@ export default function LandingPage() {
                   lineHeight: 1.7,
                 }}
               >
-                From hire to retire — HRISCloud handles every step of the
-                employee lifecycle with intelligence and ease.
+                From hire to retire — BantaHR handles every step of the employee
+                lifecycle with intelligence and ease.
               </p>
             </div>
           </Reveal>
@@ -807,12 +752,12 @@ export default function LandingPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))",
               gap: 24,
             }}
           >
             {FEATURES.map(({ icon: Icon, title, desc, color, bg }, i) => (
-              <Reveal key={title} delay={i * 60}>
+              <Reveal key={title} delay={i * 50}>
                 <div
                   style={{
                     background: T.white,
@@ -820,8 +765,9 @@ export default function LandingPage() {
                     padding: "32px 28px",
                     border: `1px solid ${T.border}`,
                     boxShadow: "0 2px 16px rgba(0,0,0,0.05)",
-                    transition: "transform 0.2s, box-shadow 0.2s",
+                    transition: "transform 0.2s,box-shadow 0.2s",
                     cursor: "default",
+                    height: "100%",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-4px)";
@@ -861,28 +807,14 @@ export default function LandingPage() {
                   </h3>
                   <p
                     style={{
-                      fontSize: 15,
+                      fontSize: 14,
                       color: T.textMid,
-                      lineHeight: 1.7,
+                      lineHeight: 1.75,
                       margin: 0,
                     }}
                   >
                     {desc}
                   </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 5,
-                      marginTop: 20,
-                      color,
-                      fontSize: 13,
-                      fontWeight: 600,
-                      cursor: "pointer",
-                    }}
-                  >
-                    Learn more <ChevronRight size={14} />
-                  </div>
                 </div>
               </Reveal>
             ))}
@@ -890,9 +822,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════
-          HOW IT WORKS
-      ════════════════════════════════════ */}
+      {/* ── HOW IT WORKS ── */}
       <section style={{ background: T.white, padding: "100px 1.5rem" }}>
         <div style={{ maxWidth: 1000, margin: "0 auto" }}>
           <Reveal>
@@ -922,11 +852,10 @@ export default function LandingPage() {
               </h2>
             </div>
           </Reveal>
-
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
               gap: 40,
             }}
           >
@@ -934,14 +863,14 @@ export default function LandingPage() {
               {
                 step: "01",
                 title: "Book Your Demo",
-                desc: "Schedule a personalised walkthrough with an HR technology expert.",
+                desc: "Schedule a personalised walkthrough with our team.",
                 icon: Calendar,
                 color: T.indigo,
               },
               {
                 step: "02",
-                title: "Configure & Import",
-                desc: "We help migrate your existing employee data — zero spreadsheet chaos.",
+                title: "We Set You Up",
+                desc: "We handle your data migration and company configuration — zero spreadsheet chaos.",
                 icon: Globe,
                 color: T.cyan,
               },
@@ -955,7 +884,7 @@ export default function LandingPage() {
               {
                 step: "04",
                 title: "Scale Confidently",
-                desc: "From 10 to 10,000 employees — HRISCloud scales with your ambition.",
+                desc: "From 10 to 10,000 employees — BantaHR grows with your ambition.",
                 icon: TrendingUp,
                 color: "#F59E0B",
               },
@@ -974,7 +903,7 @@ export default function LandingPage() {
                         width: 64,
                         height: 64,
                         borderRadius: 18,
-                        background: color + "15",
+                        background: color + "18",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -1000,7 +929,7 @@ export default function LandingPage() {
                         fontFamily: "Sora,sans-serif",
                       }}
                     >
-                      {step.slice(1)}
+                      {step}
                     </span>
                   </div>
                   <h3
@@ -1009,7 +938,7 @@ export default function LandingPage() {
                       fontSize: 17,
                       fontWeight: 700,
                       color: T.navy,
-                      margin: "0 0 10px",
+                      margin: "0 0 8px",
                     }}
                   >
                     {title}
@@ -1017,7 +946,7 @@ export default function LandingPage() {
                   <p
                     style={{
                       fontSize: 14,
-                      color: T.textMuted,
+                      color: T.textMid,
                       lineHeight: 1.7,
                       margin: 0,
                     }}
@@ -1031,15 +960,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════
-          TESTIMONIALS
-      ════════════════════════════════════ */}
+      {/* ── TESTIMONIALS ── */}
       <section
         id="testimonials"
-        style={{
-          background: `linear-gradient(160deg, ${T.navy} 0%, ${T.navyMid} 100%)`,
-          padding: "100px 1.5rem",
-        }}
+        style={{ background: T.offWhite, padding: "100px 1.5rem" }}
       >
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Reveal>
@@ -1049,11 +973,11 @@ export default function LandingPage() {
                   fontSize: 12,
                   fontWeight: 700,
                   letterSpacing: "0.1em",
-                  color: T.cyan,
+                  color: T.indigo,
                   textTransform: "uppercase",
                 }}
               >
-                Customer Stories
+                Social Proof
               </span>
               <h2
                 style={{
@@ -1062,18 +986,17 @@ export default function LandingPage() {
                   fontWeight: 800,
                   letterSpacing: "-0.8px",
                   margin: "12px 0 0",
-                  color: "#fff",
+                  color: T.navy,
                 }}
               >
-                Trusted by Leading African Businesses
+                Trusted by HR Teams Across Africa
               </h2>
             </div>
           </Reveal>
-
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))",
               gap: 24,
             }}
           >
@@ -1082,31 +1005,29 @@ export default function LandingPage() {
                 <Reveal key={name} delay={i * 80}>
                   <div
                     style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.10)",
+                      background: T.white,
                       borderRadius: 20,
                       padding: "32px 28px",
-                      backdropFilter: "blur(8px)",
+                      border: `1px solid ${T.border}`,
+                      boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
                     }}
                   >
-                    <div style={{ display: "flex", gap: 3, marginBottom: 20 }}>
-                      {Array(rating)
-                        .fill(0)
-                        .map((_, i) => (
-                          <Star
-                            key={i}
-                            size={16}
-                            color="#F59E0B"
-                            fill="#F59E0B"
-                          />
-                        ))}
+                    <div style={{ display: "flex", gap: 2, marginBottom: 16 }}>
+                      {Array.from({ length: rating }).map((_, j) => (
+                        <Star
+                          key={j}
+                          size={15}
+                          fill="#F59E0B"
+                          color="#F59E0B"
+                        />
+                      ))}
                     </div>
                     <p
                       style={{
-                        fontSize: 16,
-                        color: "rgba(255,255,255,0.85)",
+                        fontSize: 15,
+                        color: T.textMid,
                         lineHeight: 1.75,
-                        margin: "0 0 28px",
+                        margin: "0 0 24px",
                         fontStyle: "italic",
                       }}
                     >
@@ -1117,17 +1038,16 @@ export default function LandingPage() {
                     >
                       <div
                         style={{
-                          width: 44,
-                          height: 44,
+                          width: 42,
+                          height: 42,
                           borderRadius: "50%",
                           background: color,
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           color: "#fff",
-                          fontSize: 13,
                           fontWeight: 700,
-                          flexShrink: 0,
+                          fontSize: 13,
                         }}
                       >
                         {avatar}
@@ -1135,19 +1055,19 @@ export default function LandingPage() {
                       <div>
                         <p
                           style={{
-                            fontSize: 14,
-                            fontWeight: 700,
-                            color: "#fff",
                             margin: 0,
+                            fontWeight: 700,
+                            fontSize: 14,
+                            color: T.navy,
                           }}
                         >
                           {name}
                         </p>
                         <p
                           style={{
-                            fontSize: 12,
-                            color: "rgba(255,255,255,0.5)",
                             margin: 0,
+                            fontSize: 12,
+                            color: T.textMuted,
                           }}
                         >
                           {title}
@@ -1162,14 +1082,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════
-          PRICING
-      ════════════════════════════════════ */}
+      {/* ── PRICING ── */}
       <section
         id="pricing"
-        style={{ background: T.offWhite, padding: "100px 1.5rem" }}
+        style={{ background: T.white, padding: "100px 1.5rem" }}
       >
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <Reveal>
             <div style={{ textAlign: "center", marginBottom: 64 }}>
               <span
@@ -1193,17 +1111,19 @@ export default function LandingPage() {
                   color: T.navy,
                 }}
               >
-                Simple, Honest Pricing
+                Pay for What You Use
               </h2>
               <p
                 style={{
-                  fontSize: 16,
+                  fontSize: 17,
                   color: T.textMid,
                   maxWidth: 460,
                   margin: "0 auto",
+                  lineHeight: 1.7,
                 }}
               >
-                No hidden fees. No per-seat surprises. Cancel anytime.
+                Simple per-employee pricing — no hidden fees, no long-term
+                lock-in. The bigger your team, the more you save.
               </p>
             </div>
           </Reveal>
@@ -1211,52 +1131,71 @@ export default function LandingPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-              gap: 24,
+              gridTemplateColumns: "repeat(auto-fit,minmax(320px,1fr))",
+              gap: 28,
               alignItems: "start",
             }}
           >
             {PLANS.map(
               (
-                { name, price, per, desc, features, cta, highlighted, badge },
+                {
+                  name,
+                  price,
+                  per,
+                  minNote,
+                  desc,
+                  example,
+                  features,
+                  cta,
+                  highlighted,
+                  badge,
+                },
                 i,
               ) => (
                 <Reveal key={name} delay={i * 80}>
                   <div
                     style={{
-                      background: highlighted ? T.navy : T.white,
-                      border: highlighted
-                        ? "2px solid #4F46E5"
-                        : `1px solid ${T.border}`,
                       borderRadius: 24,
-                      padding: "40px 32px",
-                      position: "relative",
+                      padding: "36px 32px",
+                      background: highlighted
+                        ? `linear-gradient(145deg,${T.navy},${T.navyMid})`
+                        : T.white,
+                      border: highlighted ? "none" : `1px solid ${T.border}`,
                       boxShadow: highlighted
-                        ? "0 20px 60px rgba(79,70,229,0.25)"
-                        : "0 2px 16px rgba(0,0,0,0.05)",
-                      transition: "transform 0.2s",
+                        ? "0 24px 64px rgba(15,22,41,0.35)"
+                        : "0 4px 20px rgba(0,0,0,0.06)",
+                      position: "relative",
+                      overflow: "hidden",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.transform = "translateY(-4px)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.transform = "translateY(0)")
-                    }
                   >
+                    {/* Decorative glow for highlighted */}
+                    {highlighted && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: -60,
+                          right: -60,
+                          width: 200,
+                          height: 200,
+                          borderRadius: "50%",
+                          background:
+                            "radial-gradient(circle,rgba(79,70,229,0.3),transparent 70%)",
+                          pointerEvents: "none",
+                        }}
+                      />
+                    )}
                     {badge && (
                       <div
                         style={{
                           position: "absolute",
-                          top: -14,
-                          left: "50%",
-                          transform: "translateX(-50%)",
-                          background: T.indigo,
+                          top: 20,
+                          right: 20,
+                          background: `linear-gradient(135deg,${T.indigo},${T.cyan})`,
                           color: "#fff",
                           fontSize: 11,
                           fontWeight: 700,
+                          padding: "4px 12px",
                           borderRadius: 100,
-                          padding: "4px 16px",
-                          letterSpacing: "0.06em",
                         }}
                       >
                         {badge}
@@ -1264,24 +1203,29 @@ export default function LandingPage() {
                     )}
                     <p
                       style={{
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: highlighted ? T.cyan : T.indigo,
-                        margin: "0 0 8px",
-                        letterSpacing: "0.06em",
-                        textTransform: "uppercase",
+                        fontFamily: "Sora,sans-serif",
+                        fontSize: 20,
+                        fontWeight: 800,
+                        color: highlighted ? "#fff" : T.navy,
+                        margin: "0 0 4px",
                       }}
                     >
                       {name}
                     </p>
-                    <div
+                    <p
                       style={{
-                        display: "flex",
-                        alignItems: "baseline",
-                        gap: 4,
-                        margin: "0 0 8px",
+                        fontSize: 13,
+                        color: highlighted
+                          ? "rgba(255,255,255,0.6)"
+                          : T.textMuted,
+                        margin: "0 0 20px",
                       }}
                     >
+                      {desc}
+                    </p>
+
+                    {/* Price */}
+                    <div style={{ marginBottom: 6 }}>
                       <span
                         style={{
                           fontFamily: "Sora,sans-serif",
@@ -1292,34 +1236,49 @@ export default function LandingPage() {
                       >
                         {price}
                       </span>
-                      <span
-                        style={{
-                          fontSize: 14,
-                          color: highlighted
-                            ? "rgba(255,255,255,0.5)"
-                            : T.textMuted,
-                        }}
-                      >
-                        {per}
-                      </span>
+                      {per && (
+                        <span
+                          style={{
+                            fontSize: 14,
+                            color: highlighted
+                              ? "rgba(255,255,255,0.6)"
+                              : T.textMuted,
+                            marginLeft: 4,
+                          }}
+                        >
+                          {per}
+                        </span>
+                      )}
                     </div>
                     <p
                       style={{
-                        fontSize: 14,
-                        color: highlighted
-                          ? "rgba(255,255,255,0.6)"
-                          : T.textMuted,
-                        margin: "0 0 28px",
-                        lineHeight: 1.6,
+                        fontSize: 12,
+                        color: highlighted ? T.cyan : T.indigo,
+                        fontWeight: 600,
+                        margin: "0 0 4px",
                       }}
                     >
-                      {desc}
+                      {minNote}
                     </p>
+                    <p
+                      style={{
+                        fontSize: 12,
+                        color: highlighted
+                          ? "rgba(255,255,255,0.5)"
+                          : T.textMuted,
+                        margin: "0 0 28px",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {example}
+                    </p>
+
+                    {/* Features */}
                     <div
                       style={{
                         display: "flex",
                         flexDirection: "column",
-                        gap: 12,
+                        gap: 10,
                         marginBottom: 32,
                       }}
                     >
@@ -1330,49 +1289,61 @@ export default function LandingPage() {
                             display: "flex",
                             alignItems: "center",
                             gap: 10,
-                            fontSize: 14,
-                            color: highlighted
-                              ? "rgba(255,255,255,0.85)"
-                              : T.textMid,
                           }}
                         >
-                          <Check
-                            size={15}
-                            color={highlighted ? T.cyan : T.success}
-                            style={{ flexShrink: 0 }}
-                          />
-                          {f}
+                          <div
+                            style={{
+                              width: 20,
+                              height: 20,
+                              borderRadius: "50%",
+                              background: highlighted
+                                ? "rgba(16,185,129,0.2)"
+                                : (T.successLight ?? "#D1FAE5"),
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              flexShrink: 0,
+                            }}
+                          >
+                            <Check
+                              size={11}
+                              color={T.success}
+                              strokeWidth={3}
+                            />
+                          </div>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              color: highlighted
+                                ? "rgba(255,255,255,0.8)"
+                                : T.textMid,
+                            }}
+                          >
+                            {f}
+                          </span>
                         </div>
                       ))}
                     </div>
+
                     <button
                       onClick={goDemo}
                       style={{
                         width: "100%",
                         padding: "14px 0",
                         borderRadius: 12,
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: 700,
                         cursor: "pointer",
-                        border: "none",
                         background: highlighted ? T.indigo : "transparent",
                         color: highlighted ? "#fff" : T.indigo,
                         border: highlighted ? "none" : `2px solid ${T.indigo}`,
                         transition: "all 0.2s",
                       }}
                       onMouseEnter={(e) => {
-                        if (!highlighted) {
-                          e.currentTarget.style.background = T.indigoPale;
-                        } else {
-                          e.currentTarget.style.opacity = "0.9";
-                        }
+                        e.currentTarget.style.opacity = "0.88";
                       }}
                       onMouseLeave={(e) => {
-                        if (!highlighted) {
-                          e.currentTarget.style.background = "transparent";
-                        } else {
-                          e.currentTarget.style.opacity = "1";
-                        }
+                        e.currentTarget.style.opacity = "1";
                       }}
                     >
                       {cta}
@@ -1382,15 +1353,171 @@ export default function LandingPage() {
               ),
             )}
           </div>
+
+          {/* Pricing note */}
+          <Reveal delay={200}>
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: 14,
+                color: T.textMuted,
+                marginTop: 32,
+                lineHeight: 1.7,
+              }}
+            >
+              All plans include free onboarding by our team. No debit card
+              required to start. Cancel anytime.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      {/* ════════════════════════════════════
-          FINAL CTA
-      ════════════════════════════════════ */}
+      {/* ── ABOUT ── */}
+      <section
+        id="about"
+        style={{
+          background: `linear-gradient(135deg,${T.navy},${T.navyMid})`,
+          padding: "100px 1.5rem",
+        }}
+      >
+        <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+          <Reveal>
+            <div style={{ textAlign: "center", marginBottom: 64 }}>
+              {/* Logo in about section */}
+              {/* <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginBottom: 28,
+                }}
+              >
+                <img
+                  src={logoImg}
+                  alt="BantaHR"
+                  style={{ height: 56, width: "auto", objectFit: "contain" }}
+                />
+              </div> */}
+              <div style={{ marginBottom: 16 }}>
+                <BantaHRLogo variant="light" size="md" />
+              </div>
+              <h2
+                style={{
+                  fontFamily: "Sora,sans-serif",
+                  fontSize: "clamp(1.8rem,3.5vw,2.6rem)",
+                  fontWeight: 800,
+                  letterSpacing: "-0.8px",
+                  color: "#fff",
+                  margin: "0 0 20px",
+                }}
+              >
+                Why We Built BantaHR
+              </h2>
+              <p
+                style={{
+                  fontSize: 17,
+                  color: "rgba(255,255,255,0.7)",
+                  maxWidth: 680,
+                  margin: "0 auto",
+                  lineHeight: 1.8,
+                }}
+              >
+                Nigerian and African businesses deserve HR software built for
+                their reality — not adapted from tools designed for Silicon
+                Valley. We built BantaHR from the ground up for local payroll
+                laws, local compliance requirements, and the way African teams
+                actually work.
+              </p>
+            </div>
+          </Reveal>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
+              gap: 24,
+            }}
+          >
+            {[
+              {
+                icon: Shield,
+                title: "Security First",
+                desc: "Bank-grade encryption, NDPR compliance, and role-based access control keep your sensitive employee data locked tight.",
+                color: T.cyan,
+              },
+              {
+                icon: Globe,
+                title: "Built for Africa",
+                desc: "Nigerian PAYE, pension fund deductions, NHF, and NSITF are built in — not bolt-ons. We know local compliance because we live it.",
+                color: "#F59E0B",
+              },
+              {
+                icon: Users,
+                title: "People Obsessed",
+                desc: "Every feature is designed around the employee experience — not just HR admin efficiency. Happy employees, better retention.",
+                color: T.success,
+              },
+              {
+                icon: Zap,
+                title: "Always Improving",
+                desc: "We ship updates every two weeks based on customer feedback. If you need a feature, tell us — it's probably already on the roadmap.",
+                color: "#EC4899",
+              },
+            ].map(({ icon: Icon, title, desc, color }, i) => (
+              <Reveal key={title} delay={i * 70}>
+                <div
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    borderRadius: 20,
+                    padding: "28px 24px",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 14,
+                      background: color + "20",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: 16,
+                    }}
+                  >
+                    <Icon size={22} color={color} />
+                  </div>
+                  <h3
+                    style={{
+                      fontFamily: "Sora,sans-serif",
+                      fontSize: 17,
+                      fontWeight: 700,
+                      color: "#fff",
+                      margin: "0 0 8px",
+                    }}
+                  >
+                    {title}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: 14,
+                      color: "rgba(255,255,255,0.6)",
+                      lineHeight: 1.7,
+                      margin: 0,
+                    }}
+                  >
+                    {desc}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FINAL CTA ── */}
       <section
         style={{
-          background: `linear-gradient(135deg, ${T.indigo}, #6366F1, ${T.cyan})`,
+          background: `linear-gradient(135deg,${T.indigo},#6366F1,${T.cyan})`,
           padding: "100px 1.5rem",
           textAlign: "center",
         }}
@@ -1418,7 +1545,7 @@ export default function LandingPage() {
                 lineHeight: 1.7,
               }}
             >
-              Join 500+ companies using HRISCloud to build happier, more
+              Join 500+ companies using BantaHR to build happier, more
               productive teams.
             </p>
             <button
@@ -1433,7 +1560,7 @@ export default function LandingPage() {
                 fontWeight: 800,
                 cursor: "pointer",
                 boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
-                transition: "transform 0.2s, box-shadow 0.2s",
+                transition: "transform 0.2s,box-shadow 0.2s",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
@@ -1457,57 +1584,34 @@ export default function LandingPage() {
                 marginTop: 16,
               }}
             >
-              No credit card required · Set up in 48 hours
+              No debit card required · Set up in 48 hours · We handle
+              onboarding
             </p>
           </div>
         </Reveal>
       </section>
 
-      {/* ════════════════════════════════════
-          FOOTER
-      ════════════════════════════════════ */}
+      {/* ── FOOTER ── */}
       <footer style={{ background: T.navy, padding: "56px 1.5rem 32px" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
               gap: 40,
               marginBottom: 48,
             }}
           >
             <div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  marginBottom: 16,
-                }}
-              >
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 8,
-                    background: T.indigo,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Shield size={16} color="#fff" />
-                </div>
-                <span
-                  style={{
-                    fontFamily: "Sora,sans-serif",
-                    fontWeight: 700,
-                    fontSize: 16,
-                    color: "#fff",
-                  }}
-                >
-                  HRISCloud
-                </span>
+              {/* <div style={{ marginBottom: 16 }}>
+                <img
+                  src={logoImg}
+                  alt="BantaHR"
+                  style={{ height: 40, width: "auto", objectFit: "contain" }}
+                />
+              </div> */}
+              <div style={{ marginBottom: 16 }}>
+                <BantaHRLogo variant="light" size="md" />
               </div>
               <p
                 style={{
@@ -1593,7 +1697,7 @@ export default function LandingPage() {
                 margin: 0,
               }}
             >
-              © {new Date().getFullYear()} HRISCloud Ltd. All rights reserved.
+              © {new Date().getFullYear()} BantaHR Ltd. All rights reserved.
             </p>
             <p
               style={{
@@ -1612,16 +1716,13 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* Responsive CSS */}
       <style>{`
         @media (max-width: 768px) {
           .desktop-nav { display: none !important; }
-          .desktop-login { display: none !important; }
           .mobile-menu-btn { display: flex !important; }
         }
         @media (min-width: 769px) {
           .mobile-menu-btn { display: none !important; }
-          .desktop-login { display: block !important; }
         }
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }

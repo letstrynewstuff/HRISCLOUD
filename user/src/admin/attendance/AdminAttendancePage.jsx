@@ -1,7 +1,7 @@
 // src/admin/attendance/AdminAttendancePage.jsx
 import { useState, useEffect } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSideNavbar from "../AdminSideNavbar";
 import { Clock, Search, Menu } from "lucide-react";
 import AttendanceLog from "./AttendanceLog";
 import AttendanceCorrections from "./AttendanceCorrections";
@@ -44,12 +44,12 @@ export default function AdminAttendancePage() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
-        <AdminSideNavbar
+        {/* <AdminSideNavbar
           sidebarOpen={sidebarOpen}
           collapsed={sidebarCollapsed}
           setCollapsed={setSidebarCollapsed}
           pendingApprovals={0}
-        />
+        /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}

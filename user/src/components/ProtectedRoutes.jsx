@@ -1,12 +1,3 @@
-// import { Navigate } from "react-router-dom";
-
-// const ProtectedRoute = ({ children }) => {
-//   const isAuth = true; // replace with real auth
-
-//   return isAuth ? children : <Navigate to="/" />;
-// };
-
-// export default ProtectedRoute;
 
 
 

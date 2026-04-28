@@ -8,7 +8,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import SideNavbar from "../components/sideNavbar";
+// import SideNavbar from "../components/SideNavbar";
 import {
   Plane,
   Heart,
@@ -465,7 +465,7 @@ export default function LeavePage() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
-        <SideNavbar
+        {/* <SideNavbar
           sidebarOpen={sidebarOpen}
           COLORS={C}
           EMPLOYEE={{
@@ -475,7 +475,7 @@ export default function LeavePage() {
             initials,
             id: displayId,
           }}
-        />
+        /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* ── TOP NAV ── */}

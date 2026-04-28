@@ -6,7 +6,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSideNavbar from "../AdminSideNavbar";
 import { useAuth } from "../../components/AuthContext";
 import {
   getEmployeeById,
@@ -1031,13 +1031,13 @@ export default function EmployeeProfile() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
-        <AdminSideNavbar
+        {/* <AdminSideNavbar
           sidebarOpen={sidebarOpen}
           collapsed={collapsed}
           setCollapsed={setCollapsed}
           ADMIN={adminUser}
           pendingApprovals={0}
-        />
+        /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}

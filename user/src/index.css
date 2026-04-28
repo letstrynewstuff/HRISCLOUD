@@ -2,13 +2,35 @@
 /* src/index.css */
 
 
-@import "tailwindcss";
+/* @import "tailwindcss";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap');
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+} */
+
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+
 
 @keyframes shimmer {
   0% { background-position: 200% 0 }
@@ -212,3 +234,4 @@
 .group:hover .nav-tooltip {
   opacity: 1;
 }
+

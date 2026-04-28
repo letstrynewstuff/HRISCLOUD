@@ -2,7 +2,7 @@
 // Zero mock data — all state driven by the real API.
 
 import { useState, useEffect, useCallback } from "react";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSideNavbar from "../AdminSideNavbar";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Building2,
@@ -680,13 +680,13 @@ export default function DepartmentsPage() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
-        <AdminSideNavbar
+        {/* <AdminSideNavbar
           sidebarOpen={sidebarOpen}
           collapsed={sidebarCollapsed}
           setCollapsed={setSidebarCollapsed}
           ADMIN={ADMIN}
           pendingApprovals={7}
-        />
+        /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* TOP BAR */}

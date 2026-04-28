@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSideNavbar from "../AdminSideNavbar";
 import { GraduationCap, Search, Menu } from "lucide-react";
 import TrainingDashboard from "./TrainingDashboard";
 import TrainingCatalog from "./TrainingCatalog";
@@ -67,13 +67,13 @@ export default function AdminTrainingPage() {
       style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
     >
       <div className="flex h-screen overflow-hidden">
-        <AdminSideNavbar
+        {/* <AdminSideNavbar
           sidebarOpen={sidebarOpen}
           collapsed={sidebarCollapsed}
           setCollapsed={setSidebarCollapsed}
           ADMIN={ADMIN}
           pendingApprovals={8}
-        />
+        /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* ── Top Header ── */}

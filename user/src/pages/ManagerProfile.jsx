@@ -6,7 +6,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import SideNavbar from "../components/sideNavbar";
+// import SideNavbar from "../components/SideNavbar";
 import { useAuth } from "../components/AuthContext";
 import { getEmployees, getEmployeeById } from "../api/service/employeeApi";
 import { attendanceApi } from "../api/service/attendanceApi";
@@ -1520,7 +1520,7 @@ export default function ManagerProfile() {
     >
       <style>{`@keyframes mgr-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-        <SideNavbar sidebarOpen={sidebarOpen} />
+        {/* <SideNavbar sidebarOpen={sidebarOpen} /> */}
 
         <div
           style={{

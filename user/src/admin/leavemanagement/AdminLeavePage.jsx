@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSideNavbar from "../AdminSideNavbar";
 import Loader from "../../components/Loader";
 import C from "../../styles/colors";
 import { leaveApi } from "../../api/service/leaveApi";
@@ -118,13 +118,13 @@ export default function AdminLeavePage() {
     >
       <div className="flex h-screen overflow-hidden">
         {/* ── Sidebar ── */}
-        <AdminSideNavbar
+        {/* <AdminSideNavbar
           sidebarOpen={sidebarOpen}
           collapsed={sidebarCollapsed}
           setCollapsed={setSidebarCollapsed}
           admin={admin}
           pendingApprovals={pendingCount}
-        />
+        /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* ── Top Bar ── */}

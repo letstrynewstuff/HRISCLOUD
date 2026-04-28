@@ -5,7 +5,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSideNavbar from "../AdminSideNavbar";
 import {
   Megaphone,
   Bell,
@@ -660,12 +660,12 @@ export default function AnnouncementsCreate() {
       className="flex h-screen overflow-hidden"
       style={{ background: C.bg, fontFamily: "Sora, sans-serif" }}
     >
-      <AdminSideNavbar
+      {/* <AdminSideNavbar
         sidebarOpen={sidebarOpen}
         collapsed={sidebarCollapsed}
         setCollapsed={setSidebarCollapsed}
         ADMIN={ADMIN}
-      />
+      /> */}
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}

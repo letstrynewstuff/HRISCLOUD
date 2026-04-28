@@ -6,8 +6,8 @@
 // Wired to: /auth/me, /leave/requests/me, /leave/balances/me, /leave/policies
 
 import { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import SideNavbar from "../components/sideNavbar";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+// import SideNavbar from "../components/SideNavbar";
 import {
   FileText, Search, Menu, Filter, RefreshCw, AlertCircle,
   CheckCircle2, XCircle, Clock, Calendar, ChevronRight,
@@ -64,9 +64,9 @@ function RequestDetailModal({ req, onClose }) {
   const meta = getMeta(req.leave_type);
   return (
     <>
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      <Motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={onClose} />
-      <motion.div initial={{ opacity: 0, scale: 0.96, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
+      <Motion.div initial={{ opacity: 0, scale: 0.96, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 20 }} transition={{ duration: 0.3, ease: [0.22,1,0.36,1] }}
         className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md px-4">
         <div className="rounded-2xl bg-white shadow-2xl overflow-hidden" style={{ border: `1px solid ${C.border}` }}>
@@ -121,7 +121,7 @@ function RequestDetailModal({ req, onClose }) {
             )}
           </div>
         </div>
-      </motion.div>
+      </Motion.div>
     </>
   );
 }
@@ -195,20 +195,20 @@ export default function RequestsPage() {
   return (
     <div className="min-h-screen" style={{ background: C.bg, color: C.textPrimary, fontFamily: "'DM Sans','Sora',sans-serif" }}>
       <div className="flex h-screen overflow-hidden">
-        <SideNavbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} COLORS={C}
+        {/* <SideNavbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} COLORS={C}
           EMPLOYEE={{ name: authLoading ? "…" : `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim(),
-            role: profile?.job_role_name ?? "—", department: profile?.department_name ?? "—", initials, id: profile?.employee_code ?? "—" }} />
+            role: profile?.job_role_name ?? "—", department: profile?.department_name ?? "—", initials, id: profile?.employee_code ?? "—" }} /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
           {/* ── TOP NAV ── */}
           <header className="shrink-0 h-[60px] flex items-center px-5 gap-4 z-10"
             style={{ background: "rgba(240,242,248,0.85)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}` }}>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+            <Motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen(p => !p)}
               className="p-2 rounded-xl hidden md:flex" style={{ background: C.surface }}>
               <Menu size={16} color={C.textSecondary} />
-            </motion.button>
+            </Motion.button>
 
             <div className="relative flex-1 max-w-sm">
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" color={C.textMuted} />
@@ -221,15 +221,15 @@ export default function RequestsPage() {
             </div>
 
             <div className="flex items-center gap-2 ml-auto">
-              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+              <Motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                 onClick={loadData} className="p-2 rounded-xl" style={{ background: C.surface, border: `1px solid ${C.border}` }} title="Refresh">
                 <RefreshCw size={14} color={C.textSecondary} />
-              </motion.button>
-              <motion.a href="/leave" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+              </Motion.button>
+              <Motion.a href="/leave" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-white"
                 style={{ background: C.primary, boxShadow: `0 4px 12px ${C.primary}44` }}>
                 <Plus size={13} />New Request
-              </motion.a>
+              </Motion.a>
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}>
                 {authLoading ? "…" : initials}
@@ -240,7 +240,7 @@ export default function RequestsPage() {
           <main className="flex-1 overflow-y-auto p-5 md:p-7 space-y-5">
 
             {/* ── HERO ── */}
-            <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0}
+            <Motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0}
               className="relative rounded-2xl overflow-hidden p-6 md:p-8"
               style={{ background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)", minHeight: 140 }}>
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -270,11 +270,11 @@ export default function RequestsPage() {
                   ))}
                 </div>
               </div>
-            </motion.div>
+            </Motion.div>
 
             {/* ── LEAVE BALANCE CARDS ── */}
             {!loading && balances.length > 0 && (
-              <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.5}
+              <Motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.5}
                 className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {balances.map((bal, i) => {
                   const meta = getMeta(bal.leave_type);
@@ -282,7 +282,7 @@ export default function RequestsPage() {
                   const total     = Number(bal.entitled_days ?? 0);
                   const pct       = total > 0 ? (remaining / total) * 100 : 0;
                   return (
-                    <motion.div key={bal.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                    <Motion.div key={bal.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.04 }}
                       className="rounded-2xl p-3.5 text-center border" style={{ background: C.surface, borderColor: C.border }}>
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center mx-auto mb-2" style={{ background: meta.bg }}>
@@ -295,21 +295,21 @@ export default function RequestsPage() {
                       <div className="mt-1.5 h-1 rounded-full overflow-hidden" style={{ background: C.border }}>
                         <div className="h-full rounded-full" style={{ width: `${pct}%`, background: remaining === 0 ? C.danger : meta.color }} />
                       </div>
-                    </motion.div>
+                    </Motion.div>
                   );
                 })}
-              </motion.div>
+              </Motion.div>
             )}
 
             {/* ── FILTER + SEARCH ── */}
-            <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={1}>
+            <Motion.div variants={fadeUp} initial="hidden" animate="visible" custom={1}>
               <div className="rounded-2xl p-4 border flex flex-wrap items-center gap-3" style={{ background: C.surface, borderColor: C.border }}>
                 <div className="flex items-center gap-2">
                   <Filter size={13} color={C.textMuted} />
                   <span className="text-xs font-semibold" style={{ color: C.textMuted }}>Status:</span>
                 </div>
                 {["All", "Pending", "Approved", "Rejected", "Cancelled"].map(f => (
-                  <motion.button key={f} whileTap={{ scale: 0.95 }} onClick={() => setFilterStatus(f)}
+                  <Motion.button key={f} whileTap={{ scale: 0.95 }} onClick={() => setFilterStatus(f)}
                     className="px-3 py-1 rounded-lg text-xs font-semibold"
                     style={{ background: filterStatus === f ? C.primary : C.surfaceAlt, color: filterStatus === f ? "#fff" : C.textSecondary,
                       border: `1px solid ${filterStatus === f ? C.primary : C.border}` }}>
@@ -320,18 +320,18 @@ export default function RequestsPage() {
                         {stats.pending}
                       </span>
                     )}
-                  </motion.button>
+                  </Motion.button>
                 ))}
                 <span className="ml-auto text-xs" style={{ color: C.textMuted }}>
                   {filtered.length} result{filtered.length !== 1 ? "s" : ""}
                 </span>
               </div>
-            </motion.div>
+            </Motion.div>
 
             {/* ── Error ── */}
             <AnimatePresence>
               {error && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                <Motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   className="flex items-center gap-3 p-4 rounded-2xl"
                   style={{ background: C.dangerLight, border: `1px solid ${C.danger}33` }}>
                   <AlertCircle size={15} color={C.danger} />
@@ -339,7 +339,7 @@ export default function RequestsPage() {
                   <button onClick={loadData} className="text-xs font-semibold flex items-center gap-1" style={{ color: C.danger }}>
                     <RefreshCw size={12} />Retry
                   </button>
-                </motion.div>
+                </Motion.div>
               )}
             </AnimatePresence>
 
@@ -369,11 +369,11 @@ export default function RequestsPage() {
                   {searchQuery ? "Try a different search" : filterStatus !== "All" ? "Try a different filter" : "Apply for leave to see your requests here."}
                 </p>
                 {!searchQuery && filterStatus === "All" && (
-                  <motion.a href="/leave" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  <Motion.a href="/leave" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white mt-2"
                     style={{ background: C.primary }}>
                     <Plus size={14} />Apply for Leave
-                  </motion.a>
+                  </Motion.a>
                 )}
               </div>
             ) : (
@@ -382,7 +382,7 @@ export default function RequestsPage() {
                   {filtered.map((req, i) => {
                     const meta = getMeta(req.leave_type);
                     return (
-                      <motion.div key={req.id}
+                      <Motion.div key={req.id}
                         variants={fadeUp} initial="hidden" animate="visible" custom={i}
                         exit={{ opacity: 0, x: -10 }}
                         whileHover={{ y: -1, boxShadow: "0 6px 24px rgba(79,70,229,0.08)" }}
@@ -452,7 +452,7 @@ export default function RequestsPage() {
                             <Eye size={14} color={C.textMuted} className="mt-2 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </div>
-                      </motion.div>
+                      </Motion.div>
                     );
                   })}
                 </AnimatePresence>
@@ -461,19 +461,19 @@ export default function RequestsPage() {
 
             {/* ── New request CTA ── */}
             {!loading && requests.length > 0 && (
-              <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={filtered.length + 1}>
+              <Motion.div variants={fadeUp} initial="hidden" animate="visible" custom={filtered.length + 1}>
                 <div className="rounded-2xl p-5 border text-center" style={{ background: C.surface, borderColor: C.border }}>
                   <p className="text-sm font-semibold mb-1" style={{ color: C.textPrimary }}>Need more time off?</p>
                   <p className="text-xs mb-4" style={{ color: C.textMuted }}>
                     You have {balances.reduce((s,b) => s + Number(b.remaining_days ?? 0), 0)} days available across all leave types.
                   </p>
-                  <motion.a href="/leave" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                  <Motion.a href="/leave" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                     className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
                     style={{ background: C.primary }}>
                     <Plus size={14} />Apply for Leave
-                  </motion.a>
+                  </Motion.a>
                 </div>
-              </motion.div>
+              </Motion.div>
             )}
 
             <div className="h-4" />

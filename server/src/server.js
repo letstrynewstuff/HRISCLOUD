@@ -26,12 +26,14 @@
 
 // src/server.js
 import dotenv from "dotenv";
-dotenv.config();
+
 
 import { createServer } from "http"; // Add this
 import { Server } from "socket.io";  // Add this
 import app from "./app.js";
 import { db } from "./config/db.js";
+
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 

@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import SideNavbar from "../components/sideNavbar";
+// import SideNavbar from "../components/SideNavbar";
 import {
   BookOpen, Bell, Search, Menu, Award, CheckCircle2,
   Clock, ChevronRight, Download, AlertTriangle,
@@ -214,7 +214,7 @@ export default function TrainingPage() {
   return (
     <div className="min-h-screen" style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}>
       <div className="flex h-screen overflow-hidden">
-        <SideNavbar sidebarOpen={sidebarOpen} employee={employee} />
+        {/* <SideNavbar sidebarOpen={sidebarOpen} employee={employee} /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Header */}
@@ -590,3 +590,4 @@ export default function TrainingPage() {
     </div>
   );
 }
+

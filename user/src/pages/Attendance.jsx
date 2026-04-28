@@ -8,7 +8,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import SideNavbar from "../components/SideNavbar";
+// import SideNavbar from "../components/SideNavbar";
 import { useAuth } from "../components/AuthContext";
 import { attendanceApi } from "../api/service/attendanceApi";
 import {
@@ -374,7 +374,7 @@ export default function AttendancePage() {
     >
       <style>{`@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
       <div className="flex h-screen overflow-hidden">
-        <SideNavbar sidebarOpen={sidebarOpen} />
+        {/* <SideNavbar sidebarOpen={sidebarOpen} /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* ── TOP NAV ── */}
