@@ -5,9 +5,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 // import AdminSideNavbar from "../AdminSideNavbar";
-import { useAuth } from "../../components/AuthContext";
+// import { useAuth } from "../../components/AuthContext";
 import C from "../../styles/colors";
 import API from "../../api/axios";
 import {
@@ -154,7 +154,7 @@ function DetailModal({ req, onApprove, onReject, onClose }) {
     accountName: "Account Name",
     avatar: "Profile Photo",
     bio: "Bio",
-    phone: "Phone",
+    // phone: "Phone",
   };
 
   const handleApprove = async () => {
@@ -461,11 +461,11 @@ function DetailModal({ req, onApprove, onReject, onClose }) {
 
 // ════════════════════════════ MAIN ════════════════════════════
 export default function ProfileChangeRequests() {
-  const navigate = useNavigate();
-  const { employee: adminUser } = useAuth();
+  // const navigate = useNavigate();
+  // const { employee: adminUser } = useAuth();
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [collapsed, setCollapsed] = useState(false);
+  // const [sidebarOpen, setSidebarOpen] = useState(true);
+  // const [collapsed, setCollapsed] = useState(false);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -554,7 +554,7 @@ export default function ProfileChangeRequests() {
             <Motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setSidebarOpen((p) => !p)}
+              // onClick={() => setSidebarOpen((p) => !p)}
               className="p-2 rounded-xl hidden md:flex"
               style={{
                 background: C.surface,

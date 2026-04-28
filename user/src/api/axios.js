@@ -84,12 +84,99 @@
 
 // export default API;
 
+// import axios from "axios";
+
+// // ─── Base URL ────────────────────────────────────────────────
+// // Uses Vite env in production, falls back to localhost in dev
+// const BASE_URL =
+//   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+
+// // ─── Axios Instance ──────────────────────────────────────────
+// const API = axios.create({
+//   baseURL: BASE_URL,
+//   timeout: 15000,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
+
+// // ─── Request Interceptor ─────────────────────────────────────
+// // Attach access token to every request
+// API.interceptors.request.use(
+//   (config) => {
+//     const token = localStorage.getItem("accessToken");
+
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+
+//     return config;
+//   },
+//   (error) => Promise.reject(error),
+// );
+
+// // ─── Response Interceptor ────────────────────────────────────
+// // Auto refresh token on 401
+// API.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     const originalRequest = error.config;
+
+//     // Prevent infinite retry loop
+//     if (error.response?.status === 401 && !originalRequest._retry) {
+//       originalRequest._retry = true;
+
+//       try {
+//         const refreshToken = localStorage.getItem("refreshToken");
+
+//         if (!refreshToken) {
+//           throw new Error("No refresh token found");
+//         }
+
+//         // Request new tokens
+//         const { data } = await axios.post(`${BASE_URL}/auth/refresh`, {
+//           refreshToken,
+//         });
+
+//         // Save new tokens
+//         localStorage.setItem("accessToken", data.accessToken);
+//         localStorage.setItem("refreshToken", data.refreshToken);
+
+//         // Retry original request with new token
+//         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+//         return API(originalRequest);
+//       } catch (err) {
+//         console.error("Session expired, logging out...", err);
+
+//         localStorage.clear();
+//         window.location.href = "/login";
+
+//         return Promise.reject(err);
+//       }
+//     }
+
+//     // Network error handling
+//     if (!error.response) {
+//       return Promise.reject({
+//         message: "Network error. Please check your connection.",
+//       });
+//     }
+
+//     return Promise.reject(error);
+//   },
+// );
+
+// export default API;
+
 import axios from "axios";
 
 // ─── Base URL ────────────────────────────────────────────────
-// Uses Vite env in production, falls back to localhost in dev
+// const BASE_URL =
+//   import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
 const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api";
+  import.meta.env.MODE === "development"
+    ? "http://localhost:5000/api"
+    : "https://bantahr.onrender.com";
 
 // ─── Axios Instance ──────────────────────────────────────────
 const API = axios.create({
@@ -101,7 +188,6 @@ const API = axios.create({
 });
 
 // ─── Request Interceptor ─────────────────────────────────────
-// Attach access token to every request
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
@@ -116,13 +202,12 @@ API.interceptors.request.use(
 );
 
 // ─── Response Interceptor ────────────────────────────────────
-// Auto refresh token on 401
 API.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Prevent infinite retry loop
+    // ─── Handle 401 (token expired) ───────────────────────────
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -133,7 +218,7 @@ API.interceptors.response.use(
           throw new Error("No refresh token found");
         }
 
-        // Request new tokens
+        // Get new tokens
         const { data } = await axios.post(`${BASE_URL}/auth/refresh`, {
           refreshToken,
         });
@@ -142,20 +227,21 @@ API.interceptors.response.use(
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
 
-        // Retry original request with new token
+        // Retry original request
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return API(originalRequest);
       } catch (err) {
         console.error("Session expired, logging out...", err);
 
+        // ─── SAFE GLOBAL LOGOUT (NO NAVIGATION HERE) ─────────
         localStorage.clear();
-        window.location.href = "/login";
+        window.dispatchEvent(new Event("auth:logout"));
 
         return Promise.reject(err);
       }
     }
 
-    // Network error handling
+    // ─── Network error handling ───────────────────────────────
     if (!error.response) {
       return Promise.reject({
         message: "Network error. Please check your connection.",

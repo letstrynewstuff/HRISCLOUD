@@ -22,7 +22,7 @@ import {
   Lock,
 } from "lucide-react";
 import { settingsApi } from "../api/service/settingsApi";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../components/useAuth";
 
 const C = {
   bg: "#F0F2F8",

@@ -15,7 +15,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 // import SideNavbar from "../components/SideNavbar";
 import Loader from "../components/Loader";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../components/useAuth";
 import { chatApi } from "../api/service/chatApi";
 import { getEmployees } from "../api/service/employeeApi";
 import {
@@ -645,7 +645,6 @@ export default function ChatPage() {
 
   //   setSending(true);
   //   const cid = convId;
-    
 
   //   // Optimistic bubble
   //   const tempMsg = {
@@ -694,74 +693,74 @@ export default function ChatPage() {
   //     setSending(false);
   //   }
   // };
-const handleSend = async () => {
-  const text = inputText.trim();
-  if (!text && !pendingFile) return;
-  if (!active) return;
+  const handleSend = async () => {
+    const text = inputText.trim();
+    if (!text && !pendingFile) return;
+    if (!active) return;
 
-  const channelId =
-    active.type === "channel" ? active.id : (active.channelId ?? active.id);
+    const channelId =
+      active.type === "channel" ? active.id : (active.channelId ?? active.id);
 
-  if (!channelId) {
-    console.error("No channelId found");
-    return;
-  }
-
-  setSending(true);
-  const cid = convId;
-
-  const tempMsg = {
-    _tempId: `temp-${Date.now()}`,
-    senderId: myEmployeeId,
-    senderName: myName,
-    body: text,
-    contentType: pendingFile ? "document" : "text",
-    createdAt: new Date().toISOString(),
-  };
-
-  setMessages((prev) => ({
-    ...prev,
-    [cid]: [...(prev[cid] ?? []), tempMsg],
-  }));
-
-  const savedText = text;
-  const savedFile = pendingFile;
-
-  setInputText("");
-  setPendingFile(null);
-
-  try {
-    let res;
-
-    if (savedFile?.file) {
-      res = await chatApi.sendDocument(channelId, savedFile.file, savedText);
-    } else {
-      res = await chatApi.sendText(channelId, savedText);
+    if (!channelId) {
+      console.error("No channelId found");
+      return;
     }
 
-    const realMessage = res.message ?? res;
+    setSending(true);
+    const cid = convId;
 
-    setMessages((prev) => {
-      const list = prev[cid] ?? [];
-      const idx = [...list].reverse().findIndex((m) => m._tempId);
-
-      if (idx === -1) return { ...prev, [cid]: [...list, realMessage] };
-
-      const updated = [...list];
-      updated[list.length - 1 - idx] = realMessage;
-      return { ...prev, [cid]: updated };
-    });
-  } catch (err) {
-    console.error("SEND ERROR:", err.response?.data || err);
+    const tempMsg = {
+      _tempId: `temp-${Date.now()}`,
+      senderId: myEmployeeId,
+      senderName: myName,
+      body: text,
+      contentType: pendingFile ? "document" : "text",
+      createdAt: new Date().toISOString(),
+    };
 
     setMessages((prev) => ({
       ...prev,
-      [cid]: (prev[cid] ?? []).filter((m) => !m._tempId),
+      [cid]: [...(prev[cid] ?? []), tempMsg],
     }));
-  } finally {
-    setSending(false);
-  }
-};
+
+    const savedText = text;
+    const savedFile = pendingFile;
+
+    setInputText("");
+    setPendingFile(null);
+
+    try {
+      let res;
+
+      if (savedFile?.file) {
+        res = await chatApi.sendDocument(channelId, savedFile.file, savedText);
+      } else {
+        res = await chatApi.sendText(channelId, savedText);
+      }
+
+      const realMessage = res.message ?? res;
+
+      setMessages((prev) => {
+        const list = prev[cid] ?? [];
+        const idx = [...list].reverse().findIndex((m) => m._tempId);
+
+        if (idx === -1) return { ...prev, [cid]: [...list, realMessage] };
+
+        const updated = [...list];
+        updated[list.length - 1 - idx] = realMessage;
+        return { ...prev, [cid]: updated };
+      });
+    } catch (err) {
+      console.error("SEND ERROR:", err.response?.data || err);
+
+      setMessages((prev) => ({
+        ...prev,
+        [cid]: (prev[cid] ?? []).filter((m) => !m._tempId),
+      }));
+    } finally {
+      setSending(false);
+    }
+  };
   /* ── File select ── */
   const handleFileSelect = (e) => {
     const file = e.target.files?.[0];

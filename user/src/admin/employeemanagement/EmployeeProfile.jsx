@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 // import AdminSideNavbar from "../AdminSideNavbar";
-import { useAuth } from "../../components/AuthContext";
+import { useAuth } from "../../components/useAuth";
 import {
   getEmployeeById,
   getEmployeeHistory,

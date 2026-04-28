@@ -4,7 +4,7 @@ import { motion as Motion, AnimatePresence } from "framer-motion";
 // import AdminSideNavbar from "../AdminSideNavbar";
 import { DollarSign, Search, Menu } from "lucide-react";
 import { PayrollProvider } from "../../components/PayrollContext";
-import { useAuth } from "../../components/AuthContext";
+import { useAuth } from "../../components/useAuth";
 import C from "../../styles/colors";
 
 import PayrollDashboard from "./PayrollDashboard";

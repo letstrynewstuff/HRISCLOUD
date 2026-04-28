@@ -6,7 +6,8 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useState } from "react";
-import { motion as Motion , AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import BantaHRLogo from "../styles/BantaHRLogo";
 import {
   User,
   Mail,
@@ -367,31 +368,7 @@ function LeftPanel() {
 
       {/* Logo */}
       <div className="relative z-10 px-10 pt-10">
-        <div className="flex items-center gap-3 mb-2">
-          <div
-            className="w-10 h-10 rounded-2xl flex items-center justify-center"
-            style={{
-              background: "linear-gradient(135deg,#6366F1,#4F46E5)",
-              boxShadow: `0 4px 16px ${C.navyGlow}`,
-            }}
-          >
-            <Shield size={18} color="#fff" />
-          </div>
-          <div>
-            <p
-              className="text-white font-bold text-lg leading-none"
-              style={{ fontFamily: "Sora, sans-serif" }}
-            >
-              HRISCloud
-            </p>
-            <p
-              className="text-[11px] font-semibold uppercase tracking-widest"
-              style={{ color: C.accent }}
-            >
-              Human Resources
-            </p>
-          </div>
-        </div>
+        <BantaHRLogo variant="light" size="lg" />
       </div>
 
       {/* Main copy */}
@@ -494,7 +471,7 @@ function LeftPanel() {
 
       <div className="relative z-10 px-10 pb-8">
         <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.2)" }}>
-          © 2025 HRISCloud. All rights reserved.
+          © 2025 BantaHR. All rights reserved.
         </p>
       </div>
     </div>
@@ -587,45 +564,44 @@ export default function Register() {
     setErrors({});
   };
 
-//   const handleSubmit = async () => {
-//     const e = validate(3);
-//     setErrors(e);
-//     if (Object.keys(e).length) return;
-//     setLoading(true);
-//     await new Promise((r) => setTimeout(r, 2200));
-//     setLoading(false);
-//     setSubmitted(true);
-//   };
-const handleSubmit = async () => {
-  const e = validate(3);
-  setErrors(e);
-  if (Object.keys(e).length) return;
+  //   const handleSubmit = async () => {
+  //     const e = validate(3);
+  //     setErrors(e);
+  //     if (Object.keys(e).length) return;
+  //     setLoading(true);
+  //     await new Promise((r) => setTimeout(r, 2200));
+  //     setLoading(false);
+  //     setSubmitted(true);
+  //   };
+  const handleSubmit = async () => {
+    const e = validate(3);
+    setErrors(e);
+    if (Object.keys(e).length) return;
 
-  setLoading(true);
-  try {
-    const data = await authApi.registerCompany({
-      companyName: form.company,
-      companySlug: form.company
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^a-z0-9-]/g, ""),
-      firstName: form.firstName,
-      lastName: form.lastName,
-      email: form.email,
-      password: form.password,
-    });
-    localStorage.setItem("accessToken", data.accessToken);
-    localStorage.setItem("refreshToken", data.refreshToken);
-    setSubmitted(true);
-  } catch (err) {
-    setErrors({
-      general: err.message ?? "Registration failed. Please try again.",
-    });
-  } finally {
-    setLoading(false);
-  }
-};
-
+    setLoading(true);
+    try {
+      const data = await authApi.registerCompany({
+        companyName: form.company,
+        companySlug: form.company
+          .toLowerCase()
+          .replace(/\s+/g, "-")
+          .replace(/[^a-z0-9-]/g, ""),
+        firstName: form.firstName,
+        lastName: form.lastName,
+        email: form.email,
+        password: form.password,
+      });
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      setSubmitted(true);
+    } catch (err) {
+      setErrors({
+        general: err.message ?? "Registration failed. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   /* ─── Photo upload ─── */
   const handlePhoto = (e) => {
@@ -1092,7 +1068,7 @@ const handleSubmit = async () => {
           type="email"
           value={form.managerEmail}
           onChange={(e) => set("managerEmail", e.target.value)}
-          placeholder="manager@hriscloud.ng"
+          placeholder="manager@bantahr.ng"
           icon={Mail}
           hint="Your direct line manager — helps HR route your request"
         />
@@ -1359,7 +1335,7 @@ const handleSubmit = async () => {
               className="font-bold text-lg"
               style={{ color: C.textPrimary }}
             >
-              HRISCloud
+              BantaHR
             </span>
           </div>
 

@@ -294,13 +294,13 @@
 //   );
 // }
 
-
 // src/admin/AdminSideNavbar.jsx
 
 import { useState } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../components/AuthContext"; 
+import { useAuth } from "../components/useAuth";
+import  BantaHRLogo  from "../styles/BantaHRLogo";
 
 import {
   Shield,
@@ -336,16 +336,48 @@ const T = {
 /* ─── Nav Items ─── */
 const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/admin/dashboard" },
-  { label: "Employees", icon: Users, path: "/admin/employeemanagement/admin-employees" },
-  { label: "Departments", icon: Building2, path: "/admin/employeemanagement/admin-departments" },
-  { label: "Job Roles", icon: UserCog, path: "/admin/employeemanagement/admin-jobroles" },
-  { label: "Approvals", icon: ClipboardCheck, path: "/admin/employeemanagement/admin-approvals" },
+  {
+    label: "Employees",
+    icon: Users,
+    path: "/admin/employeemanagement/admin-employees",
+  },
+  {
+    label: "Departments",
+    icon: Building2,
+    path: "/admin/employeemanagement/admin-departments",
+  },
+  {
+    label: "Job Roles",
+    icon: UserCog,
+    path: "/admin/employeemanagement/admin-jobroles",
+  },
+  {
+    label: "Approvals",
+    icon: ClipboardCheck,
+    path: "/admin/employeemanagement/admin-approvals",
+  },
   { label: "Payroll", icon: DollarSign, path: "/admin/payroll/admin-payroll" },
-  { label: "Attendance", icon: Clock, path: "/admin/attendance/admin-attendance" },
+  {
+    label: "Attendance",
+    icon: Clock,
+    path: "/admin/attendance/admin-attendance",
+  },
   { label: "Leave", icon: Plane, path: "/admin/leave-management" },
-  { label: "Training", icon: GraduationCap, path: "/admin/training/admin-training" },
-  { label: "Performance", icon: TrendingUp, path: "/admin/performance/admin-performance" },
-  { label: "Documents", icon: FolderOpen, path: "/admin/documents/admin-documents" },
+  {
+    label: "Training",
+    icon: GraduationCap,
+    path: "/admin/training/admin-training",
+  },
+  {
+    label: "Performance",
+    icon: TrendingUp,
+    path: "/admin/performance/admin-performance",
+  },
+  {
+    label: "Documents",
+    icon: FolderOpen,
+    path: "/admin/documents/admin-documents",
+  },
   { label: "Benefits", icon: Heart, path: "/admin/benefits/admin-benefits" },
   { label: "Reports", icon: BarChart2, path: "/admin/reports/admin-reports" },
   { label: "Announcements", icon: Bell, path: "/admin/announcements" },
@@ -397,16 +429,11 @@ export default function AdminSideNavbar({
   const firstName = admin.first_name || admin.firstName || "";
   const lastName = admin.last_name || admin.lastName || "";
 
-  const name =
-    `${firstName} ${lastName}`.trim() || admin.email || "Admin";
+  const name = `${firstName} ${lastName}`.trim() || admin.email || "Admin";
 
-  const initials =
-    (firstName[0] || "A") + (lastName[0] || "D");
+  const initials = (firstName[0] || "A") + (lastName[0] || "D");
 
-  const role =
-    admin.role ||
-    admin.job_role_name ||
-    "Administrator";
+  const role = admin.role || admin.job_role_name || "Administrator";
 
   /* ─── LOGOUT ─── */
   const handleLogout = async () => {
@@ -438,13 +465,14 @@ export default function AdminSideNavbar({
         >
           {/* ─── HEADER ─── */}
           <div className="px-4 pt-6 pb-5 flex items-center gap-3">
-            <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center">
+            {/* <div className="w-8 h-8 bg-indigo-600 rounded-xl flex items-center justify-center">
               <Shield size={16} color="#fff" />
-            </div>
+            </div> */}
 
             {!collapsed && (
               <div>
-                <p className="text-white font-bold text-sm">HRISCloud</p>
+                {/* <p className="text-white font-bold text-sm">BantaHR</p> */}
+                <BantaHRLogo variant="light" size="md" />
                 <p className="text-xs text-indigo-400">Admin Panel</p>
               </div>
             )}
@@ -475,9 +503,7 @@ export default function AdminSideNavbar({
                 collapsed={collapsed}
                 onClick={() => setSidebarOpen?.(false)}
                 badgeCount={
-                  item.path.includes("approvals")
-                    ? pendingApprovals
-                    : 0
+                  item.path.includes("approvals") ? pendingApprovals : 0
                 }
               />
             ))}
@@ -528,9 +554,7 @@ export default function AdminSideNavbar({
                   <p className="font-semibold truncate">
                     {loading ? "Loading..." : name}
                   </p>
-                  <p className="text-indigo-400 truncate capitalize">
-                    {role}
-                  </p>
+                  <p className="text-indigo-400 truncate capitalize">{role}</p>
                 </div>
               )}
             </div>

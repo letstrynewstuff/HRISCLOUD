@@ -9,7 +9,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 // import SideNavbar from "../components/SideNavbar";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../components/useAuth";
 import { getMyProfile, requestProfileChange } from "../api/service/employeeApi";
 import { leaveApi } from "../api/service/leaveApi";
 import { documentApi } from "../api/service/documentApi";

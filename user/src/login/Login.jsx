@@ -39,7 +39,6 @@ const panelIn = {
   exit: { opacity: 0, x: -32, transition: { duration: 0.25 } },
 };
 
-
 /* ─── Particle dot component ─── */
 function Particles() {
   const [dots] = useState(() =>
@@ -293,7 +292,7 @@ const LeftPanel = () => (
         </div>
       </div>
     </div> */}
-         <BantaHRLogo variant="light" size="lg" />
+    <BantaHRLogo variant="light" size="lg" />
 
     {/* Hero text */}
     <div className="relative z-10 flex-1 flex flex-col justify-center px-10">
@@ -392,19 +391,18 @@ export default function LoginPage() {
     return () => clearTimeout(t);
   }, [otpRunning, otpTimer]);
 
-
   useEffect(() => {
     if (!loggedIn) return;
 
     const timer = setTimeout(() => {
       if (loggedIn.role === "hr_admin") {
-        window.location.href = "/admin/dashboard"; 
+        window.location.href = "/admin/dashboard";
       } else if (loggedIn.role === "employee") {
-        window.location.href = "/dashboard";       
+        window.location.href = "/dashboard";
       } else {
-        window.location.href = "/";                
+        window.location.href = "/";
       }
-    }, 2000); 
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [loggedIn]);

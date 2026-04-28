@@ -26,7 +26,10 @@
 //       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
 //     },
 //   },
-// ])import js from "@eslint/js";
+// ])
+
+
+import js from "@eslint/js";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import globals from "globals";
@@ -41,7 +44,7 @@ export default [
 
       parserOptions: {
         ecmaFeatures: {
-          jsx: true, // ✅ ENABLE JSX
+          jsx: true,
         },
       },
 
@@ -59,10 +62,11 @@ export default [
 
       // ✅ Ignore capitalized variables like Icon
       "no-unused-vars": [
-        "error",
+        "warn", // 👈 change from "error" to "warn"
         {
-          varsIgnorePattern: "^[A-Z]",
-          argsIgnorePattern: "^[A-Z]",
+          varsIgnorePattern: "^(motion|[A-Z])",
+          argsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
         },
       ],
     },

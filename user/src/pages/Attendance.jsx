@@ -9,7 +9,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 // import SideNavbar from "../components/SideNavbar";
-import { useAuth } from "../components/AuthContext";
+import { useAuth } from "../components/useAuth";
 import { attendanceApi } from "../api/service/attendanceApi";
 import {
   Clock,

@@ -7,6 +7,7 @@
 
 import { useState } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
+import BantaHRLogo from "../styles/BantaHRLogo";
 import {
   Building2,
   Globe,
@@ -247,31 +248,7 @@ function LeftPanel() {
 
       {/* Logo */}
       <div className="relative z-10 px-10 pt-10">
-        <div className="flex items-center gap-3 mb-2">
-          <div
-            className="w-10 h-10 rounded-2xl flex items-center justify-center"
-            style={{
-              background: "linear-gradient(135deg,#6366F1,#4F46E5)",
-              boxShadow: `0 4px 16px ${C.navyGlow}`,
-            }}
-          >
-            <Shield size={18} color="#fff" />
-          </div>
-          <div>
-            <p
-              className="text-white font-bold text-lg leading-none"
-              style={{ fontFamily: "Sora, sans-serif" }}
-            >
-              BantaHR
-            </p>
-            <p
-              className="text-[11px] font-semibold uppercase tracking-widest"
-              style={{ color: C.accent }}
-            >
-              Human Resources
-            </p>
-          </div>
-        </div>
+           <BantaHRLogo variant="dark" size="lg" />
       </div>
 
       {/* Hero copy */}
@@ -379,7 +356,7 @@ function LeftPanel() {
               <strong style={{ color: "rgba(255,255,255,0.75)" }}>
                 hundreds of companies
               </strong>{" "}
-              already managing their teams on HRISCloud.
+              already managing their teams on BantaHR.
             </p>
           </div>
         </Motion.div>
@@ -387,7 +364,7 @@ function LeftPanel() {
 
       <div className="relative z-10 px-10 pb-8">
         <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.2)" }}>
-          © 2025 HRISCloud. All rights reserved.
+          © 2025 BantaHR. All rights reserved.
         </p>
       </div>
     </div>
@@ -549,7 +526,7 @@ export default function CompanyRegister() {
                 className="text-2xl font-bold mb-1"
                 style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
               >
-                Welcome to HRISCloud! 🎉
+                Welcome to BantaHR! 🎉
               </h2>
               <p className="text-sm" style={{ color: C.textMuted }}>
                 Your company workspace has been created. A verification email
@@ -664,7 +641,7 @@ export default function CompanyRegister() {
           icon={Globe}
           hint={
             form.companySlug
-              ? `Your workspace URL: hriscloud.ng/${form.companySlug}`
+              ? `Your workspace URL: bantahr.ng/${form.companySlug}`
               : "Auto-generated from company name"
           }
         />
@@ -1065,7 +1042,7 @@ export default function CompanyRegister() {
         <ReviewRow label="Company Name" value={form.companyName} />
         <ReviewRow
           label="Workspace URL"
-          value={`hriscloud.ng/${form.companySlug}`}
+          value={`Banta.ng/${form.companySlug}`}
         />
         {form.industry && <ReviewRow label="Industry" value={form.industry} />}
         {form.companySize && (
@@ -1159,7 +1136,7 @@ export default function CompanyRegister() {
               className="font-bold text-lg"
               style={{ color: C.textPrimary }}
             >
-              HRISCloud
+              BantaHR
             </span>
           </div>
 
