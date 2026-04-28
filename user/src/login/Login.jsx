@@ -265,33 +265,7 @@ const LeftPanel = () => (
     />
 
     {/* Logo */}
-    {/* <div className="relative z-10 px-10 pt-10">
-      <div className="flex items-center gap-3 mb-3">
-        <div
-          className="w-10 h-10 rounded-2xl flex items-center justify-center"
-          style={{
-            background: "linear-gradient(135deg, #6366F1, #4F46E5)",
-            boxShadow: `0 4px 16px ${C.navyGlow}`,
-          }}
-        >
-          <Shield size={18} color="#fff" />
-        </div>
-        <div>
-          <p
-            className="text-white font-bold text-lg leading-none"
-            style={{ fontFamily: "Sora, sans-serif" }}
-          >
-            HRISCloud
-          </p>
-          <p
-            className="text-[11px] font-semibold uppercase tracking-widest"
-            style={{ color: C.accent }}
-          >
-            Human Resources
-          </p>
-        </div>
-      </div>
-    </div> */}
+   
     <BantaHRLogo variant="light" size="lg" />
 
     {/* Hero text */}
@@ -1132,7 +1106,7 @@ export default function LoginPage() {
             className="font-bold text-lg"
             style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
           >
-            HRISCloud
+            BantaHR
           </span>
         </div>
 
