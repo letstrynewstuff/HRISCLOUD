@@ -1096,18 +1096,7 @@ export default function LoginPage() {
       >
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2.5 mb-8">
-          <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg,#6366F1,#4F46E5)" }}
-          >
-            <Shield size={15} color="#fff" />
-          </div>
-          <span
-            className="font-bold text-lg"
-            style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
-          >
-            BantaHR
-          </span>
+          <BantaHRLogo variant="light" size="lg" />
         </div>
 
         <div className="w-full max-w-sm">
