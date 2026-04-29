@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import AdminSideNavbar from "../AdminSideNavbar";
+// import AdminSdeNavbar from "../AdminSideNavbar";i
 import { motion, AnimatePresence } from "framer-motion";
 // import { createEmployee } from "../../api/service/employeeApi";
 
@@ -255,58 +255,7 @@ export default function AddEmployee() {
   const [errors, setErrors] = useState({});
   const [photoPreview, setPhotoPreview] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchFormDependencies = async () => {
-  //     try {
-  //       // 1. Fetch Departments
-  //       const deptRes = await departmentApi.list();
-  //       setDbDepartments(deptRes.data || deptRes);
-
-  //       // 2. Fetch Grades
-  //       const gradeRes = await gradeApi.list();
-  //       setDbGrades(gradeRes.data || gradeRes);
-
-  //       // 3. Fetch active employees (for Managers)
-  //       const empRes = await getEmployees({ limit: 1000, status: "active" });
-  //       setDbManagers(empRes.employees || empRes.data?.employees || empRes);
-
-  //       // 4. ✨ Fetch Job Roles using your specific API service!
-  //       const roleRes = await listJobRoles();
-  //       // Adjust this depending on if your backend returns { data: [...] } or just [...]
-  //       setDbRoles(roleRes.data || roleRes);
-  //     } catch (err) {
-  //       console.error("Failed to load form dependencies:", err);
-  //     }
-  //   };
-
-  //   fetchFormDependencies();
-  // }, []);
-  // Inside AddEmployee.jsx
-  // useEffect(() => {
-  //   const fetchFormDependencies = async () => {
-  //     try {
-  //       // Use Promise.all to load everything at once - much faster
-  //       const [deptRes, gradeRes, empRes, roleRes] = await Promise.all([
-  //         departmentApi.list(),
-  //         gradeApi.list(),
-  //         getEmployees({ limit: 1000, status: "active" }),
-  //         listJobRoles(),
-  //       ]);
-
-  //       // Check your console to see the structure: console.log(deptRes)
-  //       // We use || [] to ensure .map() never fails
-  //       setDbDepartments(deptRes.data || deptRes || []);
-  //       setDbGrades(gradeRes.data || gradeRes || []);
-  //       setDbManagers(empRes.employees || empRes.data || []);
-  //       setDbRoles(roleRes.data || roleRes || []);
-  //     } catch (err) {
-  //       console.error("Failed to load form dependencies:", err);
-  //     }
-  //   };
-
-  //   fetchFormDependencies();
-  // }, []);
-
+  
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -317,9 +266,7 @@ export default function AddEmployee() {
           getEmployees({ limit: 1000, status: "active" }),
         ]);
 
-        // console.log("Dept Response:", deptRes); // DEBUG: Check this in your browser console!
-
-        // 1. Fix Departments: Check if it's in .data or .departments
+       
         const deptArray =
           deptRes.data ||
           deptRes.departments ||
@@ -426,17 +373,7 @@ export default function AddEmployee() {
       if (!form.gender) errs.gender = "Please select a gender";
       if (!form.location) errs.location = "Please select a location";
     }
-    // if (step === 2) {
-    //   if (!form._deptName) errs.department = "Please select a department";
-    //   if (!form._roleName) errs.role = "Please select a role";
-    //   if (!form.startDate) errs.startDate = "Start date is required";
-    //   if (!form.employmentType)
-    //     errs.employmentType = "Please select employment type";
-    //   if (!form.password)
-    //     errs.password = "Password is required for employee login";
-    //   else if (form.password.length < 6)
-    //     errs.password = "Password must be at least 6 characters";
-    // }
+    
     if (step === 2) {
       // ✨ FIX: Check the actual state keys used by your Select components
       if (!form.departmentId) errs.department = "Please select a department";
@@ -625,13 +562,7 @@ export default function AddEmployee() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
-        <AdminSideNavbar
-          sidebarOpen={sidebarOpen}
-          collapsed={sidebarCollapsed}
-          setCollapsed={setSidebarCollapsed}
-          ADMIN={ADMIN}
-          pendingApprovals={7}
-        />
+      
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Top Bar */}
