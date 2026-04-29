@@ -467,16 +467,7 @@ export default function JobRoles() {
       style={{ background: C.bg, fontFamily: "'DM Sans',sans-serif" }}
     >
       <div className="flex h-screen overflow-hidden">
-        {/* <AdminSideNavbar
-          sidebarOpen={sidebarOpen}
-          collapsed={collapsed}
-          setCollapsed={setCollapsed}
-          ADMIN={{
-            name: user.firstName,
-            role: user.role,
-            initials: user.initials,
-          }}
-        /> */}
+       
 
         <div className="flex-1 flex flex-col overflow-hidden">
           <header className="h-[60px] flex items-center px-5 gap-4 border-b bg-white/80 backdrop-blur-md">

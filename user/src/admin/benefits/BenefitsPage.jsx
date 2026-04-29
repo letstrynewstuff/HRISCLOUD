@@ -635,11 +635,7 @@ export default function AdminBenefitsPage() {
       style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
     >
       <div className="flex h-screen overflow-hidden">
-        {/* <AdminSideNavbar
-          sidebarOpen={sidebarOpen}
-          collapsed={sidebarCollapsed}
-          setCollapsed={setSidebarCollapsed}
-        /> */}
+     
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* TOPBAR */}

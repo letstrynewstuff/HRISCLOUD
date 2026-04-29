@@ -2,16 +2,7 @@
 import { Router } from "express";
 import { body } from "express-validator";
 import { authenticate } from "../middleware/authenticate.js";
-// import {
-//   registerCompany,
-//   login,
-//   refresh,
-//   logout,
-//   forgotPassword,
-//   resetPassword,
-//   verifyEmail,
-//   getMe,
-// } from "../middleware/authenticate.js";
+
 import {
   registerCompany,
   login,
@@ -111,8 +102,8 @@ const resetPasswordRules = [
 router.post("/register-company", registerRules, registerCompany);
 router.post("/login", loginRules, login);
 router.post("/refresh", refresh);
-// router.post("/logout", logout);
-Route: router.post("/logout", authenticate, logout);
+
+router.post("/logout", authenticate, logout);
 router.post("/forgot-password", forgotPasswordRules, forgotPassword);
 router.post("/reset-password", resetPasswordRules, resetPassword);
 router.post("/verify-email", verifyEmail);

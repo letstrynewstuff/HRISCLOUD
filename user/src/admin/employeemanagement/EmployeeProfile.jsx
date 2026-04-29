@@ -6,7 +6,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
-// import AdminSideNavbar from "../AdminSideNavbar";
+
 import { useAuth } from "../../components/useAuth";
 import {
   getEmployeeById,
@@ -947,7 +947,8 @@ function ActionModal({ action, emp, onConfirm, onClose, loading }) {
 
 // ════════════════════════════ MAIN ════════════════════════════
 export default function EmployeeProfile() {
-  const { employeeId } = useParams();
+  // const { employeeId } = useParams();
+  const { id: employeeId } = useParams();
   const navigate = useNavigate();
   const { employee: adminUser } = useAuth();
 

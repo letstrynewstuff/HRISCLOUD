@@ -121,132 +121,11 @@ function buildUpdateSet(data, allowed, startIdx = 1) {
 //   order       — asc | desc  (default asc)
 // Requires: authenticate + requireRole(["hr_admin","super_admin","manager"])
 // ══════════════════════════════════════════════════════════════
-// export async function listEmployees(req, res) {
-//   try {
-//     const { companyId } = req.user;
 
-//     // ── Pagination ──
-//     const page = Math.max(1, parseInt(req.query.page ?? 1, 10));
-//     const limit = Math.min(
-//       100,
-//       Math.max(1, parseInt(req.query.limit ?? 20, 10)),
-//     );
-//     const offset = (page - 1) * limit;
-
-//     // ── Filters ──
-//     const { search, department, status, type, location } = req.query;
-//     const sortField = [
-//       "last_name",
-//       "first_name",
-//       "created_at",
-//       "start_date",
-//       "employee_code",
-//     ].includes(req.query.sort)
-//       ? req.query.sort
-//       : "created_at";
-//     const sortOrder = req.query.order === "asc" ? "ASC" : "DESC";
-
-//     // Build dynamic WHERE clauses
-//     const conditions = ["e.company_id = $1"];
-//     const values = [companyId];
-//     let idx = 2;
-
-//     if (search) {
-//       conditions.push(`(
-//         e.first_name ILIKE $${idx} OR
-//         e.last_name  ILIKE $${idx} OR
-//         e.employee_code ILIKE $${idx} OR
-//         e.personal_email ILIKE $${idx}
-//       )`);
-//       values.push(`%${search}%`);
-//       idx++;
-//     }
-
-//     if (department) {
-//       conditions.push(`e.department_id = $${idx}`);
-//       values.push(department);
-//       idx++;
-//     }
-
-//     if (status) {
-//       conditions.push(`e.employment_status = $${idx}`);
-//       values.push(status);
-//       idx++;
-//     }
-
-//     if (type) {
-//       conditions.push(`e.employment_type = $${idx}`);
-//       values.push(type);
-//       idx++;
-//     }
-
-//     if (location) {
-//       conditions.push(`e.location ILIKE $${idx}`);
-//       values.push(`%${location}%`);
-//       idx++;
-//     }
-
-//     const whereClause = conditions.join(" AND ");
-
-//     // Total count (for pagination meta)
-//     const countResult = await db.query(
-//       `SELECT COUNT(*) AS total
-//        FROM employees e
-//        WHERE ${whereClause}`,
-//       values,
-//     );
-//     const total = parseInt(countResult.rows[0].total, 10);
-
-//     // Paginated data — join departments + job_roles for display names
-//     const dataResult = await db.query(
-//       `SELECT
-//          e.id,
-//          e.employee_code,
-//          e.first_name,
-//          e.last_name,
-//          e.middle_name,
-//          e.phone,
-//          e.personal_email,
-//          e.avatar,
-//          e.employment_type,
-//          e.employment_status,
-//          e.location,
-//          e.start_date,
-//          e.is_onboarded,
-//          e.created_at,
-//          d.name  AS department_name,
-//          jr.title AS job_role_name,
-//          CONCAT(m.first_name, ' ', m.last_name) AS manager_name
-//        FROM employees e
-//        LEFT JOIN departments d  ON d.id  = e.department_id
-//        LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
-//        LEFT JOIN employees   m  ON m.id  = e.manager_id
-//        WHERE ${whereClause}
-//        ORDER BY e.${sortField} ${sortOrder}
-//        LIMIT $${idx} OFFSET $${idx + 1}`,
-//       [...values, limit, offset],
-//     );
-
-//     return res.status(200).json({
-//       data: dataResult.rows,
-//       meta: {
-//         total,
-//         page,
-//         limit,
-//         totalPages: Math.ceil(total / limit),
-//       },
-//     });
-//   } catch (err) {
-//     console.error("listEmployees error:", err);
-//     return res
-//       .status(500)
-//       .json({ message: "Server error fetching employees." });
-//   }
-// }
 
 // export async function listEmployees(req, res) {
 //   try {
-//     const { companyId, isHR, employeeId: managerEmpId } = req.user;
+//     const { userId, companyId, role } = req.user;
 
 //     const page = Math.max(1, parseInt(req.query.page ?? 1, 10));
 //     const limit = Math.min(
@@ -255,69 +134,84 @@ function buildUpdateSet(data, allowed, startIdx = 1) {
 //     );
 //     const offset = (page - 1) * limit;
 
-//     const { search, department, status, type, location } = req.query;
-//     const sortField = [
-//       "last_name",
-//       "first_name",
-//       "created_at",
-//       "start_date",
-//       "employee_code",
-//     ].includes(req.query.sort)
-//       ? req.query.sort
-//       : "created_at";
-//     const sortOrder = req.query.order === "asc" ? "ASC" : "DESC";
+//     // 1. Get the caller's own employee details to know their department/manager
+//     const callerResult = await db.query(
+//       `SELECT id, department_id, manager_id FROM employees WHERE user_id = $1 AND company_id = $2`,
+//       [userId, companyId],
+//     );
 
+//     const caller = callerResult.rows[0];
+//     if (!caller) {
+//       return res.status(404).json({ message: "Employee profile not found." });
+//     }
+
+//     // 2. Build the conditions
 //     const conditions = ["e.company_id = $1"];
 //     const values = [companyId];
 //     let idx = 2;
 
-//     // ── MANAGER SCOPE: only show direct reports ──────────────────────────────
-//     // isHR is set by requireManagerial middleware.
-//     // If false, the caller is a manager (not an HR admin) — restrict to their team.
-//     if (!isHR && managerEmpId) {
-//       conditions.push(`e.manager_id = $${idx}`);
-//       values.push(managerEmpId);
-//       idx++;
-//     }
-//     // ─────────────────────────────────────────────────────────────────────────
+//     // ── SCOPE FILTERING ──────────────────────────────────────────────────
+//     // If the user is NOT a super admin or hr_admin, restrict the view.
+//     // if (!["hr_admin", "super_admin"].includes(role)) {
+//     //   // Filter: Show only people in the same department
+//     //   conditions.push(`e.department_id = $${idx}`);
+//     //   values.push(caller.department_id);
+//     //   idx++;
 
+//     //   // Filter: Show only people assigned to the same manager (peers)
+//     //   // If the caller is a manager, they likely want to see their reports.
+//     //   // If they are an employee, they see their teammates under the same boss.
+//     //   conditions.push(`(e.manager_id = $${idx} OR e.id = $${idx})`);
+//     //   values.push(caller.manager_id);
+//     //   idx++;
+//     // }
+//     // ── SCOPE FILTERING ──────────────────────────────────────────────────
+//     if (!["hr_admin", "super_admin"].includes(role)) {
+//       // Check if caller manages anyone
+//       const managesResult = await db.query(
+//         `SELECT 1
+//      FROM employees
+//      WHERE manager_id = $1
+//        AND company_id = $2
+//        AND employment_status NOT IN ('terminated','resigned')
+//      LIMIT 1`,
+//         [caller.id, companyId],
+//       );
+
+//       const isManager = managesResult.rows.length > 0;
+
+//       if (isManager) {
+//         // Manager → see themselves + direct reports
+//         conditions.push(`(e.manager_id = $${idx} OR e.id = $${idx})`);
+//         values.push(caller.id);
+//         idx++;
+//       } else {
+//         // Normal employee → see peers under same manager + self
+//         conditions.push(`(e.manager_id = $${idx} OR e.id = $${idx})`);
+//         values.push(caller.manager_id);
+//         idx++;
+//       }
+//     }
+//     // ─────────────────────────────────────────────────────────────────────
+
+//     // 3. Handle additional query filters (Search, Status, etc.)
+//     const { search, status } = req.query;
 //     if (search) {
-//       conditions.push(`(
-//         e.first_name    ILIKE $${idx} OR
-//         e.last_name     ILIKE $${idx} OR
-//         e.employee_code ILIKE $${idx} OR
-//         e.personal_email ILIKE $${idx}
-//       )`);
+//       conditions.push(
+//         `(e.first_name ILIKE $${idx} OR e.last_name ILIKE $${idx})`,
+//       );
 //       values.push(`%${search}%`);
 //       idx++;
 //     }
-
-//     if (department) {
-//       conditions.push(`e.department_id = $${idx}`);
-//       values.push(department);
-//       idx++;
-//     }
-
 //     if (status) {
 //       conditions.push(`e.employment_status = $${idx}`);
 //       values.push(status);
 //       idx++;
 //     }
 
-//     if (type) {
-//       conditions.push(`e.employment_type = $${idx}`);
-//       values.push(type);
-//       idx++;
-//     }
-
-//     if (location) {
-//       conditions.push(`e.location ILIKE $${idx}`);
-//       values.push(`%${location}%`);
-//       idx++;
-//     }
-
 //     const whereClause = conditions.join(" AND ");
 
+//     // 4. Execute final query
 //     const countResult = await db.query(
 //       `SELECT COUNT(*) AS total FROM employees e WHERE ${whereClause}`,
 //       values,
@@ -326,29 +220,17 @@ function buildUpdateSet(data, allowed, startIdx = 1) {
 
 //     const dataResult = await db.query(
 //       `SELECT
-//          e.id,
-//          e.employee_code,
-//          e.first_name,
-//          e.last_name,
-//          e.middle_name,
-//          e.phone,
-//          e.personal_email,
-//          e.avatar,
-//          e.employment_type,
-//          e.employment_status,
-//          e.location,
-//          e.start_date,
-//          e.is_onboarded,
-//          e.created_at,
-//          d.name   AS department_name,
+//          e.id, e.employee_code, e.first_name, e.last_name, e.avatar,
+//          e.employment_type, e.employment_status,
+//          d.name AS department_name,
 //          jr.title AS job_role_name,
 //          CONCAT(m.first_name, ' ', m.last_name) AS manager_name
 //        FROM employees e
-//        LEFT JOIN departments d  ON d.id  = e.department_id
-//        LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
-//        LEFT JOIN employees   m  ON m.id  = e.manager_id
+//        LEFT JOIN departments d ON d.id = e.department_id
+//        LEFT JOIN job_roles jr ON jr.id = e.job_role_id
+//        LEFT JOIN employees m ON m.id = e.manager_id
 //        WHERE ${whereClause}
-//        ORDER BY e.${sortField} ${sortOrder}
+//        ORDER BY e.first_name ASC
 //        LIMIT $${idx} OFFSET $${idx + 1}`,
 //       [...values, limit, offset],
 //     );
@@ -364,7 +246,6 @@ function buildUpdateSet(data, allowed, startIdx = 1) {
 //       .json({ message: "Server error fetching employees." });
 //   }
 // }
-
 export async function listEmployees(req, res) {
   try {
     const { userId, companyId, role } = req.user;
@@ -376,47 +257,35 @@ export async function listEmployees(req, res) {
     );
     const offset = (page - 1) * limit;
 
-    // 1. Get the caller's own employee details to know their department/manager
-    const callerResult = await db.query(
-      `SELECT id, department_id, manager_id FROM employees WHERE user_id = $1 AND company_id = $2`,
-      [userId, companyId],
-    );
-
-    const caller = callerResult.rows[0];
-    if (!caller) {
-      return res.status(404).json({ message: "Employee profile not found." });
-    }
-
-    // 2. Build the conditions
     const conditions = ["e.company_id = $1"];
     const values = [companyId];
     let idx = 2;
 
-    // ── SCOPE FILTERING ──────────────────────────────────────────────────
-    // If the user is NOT a super admin or hr_admin, restrict the view.
-    // if (!["hr_admin", "super_admin"].includes(role)) {
-    //   // Filter: Show only people in the same department
-    //   conditions.push(`e.department_id = $${idx}`);
-    //   values.push(caller.department_id);
-    //   idx++;
+    // ── HR admins / super admins: skip employee-profile lookup entirely ──
+    const isHR = ["hr_admin", "super_admin"].includes(role);
 
-    //   // Filter: Show only people assigned to the same manager (peers)
-    //   // If the caller is a manager, they likely want to see their reports.
-    //   // If they are an employee, they see their teammates under the same boss.
-    //   conditions.push(`(e.manager_id = $${idx} OR e.id = $${idx})`);
-    //   values.push(caller.manager_id);
-    //   idx++;
-    // }
-    // ── SCOPE FILTERING ──────────────────────────────────────────────────
-    if (!["hr_admin", "super_admin"].includes(role)) {
-      // Check if caller manages anyone
+    if (!isHR) {
+      // Resolve the caller's own employee record
+      const callerResult = await db.query(
+        `SELECT id, department_id, manager_id
+         FROM employees
+         WHERE user_id = $1 AND company_id = $2`,
+        [userId, companyId],
+      );
+
+      const caller = callerResult.rows[0];
+      if (!caller) {
+        return res.status(404).json({ message: "Employee profile not found." });
+      }
+
+      // Check if this employee is a manager
       const managesResult = await db.query(
         `SELECT 1
-     FROM employees
-     WHERE manager_id = $1
-       AND company_id = $2
-       AND employment_status NOT IN ('terminated','resigned')
-     LIMIT 1`,
+         FROM employees
+         WHERE manager_id = $1
+           AND company_id = $2
+           AND employment_status NOT IN ('terminated','resigned')
+         LIMIT 1`,
         [caller.id, companyId],
       );
 
@@ -434,13 +303,14 @@ export async function listEmployees(req, res) {
         idx++;
       }
     }
-    // ─────────────────────────────────────────────────────────────────────
+    // HR admins: no extra conditions — they see everyone in the company
 
-    // 3. Handle additional query filters (Search, Status, etc.)
-    const { search, status } = req.query;
+    // ── Additional query filters ──
+    const { search, status, department, type, location } = req.query;
+
     if (search) {
       conditions.push(
-        `(e.first_name ILIKE $${idx} OR e.last_name ILIKE $${idx})`,
+        `(e.first_name ILIKE $${idx} OR e.last_name ILIKE $${idx} OR e.employee_code ILIKE $${idx})`,
       );
       values.push(`%${search}%`);
       idx++;
@@ -450,27 +320,43 @@ export async function listEmployees(req, res) {
       values.push(status);
       idx++;
     }
+    if (department) {
+      conditions.push(`e.department_id = $${idx}`);
+      values.push(department);
+      idx++;
+    }
+    if (type) {
+      conditions.push(`e.employment_type = $${idx}`);
+      values.push(type);
+      idx++;
+    }
+    if (location) {
+      conditions.push(`e.location ILIKE $${idx}`);
+      values.push(`%${location}%`);
+      idx++;
+    }
 
     const whereClause = conditions.join(" AND ");
 
-    // 4. Execute final query
+    // ── Count ──
     const countResult = await db.query(
       `SELECT COUNT(*) AS total FROM employees e WHERE ${whereClause}`,
       values,
     );
     const total = parseInt(countResult.rows[0].total, 10);
 
+    // ── Data ──
     const dataResult = await db.query(
       `SELECT
          e.id, e.employee_code, e.first_name, e.last_name, e.avatar,
-         e.employment_type, e.employment_status,
-         d.name AS department_name,
-         jr.title AS job_role_name,
-         CONCAT(m.first_name, ' ', m.last_name) AS manager_name
+         e.employment_type, e.employment_status, e.location, e.start_date,
+         d.name                                  AS department_name,
+         jr.title                                AS job_role_name,
+         CONCAT(m.first_name, ' ', m.last_name)  AS manager_name
        FROM employees e
-       LEFT JOIN departments d ON d.id = e.department_id
-       LEFT JOIN job_roles jr ON jr.id = e.job_role_id
-       LEFT JOIN employees m ON m.id = e.manager_id
+       LEFT JOIN departments d  ON d.id  = e.department_id
+       LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
+       LEFT JOIN employees   m  ON m.id  = e.manager_id
        WHERE ${whereClause}
        ORDER BY e.first_name ASC
        LIMIT $${idx} OFFSET $${idx + 1}`,
@@ -490,165 +376,6 @@ export async function listEmployees(req, res) {
 }
  
 
-// export async function createEmployee(req, res) {
-//   if (handleValidationErrors(req, res)) return;
-
-//   // companyId is now extracted but treated as optional in the query
-//   const { companyId } = req.user || {};
-//   const {
-//     firstName,
-//     lastName,
-//     middleName,
-//     dateOfBirth,
-//     gender,
-//     maritalStatus,
-//     phone,
-//     personalEmail,
-//     address,
-//     state,
-//     nationality,
-//     nin,
-//     bvn,
-//     passport,
-//     nextOfKin,
-//     departmentId,
-//     jobRoleId,
-//     managerId,
-//     employmentType,
-//     startDate,
-//     confirmationDate,
-//     location,
-//     basicSalary,
-//     payGrade,
-//     bankName,
-//     accountNumber,
-//     accountName,
-//     pensionPin,
-//     taxId,
-//     password,
-//     workEmail,
-//     sendInvite = false,
-//   } = req.body;
-
-//   const client = await db.getClient();
-
-//   try {
-//     await client.query("BEGIN");
-
-//     // 1. Generate Employee Code
-//     const employeeCode = await generateEmployeeCode(client, companyId);
-
-//     // 2. Create User Account (Optional user_id logic)
-//     let newUserId = null;
-//     const loginEmail = (workEmail || personalEmail || "").toLowerCase();
-
-//     if (loginEmail && password) {
-//       const userResult = await client.query(
-//         `INSERT INTO users (company_id, first_name, last_name, email, password_hash, role, email_verified, created_at)
-//          VALUES ($1, $2, $3, $4, $5, 'employee', true, NOW())
-//          RETURNING id`,
-//         [companyId ?? null, firstName, lastName, loginEmail, password],
-//       );
-//       newUserId = userResult.rows[0].id;
-//     }
-
-//     // 3. Create Employee Record (manager_id, company_id, user_id are all optional)
-//     const empResult = await client.query(
-//       `INSERT INTO employees (
-//          company_id, user_id, manager_id, employee_code, 
-//          first_name, last_name, middle_name,
-//          date_of_birth, gender, marital_status, phone, personal_email, address,
-//          state, nationality, nin, bvn, passport, nok_name, nok_relationship, 
-//          nok_phone, nok_address, department_id, job_role_id, 
-//          employment_type, start_date, confirmation_date, location, 
-//          basic_salary, pay_grade, bank_name, account_number, account_name, 
-//          pension_pin, tax_id, is_onboarded, created_at
-//        )
-//        VALUES (
-//          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16,
-//          $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
-//          $31, $32, $33, $34, $35, false, NOW()
-//        ) RETURNING id`,
-//       [
-//         companyId ?? null, // Optional
-//         newUserId ?? null, // Optional
-//         managerId ?? null, // Optional
-//         employeeCode, // Required
-//         firstName,
-//         lastName,
-//         middleName ?? null,
-//         dateOfBirth ?? null,
-//         gender ?? null,
-//         maritalStatus ?? null,
-//         phone ?? null,
-//         personalEmail ?? null,
-//         address ?? null,
-//         state ?? null,
-//         nationality ?? null,
-//         nin ?? null,
-//         bvn ?? null,
-//         passport ?? null,
-//         nextOfKin?.name ?? null,
-//         nextOfKin?.relationship ?? null,
-//         nextOfKin?.phone ?? null,
-//         nextOfKin?.address ?? null,
-//         departmentId ?? null,
-//         jobRoleId ?? null,
-//         employmentType,
-//         startDate ?? null,
-//         confirmationDate ?? null,
-//         location ?? null,
-//         basicSalary ?? null,
-//         payGrade ?? null,
-//         bankName ?? null,
-//         accountNumber ?? null,
-//         accountName ?? null,
-//         pensionPin ?? null,
-//         taxId ?? null,
-//       ],
-//     );
-//     const employeeId = empResult.rows[0].id;
-
-//     // 4. Update User with Employee Link (only if user was created)
-//     if (newUserId) {
-//       await client.query(`UPDATE users SET employee_id = $1 WHERE id = $2`, [
-//         employeeId,
-//         newUserId,
-//       ]);
-//     }
-
-//     // 5. Automatic History Entry
-//     await client.query(
-//       `INSERT INTO employment_history (employee_id, event_type, notes, created_by)
-//        VALUES ($1, 'hired', 'Record created.', $2)`,
-//       [employeeId, req.user?.userId ?? null],
-//     );
-
-//     await client.query("COMMIT");
-//     return res
-//       .status(201)
-//       .json({ message: "Employee record created successfully" });
-//   } catch (err) {
-//     await client.query("ROLLBACK");
-//     console.error("Database Error:", err);
-//     return res.status(500).json({
-//       message: "Failed to create employee.",
-//       error:
-//         err.code === "42P01"
-//           ? "Database table missing. Please run migrations."
-//           : err.message,
-//     });
-//   } finally {
-//     client.release();
-//   }
-// }
-// ══════════════════════════════════════════════════════════════
-// GET /api/employees/:id
-// Full profile — joins department, job_role, manager.
-// hr_admin / super_admin see everything.
-// manager sees employees in their team (company_id guard always applies).
-// Requires: authenticate
-// ══════════════════════════════════════════════════════════════
 
 export async function createEmployee(req, res) {
   if (handleValidationErrors(req, res)) return;
@@ -809,73 +536,6 @@ export async function createEmployee(req, res) {
   }
 }
 
-// export async function getEmployee(req, res) {
-//   try {
-//     const { id } = req.params;
-//     const { companyId, role, userId } = req.user;
-
-//     const result = await db.query(
-//       `SELECT
-//          e.*,
-//          d.name                                   AS department_name,
-//          jr.title                                 AS job_role_name,
-//          jr.description                           AS job_role_description,
-//          CONCAT(m.first_name, ' ', m.last_name)   AS manager_name,
-//          m.employee_code                          AS manager_code,
-//          u.email                                  AS work_email,
-//          u.email_verified,
-//          u.last_login
-//        FROM employees e
-//        LEFT JOIN departments d  ON d.id  = e.department_id
-//        LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
-//        LEFT JOIN employees   m  ON m.id  = e.manager_id
-//        LEFT JOIN users       u  ON u.id  = e.user_id
-//        WHERE e.id = $1
-//          AND e.company_id = $2`,
-//       [id, companyId],
-//     );
-
-//     if (result.rows.length === 0) {
-//       return res.status(404).json({ message: "Employee not found." });
-//     }
-
-//     const emp = result.rows[0];
-
-//     // Managers may only view employees they directly manage
-//     if (role === "manager") {
-//       // Find the manager's own employee record
-//       const selfResult = await db.query(
-//         `SELECT id FROM employees WHERE user_id = $1 AND company_id = $2`,
-//         [userId, companyId],
-//       );
-//       const selfEmpId = selfResult.rows[0]?.id;
-//       if (emp.manager_id !== selfEmpId) {
-//         return res.status(403).json({ message: "Access denied." });
-//       }
-//     }
-
-//     // Mask sensitive financial/identity fields for non-admin roles
-//     if (!["hr_admin", "super_admin"].includes(role)) {
-//       emp.bvn = undefined;
-//       emp.nin = undefined;
-//       emp.basic_salary = undefined;
-//       emp.account_number = undefined;
-//       emp.pension_pin = undefined;
-//       emp.tax_id = undefined;
-//     }
-
-//     return res.status(200).json({ data: emp });
-//   } catch (err) {
-//     console.error("getEmployee error:", err);
-//     return res.status(500).json({ message: "Server error fetching employee." });
-//   }
-// }
-
-// ══════════════════════════════════════════════════════════════
-// PUT /api/employees/:id
-// HR admins update any field. Logs every change to employment_history.
-// Requires: authenticate + requireRole(["hr_admin","super_admin"])
-// ══════════════════════════════════════════════════════════════
 
 export async function getEmployee(req, res) {
   try {
@@ -947,151 +607,6 @@ export async function getEmployee(req, res) {
   }
 }
 
-// export async function updateEmployee(req, res) {
-//   if (handleValidationErrors(req, res)) return;
-
-//   const { id } = req.params;
-//   const { companyId, userId } = req.user;
-
-//   // All updatable fields
-//   const allowed = [
-//     "firstName",
-//     "lastName",
-//     "middleName",
-//     "dateOfBirth",
-//     "gender",
-//     "maritalStatus",
-//     "phone",
-//     "personalEmail",
-//     "address",
-//     "state",
-//     "nationality",
-//     "nin",
-//     "bvn",
-//     "passport",
-//     "nokName",
-//     "nokRelationship",
-//     "nokPhone",
-//     "nokAddress",
-//     "departmentId",
-//     "jobRoleId",
-//     "managerId",
-//     "employmentType",
-//     "employmentStatus",
-//     "startDate",
-//     "confirmationDate",
-//     "terminationDate",
-//     "terminationReason",
-//     "location",
-//     "basicSalary",
-//     "payGrade",
-//     "bankName",
-//     "accountNumber",
-//     "accountName",
-//     "pensionPin",
-//     "taxId",
-//     "avatar",
-//     "bio",
-//     "isOnboarded",
-//   ];
-
-//   const { setClauses, values, nextIdx } = buildUpdateSet(req.body, allowed, 1);
-
-//   if (setClauses.length === 0) {
-//     return res
-//       .status(400)
-//       .json({ message: "No valid fields provided for update." });
-//   }
-
-//   const client = await db.getClient();
-//   try {
-//     await client.query("BEGIN");
-
-//     // Guard: employee must belong to this company
-//     const checkResult = await client.query(
-//       `SELECT id, employment_status, department_id, job_role_id FROM employees
-//        WHERE id = $1 AND company_id = $2`,
-//       [id, companyId],
-//     );
-//     if (checkResult.rows.length === 0) {
-//       await client.query("ROLLBACK");
-//       return res.status(404).json({ message: "Employee not found." });
-//     }
-
-//     const before = checkResult.rows[0];
-
-//     // Apply update
-//     const updateResult = await client.query(
-//       `UPDATE employees
-//        SET ${setClauses.join(", ")}, updated_at = NOW()
-//        WHERE id = $${nextIdx} AND company_id = $${nextIdx + 1}
-//        RETURNING *`,
-//       [...values, id, companyId],
-//     );
-//     const updated = updateResult.rows[0];
-
-//     // Log a history entry if any job-related fields changed
-//     const jobChanged =
-//       req.body.departmentId !== undefined ||
-//       req.body.jobRoleId !== undefined ||
-//       req.body.managerId !== undefined ||
-//       req.body.employmentType !== undefined ||
-//       req.body.employmentStatus !== undefined;
-
-//     if (jobChanged) {
-//       const eventType =
-//         req.body.employmentStatus === "terminated"
-//           ? "terminated"
-//           : req.body.employmentStatus === "resigned"
-//             ? "resigned"
-//             : req.body.employmentStatus === "on_leave"
-//               ? "leave_started"
-//               : req.body.departmentId !== before.department_id
-//                 ? "department_change"
-//                 : req.body.jobRoleId !== before.job_role_id
-//                   ? "role_change"
-//                   : "updated";
-
-//       await client.query(
-//         `INSERT INTO employment_history (
-//            employee_id, event_type, department_id, job_role_id,
-//            employment_type, employment_status, effective_date, notes, created_by
-//          )
-//          VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, $8)`,
-//         [
-//           id,
-//           eventType,
-//           updated.department_id,
-//           updated.job_role_id,
-//           updated.employment_type,
-//           updated.employment_status,
-//           req.body.notes ?? null,
-//           userId,
-//         ],
-//       );
-//     }
-
-//     await client.query("COMMIT");
-
-//     return res.status(200).json({
-//       message: "Employee updated successfully.",
-//       data: updated,
-//     });
-//   } catch (err) {
-//     await client.query("ROLLBACK");
-//     console.error("updateEmployee error:", err);
-//     return res.status(500).json({ message: "Server error updating employee." });
-//   } finally {
-//     client.release();
-//   }
-// }
-
-// ══════════════════════════════════════════════════════════════
-// DELETE /api/employees/:id
-// Soft-delete: sets employment_status = 'terminated'.
-// Also deactivates the linked user account.
-// Requires: authenticate + requireRole(["hr_admin","super_admin"])
-// ══════════════════════════════════════════════════════════════
 
 export async function updateEmployee(req, res) {
   if (handleValidationErrors(req, res)) return;
