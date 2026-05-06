@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-// import SideNavbar from "../components/SideNavbar";
+
 import {
   DollarSign,
   Download,
@@ -151,10 +151,20 @@ export default function PayslipsPage() {
   const printRef = useRef(null);
 
   // Load employee profile first
+  // useEffect(() => {
+  //   authApi
+  //     .getMe()
+  //     .then((me) => setEmployee(me))
+  //     .catch(() => setError("Failed to load profile."))
+  //     .finally(() => setLoading(false));
+  // }, []);
   useEffect(() => {
     authApi
       .getMe()
-      .then((me) => setEmployee(me))
+      .then((me) => {
+        setEmployee(me);
+        console.log("FULL EMPLOYEE:", JSON.stringify(me, null, 2)); // paste this output
+      })
       .catch(() => setError("Failed to load profile."))
       .finally(() => setLoading(false));
   }, []);
@@ -244,29 +254,379 @@ export default function PayslipsPage() {
       color: C.textMuted,
     };
 
-  const handleDownload = (payslip, e) => {
-    e?.stopPropagation();
-    setDownloadingId(payslip.id);
-    // Build plain-text payslip and trigger download
-    const content = [
-      `PAYSLIP — ${MONTH_NAMES[payslip.month]} ${payslip.year}`,
-      `Employee: ${payslip.employeeName ?? `${employee?.firstName} ${employee?.lastName}`}`,
-      `Department: ${payslip.departmentName ?? "—"}`,
-      ``,
-      `Gross Salary:     ${fmt(payslip.grossSalary)}`,
-      `Total Deductions: ${fmt(payslip.totalDeductions)}`,
-      `Net Salary:       ${fmt(payslip.netSalary)}`,
-    ].join("\n");
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Payslip_${MONTH_NAMES[payslip.month]}_${payslip.year}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-    setTimeout(() => setDownloadingId(null), 1000);
-  };
+  // const handleDownload = (payslip, e) => {
+  //   e?.stopPropagation();
+  //   setDownloadingId(payslip.id);
+  //   // Build plain-text payslip and trigger download
+  //   const content = [
+  //     `PAYSLIP — ${MONTH_NAMES[payslip.month]} ${payslip.year}`,
+  //     `Employee: ${payslip.employeeName ?? `${employee?.firstName} ${employee?.lastName}`}`,
+  //     `Department: ${payslip.departmentName ?? "—"}`,
+  //     ``,
+  //     `Gross Salary:     ${fmt(payslip.grossSalary)}`,
+  //     `Total Deductions: ${fmt(payslip.totalDeductions)}`,
+  //     `Net Salary:       ${fmt(payslip.netSalary)}`,
+  //   ].join("\n");
+  //   const blob = new Blob([content], { type: "text/plain" });
+  //   const url = URL.createObjectURL(blob);
+  //   const a = document.createElement("a");
+  //   a.href = url;
+  //   a.download = `Payslip_${MONTH_NAMES[payslip.month]}_${payslip.year}.txt`;
+  //   a.click();
+  //   URL.revokeObjectURL(url);
+  //   setTimeout(() => setDownloadingId(null), 1000);
+  // };
+const handleDownload = (payslip, e) => {
+  e?.stopPropagation();
+  setDownloadingId(payslip.id);
 
+  const script = document.createElement("script");
+  script.src =
+    "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+  script.onload = () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    const W = 210;
+    const margin = 20;
+    let y = 0;
+
+    const companyName = employee?.company?.name ?? "BantaHR";
+
+    const fmt2 = (n) =>
+      "NGN " +
+      new Intl.NumberFormat("en-NG", { maximumFractionDigits: 0 }).format(
+        n ?? 0,
+      );
+
+    // ── Header banner ──
+    doc.setFillColor(30, 27, 75);
+    doc.rect(0, 0, W, 42, "F");
+
+    doc.setFillColor(49, 46, 129);
+    doc.rect(0, 28, W, 14, "F");
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.text(companyName, margin, 16);
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9);
+    // doc.text("Human Resource Management System", margin, 22);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text(
+      `PAYSLIP — ${MONTH_NAMES[payslip.month].toUpperCase()} ${payslip.year}`,
+      margin,
+      37,
+    );
+
+    const badge = (payslip.runStatus ?? "paid").toUpperCase();
+    doc.setFontSize(8);
+    doc.setFillColor(16, 185, 129);
+    doc.roundedRect(W - margin - 22, 31, 22, 8, 2, 2, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.text(badge, W - margin - 11, 36.5, { align: "center" });
+
+    y = 52;
+
+    // ── Employee details box ──
+    doc.setFillColor(247, 248, 252);
+    doc.roundedRect(margin, y, W - margin * 2, 38, 3, 3, "F");
+    doc.setDrawColor(228, 231, 240);
+    doc.roundedRect(margin, y, W - margin * 2, 38, 3, 3, "S");
+
+    doc.setTextColor(100, 116, 139);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(7.5);
+    doc.text("EMPLOYEE DETAILS", margin + 5, y + 7);
+
+    const empName =
+      payslip.employeeName ??
+      `${employee?.firstName ?? ""} ${employee?.lastName ?? ""}`;
+    const details = [
+      ["Employee Name", empName],
+      ["Employee Code", payslip.employeeCode ?? employee?.employeeCode ?? "—"],
+      ["Department", payslip.departmentName ?? employee?.department ?? "—"],
+      ["Job Title", payslip.jobRoleName ?? employee?.jobTitle ?? "—"],
+      ["Email", employee?.email ?? "—"],
+      [
+        "Account Number",
+        payslip.accountNumber ?? employee?.accountNumber ?? "—",
+      ],
+      ["Bank", payslip.bankName ?? employee?.bankName ?? "—"],
+      ["Pay Period", `${MONTH_NAMES[payslip.month]} ${payslip.year}`],
+    ];
+
+    const col1 = details.slice(0, 4);
+    const col2 = details.slice(4);
+    const colX = [margin + 5, margin + (W - margin * 2) / 2 + 3];
+
+    col1.forEach(([label, val], i) => {
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(148, 163, 184);
+      doc.setFontSize(7);
+      doc.text(label, colX[0], y + 15 + i * 7);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(15, 23, 42);
+      doc.setFontSize(8);
+      doc.text(String(val), colX[0], y + 19 + i * 7);
+    });
+
+    col2.forEach(([label, val], i) => {
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(148, 163, 184);
+      doc.setFontSize(7);
+      doc.text(label, colX[1], y + 15 + i * 7);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(15, 23, 42);
+      doc.setFontSize(8);
+      doc.text(String(val), colX[1], y + 19 + i * 7);
+    });
+
+    y += 46;
+
+    // ── Earnings & Deductions side by side ──
+    const colW = (W - margin * 2 - 5) / 2;
+
+    doc.setFillColor(30, 27, 75);
+    doc.roundedRect(margin, y, colW, 7, 2, 2, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.text("EARNINGS", margin + 4, y + 5);
+
+    doc.setFillColor(239, 68, 68);
+    doc.roundedRect(margin + colW + 5, y, colW, 7, 2, 2, "F");
+    doc.text("DEDUCTIONS", margin + colW + 9, y + 5);
+
+    y += 10;
+
+    const earnings = [
+      ["Basic Salary", payslip.basicSalary],
+      ["Housing Allowance", payslip.housingAllowance],
+      ["Transport Allowance", payslip.transportAllowance],
+      ["Utility Allowance", payslip.utilityAllowance],
+      ["Meal Allowance", payslip.mealAllowance],
+      ...(payslip.overtimePay > 0
+        ? [["Overtime Pay", payslip.overtimePay]]
+        : []),
+      ...(payslip.bonusAmount > 0 ? [["Bonus", payslip.bonusAmount]] : []),
+    ];
+
+    const deductions = [
+      ["Income Tax (PAYE)", payslip.incomeTax ?? payslip.taxAmount],
+      ["Pension (Employee)", payslip.pensionEmployee ?? payslip.pension],
+      ["NHF", payslip.nhf],
+      ...(payslip.healthInsurance > 0
+        ? [["Health Insurance", payslip.healthInsurance]]
+        : []),
+      ...(payslip.loanDeduction > 0
+        ? [["Loan Deduction", payslip.loanDeduction]]
+        : []),
+    ];
+
+    const maxRows = Math.max(earnings.length, deductions.length);
+    const rowH = 8;
+
+    for (let i = 0; i < maxRows; i++) {
+      const bg = i % 2 === 0 ? [247, 248, 252] : [255, 255, 255];
+      doc.setFillColor(...bg);
+      doc.rect(margin, y + i * rowH, colW, rowH, "F");
+      doc.rect(margin + colW + 5, y + i * rowH, colW, rowH, "F");
+
+      if (earnings[i]) {
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(100, 116, 139);
+        doc.setFontSize(7.5);
+        doc.text(earnings[i][0], margin + 3, y + i * rowH + 5.5);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(15, 23, 42);
+        doc.text(fmt2(earnings[i][1]), margin + colW - 3, y + i * rowH + 5.5, {
+          align: "right",
+        });
+      }
+
+      if (deductions[i]) {
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(100, 116, 139);
+        doc.setFontSize(7.5);
+        doc.text(deductions[i][0], margin + colW + 8, y + i * rowH + 5.5);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(239, 68, 68);
+        doc.text(
+          fmt2(deductions[i][1]),
+          margin + colW * 2 + 2,
+          y + i * rowH + 5.5,
+          { align: "right" },
+        );
+      }
+    }
+
+    y += maxRows * rowH + 2;
+
+    // ── Gross / Total deductions totals ──
+    doc.setFillColor(238, 242, 255);
+    doc.rect(margin, y, colW, 9, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(79, 70, 229);
+    doc.text("Gross Salary", margin + 3, y + 6);
+    doc.text(fmt2(payslip.grossSalary), margin + colW - 3, y + 6, {
+      align: "right",
+    });
+
+    doc.setFillColor(254, 226, 226);
+    doc.rect(margin + colW + 5, y, colW, 9, "F");
+    doc.setTextColor(239, 68, 68);
+    doc.text("Total Deductions", margin + colW + 8, y + 6);
+    doc.text(fmt2(payslip.totalDeductions), margin + colW * 2 + 2, y + 6, {
+      align: "right",
+    });
+
+    y += 14;
+
+    // ── Net Pay ──
+    doc.setFillColor(16, 185, 129);
+    doc.roundedRect(margin, y, W - margin * 2, 14, 3, 3, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text("NET PAY", margin + 5, y + 9.5);
+    doc.setFontSize(10);
+    doc.text(fmt2(payslip.netSalary), W - margin - 3, y + 9.5, {
+      align: "right",
+    });
+
+    y += 22;
+
+    // ── Payment Summary ──
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text("PAYMENT SUMMARY", margin, y);
+    y += 5;
+
+    const summaryRows = [
+      ["Pay Period", `${MONTH_NAMES[payslip.month]} ${payslip.year}`],
+      [
+        "Payment Date",
+        payslip.paymentDate
+          ? new Date(payslip.paymentDate).toLocaleDateString("en-NG")
+          : "—",
+      ],
+      ["Payment Method", payslip.paymentMethod ?? "Bank Transfer"],
+      [
+        "Account Number",
+        payslip.accountNumber ?? employee?.accountNumber ?? "—",
+      ],
+      ["Bank Name", payslip.bankName ?? employee?.bankName ?? "—"],
+      ["Run Status", (payslip.runStatus ?? "—").toUpperCase()],
+    ];
+
+    summaryRows.forEach(([label, val], i) => {
+      const bg = i % 2 === 0 ? [247, 248, 252] : [255, 255, 255];
+      doc.setFillColor(...bg);
+      doc.rect(margin, y + i * 8, W - margin * 2, 8, "F");
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100, 116, 139);
+      doc.setFontSize(7.5);
+      doc.text(label, margin + 4, y + i * 8 + 5.5);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(15, 23, 42);
+      doc.text(String(val), W - margin - 4, y + i * 8 + 5.5, {
+        align: "right",
+      });
+    });
+
+    y += summaryRows.length * 8 + 10;
+
+    // // ── Footer ──
+    // doc.setFillColor(247, 248, 252);
+    // doc.rect(0, 277, W, 20, "F");
+    // doc.setDrawColor(228, 231, 240);
+    // doc.line(0, 277, W, 277);
+
+    // doc.setFont("helvetica", "normal");
+    // doc.setTextColor(148, 163, 184);
+    // doc.setFontSize(7.5);
+    // doc.text(
+    //   "This is a system-generated payslip and does not require a signature.",
+    //   W / 2,
+    //   283,
+    //   { align: "center" },
+    // );
+
+    // doc.setFont("helvetica", "normal");
+    // doc.setTextColor(148, 163, 184);
+    // doc.setFontSize(8);
+    // doc.text("Processed by ", W / 2, 290, { align: "right" });
+
+    // doc.setFont("helvetica", "bold");
+    // doc.setTextColor(30, 27, 75);
+    // doc.setFontSize(8.5);
+    // doc.text(companyName, W / 2 + 1, 290);
+    // ── Footer ──
+    doc.setFillColor(247, 248, 252);
+    doc.rect(0, 272, W, 25, "F");
+    doc.setDrawColor(228, 231, 240);
+    doc.line(0, 272, W, 272);
+
+    // System-generated notice
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(148, 163, 184);
+    doc.setFontSize(7.5);
+    doc.text(
+      "This is a system-generated payslip and does not require a signature.",
+      W / 2,
+      279,
+      { align: "center" },
+    );
+
+    // "Processed by" text
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(148, 163, 184);
+    doc.setFontSize(7.5);
+    doc.text("Powered by", W / 2 - 18, 289);
+
+    // BantaHR logo mark — small rounded square
+    // doc.setFillColor(79, 70, 229);
+    // doc.roundedRect(W / 2 - 7, 284, 7, 7, 1.5, 1.5, "F");
+
+    // // Cyan accent dot on logo
+    // doc.setFillColor(6, 182, 212);
+    // doc.circle(W / 2 - 1.5, 289.5, 1.5, "F");
+
+    // "Banta" in white inside the box — too small, so put wordmark beside it
+    // Wordmark: "Banta" bold dark + "HR" in cyan
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setTextColor(30, 27, 75);
+    doc.text("Banta", W / 2 + 2, 289.5);
+
+    doc.setTextColor(6, 182, 212);
+    doc.text("HR", W / 2 + 14.5, 289.5);
+
+    // Tagline
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(6);
+    doc.setTextColor(148, 163, 184);
+    doc.text("PEOPLE PLATFORM", W / 2 + 21, 289.5);
+    doc.save(
+      `Payslip_${MONTH_NAMES[payslip.month]}_${payslip.year}_${empName.replace(/ /g, "_")}.pdf`,
+    );
+
+    setTimeout(() => setDownloadingId(null), 1000);
+  };;
+
+  document.head.appendChild(script);
+};
   const years = Array.from(
     { length: 5 },
     (_, i) => new Date().getFullYear() - i,

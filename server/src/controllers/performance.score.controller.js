@@ -59,6 +59,82 @@ export async function calculateEmployeeScore(req, res) {
   }
 }
 
+// ADD to performance.score.controller.js
+export const calculateAllScores = async (req, res) => {
+  try {
+    const companyId = req.user.companyId;
+    const { period } = req.body;
+
+    // ── DEBUG: log exactly what we're working with ──
+    console.log("🔍 calculateAll called:", {
+      companyId,
+      userKeys: Object.keys(req.user), // shows exact field names on req.user
+      period,
+    });
+
+    const now = new Date();
+    const currentPeriod =
+      period ||
+      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+    // const { rows: employees } = await db.query(
+    //   `SELECT id FROM employees WHERE company_id = $1 AND state = 'active'`,
+    //   [companyId],
+    // );
+    // After (exclude terminated/offboarded only — works regardless of your exact state value):
+    const { rows: employees } = await db.query(
+      `SELECT id FROM employees 
+   WHERE company_id = $1 
+   AND employment_status IN ('active', 'on_leave')`,
+      [companyId],
+    );
+
+console.log(`✅ Found ${employees.length} employees for company ${companyId}`);
+console.log(
+  "📋 Sample IDs:",
+  employees.slice(0, 3).map((e) => e.id),
+);
+
+    if (employees.length === 0) {
+      return res.json({
+        success: 0,
+        failed: 0,
+        total: 0,
+        period: currentPeriod,
+      });
+    }
+
+    const results = await Promise.allSettled(
+      employees.map((emp) =>
+        calculatePerformance(emp.id, currentPeriod, companyId),
+      ),
+    );
+
+    // ── Log any individual failures ──
+    results.forEach((r, i) => {
+      if (r.status === "rejected") {
+        console.error(
+          `❌ Employee ${employees[i].id} failed:`,
+          r.reason?.message,
+        );
+      }
+    });
+
+    const success = results.filter((r) => r.status === "fulfilled").length;
+    const failed = results.filter((r) => r.status === "rejected").length;
+
+    res.json({
+      success,
+      failed,
+      total: employees.length,
+      period: currentPeriod,
+    });
+  } catch (err) {
+    console.error("❌ calculateAllScores crashed:", err); // ← THIS is the key line
+    res.status(500).json({ message: err.message, stack: err.stack });
+  }
+};
+
 // ══════════════════════════════════════════════════════════════
 // GET /api/performance/scores/:employeeId
 // Returns full score history for one employee.
@@ -294,70 +370,6 @@ export async function getPerformanceInsights(req, res) {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-// GET /api/performance/top-performers
-// Query: ?period=2025-01 &limit=10
-// Returns employees ranked by final_score, leadership_candidate flagged.
-// ══════════════════════════════════════════════════════════════
-// export async function getTopPerformers(req, res) {
-//   const { companyId } = req.user;
-//   const now = new Date();
-//   const period =
-//     req.query.period ||
-//     `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-//   const limit = Math.min(parseInt(req.query.limit || 10, 10), 50);
-
-//   try {
-//     const result = await db.query(
-//       `SELECT
-//          ps.employee_id,
-//          ps.final_score,
-//          ps.rating,
-//          ps.period,
-//          e.first_name,
-//          e.last_name,
-//          e.avatar,
-//          e.leadership_candidate,
-//          d.name  AS department_name,
-//          jr.title AS job_role_name,
-//          -- Count consecutive high-performer months
-//          (SELECT COUNT(*)
-//           FROM performance_scores ps2
-//           WHERE ps2.employee_id = ps.employee_id
-//             AND ps2.final_score > 85
-//             AND ps2.period <= $2
-//           ORDER BY ps2.period DESC
-//          ) AS high_performer_streak
-//        FROM performance_scores ps
-//        JOIN employees e ON e.id = ps.employee_id
-//        LEFT JOIN departments d  ON d.id  = e.department_id
-//        LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
-//        WHERE ps.company_id = $1 AND ps.period = $2
-//        ORDER BY ps.final_score DESC
-//        LIMIT $3`,
-//       [companyId, period, limit],
-//     );
-
-//     return res.status(200).json({
-//       period,
-//       data: result.rows.map((r, i) => ({
-//         rank: i + 1,
-//         employeeId: r.employee_id,
-//         name: `${r.first_name} ${r.last_name}`,
-//         avatar: r.avatar,
-//         department: r.department_name,
-//         jobRole: r.job_role_name,
-//         finalScore: Number(r.final_score),
-//         rating: r.rating,
-//         leadershipCandidate: r.leadership_candidate,
-//         highPerformerStreak: Number(r.high_performer_streak || 0),
-//       })),
-//     });
-//   } catch (err) {
-//     console.error("getTopPerformers error:", err);
-//     return res.status(500).json({ message: "Error fetching top performers." });
-//   }
-// }
 export async function getTopPerformers(req, res) {
   const { companyId } = req.user;
   const now = new Date();
@@ -419,160 +431,160 @@ export async function getTopPerformers(req, res) {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-// POST /api/performance/pip/:employeeId
-// Manual PIP creation by HR.
-// Body: { reason, reviewDate, period }
-// ══════════════════════════════════════════════════════════════
-export async function createPIP(req, res) {
-  const { employeeId } = req.params;
-  const { companyId, userId } = req.user;
-  const { reason, reviewDate, period, goals = [] } = req.body;
+// // ══════════════════════════════════════════════════════════════
+// // POST /api/performance/pip/:employeeId
+// // Manual PIP creation by HR.
+// // Body: { reason, reviewDate, period }
+// // ══════════════════════════════════════════════════════════════
+// export async function createPIP(req, res) {
+//   const { employeeId } = req.params;
+//   const { companyId, userId } = req.user;
+//   const { reason, reviewDate, period, goals = [] } = req.body;
 
-  if (!reason || !reviewDate) {
-    return res
-      .status(400)
-      .json({ message: "reason and reviewDate are required." });
-  }
+//   if (!reason || !reviewDate) {
+//     return res
+//       .status(400)
+//       .json({ message: "reason and reviewDate are required." });
+//   }
 
-  const client = await db.getClient();
-  try {
-    await client.query("BEGIN");
+//   const client = await db.getClient();
+//   try {
+//     await client.query("BEGIN");
 
-    // Guard: employee must belong to company
-    const empCheck = await client.query(
-      "SELECT id, first_name, last_name FROM employees WHERE id = $1 AND company_id = $2",
-      [employeeId, companyId],
-    );
-    if (empCheck.rowCount === 0) {
-      await client.query("ROLLBACK");
-      return res.status(404).json({ message: "Employee not found." });
-    }
+//     // Guard: employee must belong to company
+//     const empCheck = await client.query(
+//       "SELECT id, first_name, last_name FROM employees WHERE id = $1 AND company_id = $2",
+//       [employeeId, companyId],
+//     );
+//     if (empCheck.rowCount === 0) {
+//       await client.query("ROLLBACK");
+//       return res.status(404).json({ message: "Employee not found." });
+//     }
 
-    // Prevent duplicate active PIP
-    const existing = await client.query(
-      "SELECT id FROM pips WHERE employee_id = $1 AND status IN ('active','pending')",
-      [employeeId],
-    );
-    if (existing.rowCount > 0) {
-      await client.query("ROLLBACK");
-      return res
-        .status(409)
-        .json({ message: "An active PIP already exists for this employee." });
-    }
+//     // Prevent duplicate active PIP
+//     const existing = await client.query(
+//       "SELECT id FROM pips WHERE employee_id = $1 AND status IN ('active','pending')",
+//       [employeeId],
+//     );
+//     if (existing.rowCount > 0) {
+//       await client.query("ROLLBACK");
+//       return res
+//         .status(409)
+//         .json({ message: "An active PIP already exists for this employee." });
+//     }
 
-    // Fetch latest score for context
-    const latestScore = await client.query(
-      `SELECT final_score, rating FROM performance_scores
-       WHERE employee_id = $1 ORDER BY period DESC LIMIT 1`,
-      [employeeId],
-    );
-    const score = latestScore.rows[0]?.final_score || 0;
+//     // Fetch latest score for context
+//     const latestScore = await client.query(
+//       `SELECT final_score, rating FROM performance_scores
+//        WHERE employee_id = $1 ORDER BY period DESC LIMIT 1`,
+//       [employeeId],
+//     );
+//     const score = latestScore.rows[0]?.final_score || 0;
 
-    const pip = await client.query(
-      `INSERT INTO pips
-         (employee_id, company_id, reason, period, score_at_creation,
-          review_date, status, created_by, created_at)
-       VALUES ($1,$2,$3,$4,$5,$6,'active',$7,NOW())
-       RETURNING *`,
-      [
-        employeeId,
-        companyId,
-        reason,
-        period || null,
-        score,
-        reviewDate,
-        userId,
-      ],
-    );
+//     const pip = await client.query(
+//       `INSERT INTO pips
+//          (employee_id, company_id, reason, period, score_at_creation,
+//           review_date, status, created_by, created_at)
+//        VALUES ($1,$2,$3,$4,$5,$6,'active',$7,NOW())
+//        RETURNING *`,
+//       [
+//         employeeId,
+//         companyId,
+//         reason,
+//         period || null,
+//         score,
+//         reviewDate,
+//         userId,
+//       ],
+//     );
 
-    const pipId = pip.rows[0].id;
+//     const pipId = pip.rows[0].id;
 
-    // Create improvement goals if provided
-    for (const goal of goals) {
-      await client.query(
-        `INSERT INTO goals
-           (company_id, employee_id, title, description, target,
-            due_date, progress, status, cycle, created_by)
-         VALUES ($1,$2,$3,$4,$5,$6,0,'not_started','PIP',$7)`,
-        [
-          companyId,
-          employeeId,
-          goal.title,
-          goal.description || null,
-          goal.target || 100,
-          reviewDate,
-          userId,
-        ],
-      );
-    }
+//     // Create improvement goals if provided
+//     for (const goal of goals) {
+//       await client.query(
+//         `INSERT INTO goals
+//            (company_id, employee_id, title, description, target,
+//             due_date, progress, status, cycle, created_by)
+//          VALUES ($1,$2,$3,$4,$5,$6,0,'not_started','PIP',$7)`,
+//         [
+//           companyId,
+//           employeeId,
+//           goal.title,
+//           goal.description || null,
+//           goal.target || 100,
+//           reviewDate,
+//           userId,
+//         ],
+//       );
+//     }
 
-    await client.query("COMMIT");
+//     await client.query("COMMIT");
 
-    return res.status(201).json({
-      message: "PIP created successfully.",
-      data: pip.rows[0],
-    });
-  } catch (err) {
-    await client.query("ROLLBACK");
-    console.error("createPIP error:", err);
-    return res.status(500).json({ message: "Error creating PIP." });
-  } finally {
-    client.release();
-  }
-}
+//     return res.status(201).json({
+//       message: "PIP created successfully.",
+//       data: pip.rows[0],
+//     });
+//   } catch (err) {
+//     await client.query("ROLLBACK");
+//     console.error("createPIP error:", err);
+//     return res.status(500).json({ message: "Error creating PIP." });
+//   } finally {
+//     client.release();
+//   }
+// }
 
-// ══════════════════════════════════════════════════════════════
-// GET /api/performance/pip
-// Lists all PIPs for the company. Query: ?status=active
-// ══════════════════════════════════════════════════════════════
-export async function listPIPs(req, res) {
-  const { companyId } = req.user;
-  const { status } = req.query;
+// // ══════════════════════════════════════════════════════════════
+// // GET /api/performance/pip
+// // Lists all PIPs for the company. Query: ?status=active
+// // ══════════════════════════════════════════════════════════════
+// export async function listPIPs(req, res) {
+//   const { companyId } = req.user;
+//   const { status } = req.query;
 
-  try {
-    const conditions = ["p.company_id = $1"];
-    const params = [companyId];
-    if (status) {
-      conditions.push(`p.status = $${params.length + 1}`);
-      params.push(status);
-    }
+//   try {
+//     const conditions = ["p.company_id = $1"];
+//     const params = [companyId];
+//     if (status) {
+//       conditions.push(`p.status = $${params.length + 1}`);
+//       params.push(status);
+//     }
 
-    const result = await db.query(
-      `SELECT
-         p.*,
-         e.first_name, e.last_name, e.avatar,
-         d.name AS department_name,
-         jr.title AS job_role_name
-       FROM pips p
-       JOIN employees e ON e.id = p.employee_id
-       LEFT JOIN departments d  ON d.id  = e.department_id
-       LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
-       WHERE ${conditions.join(" AND ")}
-       ORDER BY p.created_at DESC`,
-      params,
-    );
+//     const result = await db.query(
+//       `SELECT
+//          p.*,
+//          e.first_name, e.last_name, e.avatar,
+//          d.name AS department_name,
+//          jr.title AS job_role_name
+//        FROM pips p
+//        JOIN employees e ON e.id = p.employee_id
+//        LEFT JOIN departments d  ON d.id  = e.department_id
+//        LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
+//        WHERE ${conditions.join(" AND ")}
+//        ORDER BY p.created_at DESC`,
+//       params,
+//     );
 
-    return res.status(200).json({
-      data: result.rows.map((r) => ({
-        id: r.id,
-        employeeId: r.employee_id,
-        name: `${r.first_name} ${r.last_name}`,
-        avatar: r.avatar,
-        department: r.department_name,
-        jobRole: r.job_role_name,
-        reason: r.reason,
-        period: r.period,
-        score: Number(r.score_at_creation || 0),
-        reviewDate: r.review_date,
-        status: r.status,
-        progress: Number(r.progress || 0),
-        createdAt: r.created_at,
-      })),
-      total: result.rowCount,
-    });
-  } catch (err) {
-    console.error("listPIPs error:", err);
-    return res.status(500).json({ message: "Error fetching PIPs." });
-  }
-}
+//     return res.status(200).json({
+//       data: result.rows.map((r) => ({
+//         id: r.id,
+//         employeeId: r.employee_id,
+//         name: `${r.first_name} ${r.last_name}`,
+//         avatar: r.avatar,
+//         department: r.department_name,
+//         jobRole: r.job_role_name,
+//         reason: r.reason,
+//         period: r.period,
+//         score: Number(r.score_at_creation || 0),
+//         reviewDate: r.review_date,
+//         status: r.status,
+//         progress: Number(r.progress || 0),
+//         createdAt: r.created_at,
+//       })),
+//       total: result.rowCount,
+//     });
+//   } catch (err) {
+//     console.error("listPIPs error:", err);
+//     return res.status(500).json({ message: "Error fetching PIPs." });
+//   }
+// }

@@ -31,6 +31,7 @@ import {
   getTopPerformers,
   listPIPs,
   createPIP,
+  calculateAllScores,
 } from "../../api/service/performanceApi";
 import { departmentApi } from "../../api/service/departmentApi";
 
@@ -372,6 +373,7 @@ export default function PerformanceDashboard() {
   const [pipModal, setPipModal] = useState(null); // employee object
   const [toast, setToast] = useState(null);
   const [searchEmp, setSearchEmp] = useState("");
+  const [calculating, setCalculating] = useState(false);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -407,7 +409,23 @@ export default function PerformanceDashboard() {
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
-
+  const handleCalculateAll = async () => {
+    setCalculating(true);
+    try {
+      const result = await calculateAllScores(period);
+      showToast(
+        `Scores calculated: ${result.success} succeeded, ${result.failed} failed`,
+      );
+      await fetchAll(); // refresh dashboard
+    } catch (err) {
+      showToast(
+        err?.response?.data?.message || "Failed to calculate scores.",
+        "error",
+      );
+    } finally {
+      setCalculating(false);
+    }
+  };
   const filteredEmployees = (dashboard?.employees ?? []).filter((e) => {
     if (!searchEmp) return true;
     const q = searchEmp.toLowerCase();
@@ -514,6 +532,32 @@ export default function PerformanceDashboard() {
         <span className="text-xs ml-auto" style={{ color: C.textMuted }}>
           {d?.totalEmployees ?? 0} employees · Period: {period}
         </span>
+
+        {/* ADD this button inside the filter bar div, after the Refresh button */}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={handleCalculateAll}
+          disabled={calculating}
+          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-semibold"
+          style={{
+            background: calculating ? C.surfaceAlt : C.primaryLight,
+            border: `1px solid ${C.border}`,
+            color: calculating ? C.textMuted : C.primary,
+          }}
+        >
+          {calculating ? (
+            <>
+              <Loader2 size={12} className="animate-spin" />
+              Calculating…
+            </>
+          ) : (
+            <>
+              <Zap size={12} />
+              Calculate Scores
+            </>
+          )}
+        </motion.button>
       </div>
 
       {/* ── KPI cards ── */}

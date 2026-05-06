@@ -544,110 +544,8 @@ export async function getPayrollRun(req, res) {
   }
 }
 
-// ── Process entire company payroll ─────────────────────────────
-export async function runPayrollForCompany(req, res) {
-  const { id } = req.params;
-  const { companyId } = req.user;
 
-  try {
-    const runResult = await db.query(
-      "SELECT * FROM payroll_runs WHERE id=$1 AND company_id=$2",
-      [id, companyId],
-    );
-    if (runResult.rowCount === 0)
-      return res.status(404).json({ message: "Payroll run not found." });
 
-    const run = runResult.rows[0];
-    if (!["draft"].includes(run.status)) {
-      return res
-        .status(400)
-        .json({
-          message: `Cannot process a payroll run with status "${run.status}".`,
-        });
-    }
-
-    // Fetch all active employees
-    const employees = await db.query(
-      "SELECT id FROM employees WHERE company_id=$1 AND employment_status='active'",
-      [companyId],
-    );
-
-    if (employees.rowCount === 0) {
-      return res.status(400).json({ message: "No active employees found." });
-    }
-
-    await db.query("UPDATE payroll_runs SET status='processing' WHERE id=$1", [
-      id,
-    ]);
-
-    let totalGross = 0,
-      totalDeductions = 0,
-      totalNet = 0;
-    const processed = [];
-    const errors = [];
-
-    const client = await db.getClient();
-    try {
-      await client.query("BEGIN");
-
-      for (const emp of employees.rows) {
-        try {
-          const payslip = await engineRunEmployee(
-            emp.id,
-            companyId,
-            id,
-            run.month,
-            run.year,
-            {},
-            client,
-          );
-          totalGross += payslip.grossSalary;
-          totalDeductions += payslip.totalDeductions;
-          totalNet += payslip.netSalary;
-          processed.push({ employeeId: emp.id, netSalary: payslip.netSalary });
-        } catch (empErr) {
-          errors.push({ employeeId: emp.id, error: empErr.message });
-        }
-      }
-
-      // Update run totals
-      await client.query(
-        `UPDATE payroll_runs
-         SET total_gross=$1, total_deductions=$2, total_net=$3,
-             employee_count=$4, status='draft', updated_at=NOW()
-         WHERE id=$5`,
-        [totalGross, totalDeductions, totalNet, processed.length, id],
-      );
-
-      await client.query("COMMIT");
-    } catch (err) {
-      await client.query("ROLLBACK");
-      await db.query("UPDATE payroll_runs SET status='draft' WHERE id=$1", [
-        id,
-      ]);
-      throw err;
-    } finally {
-      client.release();
-    }
-
-    return res.status(200).json({
-      message: `Payroll processed for ${processed.length} employees. ${errors.length} errors.`,
-      summary: {
-        totalGross,
-        totalDeductions,
-        totalNet,
-        processed: processed.length,
-        errors: errors.length,
-      },
-      errors: errors.length > 0 ? errors : undefined,
-    });
-  } catch (err) {
-    console.error("runPayrollForCompany error:", err);
-    return res.status(500).json({ message: "Error processing payroll." });
-  }
-}
-
-// ── Run payroll for a single employee ─────────────────────────
 export async function runPayrollForEmployee(req, res) {
   const { id, empId } = req.params;
   const { companyId } = req.user;
@@ -682,29 +580,191 @@ export async function runPayrollForEmployee(req, res) {
   }
 }
 
+
+export async function runPayrollForCompany(req, res) {
+  const { id } = req.params;
+  const { companyId } = req.user;
+
+  try {
+    const runResult = await db.query(
+      "SELECT * FROM payroll_runs WHERE id=$1 AND company_id=$2",
+      [id, companyId],
+    );
+    if (runResult.rowCount === 0)
+      return res.status(404).json({ message: "Payroll run not found." });
+
+    const run = runResult.rows[0];
+
+    // Allow re-processing a 'processed' run (idempotent re-run)
+    // if (!["draft", "processed"].includes(run.status)) {
+    //   return res.status(400).json({
+    //     message: `Cannot process a payroll run with status "${run.status}".`,
+    //   });
+    // }
+    if (!["draft", "processing", "approved"].includes(run.status)) {
+      return res.status(400).json({
+        message: `Cannot process a payroll run with status "${run.status}".`,
+      });
+    }
+
+    // Fetch all active employees
+    const employees = await db.query(
+      "SELECT id, first_name, last_name, basic_salary FROM employees WHERE company_id=$1 AND employment_status='active'",
+      [companyId],
+    );
+
+    if (employees.rowCount === 0) {
+      return res.status(400).json({ message: "No active employees found." });
+    }
+
+    // Warn about employees with no salary set — these will produce ₦0 payslips
+    const noSalary = employees.rows.filter(
+      (e) => !e.basic_salary || Number(e.basic_salary) === 0,
+    );
+    if (noSalary.length > 0) {
+      console.warn(
+        `[Payroll] ${noSalary.length} employee(s) have no basic_salary set:`,
+        noSalary.map((e) => `${e.first_name} ${e.last_name} (${e.id})`),
+      );
+    }
+
+    await db.query(
+      "UPDATE payroll_runs SET status='processing', updated_at=NOW() WHERE id=$1",
+      [id],
+    );
+
+    let totalGross = 0,
+      totalDeductions = 0,
+      totalNet = 0;
+    const processed = [];
+    const errors = [];
+
+    const client = await db.getClient();
+    try {
+      await client.query("BEGIN");
+
+      for (const emp of employees.rows) {
+        try {
+          await client.query("SAVEPOINT emp_sp");
+
+          const payslip = await engineRunEmployee(
+            emp.id,
+            companyId,
+            id,
+            run.month,
+            run.year,
+            {},
+            client,
+          );
+
+          // Engine returns camelCase — accumulate correctly
+          totalGross       += Number(payslip.grossSalary    || 0);
+          totalDeductions  += Number(payslip.totalDeductions || 0);
+          totalNet         += Number(payslip.netSalary       || 0);
+
+          processed.push({
+            employeeId: emp.id,
+            netSalary:  payslip.netSalary,
+            grossSalary: payslip.grossSalary,
+          });
+
+          await client.query("RELEASE SAVEPOINT emp_sp");
+        } catch (empErr) {
+          await client.query("ROLLBACK TO SAVEPOINT emp_sp");
+          errors.push({ employeeId: emp.id, error: empErr.message });
+          console.error(`[Payroll] Failed for employee ${emp.id}:`, empErr.message);
+        }
+      }
+
+      // FIX 1: Status set to 'processed' (not back to 'draft')
+      // This allows the Approve step to work AND history shows the right status.
+      // await client.query(
+      //   `UPDATE payroll_runs
+      //    SET total_gross=$1,
+      //        total_deductions=$2,
+      //        total_net=$3,
+      //        employee_count=$4,
+      //        status='processed',
+      //        updated_at=NOW()
+      //    WHERE id=$5`,
+      //   [totalGross, totalDeductions, totalNet, processed.length, id],
+      // );
+
+      await client.query(
+        `UPDATE payroll_runs
+   SET total_gross=$1,
+       total_deductions=$2,
+       total_net=$3,
+       employee_count=$4,
+       status='approved',
+       updated_at=NOW()
+   WHERE id=$5`,
+        [totalGross, totalDeductions, totalNet, processed.length, id],
+      );
+
+      await client.query("COMMIT");
+    } catch (err) {
+      await client.query("ROLLBACK");
+      // Roll back to draft so HR can retry
+      await db.query(
+        "UPDATE payroll_runs SET status='draft', updated_at=NOW() WHERE id=$1",
+        [id],
+      );
+      throw err;
+    } finally {
+      client.release();
+    }
+
+    return res.status(200).json({
+      message: `Payroll processed for ${processed.length} employees.${errors.length > 0 ? ` ${errors.length} error(s) — see errors array.` : ""}`,
+      summary: {
+        totalGross,
+        totalDeductions,
+        totalNet,
+        processed: processed.length,
+        errors: errors.length,
+      },
+      errors: errors.length > 0 ? errors : undefined,
+    });
+  } catch (err) {
+    console.error("runPayrollForCompany error:", err);
+    return res.status(500).json({ message: "Error processing payroll." });
+  }
+}
+
+// ── Replace approvePayrollRun with this ───────────────────────────────────
 export async function approvePayrollRun(req, res) {
   const { id } = req.params;
   const { companyId, userId } = req.user;
   try {
+    // FIX 3: Accept both 'draft' and 'processed' — handles old runs and new ones
     const result = await db.query(
       `UPDATE payroll_runs
-       SET status='approved', approved_by=$1, approved_at=NOW(), updated_at=NOW()
-       WHERE id=$2 AND company_id=$3 AND status='draft'
+       SET status='approved',
+           approved_by=$1,
+           approved_at=NOW(),
+           updated_at=NOW()
+       WHERE id=$2
+         AND company_id=$3
+        AND status IN ('draft', 'approved')
        RETURNING *`,
       [userId, id, companyId],
     );
     if (result.rowCount === 0)
-      return res
-        .status(404)
-        .json({ message: "Run not found or not in draft status." });
-    // Mark all records approved
+      return res.status(404).json({
+        message: "Run not found or must be in 'draft' or 'processed' status to approve.",
+      });
+
+    // Mark all payroll records as approved
     await db.query(
       "UPDATE payroll_records SET status='approved', updated_at=NOW() WHERE payroll_run_id=$1",
       [id],
     );
-    return res
-      .status(200)
-      .json({ message: "Payroll approved.", data: fmtRun(result.rows[0]) });
+
+    return res.status(200).json({
+      message: "Payroll approved.",
+      data: fmtRun(result.rows[0]),
+    });
   } catch (err) {
     console.error("approvePayrollRun error:", err);
     return res.status(500).json({ message: "Server error." });

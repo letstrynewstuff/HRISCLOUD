@@ -248,7 +248,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
   const [actionLoading, setActionLoading] = useState(false);
 
   // FIX: local search starts from parent searchQuery, stays local after that
-  const [search, setSearch] = useState(searchQuery);
+  const [search, setSearch] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
     status: "",
@@ -262,10 +262,8 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
   const [modal, setModal] = useState(null);
   const pageSize = 10;
 
-  // FIX: Sync parent's search bar into local search state whenever it changes
-  useEffect(() => {
-    setSearch(searchQuery);
-  }, [searchQuery]);
+  // Combine parent searchQuery with local search input
+  const effectiveSearch = search || searchQuery;
 
   useEffect(() => {
     const load = async () => {
@@ -308,8 +306,8 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
 
   const filtered = useMemo(() => {
     let list = [...requests];
-    if (search) {
-      const q = search.toLowerCase();
+    if (effectiveSearch) {
+      const q = effectiveSearch.toLowerCase();
       list = list.filter(
         (r) =>
           r.employee_name?.toLowerCase().includes(q) ||
@@ -339,7 +337,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
       return sort.dir === "asc" ? (va > vb ? 1 : -1) : va < vb ? 1 : -1;
     });
     return list;
-  }, [requests, search, filters, sort]);
+  }, [requests, search, searchQuery, filters, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize);
@@ -347,7 +345,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
   // Reset to page 1 whenever filters/search change
   useEffect(() => {
     setPage(1);
-  }, [search, filters]);
+  }, [search, searchQuery, filters]);
 
   const handleApprove = async (id, comment) => {
     setActionLoading(true);

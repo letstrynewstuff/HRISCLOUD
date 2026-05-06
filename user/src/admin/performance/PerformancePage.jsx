@@ -17,10 +17,10 @@ import PIPManagement from "./PIPManagement";
 
 const TABS = [
   { id: "dashboard", label: "Dashboard" },
-  { id: "cycles", label: "Review Cycles" },
-  { id: "forms", label: "Appraisal Forms" },
+  // { id: "cycles", label: "Review Cycles" },
+  // { id: "forms", label: "Appraisal Forms" },
   { id: "goals", label: "Goals" },
-  { id: "reviews", label: "Appraisals" },
+  // { id: "reviews", label: "Appraisals" },
   { id: "pip", label: "PIP Management" },
 ];
 

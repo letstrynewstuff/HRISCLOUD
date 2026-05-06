@@ -45,43 +45,6 @@ function handleValidationErrors(req, res) {
   }
   return false;
 }
-
-/** Convert a DB attendance row to a clean camelCase API shape */
-// function serializeRecord(row) {
-//   if (!row) return null;
-//   return {
-//     id: row.id,
-//     companyId: row.company_id,
-//     employeeId: row.employee_id,
-//     attendanceDate: row.attendance_date,
-//     clockIn: row.clock_in,
-//     clockOut: row.clock_out,
-//     clockInLocation:
-//       row.clock_in_lat != null
-//         ? { lat: row.clock_in_lat, lng: row.clock_in_lng }
-//         : null,
-//     clockInSelfie: row.clock_in_selfie,
-//     status: row.status,
-//     hoursWorked: row.hours_worked ? Number(row.hours_worked) : null,
-//     overtimeHours: row.overtime_hours ? Number(row.overtime_hours) : 0,
-//     isManuallyEdited: row.is_manually_edited,
-//     editedBy: row.edited_by,
-//     editReason: row.edit_reason,
-//     createdAt: row.created_at,
-//     updatedAt: row.updated_at,
-//     // Joined fields (present on HR queries)
-//     employee: row.first_name
-//       ? {
-//           firstName: row.first_name,
-//           lastName: row.last_name,
-//           employeeId: row.employee_id,
-//           department: row.department_name,
-//           jobTitle: row.job_title,
-//         }
-//       : undefined,
-//   };
-// }
-/** Convert a DB attendance row to a clean camelCase API shape */
 function serializeRecord(row) {
   if (!row) return null;
   return {
@@ -135,92 +98,6 @@ function resolveStatus(clockInDate, workingHoursStart, lateGraceMinutes = 15) {
   return ciMinutes > threshMinutes + lateGraceMinutes ? "late" : "present";
 }
 
-// ══════════════════════════════════════════════════════════════
-// POST /api/attendance/clock-in
-// Body (JSON or multipart):
-//   { lat?, lng? }
-// File (optional): selfie image field "selfie"
-//
-// Rules enforced:
-//  • Cannot clock in twice on the same day
-//  • Cannot clock in outside company's working days (optional check)
-//  • Status is computed: present | late
-// ══════════════════════════════════════════════════════════════
-// export async function clockIn(req, res) {
-//   try {
-//     const { companyId, userId } = req.user;
-
-//     // Resolve the employee record for the logged-in user
-//     // (employees.user_id FK assumed)
-//     const empResult = await db.query(
-//       `SELECT id FROM employees WHERE user_id = $1 AND company_id = $2 AND LOWER(state) = 'active'`[
-//         (userId, companyId)
-//       ],
-//     );
-//     if (!empResult.rows[0]) {
-//       return res
-//         .status(403)
-//         .json({
-//           message: "No active employee profile found for your account.",
-//         });
-//     }
-//     const employeeId = empResult.rows[0].id;
-
-//     // Guard: already clocked in today?
-//     const existing = await getTodayRecord(employeeId);
-//     if (existing?.clock_in) {
-//       return res.status(409).json({
-//         message: "You have already clocked in today.",
-//         record: serializeRecord(existing),
-//       });
-//     }
-
-//     // Fetch company settings to get working_hours_start
-//     const settings = await getCompanySettings(companyId);
-//     const workStart = settings?.working_hours_start ?? "08:00";
-
-//     const clockInTime = new Date();
-//     const status = resolveStatus(clockInTime, workStart);
-
-//     // Optional selfie upload
-//     let selfieUrl = null;
-//     if (req.file) {
-//       const { url } = await uploadToCloud(req.file.buffer, {
-//         folder: `hriscloud/${companyId}/selfies`,
-//         publicId: `selfie_${employeeId}_${Date.now()}`,
-//         resourceType: "image",
-//         transformation: [
-//           { width: 400, height: 400, crop: "fill", gravity: "face" },
-//         ],
-//       });
-//       selfieUrl = url;
-//     }
-
-//     const { lat, lng } = req.body;
-
-//     const record = await dbClockIn({
-//       companyId,
-//       employeeId,
-//       clockIn: clockInTime,
-//       lat: lat ? parseFloat(lat) : null,
-//       lng: lng ? parseFloat(lng) : null,
-//       selfieUrl,
-//       status,
-//     });
-
-//     return res.status(201).json({
-//       message:
-//         status === "late"
-//           ? `Clocked in at ${clockInTime.toLocaleTimeString()}. Marked as late.`
-//           : `Clocked in successfully at ${clockInTime.toLocaleTimeString()}.`,
-//       status,
-//       record: serializeRecord(record),
-//     });
-//   } catch (err) {
-//     console.error("clockIn error:", err);
-//     return res.status(500).json({ message: "Server error during clock-in." });
-//   }
-// }
 export async function clockIn(req, res) {
   console.log("JWT payload:", req.user);
   try {
@@ -372,73 +249,6 @@ export async function clockOut(req, res) {
   }
 }
 
-// ══════════════════════════════════════════════════════════════
-// GET /api/attendance   [HR]
-// Query params:
-//   date, startDate, endDate, status, departmentId, employeeId,
-//   search, page, limit, sortBy, sortDir
-// ══════════════════════════════════════════════════════════════
-// export async function getAllAttendanceHandler(req, res) {
-//   try {
-//     const result = await getAllAttendance(req.user.companyId, {
-//       date: req.query.date,
-//       startDate: req.query.startDate,
-//       endDate: req.query.endDate,
-//       status: req.query.status,
-//       departmentId: req.query.departmentId,
-//       employeeId: req.query.employeeId,
-//       search: req.query.search,
-//       page: parseInt(req.query.page ?? 1, 10),
-//       limit: parseInt(req.query.limit ?? 25, 10),
-//       sortBy: req.query.sortBy,
-//       sortDir: req.query.sortDir,
-//     });
-
-//     return res.status(200).json({
-//       ...result,
-//       rows: result.rows.map(serializeRecord),
-//     });
-//   } catch (err) {
-//     console.error("getAllAttendance error:", err);
-//     return res.status(500).json({ message: "Server error." });
-//   }
-// }
-
-// ══════════════════════════════════════════════════════════════
-// GET /api/attendance/today   [HR]
-// Real-time snapshot: present / absent / late counts + late list
-// ══════════════════════════════════════════════════════════════
-// export async function getTodayAttendance(req, res) {
-//   try {
-//     const snapshot = await getTodaySnapshot(req.user.companyId);
-
-//     return res.status(200).json({
-//       ...snapshot,
-//       lateEmployees: snapshot.lateEmployees.map(serializeRecord),
-//     });
-//   } catch (err) {
-//     console.error("getTodayAttendance error:", err);
-//     return res.status(500).json({ message: "Server error." });
-//   }
-// }
-
-// PATCH for src/controllers/attendance.controller.js
-// ─────────────────────────────────────────────────────────────────────────────
-// Replace getTodayAttendance and getAllAttendanceHandler with these versions.
-//
-// FIX: Both functions now check req.user.isHR.
-//   isHR=true  → full company snapshot (original behaviour, unchanged)
-//   isHR=false → only direct reports of this manager
-//
-// The getTodaySnapshot model function already accepts a departmentId/employeeIds
-// filter. We add managerEmpId filtering via a direct DB subquery.
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ══════════════════════════════════════════════════════════════
-// GET /api/attendance/today   [HR + Manager]
-// Real-time snapshot: present / absent / late counts + late list
-// FIX: managers only see their direct reports' stats
-// ══════════════════════════════════════════════════════════════
 export async function getTodayAttendance(req, res) {
   try {
     const { companyId, isHR, employeeId: managerEmpId } = req.user;
@@ -547,8 +357,7 @@ export async function getAllAttendanceHandler(req, res) {
       limit:        parseInt(req.query.limit ?? 25, 10),
       sortBy:       req.query.sortBy,
       sortDir:      req.query.sortDir,
-      // Pass manager scope — the getAllAttendance model must handle this
-      // OR fall back to the raw query below if it doesn't support it.
+ 
       managerEmpId,
     });
 

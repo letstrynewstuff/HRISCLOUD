@@ -17,6 +17,12 @@ export const calculateScore = (employeeId, period) =>
     (r) => r.data,
   );
 
+//  * Bulk-calculate scores for all active employees.
+//  * POST /api/performance/calculate-all
+//  * Body: { period?: "2025-01" }
+//  */
+export const calculateAllScores = (period) =>
+  API.post("/performance/calculate-all", { period }).then((r) => r.data);
 /**
  * Get full score history for one employee.
  * GET /api/performance/scores/:employeeId
@@ -167,79 +173,38 @@ export const listPIPs = (params = {}) =>
 export const createPIP = (employeeId, payload) =>
   API.post(`/performance/pip/${employeeId}`, payload).then((r) => r.data);
 
-// // src/api/service/performanceApi.js
-// import API from "../axios";
 
-// export const performanceApi = {
-//   // ─── Performance Scores ───────────────────────────────────────
-//   calculateScore: (employeeId, period) =>
-//     API.post(`/performance/calculate/${employeeId}`, { period }).then((r) => r.data),
 
-//   getEmployeeScores: (employeeId) =>
-//     API.get(`/performance/scores/${employeeId}`).then((r) => r.data),
-
-//   // ─── Dashboard ────────────────────────────────────────────────
-//   getDashboard: (params = {}) =>
-//     API.get("/performance/dashboard", { params }).then((r) => r.data),
-
-//   // ─── Trends ───────────────────────────────────────────────────
-//   getTrends: (employeeId) =>
-//     API.get(`/performance/trends/${employeeId}`).then((r) => r.data),
-
-//   // ─── Insights ─────────────────────────────────────────────────
-//   getInsights: (employeeId) =>
-//     API.get(`/performance/insights/${employeeId}`).then((r) => r.data),
-
-//   // ─── Top Performers ───────────────────────────────────────────
-//   getTopPerformers: (params = {}) =>
-//     API.get("/performance/top-performers", { params }).then((r) => r.data),
-
-//   // ─── Review Cycles ────────────────────────────────────────────
-//   getCycles: () =>
-//     API.get("/performance/cycles").then((r) => r.data),
-
-//   createCycle: (payload) =>
-//     API.post("/performance/cycles", payload).then((r) => r.data),
-
-//   // ─── Reviews ─────────────────────────────────────────────────
-//   getAllReviews: (params = {}) =>
-//     API.get("/performance/reviews", { params }).then((r) => r.data),
-
-//   getMyReviews: () =>
-//     API.get("/performance/reviews/me").then((r) => r.data),
-
-//   submitSelfAssessment: (id, payload) =>
-//     API.put(`/performance/reviews/${id}/self`, payload).then((r) => r.data),
-
-//   submitManagerAssessment: (id, payload) =>
-//     API.put(`/performance/reviews/${id}/manager`, payload).then((r) => r.data),
-
-//   finalizeReview: (id, payload) =>
-//     API.put(`/performance/reviews/${id}/finalize`, payload).then((r) => r.data),
-
-//   // ─── Goals / KPIs ─────────────────────────────────────────────
-//   listGoals: (params = {}) =>
-//     API.get("/goals", { params }).then((r) => r.data),
-
-//   getMyGoals: (params = {}) =>
-//     API.get("/goals/me", { params }).then((r) => r.data),
-
-//   createGoal: (payload) =>
-//     API.post("/goals", payload).then((r) => r.data),
-
-//   updateGoal: (id, payload) =>
-//     API.put(`/goals/${id}`, payload).then((r) => r.data),
-
-//   assignGoal: (id, employeeIds) =>
-//     API.post(`/goals/${id}/assign`, { employeeIds }).then((r) => r.data),
-
-//   updateGoalProgress: (id, progress, achievedValue) =>
-//     API.post(`/goals/${id}/progress`, { progress, achievedValue }).then((r) => r.data),
-
-//   // ─── PIP ─────────────────────────────────────────────────────
-//   listPIPs: (params = {}) =>
-//     API.get("/performance/pip", { params }).then((r) => r.data),
-
-//   createPIP: (employeeId, payload) =>
-//     API.post(`/performance/pip/${employeeId}`, payload).then((r) => r.data),
-// };
+/**
+ * GET /api/performance/pip/:pipId
+ */
+export const getPIP = (pipId) =>
+  API.get(`/performance/pip/${pipId}`).then((r) => r.data);
+ 
+/**
+ * PUT /api/performance/pip/:pipId
+ * Body: { reason?, reviewDate?, period?, goals? }
+ */
+export const updatePIP = (pipId, payload) =>
+  API.put(`/performance/pip/${pipId}`, payload).then((r) => r.data);
+ 
+/**
+ * PATCH /api/performance/pip/:pipId/status
+ * Body: { status: "active" | "completed" | "failed" }
+ */
+export const updatePIPStatus = (pipId, status) =>
+  API.patch(`/performance/pip/${pipId}/status`, { status }).then((r) => r.data);
+ 
+/**
+ * PATCH /api/performance/pip/:pipId/progress
+ * Body: { progress: 0–100 }
+ */
+export const updatePIPProgress = (pipId, progress) =>
+  API.patch(`/performance/pip/${pipId}/progress`, { progress }).then((r) => r.data);
+ 
+/**
+ * DELETE /api/performance/pip/:pipId
+ */
+export const deletePIP = (pipId) =>
+  API.delete(`/performance/pip/${pipId}`).then((r) => r.data);
+ 

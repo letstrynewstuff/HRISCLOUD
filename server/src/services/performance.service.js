@@ -1,3 +1,6 @@
+
+
+
 // src/services/performance.service.js
 //
 // Pure business logic — no req/res. Called by controllers and cron jobs.
@@ -23,24 +26,12 @@ export function getTrend(current, previous) {
   return "stable";
 }
 
-// ══════════════════════════════════════════════════════════════
-// calculatePerformance(employeeId, period, companyId)
-//
-// period format: "2025-01" (YYYY-MM)
-//
-// Formula:
-//   KPI Score        = avg( (goal.progress / 100) * 100 ) for goals due in period
-//   Attendance Score = 100 - (days_absent * 2) - (late_count * 1)
-//   Training Score   = (completed_trainings / expected_trainings) * 100
-//   Final Score      = (KPI × 0.50) + (Attendance × 0.25) + (Training × 0.25)
-//
-// Returns the stored performance_scores row.
-// ══════════════════════════════════════════════════════════════
 export async function calculatePerformance(employeeId, period, companyId) {
-  // Derive date range from period string
+  console.log(`⚙️  Calculating: employee=${employeeId} period=${period}`);
+
   const [year, month] = period.split("-").map(Number);
   const periodStart = new Date(year, month - 1, 1).toISOString().split("T")[0];
-  const periodEnd = new Date(year, month, 0).toISOString().split("T")[0]; // last day
+  const periodEnd = new Date(year, month, 0).toISOString().split("T")[0];
 
   // ── 1. KPI / Goal Score ────────────────────────────────────
   const goalsResult = await db.query(
@@ -55,7 +46,6 @@ export async function calculatePerformance(employeeId, period, companyId) {
   let kpiScore = 0;
   if (goalsResult.rows.length > 0) {
     const scores = goalsResult.rows.map((g) => {
-      // If target is stored as a number, use it; otherwise treat progress as %
       const achieved = Number(g.progress) || 0;
       const target = Number(g.target) || 100;
       return Math.min((achieved / target) * 100, 100);
@@ -67,11 +57,11 @@ export async function calculatePerformance(employeeId, period, companyId) {
   const attResult = await db.query(
     `SELECT
        COUNT(*) FILTER (WHERE status = 'absent') AS days_absent,
-       COUNT(*) FILTER (WHERE is_late = true)    AS late_count,
-       COUNT(*) AS total_working_days
+       COUNT(*) FILTER (WHERE status = 'late')   AS late_count,
+       COUNT(*)                                   AS total_working_days
      FROM attendance
      WHERE employee_id = $1
-       AND date BETWEEN $2 AND $3`,
+       AND attendance_date BETWEEN $2 AND $3`,
     [employeeId, periodStart, periodEnd],
   );
 
@@ -83,8 +73,8 @@ export async function calculatePerformance(employeeId, period, companyId) {
   // ── 3. Training Score ──────────────────────────────────────
   const trainResult = await db.query(
     `SELECT
-       COUNT(*) FILTER (WHERE attendance_status = 'attended') AS completed,
-       COUNT(*) AS expected
+       COUNT(*) FILTER (WHERE te.attendance_status = 'attended') AS completed,
+       COUNT(*)                                                    AS expected
      FROM training_enrollments te
      JOIN trainings t ON t.id = te.training_id
      WHERE te.employee_id = $1
@@ -97,16 +87,23 @@ export async function calculatePerformance(employeeId, period, companyId) {
   const completed = parseInt(tr?.completed || 0, 10);
   const expected = parseInt(tr?.expected || 0, 10);
   const trainingScore =
-    expected > 0 ? Math.min((completed / expected) * 100, 100) : 100; // no training expected = full score
+    expected > 0 ? Math.min((completed / expected) * 100, 100) : 100;
 
   // ── 4. Weighted Final Score ────────────────────────────────
+  // NOTE: final_score is a generated column in the DB — we compute it here
+  // only to drive the rating label, PIP logic, and logging. We do NOT insert it.
   const finalScore = Math.round(
     kpiScore * 0.5 + attendanceScore * 0.25 + trainingScore * 0.25,
   );
-
   const rating = getRatingLabel(finalScore);
 
-  // ── 5. Upsert into performance_scores ─────────────────────
+  console.log(
+    `📊 ${employeeId} → KPI:${Math.round(kpiScore)} ATT:${attendanceScore} TRN:${trainingScore} FINAL:${finalScore} (${rating})`,
+  );
+
+  // ── 5. Upsert performance_scores ──────────────────────────
+  // final_score is a generated column → omit from INSERT and DO UPDATE.
+  // calculated_at does not exist on the table → omit as well.
   const client = await db.getClient();
   try {
     await client.query("BEGIN");
@@ -114,16 +111,14 @@ export async function calculatePerformance(employeeId, period, companyId) {
     const upsert = await client.query(
       `INSERT INTO performance_scores
          (employee_id, company_id, period, kpi_score, attendance_score,
-          training_score, final_score, rating, calculated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+          training_score, rating)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        ON CONFLICT (employee_id, period)
        DO UPDATE SET
          kpi_score        = EXCLUDED.kpi_score,
          attendance_score = EXCLUDED.attendance_score,
          training_score   = EXCLUDED.training_score,
-         final_score      = EXCLUDED.final_score,
-         rating           = EXCLUDED.rating,
-         calculated_at    = NOW()
+         rating           = EXCLUDED.rating
        RETURNING *`,
       [
         employeeId,
@@ -132,7 +127,6 @@ export async function calculatePerformance(employeeId, period, companyId) {
         Math.round(kpiScore),
         Math.round(attendanceScore),
         Math.round(trainingScore),
-        finalScore,
         rating,
       ],
     );
@@ -151,7 +145,7 @@ export async function calculatePerformance(employeeId, period, companyId) {
       );
     }
 
-    // ── 7. Leadership detection if score > 85 for 3 months ─
+    // ── 7. Leadership candidate check ──────────────────────
     await checkLeadershipCandidate(client, employeeId, companyId);
 
     await client.query("COMMIT");
@@ -165,6 +159,40 @@ export async function calculatePerformance(employeeId, period, companyId) {
 }
 
 // ─── Auto-create PIP for low performers ───────────────────────
+// async function autoCreatePIP(
+//   client,
+//   employeeId,
+//   companyId,
+//   period,
+//   score,
+//   rating,
+// ) {
+//   // Only create if no active PIP already exists
+//   const existing = await client.query(
+//     `SELECT id FROM pips
+//    WHERE employee_id = $1 AND status IN ('active','pending')`,
+//     [employeeId],
+//   );
+//   if (existing.rowCount > 0) return;
+
+//   const reviewDate = new Date();
+//   reviewDate.setDate(reviewDate.getDate() + 60); // 60-day review period
+
+//   await client.query(
+//     `INSERT INTO pips
+//        (employee_id, company_id, reason, period, score_at_creation,
+//         review_date, status, created_at)
+//      VALUES ($1, $2, $3, $4, $5, $6, 'active', NOW())`,
+//     [
+//       employeeId,
+//       companyId,
+//       `Automatic PIP: ${rating} (score ${score}) for period ${period}`,
+//       period,
+//       score,
+//       reviewDate.toISOString().split("T")[0],
+//     ],
+//   );
+// }
 async function autoCreatePIP(
   client,
   employeeId,
@@ -181,21 +209,23 @@ async function autoCreatePIP(
   );
   if (existing.rowCount > 0) return;
 
-  const reviewDate = new Date();
-  reviewDate.setDate(reviewDate.getDate() + 60); // 60-day review period
+  const startDate = new Date().toISOString().split("T")[0];
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 60); // 60-day review period
 
   await client.query(
     `INSERT INTO pips
        (employee_id, company_id, reason, period, score_at_creation,
-        review_date, status, created_at)
-     VALUES ($1, $2, $3, $4, $5, $6, 'active', NOW())`,
+        start_date, end_date, status, created_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, 'active', NOW())`,
     [
       employeeId,
       companyId,
       `Automatic PIP: ${rating} (score ${score}) for period ${period}`,
       period,
       score,
-      reviewDate.toISOString().split("T")[0],
+      startDate,
+      endDate.toISOString().split("T")[0],
     ],
   );
 }

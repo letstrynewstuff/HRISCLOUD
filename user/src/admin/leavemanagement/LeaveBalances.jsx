@@ -53,8 +53,11 @@ function Avatar({ initials, color = C.primary, size = 32 }) {
     </div>
   );
 }
-function MiniBar({ value, total, color }) {
-  const pct = total > 0 ? Math.min((value / total) * 100, 100) : 0;
+
+// ── Mini progress bar ──────────────────────────────────────────
+// Shows the USED portion of entitled days (filled = consumed).
+function MiniBar({ used, entitled, color }) {
+  const pct = entitled > 0 ? Math.min((used / entitled) * 100, 100) : 0;
   return (
     <div
       className="h-1.5 rounded-full overflow-hidden"
@@ -70,9 +73,14 @@ function MiniBar({ value, total, color }) {
     </div>
   );
 }
-function BalanceCell({ used, entitled, color }) {
-  const remaining = entitled - used;
+
+// ── Balance cell ───────────────────────────────────────────────
+// FIX: all props now match the backend column names:
+//   remaining = lb.remaining,  entitled = lb.entitled
+function BalanceCell({ remaining, entitled, color }) {
+  const used = entitled - remaining; // derived for the bar only
   const lowWarning = entitled > 0 && remaining / entitled < 0.2;
+
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-2">
@@ -87,9 +95,10 @@ function BalanceCell({ used, entitled, color }) {
         </span>
         {lowWarning && <AlertTriangle size={10} color={C.danger} />}
       </div>
+      {/* Bar fills proportionally to days USED so a full bar = nothing left */}
       <MiniBar
-        value={used}
-        total={entitled}
+        used={used}
+        entitled={entitled}
         color={lowWarning ? C.danger : color}
       />
     </div>
@@ -97,31 +106,29 @@ function BalanceCell({ used, entitled, color }) {
 }
 
 // ── Main export ────────────────────────────────────────────────
-// FIX: accepts searchQuery from AdminLeavePage's top search bar
-//      and onTabChange to allow cross-tab navigation
 export default function LeaveBalances({ searchQuery = "", onTabChange }) {
-  const navigate = useNavigate(); // kept — used only for "View Profile" link
+  const navigate = useNavigate();
 
   const [balances, setBalances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [localSearch, setLocalSearch] = useState(""); // local search input
+  const [localSearch, setLocalSearch] = useState(searchQuery);
   const [deptFilter, setDeptFilter] = useState("");
   const [expandedEmp, setExpandedEmp] = useState(null);
-
-  // FIX: sync the parent's search bar into this tab's local search state
-  useEffect(() => {
-    setLocalSearch(searchQuery);
-  }, [searchQuery]);
 
   useEffect(() => {
     leaveApi
       .getAllBalances()
-      .then((res) => setBalances(res.data ?? []))
+      .then((res) => {
+        // Handle both { data: [...] } and plain [...] response shapes
+        const rows = Array.isArray(res) ? res : (res?.data ?? []);
+        setBalances(rows);
+      })
       .catch(() => setError("Failed to load balances."))
       .finally(() => setLoading(false));
   }, []);
 
+  // ── Group flat rows by employee ────────────────────────────
   const employeeMap = useMemo(() => {
     const map = {};
     balances.forEach((b) => {
@@ -146,18 +153,33 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
     return map;
   }, [balances]);
 
-  const employees = Object.values(employeeMap);
+  const employees = useMemo(() => Object.values(employeeMap), [employeeMap]);
   const departments = [
     ...new Set(employees.map((e) => e.dept).filter(Boolean)),
   ].sort();
 
-  // Merge parent search + local search (whichever is set)
-  const activeSearch = localSearch;
+  // ── Summary stats ──────────────────────────────────────────
+  // Field names match the backend: entitled, taken, pending, remaining
+  const annualBalances = balances.filter(
+    (b) => b.leave_type === "Annual Leave",
+  );
+  const totalUsedAnnual = annualBalances.reduce(
+    (a, b) => a + (b.taken ?? 0),
+    0,
+  );
+  const totalAvailAnnual = annualBalances.reduce(
+    (a, b) => a + (b.remaining ?? 0),
+    0,
+  );
+  const lowBalanceCount = annualBalances.filter(
+    (b) => b.entitled > 0 && (b.remaining ?? 0) / b.entitled < 0.2,
+  ).length;
 
+  // ── Filtered employee list ─────────────────────────────────
   const filtered = useMemo(
     () =>
       employees.filter((e) => {
-        const q = activeSearch.toLowerCase();
+        const q = (searchQuery || localSearch).toLowerCase();
         return (
           (!q ||
             e.name?.toLowerCase().includes(q) ||
@@ -165,23 +187,8 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
           (!deptFilter || e.dept === deptFilter)
         );
       }),
-    [employees, activeSearch, deptFilter],
+    [employees, searchQuery, localSearch, deptFilter],
   );
-
-  const annualBalances = balances.filter(
-    (b) => b.leave_type === "Annual Leave",
-  );
-  const totalUsedAnnual = annualBalances.reduce(
-    (a, b) => a + (b.used_days ?? 0),
-    0,
-  );
-  const totalAvailAnnual = annualBalances.reduce(
-    (a, b) => a + (b.remaining_days ?? 0),
-    0,
-  );
-  const lowBalanceCount = annualBalances.filter(
-    (b) => b.entitled_days > 0 && b.remaining_days / b.entitled_days < 0.2,
-  ).length;
 
   const leaveTypeColors = {
     "Annual Leave": C.primary,
@@ -191,6 +198,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
     "Paternity Leave": C.accent,
   };
 
+  // ── Loading / error states ─────────────────────────────────
   if (loading)
     return (
       <div className="flex items-center justify-center py-24">
@@ -216,7 +224,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
 
   return (
     <div className="space-y-5">
-      {/* Summary cards */}
+      {/* ── Summary cards ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
@@ -226,20 +234,20 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
             bg: C.primaryLight,
             icon: Users,
           },
-          {
-            label: "Annual Days Used",
-            value: totalUsedAnnual,
-            color: C.warning,
-            bg: C.warningLight,
-            icon: TrendingDown,
-          },
-          {
-            label: "Annual Days Available",
-            value: totalAvailAnnual,
-            color: C.success,
-            bg: C.successLight,
-            icon: Calendar,
-          },
+          // {
+          //   label: "Annual Days Used",
+          //   value: totalUsedAnnual,
+          //   color: C.warning,
+          //   bg: C.warningLight,
+          //   icon: TrendingDown,
+          // },
+          // {
+          //   label: "Annual Days Available",
+          //   value: totalAvailAnnual,
+          //   color: C.success,
+          //   bg: C.successLight,
+          //   icon: Calendar,
+          // },
           {
             label: "Low Balance Alerts",
             value: lowBalanceCount,
@@ -278,7 +286,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
         ))}
       </div>
 
-      {/* Search + Department filter */}
+      {/* ── Search + Department filter ── */}
       <div className="flex gap-3 flex-wrap">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
           <Search
@@ -317,7 +325,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
         </select>
       </div>
 
-      {/* Table */}
+      {/* ── Table ── */}
       <motion.div
         custom={1}
         variants={fadeUp}
@@ -364,7 +372,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                       className="px-4 py-12 text-center text-sm"
                       style={{ color: C.textMuted }}
                     >
-                      {activeSearch
+                      {localSearch
                         ? "No employees match your search"
                         : "No employee balances found"}
                     </td>
@@ -373,6 +381,8 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                   filtered.map((emp, i) => {
                     const dc = deptColor(emp.dept, departments);
                     const isExpanded = expandedEmp === emp.id;
+
+                    // Pick the first balance row for each leave category
                     const annual = emp.balances.find(
                       (b) => b.leave_type === "Annual Leave",
                     );
@@ -384,6 +394,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                         b.leave_type !== "Annual Leave" &&
                         b.leave_type !== "Sick Leave",
                     );
+
                     return (
                       <AnimatePresence key={emp.id}>
                         <>
@@ -399,6 +410,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                               setExpandedEmp(isExpanded ? null : emp.id)
                             }
                           >
+                            {/* Employee */}
                             <td className="px-4 py-3.5">
                               <div className="flex items-center gap-2">
                                 <Avatar
@@ -422,6 +434,8 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                 </div>
                               </div>
                             </td>
+
+                            {/* Department */}
                             <td className="px-4 py-3.5">
                               <div className="flex items-center gap-1.5">
                                 <div
@@ -436,11 +450,13 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                 </span>
                               </div>
                             </td>
+
+                            {/* Annual Leave */}
                             <td className="px-4 py-3.5">
                               {annual ? (
                                 <BalanceCell
-                                  used={annual.used_days ?? 0}
-                                  entitled={annual.entitled_days ?? 0}
+                                  remaining={annual.remaining ?? 0}
+                                  entitled={annual.entitled ?? 0}
                                   color={C.primary}
                                 />
                               ) : (
@@ -452,11 +468,13 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                 </span>
                               )}
                             </td>
+
+                            {/* Sick Leave */}
                             <td className="px-4 py-3.5">
                               {sick ? (
                                 <BalanceCell
-                                  used={sick.used_days ?? 0}
-                                  entitled={sick.entitled_days ?? 0}
+                                  remaining={sick.remaining ?? 0}
+                                  entitled={sick.entitled ?? 0}
                                   color={C.danger}
                                 />
                               ) : (
@@ -468,11 +486,13 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                 </span>
                               )}
                             </td>
+
+                            {/* Other */}
                             <td className="px-4 py-3.5">
                               {other ? (
                                 <BalanceCell
-                                  used={other.used_days ?? 0}
-                                  entitled={other.entitled_days ?? 0}
+                                  remaining={other.remaining ?? 0}
+                                  entitled={other.entitled ?? 0}
                                   color={
                                     leaveTypeColors[other.leave_type] ??
                                     C.accent
@@ -487,6 +507,8 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                 </span>
                               )}
                             </td>
+
+                            {/* Expand chevron */}
                             <td className="px-4 py-3.5">
                               <ChevronDown
                                 size={14}
@@ -501,7 +523,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                             </td>
                           </motion.tr>
 
-                          {/* Expanded row */}
+                          {/* ── Expanded detail row ── */}
                           {isExpanded && (
                             <motion.tr
                               key={`${emp.id}-exp`}
@@ -522,14 +544,15 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                     const color =
                                       leaveTypeColors[b.leave_type] ??
                                       C.textMuted;
-                                    const pct =
-                                      b.entitled_days > 0
-                                        ? Math.round(
-                                            (b.remaining_days /
-                                              b.entitled_days) *
-                                              100,
-                                          )
+                                    const rem = b.remaining ?? 0;
+                                    const entitled = b.entitled ?? 0;
+                                    const used = b.taken ?? 0; // actual days taken (approved)
+                                    const pending = b.pending ?? 0;
+                                    const usedPct =
+                                      entitled > 0
+                                        ? Math.round((used / entitled) * 100)
                                         : 0;
+
                                     return (
                                       <div
                                         key={b.id}
@@ -553,18 +576,20 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                           >
                                             {b.leave_type}
                                           </p>
+                                          {/* FIX: show remaining_days / entitled_days consistently */}
                                           <p
                                             className="text-sm font-black"
                                             style={{ color }}
                                           >
-                                            {b.remaining_days}{" "}
+                                            {rem}{" "}
                                             <span
                                               className="text-xs font-normal"
                                               style={{ color: C.textMuted }}
                                             >
-                                              / {b.entitled_days} days
+                                              / {entitled} days remaining
                                             </span>
                                           </p>
+                                          {/* FIX: bar shows USED fraction (was inverted with 100-pct before) */}
                                           <div
                                             className="h-1 w-20 rounded-full overflow-hidden mt-1"
                                             style={{ background: C.border }}
@@ -572,16 +597,24 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                             <div
                                               className="h-full rounded-full"
                                               style={{
-                                                width: `${100 - pct}%`,
+                                                width: `${usedPct}%`,
                                                 background: color,
                                               }}
                                             />
                                           </div>
+                                          <p
+                                            className="text-[9px] mt-0.5"
+                                            style={{ color: C.textMuted }}
+                                          >
+                                            {used} used · {b.pending_days ?? 0}{" "}
+                                            pending
+                                          </p>
                                         </div>
                                       </div>
                                     );
                                   })}
-                                  {/* View Profile — uses navigate, does NOT affect tab state */}
+
+                                  {/* View Profile */}
                                   <motion.button
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.97 }}

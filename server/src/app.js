@@ -42,7 +42,6 @@ const app = express();
 // );
 app.use(
   cors({
-
     origin: true,
     credentials: true,
   }),
@@ -70,8 +69,7 @@ app.use("/api/employees", employeeRoutes);
 app.use("/api/leave", leaveRoutes);
 app.use("/api/loans", loanRoutes);
 app.use("/api/notifications", notificationRoutes);
-// app.use("/api/reports", reportRoutes);
-// app.use("/api/performance", performanceRoutes);
+
 app.use("/api/departments", departmentRoutes);
 app.use("/api/trainings", trainingRoutes);
 app.use("/api/performance", performanceRoutes);

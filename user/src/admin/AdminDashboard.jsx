@@ -7,7 +7,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
-// import AdminSideNavbar from "./AdminSideNavbar";
+
 import Loader from "../components/Loader";
 import C from "../styles/colors";
 import {
@@ -494,15 +494,7 @@ export default function AdminDashboard() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
-        {/* ═══ SIDEBAR ═══ */}
-        {/* <AdminSideNavbar
-          sidebarOpen={sidebarOpen}
-          collapsed={sidebarCollapsed}
-          setCollapsed={setSidebarCollapsed}
-          admin={admin}
-          pendingApprovals={pendingApprovals}
-          onLogout={handleLogout}
-        /> */}
+     
 
         {/* ═══ MAIN ═══ */}
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">

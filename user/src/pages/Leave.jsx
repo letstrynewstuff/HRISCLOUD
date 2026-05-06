@@ -6,7 +6,7 @@
 // — Wired to /auth/me, /leave/balances/me, /leave/requests/me,
 //   /leave/policies, /leave/requests (POST), /leave/calendar
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 // import SideNavbar from "../components/SideNavbar";
 import {
@@ -291,31 +291,36 @@ export default function LeavePage() {
   }, []);
 
   /* ── Load leave data ── */
-  const loadData = useCallback(async () => {
-    setDataLoading(true);
-    setError(null);
-    try {
-      const [balRes, polRes, histRes] = await Promise.all([
-        leaveApi.getMyBalances(),
-        leaveApi.getPolicies(),
-        leaveApi.getMyRequests(),
-      ]);
-      setBalances(balRes.data ?? []);
-      setPolicies(polRes.data ?? []);
-      setHistory(histRes.data ?? []);
-    } catch (err) {
-      setError(
-        err?.response?.data?.message ??
-          "Failed to load leave data. Please refresh.",
-      );
-    } finally {
-      setDataLoading(false);
-    }
-  }, []);
+  const loadDataRef = useRef(null);
 
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    loadDataRef.current = async () => {
+      setDataLoading(true);
+      setError(null);
+      try {
+        const [balRes, polRes, histRes] = await Promise.all([
+          leaveApi.getMyBalances(),
+          leaveApi.getPolicies(),
+          leaveApi.getMyRequests(),
+        ]);
+        setBalances(balRes.data ?? []);
+        setPolicies(polRes.data ?? []);
+        setHistory(histRes.data ?? []);
+      } catch (err) {
+        setError(
+          err?.response?.data?.message ??
+            "Failed to load leave data. Please refresh.",
+        );
+      } finally {
+        setDataLoading(false);
+      }
+    };
+
+    loadDataRef.current?.();
+  }, []);
+
+  // Stable wrapper — callers use this; the ref always points to the latest version
+  const loadData = () => loadDataRef.current?.();
 
   /* ── Load calendar data whenever month changes ── */
   useEffect(() => {
@@ -329,7 +334,6 @@ export default function LeavePage() {
   }, [calYear, calMonth]);
 
   /* ─── Derived ─── */
-  // Build calendar leave map from history (own leaves) + calData (team)
   const calLeaveMap = {};
   history.forEach((lv) => {
     const s = new Date(lv.start_date),
@@ -340,15 +344,45 @@ export default function LeavePage() {
   });
 
   const selectedPolicy = policies.find((p) => p.id === form.policyId);
-  const selectedBalance = balances.find(
-    (b) => b.leave_policy_id === form.policyId || b.id === form.policyId,
+
+  // Robust balance lookup — handles 3 possible API shapes:
+  // 1. balance has leave_policy_id that matches policy id (ideal)
+  // 2. balance id IS the policy id (some APIs collapse these)
+  // 3. match by leave_type string when above two both fail
+  const selectedBalance = balances.find((b) => {
+    if (!form.policyId) return false;
+    if (b.leave_policy_id && b.leave_policy_id === form.policyId) return true;
+    if (b.id === form.policyId) return true;
+    if (
+      selectedPolicy &&
+      b.leave_type &&
+      selectedPolicy.leave_type &&
+      b.leave_type.toLowerCase() === selectedPolicy.leave_type.toLowerCase()
+    )
+      return true;
+    return false;
+  });
+
+  // Support both .remaining and legacy .remaining_days
+  const remaining = Number(
+    selectedBalance?.remaining ?? selectedBalance?.remaining_days ?? 0,
   );
-  const remaining = selectedBalance?.remaining_days ?? 0;
+
+  // DEV: log balance lookup result — remove before production
+  // if (process.env.NODE_ENV !== "production" && form.policyId) {
+  //   console.debug("[Leave] policyId:", form.policyId);
+  //   console.debug("[Leave] selectedPolicy:", selectedPolicy);
+  //   console.debug("[Leave] selectedBalance:", selectedBalance);
+  //   console.debug("[Leave] remaining:", remaining);
+  //   console.debug("[Leave] balances sample:", balances.slice(0, 2));
+  // }
+
   const workdays = countWorkdays(form.startDate, form.endDate);
   const afterBalance = remaining - workdays;
 
+  // FIX 2: Use .remaining instead of .remaining_days for totals
   const totalAvailable = balances.reduce(
-    (s, b) => s + Number(b.remaining_days ?? 0),
+    (s, b) => s + Number(b.remaining ?? 0),
     0,
   );
   const totalPending = history
@@ -415,7 +449,7 @@ export default function LeavePage() {
         reason: form.reason,
         supportingDocument: form.file ? form.file.name : undefined,
       });
-      await loadData(); // refresh balances + history
+      await loadData();
       setApplyStep(3);
     } catch (err) {
       const msg =
@@ -440,13 +474,14 @@ export default function LeavePage() {
     setActiveTab("history");
   };
 
+  // FIX 6: Use camelCase field names (firstName, lastName) matching /auth/me response
   const initials = profile
     ? (
-        (profile.first_name?.[0] ?? "") + (profile.last_name?.[0] ?? "")
+        (profile.firstName?.[0] ?? "") + (profile.lastName?.[0] ?? "")
       ).toUpperCase()
     : "..";
   const displayName = profile
-    ? `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim()
+    ? `${profile.firstName ?? ""} ${profile.lastName ?? ""}`.trim()
     : "Loading…";
   const displayId = profile?.employee_code ?? profile?.id?.slice(0, 8) ?? "—";
   const displayDept = profile?.department_name ?? profile?.department ?? "—";
@@ -763,9 +798,12 @@ export default function LeavePage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       {balances.map((bal, i) => {
                         const meta = getMeta(bal.leave_type);
-                        const used = Number(bal.used_days ?? 0);
-                        const total = Number(bal.entitled_days ?? 0);
-                        const avail = Number(bal.remaining_days ?? 0);
+
+                        // FIX 1: Use .taken, .entitled, .remaining instead of _days suffixed names
+                        const used = Number(bal.taken ?? 0);
+                        const total = Number(bal.entitled ?? 0);
+                        const avail = Number(bal.remaining ?? 0);
+
                         const pct = total > 0 ? (used / total) * 100 : 0;
                         const low = avail <= 2 && avail > 0;
                         const pending = history.filter(
@@ -892,9 +930,23 @@ export default function LeavePage() {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => {
+                                  // Find the policy whose leave_type matches this balance,
+                                  // or fall back to leave_policy_id / id so the select stays in sync
+                                  const matchedPolicy = policies.find(
+                                    (p) =>
+                                      p.id === bal.leave_policy_id ||
+                                      p.id === bal.id ||
+                                      (p.leave_type &&
+                                        bal.leave_type &&
+                                        p.leave_type.toLowerCase() ===
+                                          bal.leave_type.toLowerCase()),
+                                  );
                                   setForm((f) => ({
                                     ...f,
-                                    policyId: bal.id ?? bal.leave_policy_id,
+                                    policyId:
+                                      matchedPolicy?.id ??
+                                      bal.leave_policy_id ??
+                                      bal.id,
                                   }));
                                   setActiveTab("apply");
                                   setApplyStep(1);
@@ -1065,11 +1117,19 @@ export default function LeavePage() {
                               >
                                 <option value="">Select leave type…</option>
                                 {policies.map((p) => {
+                                  // Robust balance lookup matching selectedBalance logic
                                   const bal = balances.find(
-                                    (b) => b.leave_policy_id === p.id,
+                                    (b) =>
+                                      (b.leave_policy_id &&
+                                        b.leave_policy_id === p.id) ||
+                                      b.id === p.id ||
+                                      (b.leave_type &&
+                                        p.leave_type &&
+                                        b.leave_type.toLowerCase() ===
+                                          p.leave_type.toLowerCase()),
                                   );
                                   const avail = Number(
-                                    bal?.remaining_days ?? 0,
+                                    bal?.remaining ?? bal?.remaining_days ?? 0,
                                   );
                                   return (
                                     <option

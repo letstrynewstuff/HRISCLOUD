@@ -7,7 +7,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-// import SideNavbar from "../components/SideNavbar";
+
 import {
   Clock,
   Calendar,
@@ -153,7 +153,7 @@ export default function EmployeeDashboard() {
   const [authLoading, setAuthLoading] = useState(true);
 
   /* ── Data ── */
-  const [attendance, setAttendance] = useState(null); // today snapshot
+  const [attendance, setAttendance] = useState(null);
   const [balances, setBalances] = useState([]);
   const [requests, setRequests] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
@@ -194,7 +194,11 @@ export default function EmployeeDashboard() {
   useEffect(() => {
     authApi
       .getMe()
-      .then((r) => setProfile(r.data ?? r))
+      .then((r) => {
+        console.log("profile response:", r); // add this
+        setProfile(r.data ?? r);
+      })
+
       .catch(() => {})
       .finally(() => setAuthLoading(false));
   }, []);
@@ -203,14 +207,24 @@ export default function EmployeeDashboard() {
   const loadData = useCallback(async () => {
     setDataLoading(true);
     const results = await Promise.allSettled([
-      attendanceApi.getToday(),
+      attendanceApi.getMyAttendance({ limit: 1 }),
       leaveApi.getMyBalances(),
       leaveApi.getMyRequests({ limit: 5 }),
       announcementApi.feed({ limit: 5 }),
     ]);
 
-    if (results[0].status === "fulfilled")
-      setAttendance(results[0].value?.data ?? results[0].value ?? null);
+    // if (results[0].status === "fulfilled")
+    //   setAttendance(results[0].value?.data ?? results[0].value ?? null);
+    if (results[0].status === "fulfilled") {
+      const rows = results[0].value?.rows ?? [];
+      const todayStr = new Date().toDateString();
+      const todayRecord = rows.find(
+        (r) =>
+          new Date(r.attendance_date ?? r.attendanceDate).toDateString() ===
+          todayStr,
+      );
+      setAttendance(todayRecord ?? null);
+    }
     if (results[1].status === "fulfilled")
       setBalances(results[1].value?.data ?? []);
     if (results[2].status === "fulfilled")
@@ -239,7 +253,10 @@ export default function EmployeeDashboard() {
 
   /* ── Clock in/out ── */
   const isClockedIn =
-    attendance?.is_clocked_in ?? attendance?.status === "present";
+    attendance !== null &&
+    attendance.clock_in !== null &&
+    (attendance.clock_out === null || attendance.clock_out === undefined);
+
   const clockInTime = attendance?.clock_in;
 
   const handleClock = async () => {
@@ -292,7 +309,7 @@ export default function EmployeeDashboard() {
     : "..";
   const displayName = authLoading
     ? "Loading…"
-    : `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim();
+    : `${profile?.firstName ?? ""} ${profile?.lastName ?? ""}`.trim();
 
   /* ─────────────────────── RENDER ─────────────────────── */
   return (
@@ -305,19 +322,6 @@ export default function EmployeeDashboard() {
       }}
     >
       <div className="flex h-screen overflow-hidden">
-        {/* <SideNavbar
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          COLORS={C}
-          EMPLOYEE={{
-            name: displayName,
-            role: profile?.job_role_name ?? "—",
-            department: profile?.department_name ?? "—",
-            initials,
-            id: profile?.employee_code ?? "—",
-          }}
-        /> */}
-
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* ── TOP NAV ── */}
           <header
@@ -437,18 +441,7 @@ export default function EmployeeDashboard() {
                 />
               </div>
               <div className="relative flex flex-col md:flex-row md:items-center gap-5">
-                <motion.div
-                  initial={{ scale: 0, rotate: -20 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-2xl font-bold shrink-0"
-                  style={{
-                    background: "linear-gradient(135deg,#818CF8,#06B6D4)",
-                    boxShadow: "0 8px 24px rgba(129,140,248,0.4)",
-                  }}
-                >
-                  {authLoading ? "…" : initials}
-                </motion.div>
+           
                 <div className="flex-1">
                   <p className="text-indigo-200 text-sm font-medium mb-0.5">
                     {greeting()},
@@ -459,9 +452,9 @@ export default function EmployeeDashboard() {
                   >
                     {displayName} 👋
                   </h1>
+              
                   <p className="text-indigo-300 text-sm mt-1">
-                    {profile?.job_role_name ?? "—"} ·{" "}
-                    {profile?.department_name ?? "—"}
+                    {profile?.jobTitle ?? "—"} · {profile?.department ?? "—"}
                   </p>
                 </div>
                 <div className="md:text-right">
@@ -479,7 +472,7 @@ export default function EmployeeDashboard() {
             {/* ── TOP ROW: Attendance + Leave ── */}
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
               {/* ── 2. ATTENDANCE ── */}
-              <motion.div
+              {/* <motion.div
                 variants={scaleIn}
                 initial="hidden"
                 animate="visible"
@@ -569,6 +562,80 @@ export default function EmployeeDashboard() {
                       )}
                     </motion.button>
                   </Card>
+                )}
+              </motion.div> */}
+              <motion.div
+                variants={scaleIn}
+                initial="hidden"
+                animate="visible"
+                custom={1}
+              >
+                {dataLoading ? (
+                  <Skeleton className="h-36" />
+                ) : (
+                  <motion.div
+                    className="rounded-2xl p-5"
+                    style={{
+                      background: C.surface,
+                      border: `1px solid ${C.border}`,
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="w-8 h-8 rounded-xl flex items-center justify-center"
+                          style={{ background: C.primaryLight }}
+                        >
+                          <Clock size={15} color={C.primary} />
+                        </div>
+                        <span
+                          className="font-semibold text-sm"
+                          style={{ color: C.textPrimary }}
+                        >
+                          Attendance
+                        </span>
+                      </div>
+                      <Link
+                        to="/attendance"
+                        className="text-xs font-medium flex items-center gap-0.5"
+                        style={{ color: C.primary }}
+                      >
+                        View <ChevronRight size={12} />
+                      </Link>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <span
+                        className="w-3 h-3 rounded-full shrink-0 animate-pulse"
+                        style={{
+                          background: isClockedIn ? C.success : C.danger,
+                        }}
+                      />
+                      <div>
+                        <p
+                          className="text-base font-bold"
+                          style={{ color: C.textPrimary }}
+                        >
+                          {isClockedIn ? "Clocked In" : "You're not clocked in"}
+                        </p>
+                        <p
+                          className="text-xs"
+                          style={{ color: C.textSecondary }}
+                        >
+                          {isClockedIn && clockInTime
+                            ? `Since ${new Date(clockInTime).toLocaleTimeString(
+                                "en-NG",
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                },
+                              )}`
+                            : "Head to Attendance"}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
                 )}
               </motion.div>
 
@@ -966,7 +1033,7 @@ export default function EmployeeDashboard() {
                     )}
                     <div className="flex gap-2">
                       <Link
-                        to="/payroll"
+                        to="/payslips"
                         className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white text-center"
                         style={{ background: C.primary }}
                       >

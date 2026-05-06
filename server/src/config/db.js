@@ -1,9 +1,9 @@
 
 // src/config/db.js
 import pg from "pg";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 
-dotenv.config();
+// dotenv.config();
 
 const { Pool } = pg;
 
@@ -17,10 +17,21 @@ const pool = new Pool({
 
   max: 20, // max number of clients in pool
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  connectionTimeoutMillis: 30000,
 });
 
 // Test database connection immediately when server starts
+// (async () => {
+//   try {
+//     const client = await pool.connect();
+//     const result = await client.query("SELECT NOW()");
+//     console.log("✅ Database connected successfully");
+//     console.log("🕒 Server time:", result.rows[0].now);
+//     client.release();
+//   } catch (error) {
+//     console.error("❌ Database connection failed:", error.message);
+//   }
+// })();
 (async () => {
   try {
     const client = await pool.connect();
@@ -29,7 +40,10 @@ const pool = new Pool({
     console.log("🕒 Server time:", result.rows[0].now);
     client.release();
   } catch (error) {
-    console.error("❌ Database connection failed:", error.message);
+    console.error("❌ Database connection failed:");
+    console.error("Message:", error.message);
+    console.error("Code:", error.code);
+    console.error("Full error:", JSON.stringify(error, null, 2)); // add this
   }
 })();
 
