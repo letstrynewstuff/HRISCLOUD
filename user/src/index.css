@@ -12,6 +12,19 @@ body {
   font-family: "Plus Jakarta Sans", sans-serif;
 }
 
+:root {
+  --top-bar-height: 4rem;   /* 64px — matches NavbarNew h-16 */
+  --bottom-nav-height: 4rem; /* 64px — matches both bottom navs */
+}
+
+/* On large screens, top/bottom nav don't exist — zero them out */
+@media (min-width: 1024px) {
+  :root {
+    --top-bar-height: 0px;
+    --bottom-nav-height: 0px;
+  }
+}
+
 
 
 @keyframes shimmer {
