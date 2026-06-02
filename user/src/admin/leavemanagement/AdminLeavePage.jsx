@@ -24,7 +24,7 @@ import LeavePolicies from "./LeavePolicies";
 import LeaveBalances from "./LeaveBalances";
 
 const LEAVE_TABS = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
+  // { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "requests", label: "Leave Requests", icon: FileText },
   { id: "policies", label: "Policies", icon: ShieldCheck },
   { id: "balances", label: "Employee Balances", icon: Users },
@@ -342,12 +342,12 @@ export default function AdminLeavePage() {
                   animate="visible"
                   exit={{ opacity: 0, transition: { duration: 0.1 } }}
                 >
-                  {activeTab === "dashboard" && (
+                  {/* {activeTab === "dashboard" && (
                     <LeaveDashboard
                       onTabChange={setActiveTab} // ← correct prop: onTabChange
                       searchQuery={searchQuery}
                     />
-                  )}
+                  )} */}
                   {activeTab === "requests" && (
                     <LeaveRequests
                       onTabChange={setActiveTab}

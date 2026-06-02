@@ -16,11 +16,11 @@ import StatutoryReports from "./StatutoryReports";
 import PayslipViewer from "./PayslipViewer";
 
 const TABS = [
-  { id: "dashboard", label: "Dashboard" },
+  // { id: "dashboard", label: "Dashboard" },
   { id: "run", label: "Run Payroll" },
   { id: "history", label: "History" },
-  { id: "payslip", label: "Payslip Lookup" },
-  { id: "salary", label: "Salary Config" },
+  // { id: "payslip", label: "Payslip Lookup" },
+  // { id: "salary", label: "Salary Config" },
   { id: "deductions", label: "Deductions" },
   { id: "reports", label: "Statutory Reports" },
 ];
@@ -257,9 +257,9 @@ function PayrollInner() {
                 animate="visible"
                 exit="exit"
               >
-                {activeTab === "dashboard" && (
+                {/* {activeTab === "dashboard" && (
                   <PayrollDashboard onRunPayroll={() => setActiveTab("run")} />
-                )}
+                )} */}
                 {activeTab === "run" && (
                   <RunPayroll onComplete={() => setActiveTab("history")} />
                 )}

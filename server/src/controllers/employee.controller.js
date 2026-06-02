@@ -30,15 +30,30 @@ function handleValidationErrors(req, res) {
  * Format: EMP-0001, EMP-0042, …
  * Uses a DB sequence approach: counts existing employees in company + 1.
  */
+// async function generateEmployeeCode(client, companyId) {
+//   const result = await client.query(
+//     `SELECT COUNT(*) AS total FROM employees WHERE company_id = $1`,
+//     [companyId],
+//   );
+//   const next = parseInt(result.rows[0].total, 10) + 1;
+//   return `EMP-${String(next).padStart(4, "0")}`;
+// }
+// Replace generateEmployeeCode with this:
 async function generateEmployeeCode(client, companyId) {
   const result = await client.query(
-    `SELECT COUNT(*) AS total FROM employees WHERE company_id = $1`,
+    `SELECT employee_code 
+     FROM employees 
+     WHERE company_id = $1 
+       AND employee_code ~ '^EMP-[0-9]+$'
+     ORDER BY CAST(SUBSTRING(employee_code FROM 5) AS INTEGER) DESC
+     LIMIT 1`,
     [companyId],
   );
-  const next = parseInt(result.rows[0].total, 10) + 1;
+
+  const last = result.rows[0]?.employee_code;
+  const next = last ? parseInt(last.replace("EMP-", ""), 10) + 1 : 1;
   return `EMP-${String(next).padStart(4, "0")}`;
 }
-
 /**
  * Build a safe partial-update SET clause from a plain object.
  * Only includes keys explicitly listed in `allowed`.
@@ -346,20 +361,39 @@ export async function listEmployees(req, res) {
     const total = parseInt(countResult.rows[0].total, 10);
 
     // ── Data ──
+    // const dataResult = await db.query(
+    //   `SELECT
+    //      e.id, e.employee_code, e.first_name, e.last_name, e.avatar,
+    //      e.employment_type, e.employment_status, e.location, e.start_date,
+    //      d.name                                  AS department_name,
+    //      jr.title                                AS job_role_name,
+    //      CONCAT(m.first_name, ' ', m.last_name)  AS manager_name
+    //    FROM employees e
+    //    LEFT JOIN departments d  ON d.id  = e.department_id
+    //    LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
+    //    LEFT JOIN employees   m  ON m.id  = e.manager_id
+    //    WHERE ${whereClause}
+    //    ORDER BY e.first_name ASC
+    //    LIMIT $${idx} OFFSET $${idx + 1}`,
+    //   [...values, limit, offset],
+    // );
+
+    // In listEmployees, change the SELECT to include e.department_id:
     const dataResult = await db.query(
       `SELECT
-         e.id, e.employee_code, e.first_name, e.last_name, e.avatar,
-         e.employment_type, e.employment_status, e.location, e.start_date,
-         d.name                                  AS department_name,
-         jr.title                                AS job_role_name,
-         CONCAT(m.first_name, ' ', m.last_name)  AS manager_name
-       FROM employees e
-       LEFT JOIN departments d  ON d.id  = e.department_id
-       LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
-       LEFT JOIN employees   m  ON m.id  = e.manager_id
-       WHERE ${whereClause}
-       ORDER BY e.first_name ASC
-       LIMIT $${idx} OFFSET $${idx + 1}`,
+     e.id, e.employee_code, e.first_name, e.last_name, e.avatar,
+     e.employment_type, e.employment_status, e.location, e.start_date,
+     e.department_id,                              -- ← ADD THIS
+     d.name                                  AS department_name,
+     jr.title                                AS job_role_name,
+     CONCAT(m.first_name, ' ', m.last_name)  AS manager_name
+   FROM employees e
+   LEFT JOIN departments d  ON d.id  = e.department_id
+   LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
+   LEFT JOIN employees   m  ON m.id  = e.manager_id
+   WHERE ${whereClause}
+   ORDER BY e.first_name ASC
+   LIMIT $${idx} OFFSET $${idx + 1}`,
       [...values, limit, offset],
     );
 
@@ -1122,272 +1156,7 @@ export async function getEmployeeHistory(req, res) {
 //   5. Logs to employment_history
 // Requires: authenticate + requireRole(["hr_admin","super_admin"])
 // ══════════════════════════════════════════════════════════════
-// export async function offboardEmployee(req, res) {
-//   const { id } = req.params;
-//   const { companyId, userId } = req.user;
-//   const {
-//     exitType = "terminated", // 'terminated' | 'resigned' | 'retired'
-//     terminationDate,
-//     terminationReason,
-//     lastWorkingDay,
-//     notes,
-//   } = req.body;
 
-//   if (!["terminated", "resigned", "retired"].includes(exitType)) {
-//     return res
-//       .status(400)
-//       .json({ message: "exitType must be terminated, resigned, or retired." });
-//   }
-
-//   const client = await db.getClient();
-//   try {
-//     await client.query("BEGIN");
-
-//     const empResult = await client.query(
-//       `UPDATE employees
-//        SET employment_status   = $1,
-//            termination_date    = $2,
-//            termination_reason  = $3,
-//            updated_at          = NOW()
-//        WHERE id = $4 AND company_id = $5
-//        RETURNING id, user_id, first_name, last_name`,
-//       [
-//         exitType,
-//         terminationDate ??
-//           lastWorkingDay ??
-//           new Date().toISOString().split("T")[0],
-//         terminationReason ?? null,
-//         id,
-//         companyId,
-//       ],
-//     );
-
-//     if (empResult.rows.length === 0) {
-//       await client.query("ROLLBACK");
-//       return res.status(404).json({ message: "Employee not found." });
-//     }
-
-//     const emp = empResult.rows[0];
-
-//     // Deactivate user account + purge sessions
-//     if (emp.user_id) {
-//       await client.query(`UPDATE users SET is_active = false WHERE id = $1`, [
-//         emp.user_id,
-//       ]);
-//       await client.query(`DELETE FROM refresh_tokens WHERE user_id = $1`, [
-//         emp.user_id,
-//       ]);
-//     }
-
-//     // Standard offboarding checklist tasks
-//     const defaultTasks = [
-//       "Return company equipment",
-//       "Revoke system access",
-//       "Complete exit interview",
-//       "Process final payroll",
-//       "Update org chart",
-//       "Archive employee documents",
-//     ];
-
-//     for (const task of defaultTasks) {
-//       await client.query(
-//         `INSERT INTO offboarding_tasks (employee_id, task, status, created_at)
-//          VALUES ($1, $2, 'pending', NOW())`,
-//         [id, task],
-//       );
-//     }
-
-//     // History entry
-//     await client.query(
-//       `INSERT INTO employment_history (
-//          employee_id, event_type, employment_status, effective_date, notes, created_by
-//        )
-//        VALUES ($1, $2, $3, $4, $5, $6)`,
-//       [
-//         id,
-//         exitType,
-//         exitType,
-//         terminationDate ?? new Date().toISOString().split("T")[0],
-//         notes ?? `Offboarding initiated (${exitType}).`,
-//         userId,
-//       ],
-//     );
-
-//     await client.query("COMMIT");
-
-//     return res.status(200).json({
-//       message: `Offboarding initiated for ${emp.first_name} ${emp.last_name}.`,
-//       data: {
-//         employeeId: emp.id,
-//         status: exitType,
-//         tasksCreated: defaultTasks.length,
-//         terminationDate: terminationDate ?? lastWorkingDay,
-//       },
-//     });
-//   } catch (err) {
-//     await client.query("ROLLBACK");
-//     console.error("offboardEmployee error:", err);
-//     return res
-//       .status(500)
-//       .json({ message: "Server error initiating offboarding." });
-//   } finally {
-//     client.release();
-//   }
-// }
-// export async function offboardEmployee(req, res) {
-//   const { id } = req.params;
-//   const { companyId, userId } = req.user;
-
-//   const {
-//     exitType = "terminated",
-//     terminationDate,
-//     terminationReason,
-//     lastWorkingDay,
-//     notes,
-//   } = req.body;
-
-//   // Validate exitType
-//   if (!["terminated", "resigned", "retired"].includes(exitType)) {
-//     return res.status(400).json({
-//       message: "exitType must be one of: terminated, resigned, or retired.",
-//     });
-//   }
-
-//   // Basic date validation
-//   const effectiveDate = terminationDate || lastWorkingDay;
-//   if (effectiveDate && isNaN(new Date(effectiveDate).getTime())) {
-//     return res.status(400).json({
-//       message: "Invalid date format for terminationDate or lastWorkingDay.",
-//     });
-//   }
-
-//   const client = await db.getClient();
-
-//   try {
-//     await client.query("BEGIN");
-
-//     // Update employee record + prevent double offboarding
-//     const empResult = await client.query(
-//       `UPDATE employees
-//        SET employment_status = $1,
-//            termination_date = $2,
-//            termination_reason = $3,
-//            updated_at = NOW()
-//        WHERE id = $4 
-//          AND company_id = $5
-//          AND employment_status NOT IN ('terminated', 'resigned', 'retired')
-//        RETURNING id, user_id, first_name, last_name`,
-//       [
-//         exitType,
-//         effectiveDate || new Date().toISOString().split("T")[0],
-//         terminationReason ? terminationReason.trim() : null,
-//         id,
-//         companyId,
-//       ],
-//     );
-
-//     if (empResult.rows.length === 0) {
-//       await client.query("ROLLBACK");
-//       return res.status(404).json({
-//         message: "Employee not found or already offboarded.",
-//       });
-//     }
-
-//     const emp = empResult.rows[0];
-
-//     // Deactivate user account + purge sessions
-//     if (emp.user_id) {
-//       await client.query(
-//         `UPDATE users 
-//          SET is_active = false, updated_at = NOW() 
-//          WHERE id = $1`,
-//         [emp.user_id],
-//       );
-
-//       await client.query(`DELETE FROM refresh_tokens WHERE user_id = $1`, [
-//         emp.user_id,
-//       ]);
-//     }
-
-//     // Standard offboarding checklist
-//     const defaultTasks = [
-//       "Return company equipment",
-//       "Revoke system access",
-//       "Complete exit interview",
-//       "Process final payroll",
-//       "Update org chart",
-//       "Archive employee documents",
-//     ];
-
-//     for (const task of defaultTasks) {
-//       await client.query(
-//         `INSERT INTO offboarding_tasks (employee_id, task, status, created_at)
-//          VALUES ($1, $2, 'pending', NOW())`,
-//         [id, task],
-//       );
-//     }
-
-//     // Add entry to employment history
-//     // await client.query(
-//     //   `INSERT INTO employment_history (
-//     //      employee_id, 
-//     //      event_type, 
-        
-//     //      effective_date, 
-//     //      notes, 
-//     //      created_by
-//     //    )
-//     //    VALUES ($1, $2, $3, $4, $5, $6)`,
-//     //   [
-//     //     id,
-//     //     "offboarded", // You can change to exitType if preferred
-//     //     exitType,
-//     //     effectiveDate || new Date().toISOString().split("T")[0],
-//     //     notes ? notes.trim() : `Employee offboarded (${exitType}).`,
-//     //     userId,
-//     //   ],
-//     // );
-//     await client.query(
-//       `INSERT INTO employment_history (
-//      employee_id, 
-//      event_type,
-//      employment_type,
-//      effective_date, 
-//      notes, 
-//      created_by
-//    )
-//    VALUES ($1, $2, $3, $4, $5, $6)`,
-//       [
-//         id,
-//         "offboarded",
-//         exitType, // now valid
-//         effectiveDate || new Date().toISOString().split("T")[0],
-//         notes ? notes.trim() : `Employee offboarded (${exitType}).`,
-//         userId,
-//       ],
-//     );
-
-//     await client.query("COMMIT");
-
-//     return res.status(200).json({
-//       message: `Offboarding successfully initiated for ${emp.first_name} ${emp.last_name}.`,
-//       data: {
-//         employeeId: emp.id,
-//         exitType,
-//         terminationDate: effectiveDate,
-//         tasksCreated: defaultTasks.length,
-//       },
-//     });
-//   } catch (err) {
-//     await client.query("ROLLBACK");
-//     console.error("offboardEmployee error:", err);
-//     return res.status(500).json({
-//       message: "Internal server error while initiating offboarding.",
-//     });
-//   } finally {
-//     client.release();
-//   }
-// }
 
 // ══════════════════════════════════════════════════════════════
 // GET /api/employees/org-chart

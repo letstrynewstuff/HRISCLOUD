@@ -78,7 +78,7 @@ const NAV_ITEMS = [
     path: "/admin/documents/admin-documents",
   },
   { label: "Benefits", icon: Heart, path: "/admin/benefits/admin-benefits" },
-  { label: "Reports", icon: BarChart2, path: "/admin/reports/admin-reports" },
+  // { label: "Reports", icon: BarChart2, path: "/admin/reports/admin-reports" },
   { label: "Announcements", icon: Bell, path: "/admin/announcements" },
 ];
 

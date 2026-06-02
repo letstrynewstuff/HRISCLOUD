@@ -22,7 +22,7 @@ export function signAccessToken(payload) {
 }
 
 export function verifyAccessToken(token) {
-  return jwt.verify(token, ACCESS_SECRET); // throws on invalid/expired
+  return jwt.verify(token, ACCESS_SECRET);
 }
 
 // ─── Refresh token (long-lived) ────────────────────────────────

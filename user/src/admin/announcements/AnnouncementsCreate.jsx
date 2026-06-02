@@ -1,11 +1,11 @@
 // ─────────────────────────────────────────────────────────────
 //  src/admin/announcements/AnnouncementsCreate.jsx
 //  Route: /admin/announcements/create
+//  Connected to: announcementApi.create()
 // ─────────────────────────────────────────────────────────────
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-// import AdminSideNavbar from "../AdminSideNavbar";
 import {
   Megaphone,
   Bell,
@@ -14,7 +14,6 @@ import {
   X,
   Check,
   Eye,
-  EyeOff,
   Calendar,
   Users,
   Building2,
@@ -32,24 +31,14 @@ import {
   AlignLeft,
   AlignCenter,
   AlignRight,
-  Link,
-  Image,
-  Smile,
-  Type,
   Hash,
   ChevronDown,
-  Tag,
   Zap,
   Star,
-  Info,
   FileText,
   Pin,
-  Target,
-  Layers,
-  Sparkles,
-  ArrowRight,
-  Lock,
 } from "lucide-react";
+import { announcementApi } from "../../api/service/announcementApi";
 
 /* ─── Design tokens ─── */
 const C = {
@@ -170,12 +159,11 @@ const fadeUp = {
   }),
 };
 
-/* ─── Rich Text Toolbar ─── */
 const TOOLBAR_ACTIONS = [
   { icon: Bold, action: "bold", label: "Bold" },
   { icon: Italic, action: "italic", label: "Italic" },
   { icon: Underline, action: "underline", label: "Underline" },
-  null, // separator
+  null,
   { icon: AlignLeft, action: "justifyLeft", label: "Align Left" },
   { icon: AlignCenter, action: "justifyCenter", label: "Center" },
   { icon: AlignRight, action: "justifyRight", label: "Align Right" },
@@ -184,6 +172,7 @@ const TOOLBAR_ACTIONS = [
   { icon: Hash, action: "insertOrderedList", label: "Numbered List" },
 ];
 
+/* ─── Rich editor ─── */
 function RichEditor({ value, onChange, placeholder }) {
   const editorRef = useRef(null);
   const [activeFormats, setActiveFormats] = useState(new Set());
@@ -202,17 +191,11 @@ function RichEditor({ value, onChange, placeholder }) {
     setActiveFormats(formats);
   };
 
-  const handleInput = () => {
-    onChange(editorRef.current?.innerHTML || "");
-    updateActiveFormats();
-  };
-
   return (
     <div
       className="rounded-2xl overflow-hidden"
       style={{ border: `1.5px solid ${C.border}` }}
     >
-      {/* Toolbar */}
       <div
         className="flex items-center gap-1 px-3 py-2.5 flex-wrap"
         style={{
@@ -251,39 +234,19 @@ function RichEditor({ value, onChange, placeholder }) {
             </motion.button>
           ),
         )}
-        <div className="ml-auto flex items-center gap-1">
-          <select
-            className="text-xs px-2 py-1 rounded-lg outline-none"
-            style={{
-              background: "transparent",
-              color: C.textSecondary,
-              border: "none",
-            }}
-            onChange={(e) => {
-              execCmd("fontSize");
-            }}
-          >
-            <option>Normal</option>
-            <option>Heading 1</option>
-            <option>Heading 2</option>
-          </select>
-        </div>
       </div>
-
-      {/* Editable area */}
       <div
         ref={editorRef}
         contentEditable
         suppressContentEditableWarning
-        onInput={handleInput}
+        onInput={() => {
+          onChange(editorRef.current?.innerHTML || "");
+          updateActiveFormats();
+        }}
         onKeyUp={updateActiveFormats}
         onMouseUp={updateActiveFormats}
         className="min-h-48 p-4 text-sm outline-none"
-        style={{
-          color: C.textPrimary,
-          lineHeight: "1.75",
-          fontFamily: "inherit",
-        }}
+        style={{ color: C.textPrimary, lineHeight: "1.75" }}
         data-placeholder={placeholder}
       />
     </div>
@@ -312,7 +275,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
         }}
         onClick={onClose}
       />
-
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
@@ -321,7 +283,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
         className="relative h-full w-full max-w-lg flex flex-col"
         style={{ background: C.bg, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
       >
-        {/* Header */}
         <div
           className="flex items-center justify-between px-5 py-4 shrink-0"
           style={{
@@ -346,16 +307,13 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
           </button>
         </div>
 
-        {/* Preview content */}
         <div className="flex-1 overflow-y-auto p-5">
-          {/* Employee-view card */}
           <div
             className="mb-4 text-xs font-semibold uppercase tracking-wide"
             style={{ color: C.textMuted }}
           >
             How it appears to employees:
           </div>
-
           <div
             className="rounded-2xl overflow-hidden"
             style={{
@@ -364,7 +322,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
               boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
             }}
           >
-            {/* Type banner */}
             <div
               className="px-5 py-3 flex items-center gap-2.5"
               style={{
@@ -381,9 +338,7 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
                 </span>
               )}
             </div>
-
             <div className="p-5">
-              {/* Title */}
               <div className="flex items-start gap-2 mb-3">
                 {form.emoji && (
                   <span className="text-2xl leading-none mt-0.5">
@@ -404,8 +359,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
                   )}
                 </h2>
               </div>
-
-              {/* Meta */}
               <div
                 className="flex items-center gap-3 mb-4 text-xs"
                 style={{ color: C.textMuted }}
@@ -439,8 +392,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
                       : "Select departments"}
                 </span>
               </div>
-
-              {/* Body */}
               <div
                 className="text-sm leading-relaxed prose prose-sm max-w-none"
                 style={{ color: C.textSecondary }}
@@ -450,8 +401,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
                     "<p style='color:#94A3B8'>Your announcement body will appear here...</p>",
                 }}
               />
-
-              {/* Tags */}
               {form.tags.length > 0 && (
                 <div
                   className="flex flex-wrap gap-1.5 mt-4 pt-4"
@@ -471,7 +420,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
             </div>
           </div>
 
-          {/* Audience summary */}
           <div
             className="mt-4 rounded-xl p-4"
             style={{ background: C.surface, border: `1px solid ${C.border}` }}
@@ -488,7 +436,7 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
                   label: "Recipients",
                   value:
                     form.audience === "all"
-                      ? "All 127 employees"
+                      ? "All employees"
                       : `${form.departments.length} department(s)`,
                 },
                 {
@@ -498,7 +446,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
                       ? "Immediately"
                       : form.scheduleDate || "Scheduled",
                 },
-                { label: "Channels", value: "Dashboard + Email Notification" },
                 {
                   label: "Priority",
                   value:
@@ -523,7 +470,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
           </div>
         </div>
 
-        {/* Action footer */}
         <div
           className="px-5 py-4 shrink-0 flex gap-3"
           style={{ background: C.surface, borderTop: `1px solid ${C.border}` }}
@@ -539,8 +485,7 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
               border: `1px solid ${C.border}`,
             }}
           >
-            <Save size={14} />
-            Save Draft
+            <Save size={14} /> Save Draft
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02 }}
@@ -569,8 +514,6 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
 
 /* ════════════════════ CREATE PAGE ════════════════════ */
 export default function AnnouncementsCreate() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -578,6 +521,7 @@ export default function AnnouncementsCreate() {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [tagInput, setTagInput] = useState("");
   const [charCount, setCharCount] = useState(0);
+  const [apiError, setApiError] = useState(null);
 
   const [form, setForm] = useState({
     title: "",
@@ -626,47 +570,94 @@ export default function AnnouncementsCreate() {
     }
   };
 
+  /** Build the payload that announcementApi.create() expects */
+  const buildPayload = (isDraft = false) => {
+    // Resolve publish time
+    let publishAt = null;
+    if (!isDraft && form.schedule === "scheduled" && form.scheduleDate) {
+      publishAt = `${form.scheduleDate}T${form.scheduleTime}:00`;
+    }
+
+    // audience → departmentId mapping:
+    // The controller expects a UUID for departmentId but our form stores department names.
+    // In a real app you'd resolve names → UUIDs from a departments list.
+    // For now we pass null and let the component be extended with a real dept selector.
+    const departmentId = null; // TODO: replace with resolved UUID when dept picker is added
+
+    return {
+      title: form.title,
+      body: form.body,
+      audience:
+        form.audience === "department" && form.departments.length === 1
+          ? "department"
+          : form.audience === "all"
+            ? "all"
+            : "all",
+      departmentId,
+      isPinned: form.pinToTop,
+      publishAt,
+      expiresAt: null,
+    };
+  };
+
   const handlePublish = async () => {
     if (!form.title.trim()) {
       showToast("Please add a title", "error");
       return;
     }
     setPublishing(true);
-    await new Promise((r) => setTimeout(r, 2000));
-    setPublishing(false);
-    setShowPreview(false);
-    showToast(
-      form.schedule === "now"
-        ? "Announcement published successfully!"
-        : "Announcement scheduled successfully!",
-    );
-    setForm((p) => ({ ...p, title: "", body: "", emoji: "", tags: [] }));
+    setApiError(null);
+    try {
+      await announcementApi.create(buildPayload(false));
+      setPublishing(false);
+      setShowPreview(false);
+      showToast(
+        form.schedule === "now"
+          ? "Announcement published successfully!"
+          : "Announcement scheduled!",
+      );
+      setForm((p) => ({ ...p, title: "", body: "", emoji: "", tags: [] }));
+    } catch (err) {
+      setPublishing(false);
+      const msg =
+        err?.response?.data?.message || "Failed to publish. Please try again.";
+      setApiError(msg);
+      showToast(msg, "error");
+    }
   };
 
   const handleDraft = async () => {
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setSaving(false);
-    setShowPreview(false);
-    showToast("Draft saved successfully");
+    setApiError(null);
+    try {
+      // Save as draft by setting publishAt to a far-future date (or handle on backend)
+      // For now, create with a publishAt 100 years from now to simulate draft
+      const futureDate = new Date();
+      futureDate.setFullYear(futureDate.getFullYear() + 100);
+      const payload = {
+        ...buildPayload(true),
+        publishAt: futureDate.toISOString(),
+      };
+      await announcementApi.create(payload);
+      setSaving(false);
+      setShowPreview(false);
+      showToast("Draft saved successfully");
+    } catch (err) {
+      setSaving(false);
+      const msg = err?.response?.data?.message || "Failed to save draft.";
+      setApiError(msg);
+      showToast(msg, "error");
+    }
   };
 
   const typeConfig =
     ANNOUNCEMENT_TYPES.find((t) => t.id === form.type) || ANNOUNCEMENT_TYPES[0];
-  const TypeIcon = typeConfig.icon;
 
   return (
     <div
       className="flex h-screen overflow-hidden"
       style={{ background: C.bg, fontFamily: "Sora, sans-serif" }}
     >
-      {/* <AdminSideNavbar
-        sidebarOpen={sidebarOpen}
-        collapsed={sidebarCollapsed}
-        setCollapsed={setSidebarCollapsed}
-        ADMIN={ADMIN}
-      /> */}
-
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
         <header
@@ -677,12 +668,6 @@ export default function AnnouncementsCreate() {
             boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
           }}
         >
-          <button
-            onClick={() => setSidebarOpen((p) => !p)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors md:hidden"
-          >
-            <Menu size={18} color={C.textSecondary} />
-          </button>
           <div
             className="flex items-center gap-1.5 text-xs"
             style={{ color: C.textMuted }}
@@ -710,6 +695,30 @@ export default function AnnouncementsCreate() {
 
         <div className="flex-1 overflow-y-auto">
           <main className="p-6 max-w-5xl mx-auto">
+            {/* API error banner */}
+            <AnimatePresence>
+              {apiError && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl mb-4"
+                  style={{
+                    background: C.dangerLight,
+                    border: `1px solid ${C.danger}33`,
+                  }}
+                >
+                  <AlertCircle size={15} color={C.danger} />
+                  <span className="text-sm" style={{ color: C.danger }}>
+                    {apiError}
+                  </span>
+                  <button onClick={() => setApiError(null)} className="ml-auto">
+                    <X size={13} color={C.danger} />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Page header */}
             <motion.div
               initial="hidden"
@@ -769,8 +778,7 @@ export default function AnnouncementsCreate() {
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold"
                   style={{ background: C.primaryLight, color: C.primary }}
                 >
-                  <Eye size={13} />
-                  Preview
+                  <Eye size={13} /> Preview
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -797,7 +805,7 @@ export default function AnnouncementsCreate() {
             <div className="grid grid-cols-3 gap-5">
               {/* ─── Left: Main form ─── */}
               <div className="col-span-2 space-y-4">
-                {/* Announcement type */}
+                {/* Type */}
                 <motion.div
                   custom={0}
                   initial="hidden"
@@ -871,7 +879,6 @@ export default function AnnouncementsCreate() {
                     >
                       Title <span style={{ color: C.danger }}>*</span>
                     </p>
-                    {/* Emoji picker */}
                     <div className="relative">
                       <button
                         onClick={() => setShowEmojiPicker((p) => !p)}
@@ -925,7 +932,6 @@ export default function AnnouncementsCreate() {
                       </AnimatePresence>
                     </div>
                   </div>
-
                   <div className="flex items-center gap-3">
                     {form.emoji && (
                       <span className="text-2xl shrink-0">{form.emoji}</span>
@@ -950,11 +956,11 @@ export default function AnnouncementsCreate() {
                     className="text-[11px] mt-1.5 text-right"
                     style={{ color: C.textMuted }}
                   >
-                    {form.title.length}/100
+                    {form.title.length}/255
                   </p>
                 </motion.div>
 
-                {/* Rich text body */}
+                {/* Body */}
                 <motion.div
                   custom={2}
                   initial="hidden"
@@ -977,7 +983,7 @@ export default function AnnouncementsCreate() {
                       className="text-[11px]"
                       style={{ color: C.textMuted }}
                     >
-                      Use formatting toolbar below
+                      Use formatting toolbar
                     </span>
                   </div>
                   <RichEditor
@@ -1075,14 +1081,13 @@ export default function AnnouncementsCreate() {
                   >
                     Target Audience
                   </p>
-
                   <div className="space-y-2 mb-3">
                     {[
                       {
                         val: "all",
                         label: "All Employees",
                         icon: Globe,
-                        sub: "127 employees",
+                        sub: "Everyone in the company",
                       },
                       {
                         val: "department",
@@ -1146,7 +1151,6 @@ export default function AnnouncementsCreate() {
                       </button>
                     ))}
                   </div>
-
                   <AnimatePresence>
                     {form.audience === "department" && (
                       <motion.div
@@ -1272,7 +1276,6 @@ export default function AnnouncementsCreate() {
                       </button>
                     ))}
                   </div>
-
                   <AnimatePresence>
                     {form.schedule === "scheduled" && (
                       <motion.div
@@ -1402,7 +1405,7 @@ export default function AnnouncementsCreate() {
                       },
                       {
                         key: "sendEmail",
-                        label: "Send Email Notification",
+                        label: "Email Notification",
                         sub: "Notify via work email",
                         icon: Bell,
                       },
@@ -1462,7 +1465,7 @@ export default function AnnouncementsCreate() {
         </div>
       </div>
 
-      {/* Preview slide-over */}
+      {/* Preview */}
       <AnimatePresence>
         {showPreview && (
           <PreviewModal

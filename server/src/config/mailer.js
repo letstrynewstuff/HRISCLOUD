@@ -16,7 +16,7 @@ export const transporter = nodemailer.createTransport({
 });
 
 // ─── Helpers ───────────────────────────────────────────────────
-const FROM = `"${process.env.APP_NAME ?? "HRISCloud"}" <${process.env.SMTP_FROM}>`;
+const FROM = `"${process.env.APP_NAME ?? "banntaHR"}" <${process.env.SMTP_FROM}>`;
 const BASE = process.env.CLIENT_URL ?? "http://localhost:3000";
 
 export async function sendVerificationEmail(to, token) {

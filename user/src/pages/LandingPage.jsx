@@ -161,13 +161,35 @@ const TESTIMONIALS = [
 const PLANS = [
   {
     name: "Growth",
-    price: "₦1,000",
+    price: (
+      <>
+        <span
+          style={{
+            textDecoration: "line-through",
+            color: "#94a3b8",
+            fontSize: "0.9rem",
+            marginRight: "8px",
+          }}
+        >
+          ₦1,259
+        </span>
+        <span
+          style={{
+            color: "#10b981",
+            fontWeight: 700,
+          }}
+        >
+          ₦989
+        </span>
+        {" / employee"}
+      </>
+    ),
     per: "/ employee / month",
     minNote: "Minimum 1 employees",
     desc: "Everything your growing team needs to run HR professionally.",
     // example: "e.g. 50 employees = ₦50,000/mo",
     features: [
-      "Unlimited employees (min. 10)",
+      "Unlimited employees (min. 1)",
       "Employee Management",
       "Attendance & Leave",
       "Payroll Processing",
@@ -178,7 +200,7 @@ const PLANS = [
     ],
     cta: "Request Demo",
     highlighted: true,
-    badge: "Simple Pricing",
+    badge: "Limited offer Pricing",
   },
   {
     name: "Enterprise",
@@ -295,13 +317,7 @@ export default function LandingPage() {
           }}
         >
           {/* Logo — actual image, sized to fit */}
-          {/* <div style={{ display: "flex", alignItems: "center", flexShrink: 0 }}>
-            <img
-              src={logoImg}
-              alt="BantaHR"
-              style={{ height: 42, width: "auto", objectFit: "contain" }}
-            />
-          </div> */}
+
           <BantaHRLogo variant="light" size="md" />
 
           {/* Desktop nav */}
@@ -1384,19 +1400,7 @@ export default function LandingPage() {
           <Reveal>
             <div style={{ textAlign: "center", marginBottom: 64 }}>
               {/* Logo in about section */}
-              {/* <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginBottom: 28,
-                }}
-              >
-                <img
-                  src={logoImg}
-                  alt="BantaHR"
-                  style={{ height: 56, width: "auto", objectFit: "contain" }}
-                />
-              </div> */}
+
               <div style={{ marginBottom: 16 }}>
                 <BantaHRLogo variant="light" size="md" />
               </div>
@@ -1584,8 +1588,7 @@ export default function LandingPage() {
                 marginTop: 16,
               }}
             >
-              No debit card required · Set up in 48 hours · We handle
-              onboarding
+              No debit card required · Set up in 48 hours · We handle onboarding
             </p>
           </div>
         </Reveal>
@@ -1603,13 +1606,6 @@ export default function LandingPage() {
             }}
           >
             <div>
-              {/* <div style={{ marginBottom: 16 }}>
-                <img
-                  src={logoImg}
-                  alt="BantaHR"
-                  style={{ height: 40, width: "auto", objectFit: "contain" }}
-                />
-              </div> */}
               <div style={{ marginBottom: 16 }}>
                 <BantaHRLogo variant="light" size="md" />
               </div>
@@ -1709,8 +1705,9 @@ export default function LandingPage() {
                 gap: 5,
               }}
             >
-              Made with <Heart size={12} color="#EC4899" fill="#EC4899" /> in
-              Lagos, Nigeria
+              {/* Made with <Heart size={12} color="#EC4899" fill="#EC4899" /> in
+              Lagos, Nigeria */}
+              No 1 Adetunji Adegbite Street, Ogudu, Lagos, Nigeria
             </p>
           </div>
         </div>

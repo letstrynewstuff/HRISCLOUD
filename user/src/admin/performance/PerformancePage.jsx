@@ -16,7 +16,7 @@ import AppraisalReview from "./AppraisalReview";
 import PIPManagement from "./PIPManagement";
 
 const TABS = [
-  { id: "dashboard", label: "Dashboard" },
+  // { id: "dashboard", label: "Dashboard" },
   // { id: "cycles", label: "Review Cycles" },
   // { id: "forms", label: "Appraisal Forms" },
   { id: "goals", label: "Goals" },
@@ -157,9 +157,9 @@ export default function AdminPerformancePage() {
 
             {/* Tab content */}
             <AnimatePresence mode="wait">
-              {activeTab === "dashboard" && (
+              {/* {activeTab === "dashboard" && (
                 <PerformanceDashboard key="dashboard" />
-              )}
+              )} */}
               {activeTab === "cycles" && <ReviewCycles key="cycles" />}
               {activeTab === "forms" && <AppraisalForms key="forms" />}
               {activeTab === "goals" && (
