@@ -90,57 +90,6 @@ async function applyApproval(client, approval) {
 // GET /api/approvals
 // Query: ?status=pending&type=leave_request&page=1&limit=20
 // ══════════════════════════════════════════════════════════════
-// export async function getApprovals(req, res) {
-//   const { companyId } = req.user;
-//   const { status = "pending", type, page = 1, limit = 20 } = req.query;
-
-//   const offset = (parseInt(page, 10) - 1) * parseInt(limit, 10);
-//   const conditions = ["a.company_id = $1"];
-//   const params = [companyId];
-//   let idx = 2;
-
-//   if (status) {
-//     conditions.push(`a.status = $${idx++}`);
-//     params.push(status);
-//   }
-//   if (type) {
-//     conditions.push(`a.type = $${idx++}`);
-//     params.push(type);
-//   }
-
-//   try {
-//     const [rows, countRes] = await Promise.all([
-//       db.query(
-//         `SELECT
-//            a.*,
-//            u.email          AS requester_email,
-//            CONCAT(e.first_name,' ',e.last_name) AS requester_name
-//          FROM approvals a
-//          LEFT JOIN users     u ON u.id = a.requested_by
-//          LEFT JOIN employees e ON e.user_id = a.requested_by
-//                                AND e.company_id = a.company_id
-//          WHERE ${conditions.join(" AND ")}
-//          ORDER BY a.created_at DESC
-//          LIMIT $${idx} OFFSET $${idx + 1}`,
-//         [...params, parseInt(limit, 10), offset],
-//       ),
-//       db.query(
-//         `SELECT COUNT(*) FROM approvals a WHERE ${conditions.join(" AND ")}`,
-//         params,
-//       ),
-//     ]);
-
-//     return res.status(200).json({
-//       data: rows.rows,
-//       total: parseInt(countRes.rows[0].count, 10),
-//       page: parseInt(page, 10),
-//       limit: parseInt(limit, 10),
-//     });
-//   } catch (err) {
-//     console.error("getApprovals error:", err);
-//     return res.status(500).json({ message: "Server error." });
-//   }
-// }
 
 export async function getApprovals(req, res) {
   const { companyId, isHR, employeeId: managerEmpId } = req.user;
@@ -265,38 +214,6 @@ export async function getApprovalById(req, res) {
 }
  
 
-// ══════════════════════════════════════════════════════════════
-// GET /api/approvals/:id
-// ══════════════════════════════════════════════════════════════
-// export async function getApprovalById(req, res) {
-//   const { id } = req.params;
-//   const { companyId } = req.user;
-
-//   try {
-//     const result = await db.query(
-//       `SELECT
-//          a.*,
-//          u.email          AS requester_email,
-//          CONCAT(e.first_name,' ',e.last_name) AS requester_name,
-//          rv.email         AS reviewer_email
-//        FROM approvals a
-//        LEFT JOIN users     u  ON u.id  = a.requested_by
-//        LEFT JOIN employees e  ON e.user_id = a.requested_by AND e.company_id = a.company_id
-//        LEFT JOIN users     rv ON rv.id = a.reviewed_by
-//        WHERE a.id = $1 AND a.company_id = $2`,
-//       [id, companyId],
-//     );
-
-//     if (result.rows.length === 0) {
-//       return res.status(404).json({ message: "Approval not found." });
-//     }
-
-//     return res.status(200).json({ data: result.rows[0] });
-//   } catch (err) {
-//     console.error("getApprovalById error:", err);
-//     return res.status(500).json({ message: "Server error." });
-//   }
-// }
 
 // ══════════════════════════════════════════════════════════════
 // PUT /api/approvals/:id/approve

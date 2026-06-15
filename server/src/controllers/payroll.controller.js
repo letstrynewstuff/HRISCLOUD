@@ -1,3 +1,999 @@
+// // src/controllers/payroll.controller.js
+// //
+// // Endpoints:
+// //   POST   /api/payroll/structures              → createPayrollStructure
+// //   GET    /api/payroll/structures              → getPayrollStructures
+// //   PUT    /api/payroll/structures/:id          → updatePayrollStructure
+// //
+// //   GET    /api/payroll/deductions              → getDeductions
+// //   POST   /api/payroll/deductions              → createDeduction
+// //   PATCH  /api/payroll/deductions/:id/toggle   → toggleDeduction
+// //   PUT    /api/payroll/deductions/:id          → updateDeduction
+// //   DELETE /api/payroll/deductions/:id          → deleteDeduction
+// //
+// //   POST   /api/payroll/runs                    → initPayrollRun
+// //   GET    /api/payroll/runs                    → listPayrollRuns
+// //   GET    /api/payroll/runs/:id                → getPayrollRun
+// //   POST   /api/payroll/runs/:id/process        → runPayrollForCompany
+// //   POST   /api/payroll/runs/:id/approve        → approvePayrollRun
+// //   POST   /api/payroll/runs/:id/mark-paid      → markPayrollPaid
+// //   POST   /api/payroll/runs/:id/employees/:empId → runPayrollForEmployee
+// //
+// //   GET    /api/payroll/payslip/:employeeId/:month/:year → getPayslip
+// //   GET    /api/payroll/payslip/me/:month/:year          → getMyPayslip (employee)
+// //   GET    /api/payroll/dashboard                        → getDashboard
+// //   GET    /api/payroll/history                          → getHistory
+// //   POST   /api/payroll/preview/:employeeId              → previewPayslip
+
+// import { validationResult } from "express-validator";
+// import { db } from "../config/db.js";
+// import {
+//   calculatePayslip,
+//   runPayrollForEmployee as engineRunEmployee,
+//   seedDefaultDeductions,
+//   seedDefaultStructure,
+// } from "../services/payroll.engine.js";
+
+// function validationFailed(req, res) {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     res
+//       .status(422)
+//       .json({ message: "Validation failed.", errors: errors.array() });
+//     return true;
+//   }
+//   return false;
+// }
+
+// // ─── Camel-case formatter helpers ─────────────────────────────
+// function fmtStructure(r) {
+//   return {
+//     id: r.id,
+//     companyId: r.company_id,
+//     name: r.name,
+//     basicPercent: Number(r.basic_percent),
+//     housingPercent: Number(r.housing_percent),
+//     transportPercent: Number(r.transport_percent),
+//     utilityPercent: Number(r.utility_percent),
+//     mealPercent: Number(r.meal_percent),
+//     isActive: r.is_active,
+//     createdAt: r.created_at,
+//     updatedAt: r.updated_at,
+//   };
+// }
+
+// function fmtDeduction(r) {
+//   return {
+//     id: r.id,
+//     companyId: r.company_id,
+//     name: r.name,
+//     category: r.category,
+//     type: r.type,
+//     value: r.value !== null ? Number(r.value) : null,
+//     formulaKey: r.formula_key,
+//     calculationBase: r.calculation_base,
+//     isStatutory: r.is_statutory,
+//     isActive: r.is_active,
+//     appliesToAll: r.applies_to_all,
+//     createdAt: r.created_at,
+//     updatedAt: r.updated_at,
+//   };
+// }
+
+// function fmtRun(r) {
+//   return {
+//     id: r.id,
+//     companyId: r.company_id,
+//     month: r.month,
+//     year: r.year,
+//     period: r.period,
+//     status: r.status,
+//     totalGross: Number(r.total_gross),
+//     totalDeductions: Number(r.total_deductions),
+//     totalNet: Number(r.total_net),
+//     employeeCount: r.employee_count,
+//     notes: r.notes,
+//     initiatedBy: r.initiated_by,
+//     approvedBy: r.approved_by,
+//     approvedAt: r.approved_at,
+//     paidAt: r.paid_at,
+//     createdAt: r.created_at,
+//   };
+// }
+
+// function fmtRecord(r) {
+//   return {
+//     id: r.id,
+//     payrollRunId: r.payroll_run_id,
+//     employeeId: r.employee_id,
+//     employeeName: r.employee_name,
+//     employeeCode: r.employee_code,
+//     departmentName: r.department_name,
+//     jobRoleName: r.job_role_name,
+//     month: r.month,
+//     year: r.year,
+//     basicSalary: Number(r.basic_salary),
+//     housingAllowance: Number(r.housing_allowance),
+//     transportAllowance: Number(r.transport_allowance),
+//     utilityAllowance: Number(r.utility_allowance),
+//     mealAllowance: Number(r.meal_allowance),
+//     overtime: Number(r.overtime),
+//     bonus: Number(r.bonus),
+//     otherEarnings: Number(r.other_earnings),
+//     grossSalary: Number(r.gross_salary),
+//     deductionsBreakdown: r.deductions_breakdown,
+//     totalDeductions: Number(r.total_deductions),
+//     netSalary: Number(r.net_salary),
+//     taxableIncome: Number(r.taxable_income),
+//     payeTax: Number(r.paye_tax),
+//     pensionEmployee: Number(r.pension_employee),
+//     nhfDeduction: Number(r.nhf_deduction),
+//     status: r.status,
+//     payslipGenerated: r.payslip_generated,
+//   };
+// }
+
+// // ══════════════════════════════════════════════════════════════
+// // STRUCTURE
+// // ══════════════════════════════════════════════════════════════
+
+// export async function createPayrollStructure(req, res) {
+//   if (validationFailed(req, res)) return;
+//   const { companyId } = req.user;
+//   const {
+//     name,
+//     basicPercent = 60,
+//     housingPercent = 20,
+//     transportPercent = 10,
+//     utilityPercent = 5,
+//     mealPercent = 5,
+//   } = req.body;
+
+//   const total = [
+//     basicPercent,
+//     housingPercent,
+//     transportPercent,
+//     utilityPercent,
+//     mealPercent,
+//   ].reduce((s, v) => s + Number(v), 0);
+
+//   if (Math.abs(total - 100) > 0.01) {
+//     return res
+//       .status(400)
+//       .json({
+//         message: `Percentages must sum to 100. Got ${total.toFixed(2)}.`,
+//       });
+//   }
+
+//   try {
+//     const result = await db.query(
+//       `INSERT INTO payroll_structures
+//          (company_id, name, basic_percent, housing_percent,
+//           transport_percent, utility_percent, meal_percent)
+//        VALUES ($1,$2,$3,$4,$5,$6,$7)
+//        RETURNING *`,
+//       [
+//         companyId,
+//         name,
+//         basicPercent,
+//         housingPercent,
+//         transportPercent,
+//         utilityPercent,
+//         mealPercent,
+//       ],
+//     );
+//     return res.status(201).json({ data: fmtStructure(result.rows[0]) });
+//   } catch (err) {
+//     if (err.code === "23505")
+//       return res
+//         .status(409)
+//         .json({ message: "A structure with this name already exists." });
+//     console.error("createPayrollStructure error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function getPayrollStructures(req, res) {
+//   const { companyId } = req.user;
+//   try {
+//     const result = await db.query(
+//       "SELECT * FROM payroll_structures WHERE company_id=$1 ORDER BY created_at DESC",
+//       [companyId],
+//     );
+//     return res.status(200).json({ data: result.rows.map(fmtStructure) });
+//   } catch (err) {
+//     console.error("getPayrollStructures error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function updatePayrollStructure(req, res) {
+//   if (validationFailed(req, res)) return;
+//   const { id } = req.params;
+//   const { companyId } = req.user;
+//   const {
+//     name,
+//     basicPercent,
+//     housingPercent,
+//     transportPercent,
+//     utilityPercent,
+//     mealPercent,
+//     isActive,
+//   } = req.body;
+
+//   try {
+//     const existing = await db.query(
+//       "SELECT * FROM payroll_structures WHERE id=$1 AND company_id=$2",
+//       [id, companyId],
+//     );
+//     if (existing.rowCount === 0)
+//       return res.status(404).json({ message: "Structure not found." });
+
+//     const s = existing.rows[0];
+//     const result = await db.query(
+//       `UPDATE payroll_structures
+//        SET name=$1, basic_percent=$2, housing_percent=$3, transport_percent=$4,
+//            utility_percent=$5, meal_percent=$6, is_active=$7, updated_at=NOW()
+//        WHERE id=$8 RETURNING *`,
+//       [
+//         name ?? s.name,
+//         basicPercent ?? s.basic_percent,
+//         housingPercent ?? s.housing_percent,
+//         transportPercent ?? s.transport_percent,
+//         utilityPercent ?? s.utility_percent,
+//         mealPercent ?? s.meal_percent,
+//         isActive ?? s.is_active,
+//         id,
+//       ],
+//     );
+//     return res.status(200).json({ data: fmtStructure(result.rows[0]) });
+//   } catch (err) {
+//     console.error("updatePayrollStructure error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// // ══════════════════════════════════════════════════════════════
+// // DEDUCTIONS
+// // ══════════════════════════════════════════════════════════════
+
+// export async function getDeductions(req, res) {
+//   const { companyId } = req.user;
+//   const { category, isActive } = req.query;
+
+//   const conditions = ["company_id = $1"];
+//   const params = [companyId];
+//   let idx = 2;
+
+//   if (category) {
+//     conditions.push(`category = $${idx++}`);
+//     params.push(category);
+//   }
+//   if (isActive !== undefined) {
+//     conditions.push(`is_active = $${idx++}`);
+//     params.push(isActive === "true");
+//   }
+
+//   try {
+//     const result = await db.query(
+//       `SELECT * FROM payroll_deductions WHERE ${conditions.join(" AND ")} ORDER BY is_statutory DESC, name ASC`,
+//       params,
+//     );
+//     return res
+//       .status(200)
+//       .json({ data: result.rows.map(fmtDeduction), total: result.rowCount });
+//   } catch (err) {
+//     console.error("getDeductions error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function createDeduction(req, res) {
+//   if (validationFailed(req, res)) return;
+//   const { companyId } = req.user;
+//   const {
+//     name,
+//     category = "custom",
+//     type,
+//     value,
+//     formulaKey,
+//     calculationBase = "gross",
+//     isStatutory = false,
+//     isActive = true,
+//     appliesToAll = true,
+//   } = req.body;
+
+//   if (type !== "formula" && (value === undefined || value === null)) {
+//     return res
+//       .status(400)
+//       .json({ message: "value is required for non-formula deductions." });
+//   }
+
+//   try {
+//     const result = await db.query(
+//       `INSERT INTO payroll_deductions
+//          (company_id, name, category, type, value, formula_key,
+//           calculation_base, is_statutory, is_active, applies_to_all)
+//        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+//        RETURNING *`,
+//       [
+//         companyId,
+//         name,
+//         category,
+//         type,
+//         value ?? null,
+//         formulaKey ?? null,
+//         calculationBase,
+//         isStatutory,
+//         isActive,
+//         appliesToAll,
+//       ],
+//     );
+//     return res
+//       .status(201)
+//       .json({
+//         message: "Deduction created.",
+//         data: fmtDeduction(result.rows[0]),
+//       });
+//   } catch (err) {
+//     if (err.code === "23505")
+//       return res
+//         .status(409)
+//         .json({ message: "A deduction with this name already exists." });
+//     console.error("createDeduction error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function toggleDeduction(req, res) {
+//   const { id } = req.params;
+//   const { companyId } = req.user;
+
+//   try {
+//     const result = await db.query(
+//       `UPDATE payroll_deductions
+//        SET is_active = NOT is_active, updated_at = NOW()
+//        WHERE id = $1 AND company_id = $2
+//        RETURNING *`,
+//       [id, companyId],
+//     );
+//     if (result.rowCount === 0)
+//       return res.status(404).json({ message: "Deduction not found." });
+//     const d = result.rows[0];
+//     return res.status(200).json({
+//       message: `"${d.name}" is now ${d.is_active ? "enabled" : "disabled"}.`,
+//       data: fmtDeduction(d),
+//     });
+//   } catch (err) {
+//     console.error("toggleDeduction error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function updateDeduction(req, res) {
+//   if (validationFailed(req, res)) return;
+//   const { id } = req.params;
+//   const { companyId } = req.user;
+//   const {
+//     name,
+//     category,
+//     type,
+//     value,
+//     formulaKey,
+//     calculationBase,
+//     isActive,
+//     appliesToAll,
+//   } = req.body;
+
+//   try {
+//     const existing = await db.query(
+//       "SELECT * FROM payroll_deductions WHERE id=$1 AND company_id=$2",
+//       [id, companyId],
+//     );
+//     if (existing.rowCount === 0)
+//       return res.status(404).json({ message: "Deduction not found." });
+//     const d = existing.rows[0];
+
+//     const result = await db.query(
+//       `UPDATE payroll_deductions
+//        SET name=$1, category=$2, type=$3, value=$4, formula_key=$5,
+//            calculation_base=$6, is_active=$7, applies_to_all=$8, updated_at=NOW()
+//        WHERE id=$9 RETURNING *`,
+//       [
+//         name ?? d.name,
+//         category ?? d.category,
+//         type ?? d.type,
+//         value !== undefined ? value : d.value,
+//         formulaKey !== undefined ? formulaKey : d.formula_key,
+//         calculationBase ?? d.calculation_base,
+//         isActive ?? d.is_active,
+//         appliesToAll ?? d.applies_to_all,
+//         id,
+//       ],
+//     );
+//     return res.status(200).json({ data: fmtDeduction(result.rows[0]) });
+//   } catch (err) {
+//     console.error("updateDeduction error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function deleteDeduction(req, res) {
+//   const { id } = req.params;
+//   const { companyId } = req.user;
+//   try {
+//     const result = await db.query(
+//       "DELETE FROM payroll_deductions WHERE id=$1 AND company_id=$2 AND is_statutory=false RETURNING id",
+//       [id, companyId],
+//     );
+//     if (result.rowCount === 0) {
+//       return res
+//         .status(404)
+//         .json({
+//           message:
+//             "Deduction not found or statutory deductions cannot be deleted.",
+//         });
+//     }
+//     return res.status(200).json({ message: "Deduction deleted." });
+//   } catch (err) {
+//     console.error("deleteDeduction error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// // ══════════════════════════════════════════════════════════════
+// // PAYROLL RUNS
+// // ══════════════════════════════════════════════════════════════
+
+// export async function initPayrollRun(req, res) {
+//   if (validationFailed(req, res)) return;
+//   const { companyId, userId } = req.user;
+//   const { month, year, notes } = req.body;
+//   const period = `${new Date(year, month - 1).toLocaleString("default", { month: "long" })} ${year}`;
+
+//   try {
+//     const existing = await db.query(
+//       "SELECT id, status FROM payroll_runs WHERE company_id=$1 AND month=$2 AND year=$3",
+//       [companyId, month, year],
+//     );
+//     if (existing.rowCount > 0) {
+//       return res.status(409).json({
+//         message: `A payroll run for ${period} already exists.`,
+//         data: fmtRun(existing.rows[0]),
+//       });
+//     }
+
+//     const result = await db.query(
+//       `INSERT INTO payroll_runs (company_id, month, year, period, notes, initiated_by)
+//        VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+//       [companyId, month, year, period, notes ?? null, userId],
+//     );
+//     return res
+//       .status(201)
+//       .json({ message: "Payroll run created.", data: fmtRun(result.rows[0]) });
+//   } catch (err) {
+//     console.error("initPayrollRun error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function listPayrollRuns(req, res) {
+//   const { companyId } = req.user;
+//   const { status, year } = req.query;
+//   const conditions = ["company_id = $1"];
+//   const params = [companyId];
+//   let idx = 2;
+//   if (status) {
+//     conditions.push(`status = $${idx++}`);
+//     params.push(status);
+//   }
+//   if (year) {
+//     conditions.push(`year = $${idx++}`);
+//     params.push(Number(year));
+//   }
+
+//   try {
+//     const result = await db.query(
+//       `SELECT * FROM payroll_runs WHERE ${conditions.join(" AND ")} ORDER BY year DESC, month DESC`,
+//       params,
+//     );
+//     return res
+//       .status(200)
+//       .json({ data: result.rows.map(fmtRun), total: result.rowCount });
+//   } catch (err) {
+//     console.error("listPayrollRuns error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function getPayrollRun(req, res) {
+//   const { id } = req.params;
+//   const { companyId } = req.user;
+//   try {
+//     const runResult = await db.query(
+//       "SELECT * FROM payroll_runs WHERE id=$1 AND company_id=$2",
+//       [id, companyId],
+//     );
+//     if (runResult.rowCount === 0)
+//       return res.status(404).json({ message: "Payroll run not found." });
+
+//     const records = await db.query(
+//       `SELECT
+//          pr.*,
+//          CONCAT(e.first_name,' ',e.last_name) AS employee_name,
+//          e.employee_code,
+//          d.name AS department_name,
+//          jr.title AS job_role_name
+//        FROM payroll_records pr
+//        JOIN employees e   ON e.id  = pr.employee_id
+//        LEFT JOIN departments d  ON d.id  = e.department_id
+//        LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
+//        WHERE pr.payroll_run_id = $1
+//        ORDER BY e.last_name ASC`,
+//       [id],
+//     );
+
+//     return res.status(200).json({
+//       run: fmtRun(runResult.rows[0]),
+//       records: records.rows.map(fmtRecord),
+//       total: records.rowCount,
+//     });
+//   } catch (err) {
+//     console.error("getPayrollRun error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+
+
+// export async function runPayrollForEmployee(req, res) {
+//   const { id, empId } = req.params;
+//   const { companyId } = req.user;
+//   const overrides = req.body ?? {};
+
+//   try {
+//     const runResult = await db.query(
+//       "SELECT * FROM payroll_runs WHERE id=$1 AND company_id=$2",
+//       [id, companyId],
+//     );
+//     if (runResult.rowCount === 0)
+//       return res.status(404).json({ message: "Payroll run not found." });
+//     const run = runResult.rows[0];
+
+//     const payslip = await engineRunEmployee(
+//       empId,
+//       companyId,
+//       id,
+//       run.month,
+//       run.year,
+//       overrides,
+//     );
+
+//     return res
+//       .status(200)
+//       .json({ message: "Payroll calculated.", data: payslip });
+//   } catch (err) {
+//     console.error("runPayrollForEmployee error:", err);
+//     return res
+//       .status(500)
+//       .json({ message: err.message || "Error calculating payroll." });
+//   }
+// }
+
+
+// export async function runPayrollForCompany(req, res) {
+//   const { id } = req.params;
+//   const { companyId } = req.user;
+
+//   try {
+//     const runResult = await db.query(
+//       "SELECT * FROM payroll_runs WHERE id=$1 AND company_id=$2",
+//       [id, companyId],
+//     );
+//     if (runResult.rowCount === 0)
+//       return res.status(404).json({ message: "Payroll run not found." });
+
+//     const run = runResult.rows[0];
+
+
+//     if (!["draft", "processing", "approved"].includes(run.status)) {
+//       return res.status(400).json({
+//         message: `Cannot process a payroll run with status "${run.status}".`,
+//       });
+//     }
+
+//     // Fetch all active employees
+//     const employees = await db.query(
+//       "SELECT id, first_name, last_name, basic_salary FROM employees WHERE company_id=$1 AND employment_status='active'",
+//       [companyId],
+//     );
+
+//     if (employees.rowCount === 0) {
+//       return res.status(400).json({ message: "No active employees found." });
+//     }
+
+//     // Warn about employees with no salary set — these will produce ₦0 payslips
+//     const noSalary = employees.rows.filter(
+//       (e) => !e.basic_salary || Number(e.basic_salary) === 0,
+//     );
+//     if (noSalary.length > 0) {
+//       console.warn(
+//         `[Payroll] ${noSalary.length} employee(s) have no basic_salary set:`,
+//         noSalary.map((e) => `${e.first_name} ${e.last_name} (${e.id})`),
+//       );
+//     }
+
+//     await db.query(
+//       "UPDATE payroll_runs SET status='processing', updated_at=NOW() WHERE id=$1",
+//       [id],
+//     );
+
+//     let totalGross = 0,
+//       totalDeductions = 0,
+//       totalNet = 0;
+//     const processed = [];
+//     const errors = [];
+
+//     const client = await db.getClient();
+//     try {
+//       await client.query("BEGIN");
+
+//       for (const emp of employees.rows) {
+//         try {
+//           await client.query("SAVEPOINT emp_sp");
+
+//           const payslip = await engineRunEmployee(
+//             emp.id,
+//             companyId,
+//             id,
+//             run.month,
+//             run.year,
+//             {},
+//             client,
+//           );
+
+//           // Engine returns camelCase — accumulate correctly
+//           totalGross       += Number(payslip.grossSalary    || 0);
+//           totalDeductions  += Number(payslip.totalDeductions || 0);
+//           totalNet         += Number(payslip.netSalary       || 0);
+
+//           processed.push({
+//             employeeId: emp.id,
+//             netSalary:  payslip.netSalary,
+//             grossSalary: payslip.grossSalary,
+//           });
+
+//           await client.query("RELEASE SAVEPOINT emp_sp");
+//         } catch (empErr) {
+//           await client.query("ROLLBACK TO SAVEPOINT emp_sp");
+//           errors.push({ employeeId: emp.id, error: empErr.message });
+//           console.error(`[Payroll] Failed for employee ${emp.id}:`, empErr.message);
+//         }
+//       }
+
+
+//       await client.query(
+//         `UPDATE payroll_runs
+//    SET total_gross=$1,
+//        total_deductions=$2,
+//        total_net=$3,
+//        employee_count=$4,
+//        status='approved',
+//        updated_at=NOW()
+//    WHERE id=$5`,
+//         [totalGross, totalDeductions, totalNet, processed.length, id],
+//       );
+
+//       await client.query("COMMIT");
+//     } catch (err) {
+//       await client.query("ROLLBACK");
+//       // Roll back to draft so HR can retry
+//       await db.query(
+//         "UPDATE payroll_runs SET status='draft', updated_at=NOW() WHERE id=$1",
+//         [id],
+//       );
+//       throw err;
+//     } finally {
+//       client.release();
+//     }
+
+//     return res.status(200).json({
+//       message: `Payroll processed for ${processed.length} employees.${errors.length > 0 ? ` ${errors.length} error(s) — see errors array.` : ""}`,
+//       summary: {
+//         totalGross,
+//         totalDeductions,
+//         totalNet,
+//         processed: processed.length,
+//         errors: errors.length,
+//       },
+//       errors: errors.length > 0 ? errors : undefined,
+//     });
+//   } catch (err) {
+//     console.error("runPayrollForCompany error:", err);
+//     return res.status(500).json({ message: "Error processing payroll." });
+//   }
+// }
+
+// // ── Replace approvePayrollRun with this ───────────────────────────────────
+// export async function approvePayrollRun(req, res) {
+//   const { id } = req.params;
+//   const { companyId, userId } = req.user;
+//   try {
+//     // FIX 3: Accept both 'draft' and 'processed' — handles old runs and new ones
+//     const result = await db.query(
+//       `UPDATE payroll_runs
+//        SET status='approved',
+//            approved_by=$1,
+//            approved_at=NOW(),
+//            updated_at=NOW()
+//        WHERE id=$2
+//          AND company_id=$3
+//         AND status IN ('draft', 'approved')
+//        RETURNING *`,
+//       [userId, id, companyId],
+//     );
+//     if (result.rowCount === 0)
+//       return res.status(404).json({
+//         message: "Run not found or must be in 'draft' or 'processed' status to approve.",
+//       });
+
+//     // Mark all payroll records as approved
+//     await db.query(
+//       "UPDATE payroll_records SET status='approved', updated_at=NOW() WHERE payroll_run_id=$1",
+//       [id],
+//     );
+
+//     return res.status(200).json({
+//       message: "Payroll approved.",
+//       data: fmtRun(result.rows[0]),
+//     });
+//   } catch (err) {
+//     console.error("approvePayrollRun error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function markPayrollPaid(req, res) {
+//   const { id } = req.params;
+//   const { companyId } = req.user;
+//   try {
+//     const result = await db.query(
+//       `UPDATE payroll_runs
+//        SET status='paid', paid_at=NOW(), updated_at=NOW()
+//        WHERE id=$1 AND company_id=$2 AND status='approved'
+//        RETURNING *`,
+//       [id, companyId],
+//     );
+//     if (result.rowCount === 0)
+//       return res
+//         .status(404)
+//         .json({ message: "Run not found or not approved yet." });
+//     await db.query(
+//       "UPDATE payroll_records SET status='paid', updated_at=NOW() WHERE payroll_run_id=$1",
+//       [id],
+//     );
+//     return res
+//       .status(200)
+//       .json({
+//         message: "Payroll marked as paid.",
+//         data: fmtRun(result.rows[0]),
+//       });
+//   } catch (err) {
+//     console.error("markPayrollPaid error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// // ══════════════════════════════════════════════════════════════
+// // PAYSLIPS
+// // ══════════════════════════════════════════════════════════════
+
+// export async function getPayslip(req, res) {
+//   const { employeeId, month, year } = req.params;
+//   const { companyId, role, userId } = req.user;
+
+//   // Employees can only see their own payslip
+//   if (role === "employee") {
+//     const emp = await db.query(
+//       "SELECT id FROM employees WHERE user_id=$1 AND company_id=$2",
+//       [userId, companyId],
+//     );
+//     if (emp.rowCount === 0 || emp.rows[0].id !== employeeId) {
+//       return res.status(403).json({ message: "Access denied." });
+//     }
+//   }
+
+//   try {
+//     const result = await db.query(
+//       `SELECT
+//          pr.*,
+//          CONCAT(e.first_name,' ',e.last_name) AS employee_name,
+//          e.employee_code, e.personal_email,
+//          d.name AS department_name,
+//          jr.title AS job_role_name,
+//          prun.period, prun.status AS run_status
+//        FROM payroll_records pr
+//        JOIN employees e     ON e.id  = pr.employee_id
+//        LEFT JOIN departments d  ON d.id  = e.department_id
+//        LEFT JOIN job_roles   jr ON jr.id = e.job_role_id
+//        JOIN payroll_runs prun ON prun.id = pr.payroll_run_id
+//        WHERE pr.employee_id=$1 AND pr.month=$2 AND pr.year=$3 AND pr.company_id=$4`,
+//       [employeeId, Number(month), Number(year), companyId],
+//     );
+
+//     if (result.rowCount === 0) {
+//       return res
+//         .status(404)
+//         .json({ message: "Payslip not found for this period." });
+//     }
+
+//     return res.status(200).json({ data: fmtRecord(result.rows[0]) });
+//   } catch (err) {
+//     console.error("getPayslip error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function getMyPayslip(req, res) {
+//   const { month, year } = req.params;
+//   const { userId, companyId } = req.user;
+
+//   try {
+//     const emp = await db.query(
+//       "SELECT id FROM employees WHERE user_id=$1 AND company_id=$2",
+//       [userId, companyId],
+//     );
+//     if (emp.rowCount === 0)
+//       return res.status(404).json({ message: "Employee profile not found." });
+
+//     req.params.employeeId = emp.rows[0].id;
+//     req.user.role = "employee"; // ensure own-only check passes
+//     return getPayslip(req, res);
+//   } catch (err) {
+//     console.error("getMyPayslip error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// // ── Live preview (no DB write) ─────────────────────────────────
+// export async function previewPayslip(req, res) {
+//   const { employeeId } = req.params;
+//   const { companyId } = req.user;
+//   const { month, year, overtime, bonus } = req.body;
+
+//   if (!month || !year)
+//     return res.status(400).json({ message: "month and year are required." });
+
+//   try {
+//     const preview = await calculatePayslip(
+//       employeeId,
+//       companyId,
+//       Number(month),
+//       Number(year),
+//       { overtime: Number(overtime || 0), bonus: Number(bonus || 0) },
+//     );
+//     return res.status(200).json({ data: preview });
+//   } catch (err) {
+//     return res
+//       .status(500)
+//       .json({ message: err.message || "Error generating preview." });
+//   }
+// }
+
+// // ── Dashboard ──────────────────────────────────────────────────
+// export async function getDashboard(req, res) {
+//   const { companyId } = req.user;
+//   try {
+//     const [latest, history, deptBreakdown] = await Promise.all([
+//       db.query(
+//         "SELECT * FROM payroll_runs WHERE company_id=$1 ORDER BY year DESC, month DESC LIMIT 1",
+//         [companyId],
+//       ),
+//       db.query(
+//         "SELECT period, total_gross, total_net, status FROM payroll_runs WHERE company_id=$1 ORDER BY year DESC, month DESC LIMIT 6",
+//         [companyId],
+//       ),
+//       db.query(
+//         `SELECT d.name AS department, SUM(pr.gross_salary) AS gross, SUM(pr.net_salary) AS net, COUNT(*) AS employees
+//          FROM payroll_records pr
+//          JOIN employees e ON e.id = pr.employee_id
+//          LEFT JOIN departments d ON d.id = e.department_id
+//          WHERE pr.company_id=$1
+//            AND pr.payroll_run_id=(SELECT id FROM payroll_runs WHERE company_id=$1 ORDER BY year DESC, month DESC LIMIT 1)
+//          GROUP BY d.name ORDER BY gross DESC`,
+//         [companyId],
+//       ),
+//     ]);
+
+//     return res.status(200).json({
+//       latestRun: latest.rows[0] ? fmtRun(latest.rows[0]) : null,
+//       recentRuns: history.rows.map((r) => ({
+//         period: r.period,
+//         gross: Number(r.total_gross),
+//         net: Number(r.total_net),
+//         status: r.status,
+//       })),
+//       departmentBreakdown: deptBreakdown.rows.map((r) => ({
+//         department: r.department || "Unassigned",
+//         gross: Number(r.gross),
+//         net: Number(r.net),
+//         employees: Number(r.employees),
+//       })),
+//     });
+//   } catch (err) {
+//     console.error("getDashboard error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// export async function getHistory(req, res) {
+//   const { companyId } = req.user;
+//   const { limit = 12 } = req.query;
+//   try {
+//     const result = await db.query(
+//       "SELECT * FROM payroll_runs WHERE company_id=$1 ORDER BY year DESC, month DESC LIMIT $2",
+//       [companyId, Number(limit)],
+//     );
+//     return res
+//       .status(200)
+//       .json({ data: result.rows.map(fmtRun), total: result.rowCount });
+//   } catch (err) {
+//     console.error("getHistory error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+
+// // Add this to your exports in payroll.controller.js
+
+// export async function getPaymentFile(req, res) {
+//   const { id } = req.params;
+//   const { companyId } = req.user;
+
+//   try {
+//     // 1. Verify run exists
+//     const runResult = await db.query(
+//       "SELECT period FROM payroll_runs WHERE id=$1 AND company_id=$2",
+//       [id, companyId]
+//     );
+//     if (runResult.rowCount === 0) return res.status(404).json({ message: "Run not found." });
+
+//     const period = runResult.rows[0].period;
+
+//     // 2. Fetch records with bank details
+//     // Note: Adjust 'bank_name' and 'account_number' to match your employees table columns
+//     const records = await db.query(
+//       `SELECT 
+//          CONCAT(e.first_name, ' ', e.last_name) as account_name,
+//          e.bank_name,
+//          e.account_number,
+//          pr.net_salary
+//        FROM payroll_records pr
+//        JOIN employees e ON e.id = pr.employee_id
+//        WHERE pr.payroll_run_id = $1 AND pr.company_id = $2`,
+//       [id, companyId]
+//     );
+
+//     // 3. Generate CSV String
+//     const headers = "Account Name,Bank Name,Account Number,Amount,Narration\n";
+//     const rows = records.rows.map(r => 
+//       `"${r.account_name}","${r.bank_name || 'N/A'}","${r.account_number || 'N/A'}",${r.net_salary},"Salary Payment - ${period}"`
+//     ).join("\n");
+
+//     const csvContent = headers + rows;
+
+//     // 4. Send as file download
+//     res.setHeader("Content-Type", "text/csv");
+//     res.setHeader("Content-Disposition", `attachment; filename=Payment_File_${id}.csv`);
+//     return res.status(200).send(csvContent);
+
+//   } catch (err) {
+//     console.error("getPaymentFile error:", err);
+//     return res.status(500).json({ message: "Error generating payment file." });
+//   }
+// }
+
+
+
 // src/controllers/payroll.controller.js
 //
 // Endpoints:
@@ -445,11 +1441,65 @@ export async function deleteDeduction(req, res) {
 // PAYROLL RUNS
 // ══════════════════════════════════════════════════════════════
 
+// export async function initPayrollRun(req, res) {
+//   if (validationFailed(req, res)) return;
+//   const { companyId, userId } = req.user;
+//   const { month, year, notes } = req.body;
+//   const period = `${new Date(year, month - 1).toLocaleString("default", { month: "long" })} ${year}`;
+
+//   try {
+//     const existing = await db.query(
+//       "SELECT id, status FROM payroll_runs WHERE company_id=$1 AND month=$2 AND year=$3",
+//       [companyId, month, year],
+//     );
+//     if (existing.rowCount > 0) {
+//       return res.status(409).json({
+//         message: `A payroll run for ${period} already exists.`,
+//         data: fmtRun(existing.rows[0]),
+//       });
+//     }
+
+//     const result = await db.query(
+//       `INSERT INTO payroll_runs (company_id, month, year, period, notes, initiated_by)
+//        VALUES ($1,$2,$3,$4,$5,$6) RETURNING *`,
+//       [companyId, month, year, period, notes ?? null, userId],
+//     );
+//     return res
+//       .status(201)
+//       .json({ message: "Payroll run created.", data: fmtRun(result.rows[0]) });
+//   } catch (err) {
+//     console.error("initPayrollRun error:", err);
+//     return res.status(500).json({ message: "Server error." });
+//   }
+// }
+// ─────────────────────────────────────────────────────────────
+// PATCH for payroll.controller.js → initPayrollRun
+//
+// Drop-in replacement for the existing function.
+// Change: destructure from `req.body ?? {}` instead of `req.body`
+// so a null/missing body never causes a destructuring crash.
+//
+// The axios interceptor and explicit {} in payrollApi.js already
+// prevent the server from receiving a null body, but this is a
+// third line of defence for any other caller (curl, tests, etc.).
+// ─────────────────────────────────────────────────────────────
+
 export async function initPayrollRun(req, res) {
   if (validationFailed(req, res)) return;
+
+  // ✅ Always destructure from a guaranteed object
+  const { month, year, notes } = req.body ?? {};
+
+  if (!month || !year) {
+    return res
+      .status(400)
+      .json({ message: "month and year are required." });
+  }
+
   const { companyId, userId } = req.user;
-  const { month, year, notes } = req.body;
-  const period = `${new Date(year, month - 1).toLocaleString("default", { month: "long" })} ${year}`;
+  const period = `${new Date(year, month - 1).toLocaleString("default", {
+    month: "long",
+  })} ${year}`;
 
   try {
     const existing = await db.query(
@@ -581,9 +1631,32 @@ export async function runPayrollForEmployee(req, res) {
 }
 
 
+// ── Process payroll for the whole company ──────────────────────
+//
+// PERFORMANCE NOTE:
+// Previously this ran every employee one-by-one inside a single
+// client + SAVEPOINT transaction. For companies with more than a
+// handful of employees, that sequential loop (3+ queries per
+// employee) regularly exceeded the frontend's request timeout —
+// the request would appear to "fail" while the backend kept
+// running and committed successfully moments later.
+//
+// Each employee's payslip is an independent UPSERT into
+// payroll_records (ON CONFLICT DO UPDATE in the engine), so there's
+// no need for a single shared transaction with per-employee
+// SAVEPOINTs. Instead, we process employees in small parallel
+// chunks via the connection pool (`db`) — this gives genuine
+// concurrency across multiple DB connections and dramatically cuts
+// wall-clock time for larger headcounts, while still isolating
+// per-employee failures (one bad record doesn't roll back the rest).
 export async function runPayrollForCompany(req, res) {
   const { id } = req.params;
   const { companyId } = req.user;
+
+  // How many employees to process concurrently. Keep this comfortably
+  // under your DB pool's max connection count (commonly 10-20) so this
+  // endpoint doesn't starve other requests of connections.
+  const CHUNK_SIZE = 10;
 
   try {
     const runResult = await db.query(
@@ -595,12 +1668,6 @@ export async function runPayrollForCompany(req, res) {
 
     const run = runResult.rows[0];
 
-    // Allow re-processing a 'processed' run (idempotent re-run)
-    // if (!["draft", "processed"].includes(run.status)) {
-    //   return res.status(400).json({
-    //     message: `Cannot process a payroll run with status "${run.status}".`,
-    //   });
-    // }
     if (!["draft", "processing", "approved"].includes(run.status)) {
       return res.status(400).json({
         message: `Cannot process a payroll run with status "${run.status}".`,
@@ -639,80 +1706,73 @@ export async function runPayrollForCompany(req, res) {
     const processed = [];
     const errors = [];
 
-    const client = await db.getClient();
-    try {
-      await client.query("BEGIN");
+    // ── Process employees in parallel chunks ────────────────────
+    // Each call to engineRunEmployee uses the pool (`db`) directly —
+    // no shared client, so chunked Promise.allSettled gives real
+    // concurrency without savepoint ordering issues.
+    for (let i = 0; i < employees.rows.length; i += CHUNK_SIZE) {
+      const chunk = employees.rows.slice(i, i + CHUNK_SIZE);
 
-      for (const emp of employees.rows) {
-        try {
-          await client.query("SAVEPOINT emp_sp");
-
-          const payslip = await engineRunEmployee(
-            emp.id,
-            companyId,
-            id,
-            run.month,
-            run.year,
-            {},
-            client,
-          );
-
-          // Engine returns camelCase — accumulate correctly
-          totalGross       += Number(payslip.grossSalary    || 0);
-          totalDeductions  += Number(payslip.totalDeductions || 0);
-          totalNet         += Number(payslip.netSalary       || 0);
-
-          processed.push({
-            employeeId: emp.id,
-            netSalary:  payslip.netSalary,
-            grossSalary: payslip.grossSalary,
-          });
-
-          await client.query("RELEASE SAVEPOINT emp_sp");
-        } catch (empErr) {
-          await client.query("ROLLBACK TO SAVEPOINT emp_sp");
-          errors.push({ employeeId: emp.id, error: empErr.message });
-          console.error(`[Payroll] Failed for employee ${emp.id}:`, empErr.message);
-        }
-      }
-
-      // FIX 1: Status set to 'processed' (not back to 'draft')
-      // This allows the Approve step to work AND history shows the right status.
-      // await client.query(
-      //   `UPDATE payroll_runs
-      //    SET total_gross=$1,
-      //        total_deductions=$2,
-      //        total_net=$3,
-      //        employee_count=$4,
-      //        status='processed',
-      //        updated_at=NOW()
-      //    WHERE id=$5`,
-      //   [totalGross, totalDeductions, totalNet, processed.length, id],
-      // );
-
-      await client.query(
-        `UPDATE payroll_runs
-   SET total_gross=$1,
-       total_deductions=$2,
-       total_net=$3,
-       employee_count=$4,
-       status='approved',
-       updated_at=NOW()
-   WHERE id=$5`,
-        [totalGross, totalDeductions, totalNet, processed.length, id],
+      const results = await Promise.allSettled(
+        chunk.map((emp) =>
+          engineRunEmployee(emp.id, companyId, id, run.month, run.year, {}, db),
+        ),
       );
 
-      await client.query("COMMIT");
+      results.forEach((result, idx) => {
+        const emp = chunk[idx];
+
+        if (result.status === "fulfilled") {
+          const payslip = result.value;
+          totalGross      += Number(payslip.grossSalary     || 0);
+          totalDeductions += Number(payslip.totalDeductions || 0);
+          totalNet        += Number(payslip.netSalary       || 0);
+
+          processed.push({
+            employeeId:  emp.id,
+            netSalary:   payslip.netSalary,
+            grossSalary: payslip.grossSalary,
+          });
+        } else {
+          const message = result.reason?.message || String(result.reason);
+          errors.push({ employeeId: emp.id, error: message });
+          console.error(`[Payroll] Failed for employee ${emp.id}:`, message);
+        }
+      });
+    }
+
+    // If literally nothing could be processed, roll the run back to
+    // draft so HR can fix the underlying issue and retry.
+    if (processed.length === 0) {
+      await db.query(
+        "UPDATE payroll_runs SET status='draft', updated_at=NOW() WHERE id=$1",
+        [id],
+      );
+      return res.status(500).json({
+        message: "Payroll processing failed for all employees.",
+        errors,
+      });
+    }
+
+    try {
+      await db.query(
+        `UPDATE payroll_runs
+         SET total_gross=$1,
+             total_deductions=$2,
+             total_net=$3,
+             employee_count=$4,
+             status='approved',
+             updated_at=NOW()
+         WHERE id=$5`,
+        [totalGross, totalDeductions, totalNet, processed.length, id],
+      );
     } catch (err) {
-      await client.query("ROLLBACK");
       // Roll back to draft so HR can retry
       await db.query(
         "UPDATE payroll_runs SET status='draft', updated_at=NOW() WHERE id=$1",
         [id],
       );
       throw err;
-    } finally {
-      client.release();
     }
 
     return res.status(200).json({

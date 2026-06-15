@@ -157,9 +157,7 @@ export default function AdminPerformancePage() {
 
             {/* Tab content */}
             <AnimatePresence mode="wait">
-              {/* {activeTab === "dashboard" && (
-                <PerformanceDashboard key="dashboard" />
-              )} */}
+    
               {activeTab === "cycles" && <ReviewCycles key="cycles" />}
               {activeTab === "forms" && <AppraisalForms key="forms" />}
               {activeTab === "goals" && (

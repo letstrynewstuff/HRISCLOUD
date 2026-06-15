@@ -531,6 +531,12 @@ function InsuranceBanner({ onDismiss }) {
           <Shield size={28} color="#fff" />
         </div>
         <div className="flex-1">
+          <h1
+           className="text-xl font-bold text-white mb-1"
+            style={{ fontFamily: "Sora,sans-serif" }}
+          >
+            Benefits
+          </h1>
           <h3
             className="text-xl font-bold text-white mb-1"
             style={{ fontFamily: "Sora,sans-serif" }}
@@ -688,7 +694,7 @@ export default function AdminBenefitsPage() {
           </header>
 
           <main className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
-            <div>
+            {/* <div>
               <h1
                 className="text-2xl font-bold"
                 style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
@@ -698,7 +704,7 @@ export default function AdminBenefitsPage() {
               <p className="text-sm mt-0.5" style={{ color: C.textMuted }}>
                 Manage company benefits and assign them to employees
               </p>
-            </div>
+            </div> */}
 
             {/* Insurance banner */}
             <AnimatePresence>
