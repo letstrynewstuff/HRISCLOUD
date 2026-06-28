@@ -1,10 +1,28 @@
+
+
 // src/pages/AttendancePage.jsx
 // Employee-side attendance page.
 // — Real user from AuthContext (no hard-coded EMPLOYEE constant)
 // — Clock In/Out wired to backend via attendanceApi
+// — Break/Pause tracking with start/end break endpoints
 // — GET /attendance/me populates all stats + log
-// — Geolocation captured on clock-in
+// — Geolocation captured on clock-in and displayed
 // — No mock data
+//
+// FIX: "today's record" was being found via strict calendar-date
+//      string matching (`r.date.toDateString() === todayStr`). This
+//      silently failed in the same way the backend's old
+//      `attendance_date = CURRENT_DATE` check did — right after
+//      starting a break, fetchAttendance() would re-run, fail to
+//      match "today", fall into the else-branch, and reset
+//      onBreak/breakStartTime back to false/null, instantly undoing
+//      the optimistic break-start UI update (no Resume button, no
+//      running break timer).
+//
+//      Now "today's record" = the most recent OPEN session
+//      (has clockIn, no clockOut) — consistent with the backend's
+//      getTodayRecord fix. This is robust regardless of which
+//      calendar date the session technically started on.
 
 import { useState, useEffect, useCallback } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
@@ -33,6 +51,9 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  Coffee,
+  Play,
+  Pause,
 } from "lucide-react";
 
 /* ─── Palette ─── */
@@ -51,6 +72,8 @@ const C = {
   warningLight: "#FEF3C7",
   danger: "#EF4444",
   dangerLight: "#FEE2E2",
+  purple: "#8B5CF6",
+  purpleLight: "#EDE9FE",
   textPrimary: "#0F172A",
   textSecondary: "#64748B",
   textMuted: "#94A3B8",
@@ -58,10 +81,18 @@ const C = {
 
 /* ─── Helpers ─── */
 const fmtHours = (h) => {
-  if (!h) return "—";
+  if (!h && h !== 0) return "—";
   const hrs = Math.floor(h);
   const mins = Math.round((h - hrs) * 60);
   return mins ? `${hrs}h ${mins}m` : `${hrs}h`;
+};
+
+const fmtMinutes = (mins) => {
+  if (!mins && mins !== 0) return "—";
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  if (h > 0) return m > 0 ? `${h}h ${m}m` : `${h}h`;
+  return `${m}m`;
 };
 
 const pad = (n) => String(n).padStart(2, "0");
@@ -138,16 +169,26 @@ const StatusBadge = ({ status }) => {
   );
 };
 
-const LiveTimer = ({ startTime }) => {
+const LiveTimer = ({ startTime, pausedAt, totalPausedMs = 0 }) => {
   const [elapsed, setElapsed] = useState(0);
   useEffect(() => {
     if (!startTime) return;
-    const tick = () =>
-      setElapsed(Math.floor((Date.now() - startTime.getTime()) / 1000));
+    const tick = () => {
+      const pauseOffset = pausedAt
+        ? totalPausedMs + (Date.now() - pausedAt.getTime())
+        : totalPausedMs;
+      setElapsed(
+        Math.max(
+          0,
+          Math.floor((Date.now() - startTime.getTime() - pauseOffset) / 1000)
+        )
+      );
+    };
     tick();
     const t = setInterval(tick, 1000);
     return () => clearInterval(t);
-  }, [startTime]);
+  }, [startTime, pausedAt, totalPausedMs]);
+
   const h = Math.floor(elapsed / 3600);
   const m = Math.floor((elapsed % 3600) / 60);
   const s = elapsed % 60;
@@ -155,6 +196,60 @@ const LiveTimer = ({ startTime }) => {
     <span className="tabular-nums font-bold font-mono">
       {pad(h)}:{pad(m)}:{pad(s)}
     </span>
+  );
+};
+
+const LiveBreakTimer = ({ startTime }) => {
+  const [elapsed, setElapsed] = useState(0);
+  useEffect(() => {
+    if (!startTime) return;
+    const tick = () => {
+      setElapsed(
+        Math.max(0, Math.floor((Date.now() - startTime.getTime()) / 1000))
+      );
+    };
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, [startTime]);
+
+  const h = Math.floor(elapsed / 3600);
+  const m = Math.floor((elapsed % 3600) / 60);
+  const s = elapsed % 60;
+  return (
+    <span className="tabular-nums font-bold font-mono">
+      {pad(h)}:{pad(m)}:{pad(s)}
+    </span>
+  );
+};
+
+/* ─── Location display helper ─── */
+const LocationBadge = ({ location }) => {
+  if (!location) return null;
+  const { lat, lng, address } = location;
+
+  const displayText = address
+    ? address
+    : lat != null && lng != null
+    ? `${Number(lat).toFixed(4)}, ${Number(lng).toFixed(4)}`
+    : null;
+
+  if (!displayText) return null;
+
+  return (
+    <a
+      href={`https://maps.google.com/?q=${lat},${lng}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
+      style={{ textDecoration: "none" }}
+      title="View on Google Maps"
+    >
+      <MapPin size={13} color="rgba(255,255,255,0.7)" />
+      <span className="text-white/80 text-xs truncate max-w-[160px]">
+        <strong className="text-white">{displayText}</strong>
+      </span>
+    </a>
   );
 };
 
@@ -176,9 +271,19 @@ export default function AttendancePage() {
   const [clockedIn, setClockedIn] = useState(false);
   const [clockInTime, setClockInTime] = useState(null);
   const [clockOutTime, setClockOutTime] = useState(null);
-  const [clockConfirm, setClockConfirm] = useState(null); // 'in' | 'out' | null
+  const [clockInLocation, setClockInLocation] = useState(null);
+  const [clockConfirm, setClockConfirm] = useState(null); // 'in' | 'out' | 'break-start' | 'break-end'
   const [todayStatus, setTodayStatus] = useState("not-started");
   const [clockError, setClockError] = useState(null);
+
+  // Break state
+  const [onBreak, setOnBreak] = useState(false);
+  const [breakStartTime, setBreakStartTime] = useState(null); // Date when current break started
+  const [totalBreakMinutes, setTotalBreakMinutes] = useState(0); // accumulated break from backend
+  const [totalPausedMs, setTotalPausedMs] = useState(0); // ms offset for LiveTimer
+
+  // Final hours worked once the day is done (frozen, from backend hours_worked)
+  const [finalHoursWorked, setFinalHoursWorked] = useState(null);
 
   // Filters & view
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
@@ -198,7 +303,6 @@ export default function AttendancePage() {
       setLoading(true);
       setClockError(null);
 
-      // Fetch up to 100 records for current month stats
       const res = await attendanceApi.getMyAttendance({ limit: 100 });
 
       const formattedLog = (res.rows || []).map((r) => ({
@@ -227,33 +331,80 @@ export default function AttendancePage() {
         status: r.status,
         overtime: r.overtimeHours || 0,
         location: r.clockInLocation,
+        breakMinutes: r.totalBreakMinutes || 0,
+        onBreak: r.onBreak || false,
+        breakStartedAt: r.breakStartedAt ? new Date(r.breakStartedAt) : null,
         isManuallyEdited: r.isManuallyEdited,
       }));
 
       setAttendanceLog(formattedLog);
 
       // ── Determine today's state ──
-      const todayStr = new Date().toDateString();
-      const todayRec = formattedLog.find(
-        (r) => r.date.toDateString() === todayStr,
-      );
+      // FIX: Previously matched by exact calendar-date string
+      // (`r.date.toDateString() === new Date().toDateString()`), which
+      // could fail to find the active session (e.g. a late-night
+      // clock-in whose attendance_date no longer equals "today"),
+      // silently resetting break/clock state right after a successful
+      // break-start/clock-in. Now we find the most recent OPEN session
+      // — clocked in, not yet clocked out — same approach as the
+      // backend's getTodayRecord.
+      const todayRec =
+        formattedLog.find((r) => r.rawClockIn && !r.rawClockOut) ?? null;
 
       if (todayRec) {
         setClockInTime(todayRec.rawClockIn);
-        if (!todayRec.rawClockOut) {
-          setClockedIn(true);
-          setTodayStatus("active");
+        setClockInLocation(todayRec.location);
+        setTotalBreakMinutes(todayRec.breakMinutes || 0);
+
+        if (todayRec.onBreak && todayRec.breakStartedAt) {
+          setOnBreak(true);
+          setBreakStartTime(todayRec.breakStartedAt);
+          // ms already accumulated before this break
+          setTotalPausedMs((todayRec.breakMinutes || 0) * 60 * 1000);
+        } else {
+          setOnBreak(false);
+          setBreakStartTime(null);
+          setTotalPausedMs((todayRec.breakMinutes || 0) * 60 * 1000);
+        }
+
+        setClockedIn(true);
+        setTodayStatus("active");
+        setClockOutTime(null);
+        setFinalHoursWorked(null);
+      } else {
+        // No open session — check if there's a *closed* session that
+        // belongs to today (so we can still show "Day Complete").
+        const todayStr = new Date().toDateString();
+        const closedToday = formattedLog.find(
+          (r) => r.rawClockOut && r.date.toDateString() === todayStr
+        );
+
+        if (closedToday) {
+          setClockedIn(false);
+          setClockOutTime(closedToday.rawClockOut);
+          setClockInTime(closedToday.rawClockIn);
+          setClockInLocation(closedToday.location);
+          setTotalBreakMinutes(closedToday.breakMinutes || 0);
+          setTotalPausedMs((closedToday.breakMinutes || 0) * 60 * 1000);
+          setOnBreak(false);
+          setBreakStartTime(null);
+          setTodayStatus("done");
+          setFinalHoursWorked(closedToday.hours || 0);
         } else {
           setClockedIn(false);
-          setClockOutTime(todayRec.rawClockOut);
-          setTodayStatus("done");
+          setTodayStatus("not-started");
+          setClockInTime(null);
+          setClockOutTime(null);
+          setClockInLocation(null);
+          setTotalBreakMinutes(0);
+          setTotalPausedMs(0);
+          setOnBreak(false);
+          setBreakStartTime(null);
+          setFinalHoursWorked(null);
         }
-      } else {
-        setClockedIn(false);
-        setTodayStatus("not-started");
       }
 
-      // ── Streak: consecutive present/late days ──
+      // ── Streak ──
       let s = 0;
       for (const r of formattedLog) {
         if (r.status === "present" || r.status === "late") s++;
@@ -263,7 +414,7 @@ export default function AttendancePage() {
     } catch (err) {
       console.error("fetchAttendance error:", err);
       setClockError(
-        err?.response?.data?.message ?? "Failed to load attendance.",
+        err?.response?.data?.message ?? "Failed to load attendance."
       );
     } finally {
       setLoading(false);
@@ -287,7 +438,7 @@ export default function AttendancePage() {
         showConfirm("in");
       } catch (err) {
         setClockError(
-          err?.response?.data?.message ?? "Clock-in failed. Please try again.",
+          err?.response?.data?.message ?? "Clock-in failed. Please try again."
         );
       } finally {
         setActionLoading(false);
@@ -298,8 +449,8 @@ export default function AttendancePage() {
       navigator.geolocation.getCurrentPosition(
         (pos) =>
           doClockIn({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-        () => doClockIn({}), // user denied location — still clock in without it
-        { timeout: 5000 },
+        () => doClockIn({}),
+        { timeout: 5000 }
       );
     } else {
       doClockIn({});
@@ -309,6 +460,10 @@ export default function AttendancePage() {
   /* ─── Clock Out ─── */
   const handleClockOut = async () => {
     if (!clockedIn || actionLoading) return;
+    // End break first if on break
+    if (onBreak) {
+      await handleBreakEnd(true);
+    }
     setActionLoading(true);
     setClockError(null);
     try {
@@ -317,10 +472,58 @@ export default function AttendancePage() {
       showConfirm("out");
     } catch (err) {
       setClockError(
-        err?.response?.data?.message ?? "Clock-out failed. Please try again.",
+        err?.response?.data?.message ?? "Clock-out failed. Please try again."
       );
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  /* ─── Break Start ─── */
+  const handleBreakStart = async () => {
+    if (!clockedIn || onBreak || actionLoading || todayStatus === "done")
+      return;
+    setActionLoading(true);
+    setClockError(null);
+    try {
+      await attendanceApi.startBreak();
+      // Optimistic local update
+      const now = new Date();
+      setOnBreak(true);
+      setBreakStartTime(now);
+      setTotalPausedMs(totalBreakMinutes * 60 * 1000);
+      await fetchAttendance();
+      showConfirm("break-start");
+    } catch (err) {
+      setClockError(
+        err?.response?.data?.message ?? "Break start failed. Please try again."
+      );
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  /* ─── Break End ─── */
+  const handleBreakEnd = async (silent = false) => {
+    if (!onBreak || actionLoading) return;
+    if (!silent) setActionLoading(true);
+    setClockError(null);
+    try {
+      await attendanceApi.endBreak();
+      setOnBreak(false);
+      setBreakStartTime(null);
+      if (!silent) {
+        await fetchAttendance();
+        showConfirm("break-end");
+      }
+    } catch (err) {
+      if (!silent) {
+        setClockError(
+          err?.response?.data?.message ?? "Break end failed. Please try again."
+        );
+      }
+    } finally {
+      if (!silent) setActionLoading(false);
     }
   };
 
@@ -333,13 +536,17 @@ export default function AttendancePage() {
   const monthEntries = attendanceLog.filter(
     (e) =>
       e.date.getMonth() === selectedMonth &&
-      e.date.getFullYear() === selectedYear,
+      e.date.getFullYear() === selectedYear
   );
   const daysPresent = monthEntries.filter((e) => e.status === "present").length;
   const daysLate = monthEntries.filter((e) => e.status === "late").length;
   const daysAbsent = monthEntries.filter((e) => e.status === "absent").length;
   const totalHours = monthEntries.reduce((s, e) => s + (e.hours || 0), 0);
   const totalOvertime = monthEntries.reduce((s, e) => s + (e.overtime || 0), 0);
+  const totalBreakMins = monthEntries.reduce(
+    (s, e) => s + (e.breakMinutes || 0),
+    0
+  );
   const workingDays = monthEntries.length;
   const attendanceRate = workingDays
     ? (((daysPresent + daysLate) / workingDays) * 100).toFixed(0)
@@ -354,17 +561,21 @@ export default function AttendancePage() {
     return statusMatch && searchMatch;
   });
 
-  const clockStatusColor = clockedIn
+  const clockStatusColor = onBreak
+    ? C.warning
+    : clockedIn
     ? C.success
     : todayStatus === "done"
-      ? C.accent
-      : C.danger;
+    ? C.accent
+    : C.danger;
 
-  const clockStatusLabel = clockedIn
+  const clockStatusLabel = onBreak
+    ? "On Break"
+    : clockedIn
     ? "Clocked In"
     : todayStatus === "done"
-      ? "Day Complete"
-      : "Not Clocked In";
+    ? "Day Complete"
+    : "Not Clocked In";
 
   /* ─────────────────────────── RENDER ─── */
   return (
@@ -434,7 +645,6 @@ export default function AttendancePage() {
               >
                 <RefreshCw size={14} color={C.textMuted} />
               </Motion.button>
-              {/* Avatar from real user */}
               {employee?.avatar ? (
                 <img
                   src={employee.avatar}
@@ -493,9 +703,25 @@ export default function AttendancePage() {
               style={{
                 background:
                   "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
-                minHeight: 190,
+                minHeight: 220,
               }}
             >
+              {/* Break overlay tint */}
+              <AnimatePresence>
+                {onBreak && (
+                  <Motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background:
+                        "linear-gradient(135deg,rgba(245,158,11,0.18) 0%,transparent 100%)",
+                    }}
+                  />
+                )}
+              </AnimatePresence>
+
               <div className="relative p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6">
                 {/* Left */}
                 <div className="flex-1">
@@ -522,7 +748,8 @@ export default function AttendancePage() {
                       : "Track your daily working hours"}
                   </p>
 
-                  <div className="flex flex-wrap gap-3 mt-4">
+                  {/* Info chips */}
+                  <div className="flex flex-wrap gap-2 mt-4">
                     {clockInTime && (
                       <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10">
                         <LogIn size={13} color="rgba(255,255,255,0.7)" />
@@ -551,7 +778,7 @@ export default function AttendancePage() {
                         </span>
                       </div>
                     )}
-                    {clockedIn && clockInTime && (
+                    {clockedIn && clockInTime && !onBreak && (
                       <div
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
                         style={{
@@ -561,31 +788,76 @@ export default function AttendancePage() {
                       >
                         <Timer size={13} color={C.success} />
                         <span className="text-xs text-[#6EE7B7]">
-                          <LiveTimer startTime={clockInTime} />
+                          <LiveTimer
+                            startTime={clockInTime}
+                            pausedAt={breakStartTime}
+                            totalPausedMs={totalPausedMs}
+                          />
+                        </span>
+                      </div>
+                    )}
+                    {onBreak && breakStartTime && (
+                      <div
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
+                        style={{
+                          background: "rgba(245,158,11,0.22)",
+                          border: "1px solid rgba(245,158,11,0.35)",
+                        }}
+                      >
+                        <Coffee size={13} color={C.warning} />
+                        <span
+                          className="text-xs font-semibold"
+                          style={{ color: "#FCD34D" }}
+                        >
+                          On break — <LiveBreakTimer startTime={breakStartTime} />
+                        </span>
+                      </div>
+                    )}
+                    {/* ── LOCATION CHIP ── */}
+                    {clockInLocation && (
+                      <LocationBadge location={clockInLocation} />
+                    )}
+                    {/* Break total chip */}
+                    {(totalBreakMinutes > 0 || onBreak) && clockedIn && (
+                      <div
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
+                        style={{
+                          background: "rgba(139,92,246,0.20)",
+                          border: "1px solid rgba(139,92,246,0.3)",
+                        }}
+                      >
+                        <Coffee size={13} color="#C4B5FD" />
+                        <span className="text-white/80 text-xs">
+                          Break:{" "}
+                          <strong className="text-white">
+                            {fmtMinutes(totalBreakMinutes)}
+                          </strong>
                         </span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Right — Clock button */}
+                {/* Right — Clock + Break buttons */}
                 <div className="flex flex-col items-center gap-3 shrink-0">
                   <div className="text-white text-3xl font-bold tabular-nums">
                     {now.toLocaleTimeString()}
                   </div>
+
+                  {/* Main clock button */}
                   <Motion.button
                     whileHover={{ scale: todayStatus === "done" ? 1 : 1.04 }}
                     whileTap={{ scale: todayStatus === "done" ? 1 : 0.96 }}
                     onClick={clockedIn ? handleClockOut : handleClockIn}
                     disabled={todayStatus === "done" || actionLoading}
-                    className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm"
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm w-full justify-center"
                     style={{
                       background:
                         todayStatus === "done"
                           ? "rgba(255,255,255,0.12)"
                           : clockedIn
-                            ? `linear-gradient(135deg,${C.danger},#DC2626)`
-                            : `linear-gradient(135deg,${C.success},#059669)`,
+                          ? `linear-gradient(135deg,${C.danger},#DC2626)`
+                          : `linear-gradient(135deg,${C.success},#059669)`,
                       color: "#fff",
                       opacity:
                         todayStatus === "done" || actionLoading ? 0.6 : 1,
@@ -608,9 +880,43 @@ export default function AttendancePage() {
                     {todayStatus === "done"
                       ? "Day Complete"
                       : clockedIn
-                        ? "Clock Out"
-                        : "Clock In"}
+                      ? "Clock Out"
+                      : "Clock In"}
                   </Motion.button>
+
+                  {/* Break button — only shown while clocked in */}
+                  {clockedIn && todayStatus !== "done" && (
+                    <Motion.button
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      whileHover={{ scale: 1.04 }}
+                      whileTap={{ scale: 0.96 }}
+                      onClick={onBreak ? handleBreakEnd : handleBreakStart}
+                      disabled={actionLoading}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm w-full justify-center"
+                      style={{
+                        background: onBreak
+                          ? "rgba(16,185,129,0.25)"
+                          : "rgba(245,158,11,0.22)",
+                        border: onBreak
+                          ? "1.5px solid rgba(16,185,129,0.5)"
+                          : "1.5px solid rgba(245,158,11,0.5)",
+                        color: onBreak ? "#6EE7B7" : "#FCD34D",
+                        cursor: actionLoading ? "not-allowed" : "pointer",
+                        opacity: actionLoading ? 0.6 : 1,
+                      }}
+                    >
+                      {onBreak ? (
+                        <>
+                          <Play size={14} /> Resume Work
+                        </>
+                      ) : (
+                        <>
+                          <Pause size={14} /> Take a Break
+                        </>
+                      )}
+                    </Motion.button>
+                  )}
                 </div>
               </div>
             </Motion.div>
@@ -690,7 +996,7 @@ export default function AttendancePage() {
               initial="hidden"
               animate="visible"
               custom={2}
-              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+              className="grid grid-cols-1 md:grid-cols-4 gap-4"
             >
               {[
                 {
@@ -713,6 +1019,13 @@ export default function AttendancePage() {
                   icon: Award,
                   color: C.primary,
                   bg: C.primaryLight,
+                },
+                {
+                  title: "Break Time This Month",
+                  value: fmtMinutes(totalBreakMins),
+                  icon: Coffee,
+                  color: C.purple,
+                  bg: C.purpleLight,
                 },
               ].map((s, i) => (
                 <Card key={i} className="p-5 flex items-start gap-4">
@@ -797,13 +1110,30 @@ export default function AttendancePage() {
                   </div>
                 ) : (
                   <div className="space-y-1.5">
+                    {/* Table header */}
+                    <div
+                      className="grid gap-4 px-4 py-2 text-[10px] font-bold uppercase tracking-wide"
+                      style={{
+                        color: C.textMuted,
+                        gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1fr 1fr",
+                      }}
+                    >
+                      <span>Date</span>
+                      <span className="hidden md:block">In</span>
+                      <span className="hidden md:block">Out</span>
+                      <span>Hours</span>
+                      <span>Break</span>
+                      <span className="text-right">Status</span>
+                    </div>
                     {filteredLog.map((entry) => (
                       <Motion.div
                         key={entry.id}
                         whileHover={{ x: 2 }}
                         onClick={() => setDetailEntry(entry)}
-                        className="grid grid-cols-5 gap-4 px-4 py-3 rounded-xl cursor-pointer transition-colors"
-                        style={{ borderColor: "transparent" }}
+                        className="grid gap-4 px-4 py-3 rounded-xl cursor-pointer transition-colors items-center"
+                        style={{
+                          gridTemplateColumns: "1.5fr 1fr 1fr 1fr 1fr 1fr",
+                        }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.background = C.surfaceAlt;
                         }}
@@ -811,7 +1141,7 @@ export default function AttendancePage() {
                           e.currentTarget.style.background = "transparent";
                         }}
                       >
-                        <div className="col-span-2 md:col-span-1">
+                        <div>
                           <p
                             className="text-xs font-semibold"
                             style={{ color: C.textPrimary }}
@@ -832,12 +1162,6 @@ export default function AttendancePage() {
                         </div>
                         <div className="hidden md:flex flex-col">
                           <span
-                            className="text-[10px]"
-                            style={{ color: C.textMuted }}
-                          >
-                            In
-                          </span>
-                          <span
                             className="text-sm font-semibold"
                             style={{ color: C.textPrimary }}
                           >
@@ -846,25 +1170,13 @@ export default function AttendancePage() {
                         </div>
                         <div className="hidden md:flex flex-col">
                           <span
-                            className="text-[10px]"
-                            style={{ color: C.textMuted }}
-                          >
-                            Out
-                          </span>
-                          <span
                             className="text-sm font-semibold"
                             style={{ color: C.textPrimary }}
                           >
                             {entry.clockOut || "—"}
                           </span>
                         </div>
-                        <div className="flex flex-col">
-                          <span
-                            className="text-[10px]"
-                            style={{ color: C.textMuted }}
-                          >
-                            Hours
-                          </span>
+                        <div>
                           <span
                             className="text-sm font-bold"
                             style={{ color: C.textPrimary }}
@@ -872,7 +1184,25 @@ export default function AttendancePage() {
                             {fmtHours(entry.hours)}
                           </span>
                         </div>
-                        <div className="col-span-2 md:col-span-1 text-right">
+                        <div>
+                          {entry.breakMinutes > 0 ? (
+                            <span
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
+                              style={{
+                                background: C.purpleLight,
+                                color: C.purple,
+                              }}
+                            >
+                              <Coffee size={9} />
+                              {fmtMinutes(entry.breakMinutes)}
+                            </span>
+                          ) : (
+                            <span style={{ color: C.textMuted, fontSize: 12 }}>
+                              —
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-right">
                           <StatusBadge status={entry.status} />
                         </div>
                       </Motion.div>
@@ -929,7 +1259,14 @@ export default function AttendancePage() {
                   },
                   { label: "Clock In", value: detailEntry.clockIn || "—" },
                   { label: "Clock Out", value: detailEntry.clockOut || "—" },
-                  { label: "Hours", value: fmtHours(detailEntry.hours) },
+                  { label: "Hours Worked", value: fmtHours(detailEntry.hours) },
+                  {
+                    label: "Break Time",
+                    value:
+                      detailEntry.breakMinutes > 0
+                        ? fmtMinutes(detailEntry.breakMinutes)
+                        : "No breaks",
+                  },
                   ...(detailEntry.overtime > 0
                     ? [
                         {
@@ -938,15 +1275,23 @@ export default function AttendancePage() {
                         },
                       ]
                     : []),
-                  ...(detailEntry.location
+                  ...(detailEntry.location?.lat != null
                     ? [
                         {
-                          label: "Location",
+                          label: "Clock-in Location",
                           value: (
-                            <span className="flex items-center gap-1 text-blue-600 text-sm">
+                            <a
+                              href={`https://maps.google.com/?q=${detailEntry.location.lat},${detailEntry.location.lng}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-sm font-semibold"
+                              style={{ color: C.primary }}
+                            >
                               <MapPin size={12} />
-                              Logged
-                            </span>
+                              {detailEntry.location.address
+                                ? detailEntry.location.address
+                                : `${Number(detailEntry.location.lat).toFixed(5)}, ${Number(detailEntry.location.lng).toFixed(5)}`}
+                            </a>
                           ),
                         },
                       ]
@@ -1008,10 +1353,28 @@ export default function AttendancePage() {
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 12, x: "-50%" }}
             className="fixed bottom-6 left-1/2 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold text-white shadow-xl z-50"
-            style={{ background: clockConfirm === "in" ? C.success : C.accent }}
+            style={{
+              background:
+                clockConfirm === "in"
+                  ? C.success
+                  : clockConfirm === "out"
+                  ? C.accent
+                  : clockConfirm === "break-start"
+                  ? C.warning
+                  : C.success,
+            }}
           >
-            <CheckCircle2 size={16} />
-            Successfully clocked {clockConfirm}!
+            {clockConfirm === "break-start" ? (
+              <Coffee size={16} />
+            ) : clockConfirm === "break-end" ? (
+              <Play size={16} />
+            ) : (
+              <CheckCircle2 size={16} />
+            )}
+            {clockConfirm === "in" && "Successfully clocked in!"}
+            {clockConfirm === "out" && "Successfully clocked out!"}
+            {clockConfirm === "break-start" && "Break started — enjoy!"}
+            {clockConfirm === "break-end" && "Welcome back!"}
           </Motion.div>
         )}
       </AnimatePresence>

@@ -1,4 +1,3 @@
-
 // src/controllers/performance.controller.js
 //
 // Changes from original:
@@ -14,76 +13,76 @@ import { db } from "../config/db.js";
 // ─── Serializers ───────────────────────────────────────────────
 function formatReview(r) {
   return {
-    id:                r.id,
-    companyId:         r.company_id,
-    employeeId:        r.employee_id,
-    reviewerId:        r.reviewer_id,
-    cycle:             r.cycle,
-    periodStart:       r.period_start,
-    periodEnd:         r.period_end,
-    selfAssessment:    r.self_assessment,
+    id: r.id,
+    companyId: r.company_id,
+    employeeId: r.employee_id,
+    reviewerId: r.reviewer_id,
+    cycle: r.cycle,
+    periodStart: r.period_start,
+    periodEnd: r.period_end,
+    selfAssessment: r.self_assessment,
     managerAssessment: r.manager_assessment,
-    finalRating:       r.final_rating,
-    status:            r.status,
-    createdAt:         r.created_at,
-    updatedAt:         r.updated_at,
+    finalRating: r.final_rating,
+    status: r.status,
+    createdAt: r.created_at,
+    updatedAt: r.updated_at,
   };
 }
 
 function formatGoal(g) {
   return {
-    id:          g.id,
-    companyId:   g.company_id,
-    employeeId:  g.employee_id,
-    title:       g.title,
+    id: g.id,
+    companyId: g.company_id,
+    employeeId: g.employee_id,
+    title: g.title,
     description: g.description,
-    metric:      g.metric,
-    target:      g.target,
-    dueDate:     g.due_date,
-    progress:    g.progress,
-    status:      g.status,
-    cycle:       g.cycle,
-    createdBy:   g.created_by,
-    createdAt:   g.created_at,
-    updatedAt:   g.updated_at,
+    metric: g.metric,
+    target: g.target,
+    dueDate: g.due_date,
+    progress: g.progress,
+    status: g.status,
+    cycle: g.cycle,
+    createdBy: g.created_by,
+    createdAt: g.created_at,
+    updatedAt: g.updated_at,
   };
 }
 
 function formatCycle(c) {
   return {
-    id:          c.id,
-    companyId:   c.company_id,
-    name:        c.name,
+    id: c.id,
+    companyId: c.company_id,
+    name: c.name,
     periodStart: c.period_start,
-    periodEnd:   c.period_end,
-    status:      c.status,
-    createdAt:   c.created_at,
-    updatedAt:   c.updated_at,
+    periodEnd: c.period_end,
+    status: c.status,
+    createdAt: c.created_at,
+    updatedAt: c.updated_at,
   };
 }
 
 // ── Helper: format a PIP row from DB ─────────────────────────────────────────
 function formatPIP(row) {
   return {
-    id:             row.id,
-    employeeId:     row.employee_id,
-    employeeName:   row.employee_first_name && row.employee_last_name
-                      ? `${row.employee_first_name} ${row.employee_last_name}`
-                      : (row.employee_name ?? null),
-    firstName:      row.employee_first_name ?? null,
-    lastName:       row.employee_last_name  ?? null,
-    departmentName: row.department_name     ?? null,
-    reason:         row.reason,
-    reviewDate:     row.review_date,
-    period:         row.period             ?? null,
-    status:         row.status,
-    progress:       row.progress           ?? 0,
-    createdAt:      row.created_at,
-    updatedAt:      row.updated_at,
-    goals:          [], // populated separately when needed
+    id: row.id,
+    employeeId: row.employee_id,
+    employeeName:
+      row.employee_first_name && row.employee_last_name
+        ? `${row.employee_first_name} ${row.employee_last_name}`
+        : (row.employee_name ?? null),
+    firstName: row.employee_first_name ?? null,
+    lastName: row.employee_last_name ?? null,
+    departmentName: row.department_name ?? null,
+    reason: row.reason,
+    reviewDate: row.review_date,
+    period: row.period ?? null,
+    status: row.status,
+    progress: row.progress ?? 0,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    goals: [], // populated separately when needed
   };
 }
- 
 
 // ─── Resolve employee ID from user ─────────────────────────────
 // If JWT was built with employeeId (after auth.controller.js update),
@@ -92,7 +91,7 @@ async function resolveEmployeeId(userId, companyId, employeeIdFromJwt = null) {
   if (employeeIdFromJwt) return employeeIdFromJwt;
   const result = await db.query(
     "SELECT id FROM employees WHERE user_id = $1 AND company_id = $2",
-    [userId, companyId]
+    [userId, companyId],
   );
   if (result.rowCount === 0) return null;
   return result.rows[0].id;
@@ -109,11 +108,11 @@ export async function getCycles(req, res) {
       `SELECT * FROM performance_cycles
        WHERE company_id = $1
        ORDER BY period_start DESC`,
-      [companyId]
+      [companyId],
     );
     return res.status(200).json({
       cycles: result.rows.map(formatCycle),
-      total:  result.rowCount,
+      total: result.rowCount,
     });
   } catch (err) {
     console.error("getCycles error:", err);
@@ -129,17 +128,19 @@ export async function createCycle(req, res) {
   try {
     const dupe = await db.query(
       "SELECT id FROM performance_cycles WHERE company_id = $1 AND name = $2",
-      [companyId, name]
+      [companyId, name],
     );
     if (dupe.rowCount > 0) {
-      return res.status(409).json({ message: "A cycle with this name already exists." });
+      return res
+        .status(409)
+        .json({ message: "A cycle with this name already exists." });
     }
 
     const result = await db.query(
       `INSERT INTO performance_cycles (company_id, name, period_start, period_end, status)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
-      [companyId, name, periodStart, periodEnd, status]
+      [companyId, name, periodStart, periodEnd, status],
     );
     return res.status(201).json({ cycle: formatCycle(result.rows[0]) });
   } catch (err) {
@@ -158,12 +159,21 @@ export async function getAllReviews(req, res) {
     const { cycle, status, employeeId } = req.query;
 
     const conditions = ["pr.company_id = $1"];
-    const params     = [companyId];
-    let   idx        = 2;
+    const params = [companyId];
+    let idx = 2;
 
-    if (cycle)      { conditions.push(`pr.cycle = $${idx++}`);       params.push(cycle); }
-    if (status)     { conditions.push(`pr.status = $${idx++}`);      params.push(status); }
-    if (employeeId) { conditions.push(`pr.employee_id = $${idx++}`); params.push(employeeId); }
+    if (cycle) {
+      conditions.push(`pr.cycle = $${idx++}`);
+      params.push(cycle);
+    }
+    if (status) {
+      conditions.push(`pr.status = $${idx++}`);
+      params.push(status);
+    }
+    if (employeeId) {
+      conditions.push(`pr.employee_id = $${idx++}`);
+      params.push(employeeId);
+    }
 
     const result = await db.query(
       `SELECT
@@ -178,18 +188,21 @@ export async function getAllReviews(req, res) {
        LEFT JOIN employees r ON r.id = pr.reviewer_id
        WHERE ${conditions.join(" AND ")}
        ORDER BY pr.created_at DESC`,
-      params
+      params,
     );
 
     const reviews = result.rows.map((row) => ({
       ...formatReview(row),
       employee: {
         firstName: row.employee_first_name,
-        lastName:  row.employee_last_name,
-        email:     row.employee_email,
+        lastName: row.employee_last_name,
+        email: row.employee_email,
       },
       reviewer: row.reviewer_first_name
-        ? { firstName: row.reviewer_first_name, lastName: row.reviewer_last_name }
+        ? {
+            firstName: row.reviewer_first_name,
+            lastName: row.reviewer_last_name,
+          }
         : null,
     }));
 
@@ -213,23 +226,25 @@ export async function getMyReviews(req, res) {
       `SELECT * FROM performance_reviews
        WHERE employee_id = $1
        ORDER BY created_at DESC`,
-      [employeeId]
+      [employeeId],
     );
 
     return res.status(200).json({
       reviews: result.rows.map(formatReview),
-      total:   result.rowCount,
+      total: result.rowCount,
     });
   } catch (err) {
     console.error("getMyReviews error:", err);
-    return res.status(500).json({ message: "Server error fetching your reviews." });
+    return res
+      .status(500)
+      .json({ message: "Server error fetching your reviews." });
   }
 }
 
 // PATCH /api/performance/reviews/:id/self-assessment
 export async function submitSelfAssessment(req, res) {
   // Validation already handled by validate middleware
-  const { id }                                 = req.params;
+  const { id } = req.params;
   const { userId, companyId, employeeId: eid } = req.user;
 
   try {
@@ -240,7 +255,7 @@ export async function submitSelfAssessment(req, res) {
 
     const reviewResult = await db.query(
       "SELECT id, status, employee_id FROM performance_reviews WHERE id = $1 AND company_id = $2",
-      [id, companyId]
+      [id, companyId],
     );
     if (reviewResult.rowCount === 0) {
       return res.status(404).json({ message: "Review not found." });
@@ -248,7 +263,9 @@ export async function submitSelfAssessment(req, res) {
 
     const review = reviewResult.rows[0];
     if (review.employee_id !== employeeId) {
-      return res.status(403).json({ message: "This review does not belong to you." });
+      return res
+        .status(403)
+        .json({ message: "This review does not belong to you." });
     }
     if (review.status !== "pending") {
       return res.status(409).json({
@@ -263,16 +280,18 @@ export async function submitSelfAssessment(req, res) {
            updated_at      = NOW()
        WHERE id = $2
        RETURNING *`,
-      [req.body, id]
+      [req.body, id],
     );
 
     return res.status(200).json({
       message: "Self-assessment submitted.",
-      review:  formatReview(updated.rows[0]),
+      review: formatReview(updated.rows[0]),
     });
   } catch (err) {
     console.error("submitSelfAssessment error:", err);
-    return res.status(500).json({ message: "Server error submitting self-assessment." });
+    return res
+      .status(500)
+      .json({ message: "Server error submitting self-assessment." });
   }
 }
 
@@ -280,7 +299,7 @@ export async function submitSelfAssessment(req, res) {
 // ✅ FIX: status now advances to 'hr_review' (not 'completed')
 // ✅ FIX: final_rating uses COALESCE to prevent overwriting an existing value
 export async function submitManagerAssessment(req, res) {
-  const { id }        = req.params;
+  const { id } = req.params;
   const { companyId } = req.user;
 
   const client = await db.connect();
@@ -289,7 +308,7 @@ export async function submitManagerAssessment(req, res) {
 
     const reviewResult = await client.query(
       "SELECT id, status, final_rating FROM performance_reviews WHERE id = $1 AND company_id = $2",
-      [id, companyId]
+      [id, companyId],
     );
     if (reviewResult.rowCount === 0) {
       await client.query("ROLLBACK");
@@ -316,19 +335,22 @@ export async function submitManagerAssessment(req, res) {
            updated_at         = NOW()
        WHERE id = $3
        RETURNING *`,
-      [assessment, finalRating ?? null, id]
+      [assessment, finalRating ?? null, id],
     );
 
     await client.query("COMMIT");
 
     return res.status(200).json({
-      message: "Manager assessment submitted. Review is now awaiting HR finalization.",
-      review:  formatReview(updated.rows[0]),
+      message:
+        "Manager assessment submitted. Review is now awaiting HR finalization.",
+      review: formatReview(updated.rows[0]),
     });
   } catch (err) {
     await client.query("ROLLBACK");
     console.error("submitManagerAssessment error:", err);
-    return res.status(500).json({ message: "Server error submitting manager assessment." });
+    return res
+      .status(500)
+      .json({ message: "Server error submitting manager assessment." });
   } finally {
     client.release();
   }
@@ -336,7 +358,7 @@ export async function submitManagerAssessment(req, res) {
 
 // PATCH /api/performance/reviews/:id/finalize
 export async function finalizeReview(req, res) {
-  const { id }        = req.params;
+  const { id } = req.params;
   const { companyId } = req.user;
 
   const client = await db.connect();
@@ -345,7 +367,7 @@ export async function finalizeReview(req, res) {
 
     const reviewResult = await client.query(
       "SELECT id, status FROM performance_reviews WHERE id = $1 AND company_id = $2",
-      [id, companyId]
+      [id, companyId],
     );
     if (reviewResult.rowCount === 0) {
       await client.query("ROLLBACK");
@@ -369,14 +391,14 @@ export async function finalizeReview(req, res) {
            updated_at   = NOW()
        WHERE id = $2
        RETURNING *`,
-      [finalRating, id]
+      [finalRating, id],
     );
 
     await client.query("COMMIT");
 
     return res.status(200).json({
       message: "Review finalized and locked.",
-      review:  formatReview(updated.rows[0]),
+      review: formatReview(updated.rows[0]),
     });
   } catch (err) {
     await client.query("ROLLBACK");
@@ -397,12 +419,21 @@ export async function getAllGoals(req, res) {
     const { employeeId, cycle, status } = req.query;
 
     const conditions = ["g.company_id = $1"];
-    const params     = [companyId];
-    let   idx        = 2;
+    const params = [companyId];
+    let idx = 2;
 
-    if (employeeId) { conditions.push(`g.employee_id = $${idx++}`); params.push(employeeId); }
-    if (cycle)      { conditions.push(`g.cycle = $${idx++}`);       params.push(cycle); }
-    if (status)     { conditions.push(`g.status = $${idx++}`);      params.push(status); }
+    if (employeeId) {
+      conditions.push(`g.employee_id = $${idx++}`);
+      params.push(employeeId);
+    }
+    if (cycle) {
+      conditions.push(`g.cycle = $${idx++}`);
+      params.push(cycle);
+    }
+    if (status) {
+      conditions.push(`g.status = $${idx++}`);
+      params.push(status);
+    }
 
     const result = await db.query(
       `SELECT g.*, e.first_name AS employee_first_name, e.last_name AS employee_last_name
@@ -410,12 +441,15 @@ export async function getAllGoals(req, res) {
        JOIN employees e ON e.id = g.employee_id
        WHERE ${conditions.join(" AND ")}
        ORDER BY g.due_date ASC`,
-      params
+      params,
     );
 
     const goals = result.rows.map((row) => ({
       ...formatGoal(row),
-      employee: { firstName: row.employee_first_name, lastName: row.employee_last_name },
+      employee: {
+        firstName: row.employee_first_name,
+        lastName: row.employee_last_name,
+      },
     }));
 
     return res.status(200).json({ goals, total: result.rowCount });
@@ -429,33 +463,46 @@ export async function createGoal(req, res) {
   // Validation already handled by validate middleware
   const { companyId, userId } = req.user;
   const {
-    employeeId, title, description, metric, target,
-    dueDate, cycle, progress = 0, status = "not_started",
+    employeeId,
+    title,
+    description,
+    metric,
+    target,
+    dueDate,
+    cycle,
+    progress = 0,
+    status = "not_started",
   } = req.body;
 
   try {
     // ✅ Validate cycle exists for this company
     const cycleCheck = await db.query(
       "SELECT id FROM performance_cycles WHERE name = $1 AND company_id = $2",
-      [cycle, companyId]
+      [cycle, companyId],
     );
     if (cycleCheck.rowCount === 0) {
-      return res.status(404).json({ message: `Cycle '${cycle}' not found. Create the cycle first.` });
+      return res
+        .status(404)
+        .json({
+          message: `Cycle '${cycle}' not found. Create the cycle first.`,
+        });
     }
 
     // Verify target employee belongs to this company
     const empCheck = await db.query(
       "SELECT id FROM employees WHERE id = $1 AND company_id = $2",
-      [employeeId, companyId]
+      [employeeId, companyId],
     );
     if (empCheck.rowCount === 0) {
-      return res.status(404).json({ message: "Employee not found in this company." });
+      return res
+        .status(404)
+        .json({ message: "Employee not found in this company." });
     }
 
     // Resolve the creator's employee record
     const creatorResult = await db.query(
       "SELECT id FROM employees WHERE user_id = $1 AND company_id = $2",
-      [userId, companyId]
+      [userId, companyId],
     );
     const createdBy = creatorResult.rows[0]?.id ?? null;
 
@@ -466,15 +513,23 @@ export async function createGoal(req, res) {
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
        RETURNING *`,
       [
-        companyId, employeeId, title,
-        description ?? null, metric ?? null, target ?? null,
-        dueDate, progress, status, cycle, createdBy,
-      ]
+        companyId,
+        employeeId,
+        title,
+        description ?? null,
+        metric ?? null,
+        target ?? null,
+        dueDate,
+        progress,
+        status,
+        cycle,
+        createdBy,
+      ],
     );
 
     return res.status(201).json({
       message: "Goal created successfully.",
-      goal:    formatGoal(result.rows[0]),
+      goal: formatGoal(result.rows[0]),
     });
   } catch (err) {
     console.error("createGoal error:", err);
@@ -484,13 +539,13 @@ export async function createGoal(req, res) {
 
 export async function updateGoal(req, res) {
   // Validation already handled by validate middleware
-  const { id }                                  = req.params;
-  const { companyId, userId, employeeId: eid }  = req.user;
+  const { id } = req.params;
+  const { companyId, userId, employeeId: eid } = req.user;
 
   try {
     const existing = await db.query(
       "SELECT * FROM goals WHERE id = $1 AND company_id = $2",
-      [id, companyId]
+      [id, companyId],
     );
     if (existing.rowCount === 0) {
       return res.status(404).json({ message: "Goal not found." });
@@ -502,29 +557,33 @@ export async function updateGoal(req, res) {
     if (req.user.role === "employee") {
       const employeeId = await resolveEmployeeId(userId, companyId, eid);
       if (!employeeId || employeeId !== goal.employee_id) {
-        return res.status(403).json({ message: "You can only update your own goals." });
+        return res
+          .status(403)
+          .json({ message: "You can only update your own goals." });
       }
     }
 
     const {
-      title       = goal.title,
+      title = goal.title,
       description = goal.description,
-      metric      = goal.metric,
-      target      = goal.target,
-      dueDate     = goal.due_date,
-      cycle       = goal.cycle,
+      metric = goal.metric,
+      target = goal.target,
+      dueDate = goal.due_date,
+      cycle = goal.cycle,
       progress,
       status,
     } = req.body;
 
-    const newProgress = progress !== undefined ? Number(progress) : Number(goal.progress);
-    const newStatus   = status !== undefined
-      ? status
-      : newProgress === 100
-        ? "completed"
-        : newProgress > 0
-          ? "in_progress"
-          : goal.status;
+    const newProgress =
+      progress !== undefined ? Number(progress) : Number(goal.progress);
+    const newStatus =
+      status !== undefined
+        ? status
+        : newProgress === 100
+          ? "completed"
+          : newProgress > 0
+            ? "in_progress"
+            : goal.status;
 
     const updated = await db.query(
       `UPDATE goals
@@ -533,10 +592,22 @@ export async function updateGoal(req, res) {
            status      = $8, updated_at  = NOW()
        WHERE id = $9
        RETURNING *`,
-      [title, description, metric, target, dueDate, cycle, newProgress, newStatus, id]
+      [
+        title,
+        description,
+        metric,
+        target,
+        dueDate,
+        cycle,
+        newProgress,
+        newStatus,
+        id,
+      ],
     );
 
-    return res.status(200).json({ message: "Goal updated.", goal: formatGoal(updated.rows[0]) });
+    return res
+      .status(200)
+      .json({ message: "Goal updated.", goal: formatGoal(updated.rows[0]) });
   } catch (err) {
     console.error("updateGoal error:", err);
     return res.status(500).json({ message: "Server error updating goal." });
@@ -592,8 +663,8 @@ export async function updateGoal(req, res) {
 //     // 4. Update the database using the correct 'progress' column
 //     const updated = await db.query(
 //       `UPDATE goals
-//        SET progress = $1, 
-//            status = $2, 
+//        SET progress = $1,
+//            status = $2,
 //            updated_at = NOW()
 //        WHERE id = $3
 //        RETURNING *`,
@@ -611,7 +682,6 @@ export async function updateGoal(req, res) {
 //       .json({ message: "Server error updating goal progress." });
 //   }
 // }
-
 
 export async function updateGoalProgress(req, res) {
   const { id } = req.params;
@@ -646,11 +716,9 @@ export async function updateGoalProgress(req, res) {
     if (req.user.role === "employee") {
       const employeeId = await resolveEmployeeId(userId, companyId, eid);
       if (!employeeId || employeeId !== goal.employee_id) {
-        return res
-          .status(403)
-          .json({
-            message: "You can only update progress for your own goals.",
-          });
+        return res.status(403).json({
+          message: "You can only update progress for your own goals.",
+        });
       }
     }
 
@@ -686,7 +754,6 @@ export async function updateGoalProgress(req, res) {
       .json({ message: "Server error updating goal progress." });
   }
 }
- 
 
 export async function getMyGoals(req, res) {
   try {
@@ -699,25 +766,33 @@ export async function getMyGoals(req, res) {
     }
 
     const conditions = ["employee_id = $1"];
-    const params     = [employeeId];
-    let   idx        = 2;
+    const params = [employeeId];
+    let idx = 2;
 
-    if (cycle)  { conditions.push(`cycle = $${idx++}`);  params.push(cycle); }
-    if (status) { conditions.push(`status = $${idx++}`); params.push(status); }
+    if (cycle) {
+      conditions.push(`cycle = $${idx++}`);
+      params.push(cycle);
+    }
+    if (status) {
+      conditions.push(`status = $${idx++}`);
+      params.push(status);
+    }
 
     const result = await db.query(
       `SELECT * FROM goals WHERE ${conditions.join(" AND ")} ORDER BY due_date ASC`,
-      params
+      params,
     );
 
-    return res.status(200).json({ goals: result.rows.map(formatGoal), total: result.rowCount });
+    return res
+      .status(200)
+      .json({ goals: result.rows.map(formatGoal), total: result.rowCount });
   } catch (err) {
     console.error("getMyGoals error:", err);
-    return res.status(500).json({ message: "Server error fetching your goals." });
+    return res
+      .status(500)
+      .json({ message: "Server error fetching your goals." });
   }
 }
-
-
 
 // ── LIST PIPs ─────────────────────────────────────────────────────────────────
 // GET /api/performance/pip?status=active&employeeId=uuid
@@ -727,11 +802,17 @@ export async function listPIPs(req, res) {
     const { status, employeeId } = req.query;
 
     const conditions = ["p.company_id = $1"];
-    const params     = [companyId];
-    let   idx        = 2;
+    const params = [companyId];
+    let idx = 2;
 
-    if (status)     { conditions.push(`p.status = $${idx++}`);      params.push(status); }
-    if (employeeId) { conditions.push(`p.employee_id = $${idx++}`); params.push(employeeId); }
+    if (status) {
+      conditions.push(`p.status = $${idx++}`);
+      params.push(status);
+    }
+    if (employeeId) {
+      conditions.push(`p.employee_id = $${idx++}`);
+      params.push(employeeId);
+    }
 
     const result = await db.query(
       `SELECT
@@ -744,23 +825,27 @@ export async function listPIPs(req, res) {
        LEFT JOIN departments d ON d.id = e.department_id
        WHERE ${conditions.join(" AND ")}
        ORDER BY p.created_at DESC`,
-      params
+      params,
     );
 
     // Fetch goals for each PIP in one query
     if (result.rowCount > 0) {
-      const pipIds = result.rows.map(r => r.id);
+      const pipIds = result.rows.map((r) => r.id);
       const goalsResult = await db.query(
         `SELECT * FROM pip_goals WHERE pip_id = ANY($1::uuid[])`,
-        [pipIds]
+        [pipIds],
       );
       const goalsByPip = {};
-      goalsResult.rows.forEach(g => {
+      goalsResult.rows.forEach((g) => {
         if (!goalsByPip[g.pip_id]) goalsByPip[g.pip_id] = [];
-        goalsByPip[g.pip_id].push({ id: g.id, title: g.title, target: g.target });
+        goalsByPip[g.pip_id].push({
+          id: g.id,
+          title: g.title,
+          target: g.target,
+        });
       });
 
-      const pips = result.rows.map(row => ({
+      const pips = result.rows.map((row) => ({
         ...formatPIP(row),
         goals: goalsByPip[row.id] ?? [],
       }));
@@ -780,7 +865,7 @@ export async function listPIPs(req, res) {
 export async function getPIP(req, res) {
   try {
     const { companyId } = req.user;
-    const { pipId }     = req.params;
+    const { pipId } = req.params;
 
     const result = await db.query(
       `SELECT
@@ -792,7 +877,7 @@ export async function getPIP(req, res) {
        JOIN employees   e ON e.id = p.employee_id
        LEFT JOIN departments d ON d.id = e.department_id
        WHERE p.id = $1 AND p.company_id = $2`,
-      [pipId, companyId]
+      [pipId, companyId],
     );
 
     if (result.rowCount === 0) {
@@ -801,12 +886,16 @@ export async function getPIP(req, res) {
 
     const goalsResult = await db.query(
       `SELECT * FROM pip_goals WHERE pip_id = $1`,
-      [pipId]
+      [pipId],
     );
 
     const pip = {
       ...formatPIP(result.rows[0]),
-      goals: goalsResult.rows.map(g => ({ id: g.id, title: g.title, target: g.target })),
+      goals: goalsResult.rows.map((g) => ({
+        id: g.id,
+        title: g.title,
+        target: g.target,
+      })),
     };
 
     return res.status(200).json({ pip });
@@ -821,36 +910,42 @@ export async function getPIP(req, res) {
 // Body: { reason, reviewDate, period?, goals: [{ title, target }] }
 export async function createPIP(req, res) {
   try {
-    const { companyId, userId }  = req.user;
-    const { employeeId }         = req.params;
+    const { companyId, userId } = req.user;
+    const { employeeId } = req.params;
     const { reason, reviewDate, period, goals = [] } = req.body;
 
     if (!reason || !reviewDate) {
-      return res.status(400).json({ message: "reason and reviewDate are required." });
+      return res
+        .status(400)
+        .json({ message: "reason and reviewDate are required." });
     }
 
     // Verify employee belongs to company
     const empCheck = await db.query(
       "SELECT id FROM employees WHERE id = $1 AND company_id = $2",
-      [employeeId, companyId]
+      [employeeId, companyId],
     );
     if (empCheck.rowCount === 0) {
-      return res.status(404).json({ message: "Employee not found in this company." });
+      return res
+        .status(404)
+        .json({ message: "Employee not found in this company." });
     }
 
     // Check if employee already has an active PIP
     const existing = await db.query(
       "SELECT id FROM performance_improvement_plans WHERE employee_id = $1 AND company_id = $2 AND status = 'active'",
-      [employeeId, companyId]
+      [employeeId, companyId],
     );
     if (existing.rowCount > 0) {
-      return res.status(409).json({ message: "This employee already has an active PIP." });
+      return res
+        .status(409)
+        .json({ message: "This employee already has an active PIP." });
     }
 
     // Resolve creator
     const creatorResult = await db.query(
       "SELECT id FROM employees WHERE user_id = $1 AND company_id = $2",
-      [userId, companyId]
+      [userId, companyId],
     );
     const createdBy = creatorResult.rows[0]?.id ?? null;
 
@@ -860,19 +955,23 @@ export async function createPIP(req, res) {
          (company_id, employee_id, reason, review_date, period, status, progress, created_by)
        VALUES ($1, $2, $3, $4, $5, 'active', 0, $6)
        RETURNING *`,
-      [companyId, employeeId, reason, reviewDate, period ?? null, createdBy]
+      [companyId, employeeId, reason, reviewDate, period ?? null, createdBy],
     );
 
     const pip = pipResult.rows[0];
 
     // Insert goals
     const insertedGoals = [];
-    for (const g of goals.filter(g => g.title?.trim())) {
+    for (const g of goals.filter((g) => g.title?.trim())) {
       const gr = await db.query(
         "INSERT INTO pip_goals (pip_id, title, target) VALUES ($1, $2, $3) RETURNING *",
-        [pip.id, g.title.trim(), g.target ?? 100]
+        [pip.id, g.title.trim(), g.target ?? 100],
       );
-      insertedGoals.push({ id: gr.rows[0].id, title: gr.rows[0].title, target: gr.rows[0].target });
+      insertedGoals.push({
+        id: gr.rows[0].id,
+        title: gr.rows[0].title,
+        target: gr.rows[0].target,
+      });
     }
 
     return res.status(201).json({
@@ -891,12 +990,14 @@ export async function createPIP(req, res) {
 export async function updatePIPStatus(req, res) {
   try {
     const { companyId } = req.user;
-    const { pipId }     = req.params;
-    const { status }    = req.body;
+    const { pipId } = req.params;
+    const { status } = req.body;
 
     const allowed = ["active", "completed", "failed"];
     if (!allowed.includes(status)) {
-      return res.status(400).json({ message: `status must be one of: ${allowed.join(", ")}` });
+      return res
+        .status(400)
+        .json({ message: `status must be one of: ${allowed.join(", ")}` });
     }
 
     const result = await db.query(
@@ -904,7 +1005,7 @@ export async function updatePIPStatus(req, res) {
        SET status = $1, updated_at = NOW()
        WHERE id = $2 AND company_id = $3
        RETURNING *`,
-      [status, pipId, companyId]
+      [status, pipId, companyId],
     );
 
     if (result.rowCount === 0) {
@@ -917,7 +1018,9 @@ export async function updatePIPStatus(req, res) {
     });
   } catch (err) {
     console.error("updatePIPStatus error:", err);
-    return res.status(500).json({ message: "Server error updating PIP status." });
+    return res
+      .status(500)
+      .json({ message: "Server error updating PIP status." });
   }
 }
 
@@ -927,11 +1030,13 @@ export async function updatePIPStatus(req, res) {
 export async function updatePIPProgress(req, res) {
   try {
     const { companyId } = req.user;
-    const { pipId }     = req.params;
-    const progress      = Number(req.body.progress);
+    const { pipId } = req.params;
+    const progress = Number(req.body.progress);
 
     if (isNaN(progress) || progress < 0 || progress > 100) {
-      return res.status(400).json({ message: "progress must be a number between 0 and 100." });
+      return res
+        .status(400)
+        .json({ message: "progress must be a number between 0 and 100." });
     }
 
     // Auto-complete if 100%
@@ -944,7 +1049,7 @@ export async function updatePIPProgress(req, res) {
            updated_at = NOW()
        WHERE id = $3 AND company_id = $4
        RETURNING *`,
-      [progress, newStatus ?? null, pipId, companyId]
+      [progress, newStatus ?? null, pipId, companyId],
     );
 
     if (result.rowCount === 0) {
@@ -957,7 +1062,9 @@ export async function updatePIPProgress(req, res) {
     });
   } catch (err) {
     console.error("updatePIPProgress error:", err);
-    return res.status(500).json({ message: "Server error updating PIP progress." });
+    return res
+      .status(500)
+      .json({ message: "Server error updating PIP progress." });
   }
 }
 
@@ -966,13 +1073,13 @@ export async function updatePIPProgress(req, res) {
 // Body: { reason?, reviewDate?, period?, goals?: [{ title, target }] }
 export async function updatePIP(req, res) {
   try {
-    const { companyId }                        = req.user;
-    const { pipId }                            = req.params;
+    const { companyId } = req.user;
+    const { pipId } = req.params;
     const { reason, reviewDate, period, goals } = req.body;
 
     const existing = await db.query(
       "SELECT * FROM performance_improvement_plans WHERE id = $1 AND company_id = $2",
-      [pipId, companyId]
+      [pipId, companyId],
     );
     if (existing.rowCount === 0) {
       return res.status(404).json({ message: "PIP not found." });
@@ -989,34 +1096,38 @@ export async function updatePIP(req, res) {
        WHERE id = $4
        RETURNING *`,
       [
-        reason      ?? pip.reason,
-        reviewDate  ?? pip.review_date,
-        period      ?? pip.period,
+        reason ?? pip.reason,
+        reviewDate ?? pip.review_date,
+        period ?? pip.period,
         pipId,
-      ]
+      ],
     );
 
     // Replace goals if provided
     if (Array.isArray(goals)) {
       await db.query("DELETE FROM pip_goals WHERE pip_id = $1", [pipId]);
-      for (const g of goals.filter(g => g.title?.trim())) {
+      for (const g of goals.filter((g) => g.title?.trim())) {
         await db.query(
           "INSERT INTO pip_goals (pip_id, title, target) VALUES ($1, $2, $3)",
-          [pipId, g.title.trim(), g.target ?? 100]
+          [pipId, g.title.trim(), g.target ?? 100],
         );
       }
     }
 
     const goalsResult = await db.query(
       "SELECT * FROM pip_goals WHERE pip_id = $1",
-      [pipId]
+      [pipId],
     );
 
     return res.status(200).json({
       message: "PIP updated.",
       pip: {
         ...formatPIP(result.rows[0]),
-        goals: goalsResult.rows.map(g => ({ id: g.id, title: g.title, target: g.target })),
+        goals: goalsResult.rows.map((g) => ({
+          id: g.id,
+          title: g.title,
+          target: g.target,
+        })),
       },
     });
   } catch (err) {
@@ -1030,11 +1141,11 @@ export async function updatePIP(req, res) {
 export async function deletePIP(req, res) {
   try {
     const { companyId } = req.user;
-    const { pipId }     = req.params;
+    const { pipId } = req.params;
 
     const result = await db.query(
       "DELETE FROM performance_improvement_plans WHERE id = $1 AND company_id = $2 RETURNING id",
-      [pipId, companyId]
+      [pipId, companyId],
     );
 
     if (result.rowCount === 0) {

@@ -136,6 +136,8 @@ import superAdminRoutes    from "./routes/super_admin.routes.js";
 // Accounting — covers Group 1 (Chart of Accounts, Journal Entries, General Ledger, Audit Trail)
 //              AND Group 3 (Tax Management + Bank Reconciliation)
 import accountingRouter    from "./routes/accounting.routes.js";
+import appraisalRoutes from "./routes/appraisal.routes.js";
+import timesheetRoutes from "./routes/timesheet.routes.js";
 
 const app = express();
 
@@ -180,11 +182,10 @@ app.use("/api/approvals",    approvalRouter);
 app.use("/api/documents",    documentRouter);
 app.use("/api/benefits",     benefitsRouter);
 app.use("/api/chat",         chatRoutes);
+app.use("/api/appraisals", appraisalRoutes);
 app.use("/api/super-admin",  superAdminRoutes);
-
-// Accounting: all sub-routes (/setup, /accounts, /journal-entries,
-// /general-ledger, /audit-trail, /tax/*, /reconciliation/*) live here
 app.use("/api/accounting",   accountingRouter);
+app.use("/api/timesheets", timesheetRoutes);
 
 // ─────────────────────────────────────────
 // 404 Handler

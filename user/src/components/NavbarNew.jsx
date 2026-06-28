@@ -1,43 +1,86 @@
 
 
+
 // src/components/NavbarNew.jsx
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import {
-  Settings, HelpCircle, Home, Clock, Plane,
-  DollarSign, FileText, BarChart2, Users, BookOpen,
-  Heart, ClipboardList, Bell, LogOut, ChevronLeft,
-  ChevronRight, User, Award, X, Menu,
+  Settings,
+  HelpCircle,
+  Home,
+  Clock,
+  Plane,
+  DollarSign,
+  FileText,
+  BarChart2,
+  Users,
+  BookOpen,
+  Heart,
+  ClipboardList,
+  Bell,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  User,
+  Award,
+  X,
+  Menu,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import C from "../styles/colors";
 import BantaHRLogo from "../styles/BantaHRLogo";
 
+// NOTE: "Performance" is intentionally NOT in this static list anymore.
+// It's inserted dynamically in SidebarContent below because its target
+// path depends on role:
+//   • manager/admin → /manager/performance  (ManagerPerformance.jsx)
+//   • everyone else → /performance          (Performance.jsx)
 const BASE_NAV = [
-  { label: "Home",          icon: Home,          path: "/dashboard"     },
-  { label: "Attendance",    icon: Clock,         path: "/attendance"    },
-  { label: "Leave",         icon: Plane,         path: "/leave"         },
-  { label: "Payslips",      icon: DollarSign,    path: "/payslips"      },
-  { label: "Documents",     icon: FileText,      path: "/documents"     },
-  { label: "Performance",   icon: BarChart2,     path: "/performance"   },
-  { label: "Team",          icon: Users,         path: "/team"          },
-  { label: "Training",      icon: BookOpen,      path: "/training"      },
-  { label: "Benefits",      icon: Heart,         path: "/benefits"      },
-  { label: "Requests",      icon: ClipboardList, path: "/requests"      },
-  { label: "Announcements", icon: Bell,          path: "/announcements" },
+  { label: "Home", icon: Home, path: "/dashboard" },
+  { label: "Attendance", icon: Clock, path: "/attendance" },
+  { label: "TimeSheet", icon: Clock, path: "/timesheet" },
+  { label: "Leave", icon: Plane, path: "/leave" },
+  { label: "Payslips", icon: DollarSign, path: "/payslips" },
+  { label: "Documents", icon: FileText, path: "/documents" },
+  { label: "Team", icon: Users, path: "/team" },
+  { label: "Training", icon: BookOpen, path: "/training" },
+  { label: "Benefits", icon: Heart, path: "/benefits" },
+  { label: "Requests", icon: ClipboardList, path: "/requests" },
+  { label: "Announcements", icon: Bell, path: "/announcements" },
 ];
 
-function SidebarContent({ collapsed, onToggleCollapse, setSidebarOpen, isMobile }) {
+function SidebarContent({
+  collapsed,
+  onToggleCollapse,
+  setSidebarOpen,
+  isMobile,
+}) {
   const { employee, logout } = useAuth();
   const emp = employee ?? { initials: "?", name: "Loading…", role: "Employee" };
-  const isManager = emp.role === "manager" || emp.isManager === true;
+  const isManager =
+    emp.role === "manager" || emp.role === "admin" || emp.isManager === true;
+
+  // Performance link is role-aware: managers go to the dedicated
+  // ManagerPerformance page (team appraisals, create/edit/submit),
+  // everyone else goes to the regular employee Performance page.
+  const performanceItem = {
+    label: "Performance",
+    icon: BarChart2,
+    path: isManager ? "/manager/performance" : "/performance",
+  };
 
   const navItems = [
-    ...BASE_NAV,
+    BASE_NAV[0], // Home
+    BASE_NAV[1], // Attendance
+    BASE_NAV[2], // Leave
+    BASE_NAV[3], // Payslips
+    BASE_NAV[4], // Documents
+    performanceItem,
+    ...BASE_NAV.slice(5), // Team, Training, Benefits, Requests, Announcements
     {
       label: isManager ? "Manager Dashboard" : "My Profile",
-      icon:  isManager ? Award : User,
-      path:  isManager ? "/managerprofile" : "/employeeprofile",
+      icon: isManager ? Award : User,
+      path: isManager ? "/managerprofile" : "/employeeprofile",
     },
   ];
 
@@ -54,7 +97,10 @@ function SidebarContent({ collapsed, onToggleCollapse, setSidebarOpen, isMobile 
 
         {/* Mobile close button (inside drawer) */}
         {isMobile && (
-          <button onClick={close} className="ml-auto text-white/50 hover:text-white p-1">
+          <button
+            onClick={close}
+            className="ml-auto text-white/50 hover:text-white p-1"
+          >
             <X size={24} />
           </button>
         )}
@@ -71,7 +117,10 @@ function SidebarContent({ collapsed, onToggleCollapse, setSidebarOpen, isMobile 
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto" style={{ scrollbarWidth: "none" }}>
+      <nav
+        className="flex-1 px-2 space-y-0.5 overflow-y-auto"
+        style={{ scrollbarWidth: "none" }}
+      >
         {navItems.map((item) => {
           const Icon = item.icon;
           const isManagerItem = item.path === "/managerprofile";
@@ -92,8 +141,15 @@ function SidebarContent({ collapsed, onToggleCollapse, setSidebarOpen, isMobile 
                       : isManagerItem && !isActive
                         ? "rgba(245,158,11,0.10)"
                         : "transparent",
-                    color: isActive ? "#fff" : isManagerItem ? "rgba(253,230,138,0.85)" : "rgba(255,255,255,0.55)",
-                    border: isManagerItem && !isActive ? "1px solid rgba(245,158,11,0.25)" : "1px solid transparent",
+                    color: isActive
+                      ? "#fff"
+                      : isManagerItem
+                        ? "rgba(253,230,138,0.85)"
+                        : "rgba(255,255,255,0.55)",
+                    border:
+                      isManagerItem && !isActive
+                        ? "1px solid rgba(245,158,11,0.25)"
+                        : "1px solid transparent",
                   }}
                   title={collapsed ? item.label : undefined}
                 >
@@ -110,8 +166,10 @@ function SidebarContent({ collapsed, onToggleCollapse, setSidebarOpen, isMobile 
       <div className="px-2 pb-2 space-y-0.5 shrink-0">
         <NavLink to="/settings" onClick={isMobile ? close : undefined}>
           {({ isActive }) => (
-            <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer"
-              style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.45)" }}>
+            <div
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer"
+              style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.45)" }}
+            >
               <Settings size={16} />
               {!collapsed && <span>Settings</span>}
             </div>
@@ -119,8 +177,10 @@ function SidebarContent({ collapsed, onToggleCollapse, setSidebarOpen, isMobile 
         </NavLink>
         <NavLink to="/help" onClick={isMobile ? close : undefined}>
           {({ isActive }) => (
-            <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer"
-              style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.35)" }}>
+            <div
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm cursor-pointer"
+              style={{ color: isActive ? "#fff" : "rgba(255,255,255,0.35)" }}
+            >
               <HelpCircle size={16} />
               {!collapsed && <span>Help</span>}
             </div>
@@ -130,22 +190,37 @@ function SidebarContent({ collapsed, onToggleCollapse, setSidebarOpen, isMobile 
 
       {/* User card with Sidebar Logout button */}
       <div className="m-2 shrink-0">
-        <div className="p-3 rounded-xl flex gap-3 items-center" style={{ background: "rgba(255,255,255,0.08)" }}>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-            style={{ background: C.primary }}>
+        <div
+          className="p-3 rounded-xl flex gap-3 items-center"
+          style={{ background: "rgba(255,255,255,0.08)" }}
+        >
+          <div
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
+            style={{ background: C.primary }}
+          >
             {emp.initials}
           </div>
           {!collapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-white text-xs font-semibold truncate">{emp.name}</p>
+              <p className="text-white text-xs font-semibold truncate">
+                {emp.name}
+              </p>
               <p className="text-white/50 text-[11px] truncate">{emp.role}</p>
             </div>
           )}
           <Motion.button
-            whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-            onClick={() => { logout(); close(); }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              logout();
+              close();
+            }}
             className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-            style={{ background: "rgba(239,68,68,0.18)", border: "1px solid rgba(239,68,68,0.25)", cursor: "pointer" }}
+            style={{
+              background: "rgba(239,68,68,0.18)",
+              border: "1px solid rgba(239,68,68,0.25)",
+              cursor: "pointer",
+            }}
           >
             <LogOut size={13} color="#FCA5A5" />
           </Motion.button>
@@ -161,16 +236,16 @@ export default function NavbarNew({
   collapsed = false,
   onToggleCollapse,
 }) {
-  const { logout } = useAuth(); 
+  const { logout } = useAuth();
   return (
     <>
       {/* ── MOBILE TOP NAVBAR: Visible on Mobile and MD (< lg) ── */}
-      <div 
+      <div
         className="lg:hidden fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 z-[40]"
-        style={{ 
-          background: C.navy, 
+        style={{
+          background: C.navy,
           borderBottom: "1px solid rgba(255,255,255,0.1)",
-          backdropFilter: "blur(10px)"
+          backdropFilter: "blur(10px)",
         }}
       >
         {/* Menu Toggle */}
@@ -185,8 +260,8 @@ export default function NavbarNew({
         <BantaHRLogo variant="light" size="sm" />
 
         {/* PERMANENT LOGOUT BUTTON (Mobile/MD) */}
-        <button 
-          onClick={() => logout()} 
+        <button
+          onClick={() => logout()}
           className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 active:scale-95 transition-transform"
           title="Logout"
         >
@@ -218,7 +293,10 @@ export default function NavbarNew({
               exit={{ opacity: 0 }}
               onClick={() => setSidebarOpen(false)}
               className="lg:hidden fixed inset-0 z-[50]"
-              style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+              style={{
+                background: "rgba(0,0,0,0.6)",
+                backdropFilter: "blur(4px)",
+              }}
             />
 
             {/* Side Drawer */}

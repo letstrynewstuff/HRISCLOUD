@@ -1,6 +1,6 @@
+// src/admin/settings/AdminSettingsPage.jsx
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-// import AdminSideNavbar from "../AdminSideNavbar";
 import {
   Shield,
   Building2,
@@ -10,6 +10,8 @@ import {
   Clock,
   CreditCard,
   Bell,
+  Search,
+  Menu,
 } from "lucide-react";
 import CompanyProfile from "./CompanyProfile";
 import PayGroupSettings from "./PayGroupSettings";
@@ -19,6 +21,7 @@ import Integrations from "./Integrations";
 import AuditLog from "./AuditLog";
 import BillingSubscription from "./BillingSubscription";
 import NotificationSettings from "./NotificationSettings";
+import { authApi } from "../../api/service/authApi";
 
 const C = {
   bg: "#F0F2F8",
@@ -38,8 +41,6 @@ const C = {
   textMuted: "#94A3B8",
 };
 
-const ADMIN = { name: "Ngozi Adeleke", initials: "NA", role: "Super Admin" };
-
 const SETTINGS_SECTIONS = [
   { id: "company", label: "Company Profile", icon: Building2 },
   { id: "paygroup", label: "Pay Group", icon: Shield },
@@ -54,7 +55,28 @@ const SETTINGS_SECTIONS = [
 export default function AdminSettingsPage() {
   const [activeSection, setActiveSection] = useState("company");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [adminUser, setAdminUser] = useState(null);
+
+  // Load logged-in user for avatar / initials
+  useEffect(() => {
+    authApi
+      .getMe()
+      .then((d) => setAdminUser(d.user ?? d))
+      .catch(() => {});
+  }, []);
+
+  const initials = adminUser
+    ? `${adminUser.firstName?.[0] ?? ""}${adminUser.lastName?.[0] ?? ""}`.toUpperCase() ||
+      "AD"
+    : "AD";
+
+  // Filter sidebar sections by search
+  const visibleSections = SETTINGS_SECTIONS.filter(
+    (s) =>
+      !searchQuery || s.label.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   return (
     <div
@@ -62,16 +84,8 @@ export default function AdminSettingsPage() {
       style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
     >
       <div className="flex h-screen overflow-hidden">
-        {/* <AdminSideNavbar
-          sidebarOpen={sidebarOpen}
-          collapsed={sidebarCollapsed}
-          setCollapsed={setSidebarCollapsed}
-          ADMIN={ADMIN}
-          pendingApprovals={3}
-        /> */}
-
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {/* Top Header */}
+          {/* ── Header — same pattern as AdminAttendancePage ── */}
           <header
             className="shrink-0 h-[60px] flex items-center px-5 gap-4 z-10"
             style={{
@@ -85,64 +99,188 @@ export default function AdminSettingsPage() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
               className="p-2 rounded-xl"
+              style={{ background: C.surface }}
             >
-              <Shield size={16} color={C.textSecondary} />
+              <Menu size={16} color={C.textSecondary} />
             </motion.button>
-            <div className="flex-1">
-              <h1
-                className="text-xl font-bold"
-                style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
-              >
-                System Settings
-              </h1>
-            </div>
+
+            {/* Animated search — mirrors attendance page */}
+            <motion.div
+              className="flex-1 max-w-sm relative"
+              animate={{ width: searchFocused ? "320px" : "240px" }}
+              transition={{ duration: 0.3 }}
+            >
+              <Search
+                size={14}
+                className="absolute left-3 top-1/2 -translate-y-1/2"
+                color={C.textMuted}
+              />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
+                placeholder="Search settings..."
+                className="w-full pl-9 pr-4 py-2 text-sm rounded-xl outline-none"
+                style={{
+                  background: C.surface,
+                  border: `1.5px solid ${searchFocused ? C.primary : C.border}`,
+                  color: C.textPrimary,
+                }}
+              />
+            </motion.div>
+
+            {/* Admin avatar */}
             <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold ml-auto"
               style={{ background: "linear-gradient(135deg,#4F46E5,#06B6D4)" }}
             >
-              {ADMIN.initials}
+              {initials}
             </div>
           </header>
 
           <div className="flex flex-1 overflow-hidden">
-            {/* Left Sidebar Navigation */}
-            <div
-              className="w-72 border-r overflow-y-auto bg-white p-4"
-              style={{ borderColor: C.border }}
-            >
-              {SETTINGS_SECTIONS.map((section) => (
-                <motion.button
-                  key={section.id}
-                  whileHover={{ x: 4 }}
-                  onClick={() => setActiveSection(section.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-1 transition-all ${activeSection === section.id ? "bg-primary text-white" : "hover:bg-slate-100"}`}
+            {/* ── Left settings nav — collapsible ── */}
+            <AnimatePresence initial={false}>
+              {sidebarOpen && (
+                <motion.div
+                  key="settings-nav"
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: 272, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.22 }}
+                  className="overflow-y-auto overflow-x-hidden shrink-0"
+                  style={{
+                    background: C.surface,
+                    borderRight: `1px solid ${C.border}`,
+                  }}
                 >
-                  <section.icon size={18} />
-                  {section.label}
-                </motion.button>
-              ))}
-            </div>
+                  <div className="p-4 w-[272px]">
+                    {/* Section heading */}
+                    <p
+                      className="text-[10px] font-bold uppercase tracking-widest mb-3 px-2"
+                      style={{ color: C.textMuted }}
+                    >
+                      Settings
+                    </p>
 
-            {/* Main Content Area */}
-            <div className="flex-1 overflow-y-auto p-8">
+                    {visibleSections.length === 0 ? (
+                      <p
+                        className="text-xs px-2 py-4 text-center"
+                        style={{ color: C.textMuted }}
+                      >
+                        No sections match.
+                      </p>
+                    ) : (
+                      visibleSections.map((section) => {
+                        const active = activeSection === section.id;
+                        return (
+                          <motion.button
+                            key={section.id}
+                            whileHover={{ x: 2 }}
+                            onClick={() => setActiveSection(section.id)}
+                            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium mb-1 transition-all text-left"
+                            style={{
+                              background: active ? C.primary : "transparent",
+                              color: active ? "#fff" : C.textSecondary,
+                              boxShadow: active
+                                ? "0 2px 8px rgba(79,70,229,0.25)"
+                                : "none",
+                            }}
+                          >
+                            <section.icon size={16} />
+                            {section.label}
+                          </motion.button>
+                        );
+                      })
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* ── Main content ── */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-8">
               <AnimatePresence mode="wait">
                 {activeSection === "company" && (
-                  <CompanyProfile key="company" />
+                  <motion.div
+                    key="company"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <CompanyProfile />
+                  </motion.div>
                 )}
                 {activeSection === "paygroup" && (
-                  <PayGroupSettings key="paygroup" />
+                  <motion.div
+                    key="paygroup"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <PayGroupSettings />
+                  </motion.div>
                 )}
-                {activeSection === "users" && <UserManagement key="users" />}
-                {activeSection === "roles" && <RolesPermissions key="roles" />}
+                {activeSection === "users" && (
+                  <motion.div
+                    key="users"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <UserManagement />
+                  </motion.div>
+                )}
+                {activeSection === "roles" && (
+                  <motion.div
+                    key="roles"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <RolesPermissions />
+                  </motion.div>
+                )}
                 {activeSection === "integrations" && (
-                  <Integrations key="integrations" />
+                  <motion.div
+                    key="integrations"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <Integrations />
+                  </motion.div>
                 )}
-                {activeSection === "audit" && <AuditLog key="audit" />}
+                {activeSection === "audit" && (
+                  <motion.div
+                    key="audit"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <AuditLog />
+                  </motion.div>
+                )}
                 {activeSection === "billing" && (
-                  <BillingSubscription key="billing" />
+                  <motion.div
+                    key="billing"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <BillingSubscription />
+                  </motion.div>
                 )}
                 {activeSection === "notifications" && (
-                  <NotificationSettings key="notifications" />
+                  <motion.div
+                    key="notifications"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                  >
+                    <NotificationSettings />
+                  </motion.div>
                 )}
               </AnimatePresence>
             </div>

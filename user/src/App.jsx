@@ -17,6 +17,7 @@ import ManagerProfile from "./pages/ManagerProfile";
 import ProfilePage from "./pages/ProfilePage";
 import PayslipsPage from "./pages/Payslips";
 import AttendancePage from "./pages/Attendance";
+import Timesheet from "./pages/timesheets/EmployeeTimesheetsPage";
 import DocumentsPage from "./pages/Documents";
 import Performance from "./pages/Performance";
 import TrainingPage from "./pages/Training";
@@ -27,6 +28,7 @@ import RequestsPage from "./pages/Requests";
 import AnnouncementsPage from "./pages/Announcements";
 import LandingPage from "./pages/LandingPage";
 import RequestDemo from "./pages/RequestDemo";
+import ManagerPerformance from "./pages/ManagerPerformance";
 
 // ── Admin pages ──
 import AdminDashboard from "./admin/AdminDashboard";
@@ -67,6 +69,7 @@ import SuperPlatformConfiguration from "./super/SuperPlatformConfiguration";
 import MainLayout from "./components/MainLayout";
 import AdminMainLayout from "./admin/AdminMainLayout";
 import AccountingPage from "./admin/accounting/AccountingPage";
+import EmployeeTimesheetsPage from "./pages/timesheets/EmployeeTimesheetsPage";
 
 function App() {
   return (
@@ -117,6 +120,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AttendancePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/timesheet"
+          element={
+            <ProtectedRoute>
+              <EmployeeTimesheetsPage />
             </ProtectedRoute>
           }
         />
@@ -213,6 +224,14 @@ function App() {
           element={
             <ProtectedRoute requireManager>
               <ManagerProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/manager/performance"
+          element={
+            <ProtectedRoute requireManager>
+              <ManagerPerformance />
             </ProtectedRoute>
           }
         />
@@ -441,7 +460,7 @@ function App() {
             </AdminRoute>
           }
         />
-    
+
         <Route
           path="/admin/accounting"
           element={

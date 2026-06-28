@@ -20,7 +20,7 @@ const TABS = [
   // { id: "cycles", label: "Review Cycles" },
   // { id: "forms", label: "Appraisal Forms" },
   { id: "goals", label: "Goals" },
-  // { id: "reviews", label: "Appraisals" },
+  { id: "reviews", label: "Appraisals" },
   { id: "pip", label: "PIP Management" },
 ];
 
@@ -157,7 +157,6 @@ export default function AdminPerformancePage() {
 
             {/* Tab content */}
             <AnimatePresence mode="wait">
-    
               {activeTab === "cycles" && <ReviewCycles key="cycles" />}
               {activeTab === "forms" && <AppraisalForms key="forms" />}
               {activeTab === "goals" && (

@@ -66,8 +66,8 @@ import {
 
 const TABS = [
   { id: "personal", label: "Personal Info", icon: User },
-  { id: "employment", label: "Employment History", icon: Briefcase },
-  { id: "payroll", label: "Payroll History", icon: DollarSign },
+  // { id: "employment", label: "Employment History", icon: Briefcase },
+  // { id: "payroll", label: "Payroll History", icon: DollarSign },
   { id: "leave", label: "Leave History", icon: Plane },
   { id: "attendance", label: "Attendance History", icon: Clock },
   { id: "documents", label: "Documents", icon: FileText },

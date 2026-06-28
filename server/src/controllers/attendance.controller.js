@@ -1,15 +1,21 @@
+
+
+
 // src/controllers/attendance.controller.js
 //
 // Endpoints:
 //   POST /api/attendance/clock-in              → clockIn
 //   POST /api/attendance/clock-out             → clockOut
-//   GET  /api/attendance                       → getAllAttendance      (HR)
-//   GET  /api/attendance/today                 → getTodayAttendance    (HR)
-//   GET  /api/attendance/me                    → getMyAttendance       (employee)
-//   GET  /api/attendance/employee/:id          → getEmployeeAttendance (HR)
-//   PUT  /api/attendance/:id/correct           → correctAttendance     (HR)
-//   POST /api/attendance/shifts                → createShift           (HR)
-//   PUT  /api/attendance/shifts/:id            → updateShift           (HR)
+//   POST /api/attendance/break-start           → breakStart
+//   POST /api/attendance/break-end             → breakEnd
+//   GET  /api/attendance                       → getAllAttendanceHandler  (HR / Manager)
+//   GET  /api/attendance/today                 → getTodayAttendance       (HR / Manager)
+//   GET  /api/attendance/me                    → getMyAttendance          (employee)
+//   GET  /api/attendance/employee/:id          → getEmployeeAttendanceHandler (HR)
+//   PUT  /api/attendance/:id/correct           → correctAttendance        (HR)
+//   POST /api/attendance/shifts                → createShift              (HR)
+//   PUT  /api/attendance/shifts/:id            → updateShift              (HR)
+//   GET  /api/attendance/shifts                → getShiftsHandler         (any auth)
 //
 // Auth: authenticate (all) + requireRole("hr_admin"|"super_admin") for HR endpoints
 
@@ -28,7 +34,6 @@ import {
   getShifts,
   getShiftById,
 } from "../models/Attendance.js";
-// import { getCompanySettings } from "../models/Company.js";
 import { getCompanySettings } from "../models/CompanySettings.model.js";
 import { uploadToCloud } from "../utils/upload.js";
 import { db } from "../config/db.js";
@@ -45,6 +50,7 @@ function handleValidationErrors(req, res) {
   }
   return false;
 }
+
 function serializeRecord(row) {
   if (!row) return null;
   return {
@@ -62,17 +68,21 @@ function serializeRecord(row) {
     status: row.status,
     hoursWorked: row.hours_worked ? Number(row.hours_worked) : null,
     overtimeHours: row.overtime_hours ? Number(row.overtime_hours) : 0,
+    // ── Break fields ──────────────────────────────────────────
+    onBreak: row.on_break ?? false,
+    breakStartedAt: row.break_started_at ?? null,
+    totalBreakMinutes: row.total_break_minutes ?? 0,
+    // ── Audit ─────────────────────────────────────────────────
     isManuallyEdited: row.is_manually_edited,
     editedBy: row.edited_by,
     editReason: row.edit_reason,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-    // Joined fields (present on HR queries)
+    // ── Joined fields (present on HR queries) ─────────────────
     employee: row.first_name
       ? {
           firstName: row.first_name,
           lastName: row.last_name,
-          // employeeId: row.employee_id,
           employeeId: row.employee_display_id,
           department: row.department_name,
           jobTitle: row.job_title,
@@ -81,7 +91,7 @@ function serializeRecord(row) {
   };
 }
 
-/** Resolve late threshold: parse 'HH:MM' → total minutes from midnight */
+/** Parse 'HH:MM' → total minutes from midnight */
 function parseTimeToMinutes(hhmm) {
   if (!hhmm) return null;
   const [h, m] = String(hhmm).split(":").map(Number);
@@ -92,36 +102,41 @@ function parseTimeToMinutes(hhmm) {
 function resolveStatus(clockInDate, workingHoursStart, lateGraceMinutes = 15) {
   const threshMinutes = parseTimeToMinutes(workingHoursStart);
   if (!threshMinutes) return "present";
-
-  // Compare local clock-in hour/minute to the company threshold + grace period
   const ciMinutes = clockInDate.getHours() * 60 + clockInDate.getMinutes();
   return ciMinutes > threshMinutes + lateGraceMinutes ? "late" : "present";
 }
 
+/** Resolve the active employee id for the authenticated user */
+async function resolveEmployeeId(userId, companyId) {
+  const result = await db.query(
+    `SELECT id FROM employees
+     WHERE user_id = $1
+       AND company_id = $2
+       AND LOWER(employment_status) = 'active'`,
+    [userId, companyId]
+  );
+  return result.rows[0]?.id ?? null;
+}
+
+// ══════════════════════════════════════════════════════════════
+// POST /api/attendance/clock-in
+//
+// Body (optional): { lat, lng }
+// ══════════════════════════════════════════════════════════════
 export async function clockIn(req, res) {
   console.log("JWT payload:", req.user);
   try {
     const { companyId, userId } = req.user;
 
-    // 1. Resolve the employee record
-    // FIX: Corrected syntax for db.query and added LOWER() for case-insensitivity
-    const empResult = await db.query(
-      `SELECT id FROM employees 
-       WHERE user_id = $1 
-         AND company_id = $2 
-        AND LOWER(employment_status) = 'active'`,
-      [userId, companyId],
-    );
-
-    if (!empResult.rows[0]) {
+    const employeeId = await resolveEmployeeId(userId, companyId);
+    if (!employeeId) {
       return res.status(403).json({
         message:
           "No active employee profile found for your account. Please contact HR.",
       });
     }
-    const employeeId = empResult.rows[0].id;
 
-    // 2. Guard: already clocked in today?
+    // Guard: already clocked in today?
     const existing = await getTodayRecord(employeeId);
     if (existing?.clock_in) {
       return res.status(409).json({
@@ -130,14 +145,14 @@ export async function clockIn(req, res) {
       });
     }
 
-    // 3. Fetch company settings for late-check logic
+    // Fetch company settings for late-check logic
     const settings = await getCompanySettings(companyId);
     const workStart = settings?.working_hours_start ?? "08:00";
 
     const clockInTime = new Date();
     const status = resolveStatus(clockInTime, workStart);
 
-    // 4. Optional selfie upload to cloud
+    // Optional selfie upload
     let selfieUrl = null;
     if (req.file) {
       const { url } = await uploadToCloud(req.file.buffer, {
@@ -151,10 +166,8 @@ export async function clockIn(req, res) {
       selfieUrl = url;
     }
 
-    // 5. Get Coordinates from body
     const { lat, lng } = req.body;
 
-    // 6. Save to Database
     const record = await dbClockIn({
       companyId,
       employeeId,
@@ -181,37 +194,22 @@ export async function clockIn(req, res) {
 
 // ══════════════════════════════════════════════════════════════
 // POST /api/attendance/clock-out
-// No body required.
 //
-// Rules:
-//  • Must have clocked in today
-//  • Cannot clock out twice
+// No body required.
+// Auto-closes any open break before recording clock-out.
 // ══════════════════════════════════════════════════════════════
 export async function clockOut(req, res) {
   try {
     const { companyId, userId } = req.user;
 
-    // const empResult = await db.query(
-    //   `SELECT id FROM employees WHERE user_id = $1 AND company_id = $2 AND state = 'active'`,
-    //   [userId, companyId],
-    // );
-      const empResult = await db.query(
-        `SELECT id FROM employees 
-       WHERE user_id = $1 
-         AND company_id = $2 
-        AND LOWER(employment_status) = 'active'`,
-        [userId, companyId],
-      );
-    if (!empResult.rows[0]) {
+    const employeeId = await resolveEmployeeId(userId, companyId);
+    if (!employeeId) {
       return res
         .status(403)
         .json({ message: "No active employee profile found." });
     }
-    const employeeId = empResult.rows[0].id;
 
-    // Get today's record
     const today = await getTodayRecord(employeeId);
-
     if (!today) {
       return res.status(409).json({ message: "You haven't clocked in today." });
     }
@@ -222,7 +220,25 @@ export async function clockOut(req, res) {
       });
     }
 
-    // Fetch standard working hours from settings (default 8)
+    const clockOutTime = new Date();
+
+    // ── Auto-close an open break if the employee forgot to end it ──
+    if (today.on_break && today.break_started_at) {
+      const autoBreakMins = Math.round(
+        (clockOutTime - new Date(today.break_started_at)) / 60000
+      );
+      await db.query(
+        `UPDATE attendance
+         SET on_break            = FALSE,
+             break_started_at    = NULL,
+             total_break_minutes = total_break_minutes + $1,
+             updated_at          = NOW()
+         WHERE id = $2`,
+        [autoBreakMins, today.id]
+      );
+    }
+
+    // Fetch standard working hours from settings
     const settings = await getCompanySettings(companyId);
     const workStart = settings?.working_hours_start ?? "08:00";
     const workEnd = settings?.working_hours_end ?? "17:00";
@@ -230,9 +246,7 @@ export async function clockOut(req, res) {
     const [startH, startM] = workStart.split(":").map(Number);
     const standardHours = (endH * 60 + endM - (startH * 60 + startM)) / 60;
 
-    const clockOutTime = new Date();
     const updated = await dbClockOut(today.id, clockOutTime, standardHours);
-
     if (!updated) {
       return res
         .status(409)
@@ -249,12 +263,127 @@ export async function clockOut(req, res) {
   }
 }
 
+// ══════════════════════════════════════════════════════════════
+// POST /api/attendance/break-start
+//
+// Rules:
+//   • Must be clocked in today
+//   • Must NOT already be on break
+//   • Cannot call after clocking out
+// ══════════════════════════════════════════════════════════════
+export async function breakStart(req, res) {
+  try {
+    const { companyId, userId } = req.user;
+
+    const employeeId = await resolveEmployeeId(userId, companyId);
+    if (!employeeId) {
+      return res
+        .status(403)
+        .json({ message: "No active employee profile found." });
+    }
+
+    const today = await getTodayRecord(employeeId);
+    if (!today?.clock_in) {
+      return res.status(409).json({ message: "You haven't clocked in today." });
+    }
+    if (today.clock_out) {
+      return res.status(409).json({
+        message: "You have already clocked out — cannot start a break.",
+      });
+    }
+    if (today.on_break) {
+      return res.status(409).json({ message: "You are already on a break." });
+    }
+
+    const now = new Date();
+
+    const result = await db.query(
+      `UPDATE attendance
+       SET on_break         = TRUE,
+           break_started_at = $1,
+           updated_at       = NOW()
+       WHERE id = $2 AND company_id = $3
+       RETURNING *`,
+      [now, today.id, companyId]
+    );
+
+    return res.status(200).json({
+      message: `Break started at ${now.toLocaleTimeString()}.`,
+      record: serializeRecord(result.rows[0]),
+    });
+  } catch (err) {
+    console.error("breakStart error:", err);
+    return res
+      .status(500)
+      .json({ message: "Server error during break start." });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// POST /api/attendance/break-end
+//
+// Rules:
+//   • Must currently be on a break
+//   • Calculates duration and adds it to total_break_minutes
+// ══════════════════════════════════════════════════════════════
+export async function breakEnd(req, res) {
+  try {
+    const { companyId, userId } = req.user;
+
+    const employeeId = await resolveEmployeeId(userId, companyId);
+    if (!employeeId) {
+      return res
+        .status(403)
+        .json({ message: "No active employee profile found." });
+    }
+
+    const today = await getTodayRecord(employeeId);
+    if (!today?.clock_in) {
+      return res.status(409).json({ message: "You haven't clocked in today." });
+    }
+    if (!today.on_break) {
+      return res
+        .status(409)
+        .json({ message: "You are not currently on a break." });
+    }
+
+    const now = new Date();
+    const breakDurationMinutes = Math.round(
+      (now - new Date(today.break_started_at)) / 60000
+    );
+    const newTotal = (today.total_break_minutes || 0) + breakDurationMinutes;
+
+    const result = await db.query(
+      `UPDATE attendance
+       SET on_break            = FALSE,
+           break_started_at    = NULL,
+           total_break_minutes = $1,
+           updated_at          = NOW()
+       WHERE id = $2 AND company_id = $3
+       RETURNING *`,
+      [newTotal, today.id, companyId]
+    );
+
+    return res.status(200).json({
+      message: `Break ended. Duration: ${breakDurationMinutes} min. Total break today: ${newTotal} min.`,
+      breakDurationMinutes,
+      totalBreakMinutes: newTotal,
+      record: serializeRecord(result.rows[0]),
+    });
+  } catch (err) {
+    console.error("breakEnd error:", err);
+    return res.status(500).json({ message: "Server error during break end." });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// GET /api/attendance/today   [HR + Manager]
+// ══════════════════════════════════════════════════════════════
 export async function getTodayAttendance(req, res) {
   try {
     const { companyId, isHR, employeeId: managerEmpId } = req.user;
 
     if (isHR) {
-      // HR path — unchanged, full company snapshot
       const snapshot = await getTodaySnapshot(companyId);
       return res.status(200).json({
         ...snapshot,
@@ -282,25 +411,23 @@ export async function getTodayAttendance(req, res) {
          AND e.manager_id        = $3
          AND e.employment_status NOT IN ('terminated','resigned')
        ORDER BY a.clock_in ASC NULLS LAST`,
-      [companyId, today, managerEmpId],
+      [companyId, today, managerEmpId]
     );
 
     const rows = result.rows;
+    const present = rows.filter((r) => r.status === "present").length;
+    const late = rows.filter((r) => r.status === "late").length;
+    const lateEmployees = rows
+      .filter((r) => r.status === "late")
+      .map(serializeRecord);
 
-    // Count totals for this manager's team
-    const present = rows.filter(r => r.status === "present").length;
-    const late    = rows.filter(r => r.status === "late").length;
-    const absent  = rows.filter(r => r.status === "absent").length;
-    const lateEmployees = rows.filter(r => r.status === "late").map(serializeRecord);
-
-    // Total direct reports (including those not yet clocked in = absent)
     const teamTotal = await db.query(
       `SELECT COUNT(*) AS total
        FROM employees
        WHERE manager_id        = $1
          AND company_id        = $2
          AND employment_status NOT IN ('terminated','resigned')`,
-      [managerEmpId, companyId],
+      [managerEmpId, companyId]
     );
     const total = parseInt(teamTotal.rows[0].total, 10);
 
@@ -319,49 +446,48 @@ export async function getTodayAttendance(req, res) {
 
 // ══════════════════════════════════════════════════════════════
 // GET /api/attendance   [HR + Manager]
-// FIX: managers only see records for their direct reports
 // ══════════════════════════════════════════════════════════════
 export async function getAllAttendanceHandler(req, res) {
   try {
     const { companyId, isHR, employeeId: managerEmpId } = req.user;
 
     if (isHR) {
-      // HR path — unchanged
       const result = await getAllAttendance(companyId, {
-        date:         req.query.date,
-        startDate:    req.query.startDate,
-        endDate:      req.query.endDate,
-        status:       req.query.status,
+        date: req.query.date,
+        startDate: req.query.startDate,
+        endDate: req.query.endDate,
+        status: req.query.status,
         departmentId: req.query.departmentId,
-        employeeId:   req.query.employeeId,
-        search:       req.query.search,
-        page:         parseInt(req.query.page  ?? 1,  10),
-        limit:        parseInt(req.query.limit ?? 25, 10),
-        sortBy:       req.query.sortBy,
-        sortDir:      req.query.sortDir,
+        employeeId: req.query.employeeId,
+        search: req.query.search,
+        page: parseInt(req.query.page ?? 1, 10),
+        limit: parseInt(req.query.limit ?? 25, 10),
+        sortBy: req.query.sortBy,
+        sortDir: req.query.sortDir,
       });
-      return res.status(200).json({ ...result, rows: result.rows.map(serializeRecord) });
+      return res
+        .status(200)
+        .json({ ...result, rows: result.rows.map(serializeRecord) });
     }
 
-    // Manager path — pass managerEmpId as a scope filter.
-    // getAllAttendance model accepts employeeId as a filter; if it doesn't
-    // support manager scoping natively, we add an additional join condition.
+    // Manager path — scoped to direct reports
     const result = await getAllAttendance(companyId, {
-      date:         req.query.date,
-      startDate:    req.query.startDate,
-      endDate:      req.query.endDate,
-      status:       req.query.status,
-      employeeId:   req.query.employeeId, // further filter within team if needed
-      search:       req.query.search,
-      page:         parseInt(req.query.page  ?? 1,  10),
-      limit:        parseInt(req.query.limit ?? 25, 10),
-      sortBy:       req.query.sortBy,
-      sortDir:      req.query.sortDir,
- 
+      date: req.query.date,
+      startDate: req.query.startDate,
+      endDate: req.query.endDate,
+      status: req.query.status,
+      employeeId: req.query.employeeId,
+      search: req.query.search,
+      page: parseInt(req.query.page ?? 1, 10),
+      limit: parseInt(req.query.limit ?? 25, 10),
+      sortBy: req.query.sortBy,
+      sortDir: req.query.sortDir,
       managerEmpId,
     });
 
-    return res.status(200).json({ ...result, rows: result.rows.map(serializeRecord) });
+    return res
+      .status(200)
+      .json({ ...result, rows: result.rows.map(serializeRecord) });
   } catch (err) {
     console.error("getAllAttendance error:", err);
     return res.status(500).json({ message: "Server error." });
@@ -378,7 +504,7 @@ export async function getMyAttendance(req, res) {
 
     const empResult = await db.query(
       `SELECT id FROM employees WHERE user_id = $1 AND company_id = $2`,
-      [userId, companyId],
+      [userId, companyId]
     );
     if (!empResult.rows[0]) {
       return res.status(404).json({ message: "Employee profile not found." });
@@ -405,7 +531,6 @@ export async function getMyAttendance(req, res) {
 
 // ══════════════════════════════════════════════════════════════
 // GET /api/attendance/employee/:id   [HR]
-// One employee's full attendance history with aggregate stats.
 // ══════════════════════════════════════════════════════════════
 export async function getEmployeeAttendanceHandler(req, res) {
   try {
@@ -420,14 +545,13 @@ export async function getEmployeeAttendanceHandler(req, res) {
         status: req.query.status,
         page: parseInt(req.query.page ?? 1, 10),
         limit: parseInt(req.query.limit ?? 31, 10),
-      },
+      }
     );
 
     if (result.total === 0) {
-      // Distinguish "no records" from "employee not found"
-      const empCheck = await req.db.query(
+      const empCheck = await db.query(
         `SELECT id FROM employees WHERE id = $1 AND company_id = $2`,
-        [employeeId, req.user.companyId],
+        [employeeId, req.user.companyId]
       );
       if (!empCheck.rows[0]) {
         return res.status(404).json({ message: "Employee not found." });
@@ -446,10 +570,7 @@ export async function getEmployeeAttendanceHandler(req, res) {
 
 // ══════════════════════════════════════════════════════════════
 // PUT /api/attendance/:id/correct   [HR]
-// Body:
-//   { clockIn?, clockOut?, status?, hoursWorked?, overtimeHours?, editReason }
-//
-// Audit trail: is_manually_edited = true, edited_by, edit_reason are stored.
+// Body: { clockIn?, clockOut?, status?, hoursWorked?, overtimeHours?, editReason }
 // ══════════════════════════════════════════════════════════════
 export async function correctAttendance(req, res) {
   if (handleValidationErrors(req, res)) return;
@@ -459,20 +580,20 @@ export async function correctAttendance(req, res) {
     req.body;
 
   try {
-    // Confirm record belongs to this company
     const existing = await getAttendanceById(id, req.user.companyId);
     if (!existing) {
-      return res.status(404).json({ message: "Attendance record not found." });
+      return res
+        .status(404)
+        .json({ message: "Attendance record not found." });
     }
 
-    // Validate time logic
     const resolvedIn = clockIn ? new Date(clockIn) : existing.clock_in;
     const resolvedOut = clockOut ? new Date(clockOut) : existing.clock_out;
 
     if (resolvedIn && resolvedOut && resolvedOut <= resolvedIn) {
-      return res.status(422).json({
-        message: "clock_out must be after clock_in.",
-      });
+      return res
+        .status(422)
+        .json({ message: "clock_out must be after clock_in." });
     }
 
     const settings = await getCompanySettings(req.user.companyId);
@@ -496,7 +617,7 @@ export async function correctAttendance(req, res) {
         editReason,
         editedBy: req.user.userId,
       },
-      standardHours,
+      standardHours
     );
 
     if (!updated) {
@@ -525,7 +646,6 @@ export async function createShift(req, res) {
   const { name, description, startTime, endTime, days } = req.body;
 
   try {
-    // Basic time logic guard
     const [sh, sm] = startTime.split(":").map(Number);
     const [eh, em] = endTime.split(":").map(Number);
     if (eh * 60 + em <= sh * 60 + sm) {
@@ -542,10 +662,7 @@ export async function createShift(req, res) {
       days,
     });
 
-    return res.status(201).json({
-      message: "Shift created.",
-      shift,
-    });
+    return res.status(201).json({ message: "Shift created.", shift });
   } catch (err) {
     console.error("createShift error:", err);
     return res.status(500).json({ message: "Server error." });
@@ -563,13 +680,11 @@ export async function updateShift(req, res) {
   const { name, description, startTime, endTime, days, isActive } = req.body;
 
   try {
-    // Confirm shift belongs to this company
     const existing = await getShiftById(shiftId, req.user.companyId);
     if (!existing) {
       return res.status(404).json({ message: "Shift not found." });
     }
 
-    // Time logic guard when both times are provided
     if (startTime && endTime) {
       const [sh, sm] = startTime.split(":").map(Number);
       const [eh, em] = endTime.split(":").map(Number);
@@ -589,10 +704,7 @@ export async function updateShift(req, res) {
       isActive,
     });
 
-    return res.status(200).json({
-      message: "Shift updated.",
-      shift: updated,
-    });
+    return res.status(200).json({ message: "Shift updated.", shift: updated });
   } catch (err) {
     console.error("updateShift error:", err);
     return res.status(500).json({ message: "Server error." });
@@ -601,7 +713,6 @@ export async function updateShift(req, res) {
 
 // ══════════════════════════════════════════════════════════════
 // GET /api/attendance/shifts   [any authenticated user]
-// Returns all active shifts for the company.
 // ══════════════════════════════════════════════════════════════
 export async function getShiftsHandler(req, res) {
   try {

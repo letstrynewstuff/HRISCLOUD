@@ -1,19 +1,26 @@
+
+
 // src/pages/ManagerProfile.jsx
 // Manager dashboard — only accessible when role === "manager".
-// Tabs: Overview · Team · Approvals · Attendance · Activity
-// All data from real API. No mock data.
+// Layout: matches AttendancePage — full-screen flex shell, sticky top nav, scrollable main.
+// Tabs: Overview · Team · Approvals · Attendance · Performance · My Profile
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-// import SideNavbar from "../components/SideNavbar";
 import { useAuth } from "../components/useAuth";
-import { getEmployees, getEmployeeById } from "../api/service/employeeApi";
+import {
+  getEmployees,
+  getEmployeeById,
+  getMyProfile,
+  requestProfileChange,
+} from "../api/service/employeeApi";
 import { attendanceApi } from "../api/service/attendanceApi";
 import { approvalApi } from "../api/service/approvalApi";
-import { leaveApi } from "../api/service/leaveApi";
-// import { performanceApi } from "../api/service/performanceApi";
 import * as performanceApi from "../api/service/performanceApi";
+import { leaveApi } from "../api/service/leaveApi";
+import { documentApi } from "../api/service/documentApi";
+import { authApi } from "../api/service/authApi";
 import C from "../styles/colors";
 import {
   Users,
@@ -21,39 +28,34 @@ import {
   XCircle,
   Clock,
   ChevronRight,
-  Mail,
-  Phone,
   Award,
   BarChart2,
   TrendingUp,
   AlertCircle,
-  Bell,
   Activity,
-  Edit3,
   Eye,
   ThumbsUp,
   ThumbsDown,
-  Star,
-  Filter,
   Search,
-  Calendar,
   Home,
-  DollarSign,
-  Plane,
-  Shield,
   Menu,
-  ChevronDown,
   UserCheck,
   RefreshCw,
-  LogIn,
-  MoreHorizontal,
-  ArrowUpRight,
-  Zap,
-  Target,
-  Loader2,
   X,
-  Send,
-  MessageSquare,
+  Loader2,
+  User,
+  Briefcase,
+  CreditCard,
+  FileText,
+  Shield,
+  Plane,
+  Key,
+  Lock,
+  Copy,
+  Check,
+  Edit3,
+  Save,
+  ArrowRight,
 } from "lucide-react";
 
 // ── Framer variants ──
@@ -72,6 +74,14 @@ const slideIn = {
     x: 0,
     transition: { delay: i * 0.06, duration: 0.38, ease: [0.22, 1, 0.36, 1] },
   }),
+};
+const tabAnim = {
+  hidden: { opacity: 0, x: 10 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 // ── Micro-components ──
@@ -175,6 +185,21 @@ const Card = ({ children, style = {}, onClick }) => (
   </Motion.div>
 );
 
+const SectionCard = ({ children, style = {} }) => (
+  <div
+    style={{
+      background: C.surface,
+      borderRadius: 16,
+      border: `1px solid ${C.border}`,
+      overflow: "hidden",
+      boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+      ...style,
+    }}
+  >
+    {children}
+  </div>
+);
+
 const SectionHeader = ({
   icon: Icon,
   title,
@@ -232,21 +257,84 @@ const StatusBadge = ({ status }) => {
   return <Chip label={s.label} color={s.color} bg={s.bg} dot size="xs" />;
 };
 
+const InfoRow = ({ label, value, masked = false, mono = false }) => {
+  const [copied, setCopied] = useState(false);
+  const display =
+    masked && value ? value.replace(/(\d{4})\d+(\d{4})/, "$1••••$2") : value;
+  return (
+    <div
+      style={{
+        padding: "10px 0",
+        borderBottom: `1px solid ${C.border}`,
+        display: "flex",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        gap: 16,
+      }}
+    >
+      <span
+        style={{
+          fontSize: 12,
+          color: C.textMuted,
+          fontWeight: 500,
+          minWidth: 140,
+        }}
+      >
+        {label}
+      </span>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <span
+          style={{
+            fontSize: 13,
+            color: value ? C.textPrimary : C.textMuted,
+            fontFamily: mono ? "monospace" : "inherit",
+            fontWeight: value ? 500 : 400,
+          }}
+        >
+          {display || "—"}
+        </span>
+        {masked && value && (
+          <Motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              navigator.clipboard?.writeText(value);
+              setCopied(true);
+              setTimeout(() => setCopied(false), 1500);
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 2,
+            }}
+          >
+            {copied ? (
+              <Check size={12} color={C.success} />
+            ) : (
+              <Copy size={12} color={C.textMuted} />
+            )}
+          </Motion.button>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const TABS = [
   { id: "overview", label: "Overview", icon: Home },
   { id: "team", label: "My Team", icon: Users },
   { id: "approvals", label: "Approvals", icon: CheckCircle2 },
   { id: "attendance", label: "Attendance", icon: Clock },
   { id: "performance", label: "Performance", icon: BarChart2 },
+  { id: "myprofile", label: "My Profile", icon: User },
 ];
 
 // ════════════════════════════ TAB PANELS ════════════════════════════
 
-// ── Overview Tab ──
-function OverviewTab({ team, pendingApprovals, attendanceSummary, manager }) {
+function OverviewTab({ team, pendingApprovals, attendanceSummary }) {
   const present = attendanceSummary?.present ?? 0;
   const absent = attendanceSummary?.absent ?? 0;
-  const late = attendanceSummary?.late ?? 0;
   const total = team.length;
   const rate = total ? Math.round((present / total) * 100) : 0;
 
@@ -294,7 +382,6 @@ function OverviewTab({ team, pendingApprovals, attendanceSummary, manager }) {
       animate={{ opacity: 1 }}
       className="space-y-5"
     >
-      {/* Stats */}
       <div
         style={{
           display: "grid",
@@ -314,25 +401,17 @@ function OverviewTab({ team, pendingApprovals, attendanceSummary, manager }) {
               <div style={{ padding: "16px 18px" }}>
                 <div
                   style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 10,
+                    background: s.bg,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between",
+                    justifyContent: "center",
                     marginBottom: 10,
                   }}
                 >
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 10,
-                      background: s.bg,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <s.icon size={16} color={s.color} />
-                  </div>
+                  <s.icon size={16} color={s.color} />
                 </div>
                 <p
                   style={{
@@ -360,7 +439,6 @@ function OverviewTab({ team, pendingApprovals, attendanceSummary, manager }) {
         ))}
       </div>
 
-      {/* Team quick view */}
       <Card>
         <SectionHeader
           icon={Users}
@@ -432,7 +510,6 @@ function OverviewTab({ team, pendingApprovals, attendanceSummary, manager }) {
         )}
       </Card>
 
-      {/* Recent approvals */}
       {pendingApprovals.length > 0 && (
         <Card>
           <SectionHeader
@@ -500,10 +577,8 @@ function OverviewTab({ team, pendingApprovals, attendanceSummary, manager }) {
   );
 }
 
-// ── Team Tab ──
 function TeamTab({ team, onViewProfile }) {
   const [search, setSearch] = useState("");
-
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return !q
@@ -522,7 +597,6 @@ function TeamTab({ team, onViewProfile }) {
       animate={{ opacity: 1 }}
       className="space-y-4"
     >
-      {/* Search */}
       <div style={{ position: "relative", maxWidth: 340 }}>
         <Search
           size={13}
@@ -691,8 +765,7 @@ function TeamTab({ team, onViewProfile }) {
   );
 }
 
-// ── Approvals Tab ──
-function ApprovalsTab({ approvals, onApprove, onReject }) {
+function ApprovalsTab({ approvals, onApprove }) {
   const [actionLoading, setActionLoading] = useState({});
   const [filter, setFilter] = useState("All");
   const [err, setErr] = useState(null);
@@ -739,22 +812,16 @@ function ApprovalsTab({ approvals, onApprove, onReject }) {
           }}
         >
           <AlertCircle size={13} color={C.danger} />
-          <p style={{ fontSize: 13, color: C.danger }}>{err}</p>
+          <p style={{ fontSize: 13, color: C.danger, flex: 1 }}>{err}</p>
           <button
             onClick={() => setErr(null)}
-            style={{
-              marginLeft: "auto",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-            }}
+            style={{ background: "none", border: "none", cursor: "pointer" }}
           >
             <X size={13} color={C.danger} />
           </button>
         </div>
       )}
 
-      {/* Filter chips */}
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
         {types.map((t) => (
           <button
@@ -976,13 +1043,11 @@ function ApprovalsTab({ approvals, onApprove, onReject }) {
   );
 }
 
-// ── Attendance Tab ──
 function AttendanceTab({ team }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch today's attendance snapshot for HR/manager view
     attendanceApi
       .getToday()
       .then((r) => setRecords(r.data ?? r.records ?? []))
@@ -1053,7 +1118,7 @@ function AttendanceTab({ team }) {
                 </tr>
               </thead>
               <tbody>
-                {team.map((emp, i) => {
+                {team.map((emp) => {
                   const rec = teamRecords.find(
                     (r) => (r.employeeId ?? r.employee_id) === emp.id,
                   );
@@ -1164,7 +1229,6 @@ function AttendanceTab({ team }) {
   );
 }
 
-// ── Performance Tab ──
 function PerformanceTab({ team }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1277,6 +1341,1055 @@ function PerformanceTab({ team }) {
   );
 }
 
+// ════════════════════════════ MY PROFILE TAB ════════════════════════════
+
+const PROFILE_SUBTABS = [
+  { id: "personal", label: "Personal", icon: User },
+  { id: "job", label: "Job", icon: Briefcase },
+  { id: "payroll", label: "Payroll", icon: CreditCard },
+  { id: "documents", label: "Documents", icon: FileText },
+  { id: "leave", label: "Leave", icon: Plane },
+  { id: "security", label: "Security", icon: Shield },
+];
+
+function PersonalSubTab({ emp }) {
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState({});
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [err, setErr] = useState(null);
+
+  const editableFields = [
+    { key: "phone", label: "Phone" },
+    { key: "personalEmail", label: "Personal Email" },
+    { key: "address", label: "Address" },
+    { key: "nokName", label: "Next of Kin Name" },
+    { key: "nokRelationship", label: "NOK Relationship" },
+    { key: "nokPhone", label: "NOK Phone" },
+  ];
+
+  const handleSubmit = async () => {
+    setSaving(true);
+    setErr(null);
+    try {
+      await requestProfileChange(form);
+      setSaved(true);
+      setEditing(false);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (e) {
+      setErr(e?.response?.data?.message ?? "Failed to submit change request.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Motion.div
+      variants={tabAnim}
+      initial="hidden"
+      animate="visible"
+      className="space-y-4"
+    >
+      {saved && (
+        <div
+          style={{
+            background: C.successLight,
+            border: `1px solid ${C.success}33`,
+            borderRadius: 12,
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <CheckCircle2 size={14} color={C.success} />
+          <p style={{ fontSize: 13, color: C.success, fontWeight: 600 }}>
+            Change request submitted. HR will review shortly.
+          </p>
+        </div>
+      )}
+      {err && (
+        <div
+          style={{
+            background: C.dangerLight,
+            border: `1px solid ${C.danger}33`,
+            borderRadius: 12,
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <AlertCircle size={14} color={C.danger} />
+          <p style={{ fontSize: 13, color: C.danger }}>{err}</p>
+        </div>
+      )}
+
+      <SectionCard>
+        <SectionHeader
+          icon={User}
+          title="Personal Information"
+          sub="Contact and identity details"
+          action={
+            <Motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                setEditing(!editing);
+                setForm({});
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "6px 12px",
+                background: editing ? C.dangerLight : C.primaryLight,
+                border: "none",
+                borderRadius: 8,
+                fontSize: 11,
+                fontWeight: 700,
+                color: editing ? C.danger : C.primary,
+                cursor: "pointer",
+              }}
+            >
+              {editing ? (
+                <>
+                  <X size={11} /> Cancel
+                </>
+              ) : (
+                <>
+                  <Edit3 size={11} /> Request Change
+                </>
+              )}
+            </Motion.button>
+          }
+        />
+        <div style={{ padding: "4px 20px 12px" }}>
+          {[
+            { label: "First Name", value: emp.first_name },
+            { label: "Last Name", value: emp.last_name },
+            {
+              label: "Date of Birth",
+              value: emp.date_of_birth
+                ? new Date(emp.date_of_birth).toLocaleDateString()
+                : null,
+            },
+            { label: "Gender", value: emp.gender },
+            { label: "Nationality", value: emp.nationality },
+            { label: "Marital Status", value: emp.marital_status },
+            { label: "Personal Email", value: emp.personal_email },
+            { label: "Phone", value: emp.phone },
+            { label: "Address", value: emp.address },
+          ].map(({ label, value }) => {
+            const editable = editableFields.find((f) => f.label === label);
+            return editing && editable ? (
+              <div
+                key={label}
+                style={{
+                  padding: "10px 0",
+                  borderBottom: `1px solid ${C.border}`,
+                }}
+              >
+                <p
+                  style={{ fontSize: 11, color: C.textMuted, marginBottom: 4 }}
+                >
+                  {label}
+                </p>
+                <input
+                  defaultValue={value || ""}
+                  onChange={(e) =>
+                    setForm((f) => ({ ...f, [editable.key]: e.target.value }))
+                  }
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    borderRadius: 8,
+                    border: `1.5px solid ${C.primary}66`,
+                    background: C.surfaceAlt,
+                    fontSize: 13,
+                    outline: "none",
+                    color: C.textPrimary,
+                  }}
+                />
+              </div>
+            ) : (
+              <InfoRow key={label} label={label} value={value} />
+            );
+          })}
+        </div>
+        {editing && (
+          <div
+            style={{
+              padding: "12px 20px",
+              borderTop: `1px solid ${C.border}`,
+              display: "flex",
+              gap: 8,
+            }}
+          >
+            <Motion.button
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setEditing(false)}
+              style={{
+                flex: 1,
+                padding: "9px",
+                borderRadius: 10,
+                border: `1px solid ${C.border}`,
+                background: C.surfaceAlt,
+                fontSize: 12,
+                fontWeight: 600,
+                color: C.textSecondary,
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </Motion.button>
+            <Motion.button
+              whileHover={{ scale: 1.02 }}
+              onClick={handleSubmit}
+              disabled={saving}
+              style={{
+                flex: 2,
+                padding: "9px",
+                borderRadius: 10,
+                border: "none",
+                background: C.primary,
+                color: "#fff",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: saving ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+              }}
+            >
+              {saving ? (
+                <>
+                  <Loader2 size={12} className="animate-spin" /> Submitting…
+                </>
+              ) : (
+                <>
+                  <Save size={12} /> Submit Change Request
+                </>
+              )}
+            </Motion.button>
+          </div>
+        )}
+      </SectionCard>
+
+      <SectionCard>
+        <SectionHeader
+          icon={UserCheck}
+          title="Next of Kin"
+          color={C.accent}
+          bg={C.accentLight}
+        />
+        <div style={{ padding: "4px 20px 12px" }}>
+          <InfoRow label="Name" value={emp.nok_name} />
+          <InfoRow label="Relationship" value={emp.nok_relationship} />
+          <InfoRow label="Phone" value={emp.nok_phone} />
+          <InfoRow label="Address" value={emp.nok_address} />
+        </div>
+      </SectionCard>
+    </Motion.div>
+  );
+}
+
+function JobSubTab({ emp }) {
+  return (
+    <Motion.div variants={tabAnim} initial="hidden" animate="visible">
+      <SectionCard>
+        <SectionHeader
+          icon={Briefcase}
+          title="Employment Details"
+          sub="Role, department, and employment info"
+        />
+        <div style={{ padding: "4px 20px 12px" }}>
+          <InfoRow label="Employee Code" value={emp.employee_code} mono />
+          <InfoRow label="Department" value={emp.department_name} />
+          <InfoRow label="Job Role" value={emp.job_role_name} />
+          <InfoRow label="Manager" value={emp.manager_name} />
+          <InfoRow
+            label="Employment Type"
+            value={emp.employment_type?.replace("_", " ")}
+          />
+          <InfoRow
+            label="Start Date"
+            value={
+              emp.start_date
+                ? new Date(emp.start_date).toLocaleDateString()
+                : null
+            }
+          />
+          <InfoRow
+            label="Confirmation"
+            value={
+              emp.confirmation_date
+                ? new Date(emp.confirmation_date).toLocaleDateString()
+                : null
+            }
+          />
+          <InfoRow label="Location" value={emp.location} />
+          <InfoRow label="Status" value={emp.employment_status} />
+          <InfoRow label="Pay Grade" value={emp.pay_grade} />
+        </div>
+      </SectionCard>
+    </Motion.div>
+  );
+}
+
+function PayrollSubTab({ emp }) {
+  return (
+    <Motion.div variants={tabAnim} initial="hidden" animate="visible">
+      <SectionCard>
+        <SectionHeader
+          icon={CreditCard}
+          title="Bank & Payroll Details"
+          sub="Salary and banking information"
+          color={C.success}
+          bg={C.successLight}
+        />
+        <div style={{ padding: "4px 20px 12px" }}>
+          <InfoRow
+            label="Basic Salary"
+            value={
+              emp.basic_salary
+                ? `₦${Number(emp.basic_salary).toLocaleString()}`
+                : null
+            }
+          />
+          <InfoRow label="Pay Grade" value={emp.pay_grade} />
+          <InfoRow label="Bank Name" value={emp.bank_name} />
+          <InfoRow
+            label="Account Number"
+            value={emp.account_number}
+            masked
+            mono
+          />
+          <InfoRow label="Account Name" value={emp.account_name} />
+          <InfoRow label="Pension PIN" value={emp.pension_pin} mono />
+          <InfoRow label="Tax ID" value={emp.tax_id} mono />
+        </div>
+      </SectionCard>
+    </Motion.div>
+  );
+}
+
+function DocumentsSubTab() {
+  const [docs, setDocs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    documentApi
+      .getAll()
+      .then((r) => setDocs(r.data ?? r.documents ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <Motion.div variants={tabAnim} initial="hidden" animate="visible">
+      <SectionCard>
+        <SectionHeader
+          icon={FileText}
+          title="My Documents"
+          sub="Signed and pending documents"
+        />
+        {loading ? (
+          <div
+            style={{
+              padding: 20,
+              display: "flex",
+              flexDirection: "column",
+              gap: 10,
+            }}
+          >
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} h={44} />
+            ))}
+          </div>
+        ) : docs.length === 0 ? (
+          <div
+            style={{
+              padding: 40,
+              textAlign: "center",
+              color: C.textMuted,
+              fontSize: 13,
+            }}
+          >
+            No documents found.
+          </div>
+        ) : (
+          <div style={{ padding: "4px 20px 12px" }}>
+            {docs.map((doc) => (
+              <div
+                key={doc.id}
+                style={{
+                  padding: "12px 0",
+                  borderBottom: `1px solid ${C.border}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      background: C.primaryLight,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <FileText size={14} color={C.primary} />
+                  </div>
+                  <div>
+                    <p
+                      style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: C.textPrimary,
+                      }}
+                    >
+                      {doc.title ?? doc.name}
+                    </p>
+                    <p style={{ fontSize: 11, color: C.textMuted }}>
+                      {doc.status ?? "—"} ·{" "}
+                      {doc.created_at
+                        ? new Date(doc.created_at).toLocaleDateString()
+                        : ""}
+                    </p>
+                  </div>
+                </div>
+                <Chip
+                  label={doc.status === "signed" ? "Signed" : "Pending"}
+                  color={doc.status === "signed" ? C.success : C.warning}
+                  bg={doc.status === "signed" ? C.successLight : C.warningLight}
+                  dot
+                  size="xs"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </SectionCard>
+    </Motion.div>
+  );
+}
+
+function LeaveSubTab() {
+  const [balances, setBalances] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      leaveApi.getMyBalances(),
+      leaveApi.getMyRequests({ limit: 10 }),
+    ])
+      .then(([bal, req]) => {
+        setBalances(bal.data ?? bal.balances ?? []);
+        setRequests(req.data ?? req.requests ?? []);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <Motion.div
+      variants={tabAnim}
+      initial="hidden"
+      animate="visible"
+      className="space-y-4"
+    >
+      <SectionCard>
+        <SectionHeader
+          icon={Plane}
+          title="Leave Balances"
+          color={C.accent}
+          bg={C.accentLight}
+        />
+        {loading ? (
+          <div
+            style={{
+              padding: 20,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} h={36} />
+            ))}
+          </div>
+        ) : balances.length === 0 ? (
+          <div
+            style={{
+              padding: 32,
+              textAlign: "center",
+              color: C.textMuted,
+              fontSize: 13,
+            }}
+          >
+            No leave balances found.
+          </div>
+        ) : (
+          <div style={{ padding: "4px 20px 12px" }}>
+            {balances.map((b) => (
+              <div
+                key={b.id}
+                style={{
+                  padding: "10px 0",
+                  borderBottom: `1px solid ${C.border}`,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: C.textPrimary,
+                    }}
+                  >
+                    {b.leave_type ?? b.policy_name}
+                  </p>
+                  <p style={{ fontSize: 11, color: C.textMuted }}>
+                    {b.entitled_days} days entitled
+                  </p>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <p
+                    style={{
+                      fontSize: 18,
+                      fontWeight: 800,
+                      color: C.primary,
+                      fontFamily: "Sora,sans-serif",
+                    }}
+                  >
+                    {b.remaining_days ?? b.balance}
+                  </p>
+                  <p style={{ fontSize: 10, color: C.textMuted }}>days left</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </SectionCard>
+
+      <SectionCard>
+        <SectionHeader icon={Clock} title="Recent Leave Requests" />
+        {loading ? (
+          <div
+            style={{
+              padding: 20,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            {[1, 2].map((i) => (
+              <Skeleton key={i} h={44} />
+            ))}
+          </div>
+        ) : requests.length === 0 ? (
+          <div
+            style={{
+              padding: 32,
+              textAlign: "center",
+              color: C.textMuted,
+              fontSize: 13,
+            }}
+          >
+            No leave requests found.
+          </div>
+        ) : (
+          <div style={{ padding: "4px 20px 12px" }}>
+            {requests.map((r) => (
+              <div
+                key={r.id}
+                style={{
+                  padding: "10px 0",
+                  borderBottom: `1px solid ${C.border}`,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <div>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: C.textPrimary,
+                    }}
+                  >
+                    {r.leave_type ?? r.type}
+                  </p>
+                  <p style={{ fontSize: 11, color: C.textMuted }}>
+                    {r.start_date
+                      ? new Date(r.start_date).toLocaleDateString()
+                      : ""}{" "}
+                    —{" "}
+                    {r.end_date
+                      ? new Date(r.end_date).toLocaleDateString()
+                      : ""}
+                  </p>
+                </div>
+                <Chip
+                  label={r.status}
+                  color={
+                    r.status === "approved"
+                      ? C.success
+                      : r.status === "rejected"
+                        ? C.danger
+                        : C.warning
+                  }
+                  bg={
+                    r.status === "approved"
+                      ? C.successLight
+                      : r.status === "rejected"
+                        ? C.dangerLight
+                        : C.warningLight
+                  }
+                  dot
+                  size="xs"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </SectionCard>
+    </Motion.div>
+  );
+}
+
+function SecuritySubTab() {
+  const [form, setForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState(null);
+
+  const handleChange = async () => {
+    if (form.newPassword !== form.confirmPassword) {
+      setMsg({ type: "error", text: "Passwords do not match." });
+      return;
+    }
+    if (form.newPassword.length < 8) {
+      setMsg({
+        type: "error",
+        text: "Password must be at least 8 characters.",
+      });
+      return;
+    }
+    setSaving(true);
+    setMsg(null);
+    try {
+      await authApi.changePassword({
+        currentPassword: form.currentPassword,
+        newPassword: form.newPassword,
+      });
+      setMsg({ type: "success", text: "Password changed successfully." });
+      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (e) {
+      setMsg({
+        type: "error",
+        text: e?.response?.data?.message ?? "Password change failed.",
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Motion.div variants={tabAnim} initial="hidden" animate="visible">
+      <SectionCard>
+        <SectionHeader
+          icon={Key}
+          title="Change Password"
+          color={C.warning}
+          bg={C.warningLight}
+        />
+        <div style={{ padding: 20 }}>
+          {msg && (
+            <div
+              style={{
+                marginBottom: 16,
+                padding: "10px 14px",
+                borderRadius: 10,
+                background:
+                  msg.type === "success" ? C.successLight : C.dangerLight,
+                border: `1px solid ${msg.type === "success" ? C.success : C.danger}33`,
+                color: msg.type === "success" ? C.success : C.danger,
+                fontSize: 13,
+              }}
+            >
+              {msg.text}
+            </div>
+          )}
+          {[
+            { key: "currentPassword", label: "Current Password" },
+            { key: "newPassword", label: "New Password" },
+            { key: "confirmPassword", label: "Confirm New Password" },
+          ].map(({ key, label }) => (
+            <div key={key} style={{ marginBottom: 12 }}>
+              <p
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: C.textMuted,
+                  marginBottom: 4,
+                }}
+              >
+                {label}
+              </p>
+              <input
+                type="password"
+                value={form[key]}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, [key]: e.target.value }))
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  border: `1.5px solid ${C.border}`,
+                  background: C.surfaceAlt,
+                  fontSize: 13,
+                  outline: "none",
+                  color: C.textPrimary,
+                }}
+              />
+            </div>
+          ))}
+          <Motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={handleChange}
+            disabled={saving}
+            style={{
+              width: "100%",
+              padding: "10px",
+              borderRadius: 10,
+              border: "none",
+              background: C.primary,
+              color: "#fff",
+              fontSize: 13,
+              fontWeight: 700,
+              cursor: saving ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+            }}
+          >
+            {saving ? (
+              <>
+                <Loader2 size={14} className="animate-spin" /> Changing…
+              </>
+            ) : (
+              <>
+                <Lock size={13} /> Change Password
+              </>
+            )}
+          </Motion.button>
+        </div>
+      </SectionCard>
+    </Motion.div>
+  );
+}
+
+// ── My Profile Tab (full mirror of ProfilePage) ──
+function MyProfileTab({ authEmployee }) {
+  const [emp, setEmp] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeSubTab, setActiveSubTab] = useState("personal");
+
+  const fetchProfile = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await getMyProfile();
+      setEmp(res.data ?? res);
+    } catch (e) {
+      setError(e?.response?.data?.message ?? "Failed to load profile.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
+
+  const initials = useMemo(() => {
+    if (!emp) return authEmployee?.initials ?? "?";
+    return (
+      `${emp.first_name?.[0] ?? ""}${emp.last_name?.[0] ?? ""}`.toUpperCase() ||
+      "?"
+    );
+  }, [emp, authEmployee]);
+
+  const completionScore = emp
+    ? [emp.phone, emp.address, emp.nok_name, emp.bank_name, emp.avatar].filter(
+        Boolean,
+      ).length * 20
+    : 0;
+
+  return (
+    <Motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-5"
+    >
+      {error && (
+        <div
+          style={{
+            background: C.dangerLight,
+            border: `1px solid ${C.danger}33`,
+            borderRadius: 12,
+            padding: "12px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          <AlertCircle size={14} color={C.danger} />
+          <p style={{ fontSize: 13, color: C.danger, flex: 1 }}>{error}</p>
+          <button
+            onClick={fetchProfile}
+            style={{
+              fontSize: 11,
+              color: C.danger,
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: 700,
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Profile Hero Card */}
+      {loading ? (
+        <Skeleton h={160} />
+      ) : (
+        emp && (
+          <Motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            custom={0}
+          >
+            <SectionCard>
+              <div
+                style={{
+                  background: `linear-gradient(135deg,${C.navy ?? "#1E1B4B"},${C.primary})`,
+                  padding: "24px 24px 0",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    gap: 16,
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <div style={{ position: "relative" }}>
+                    <AvatarEl
+                      initials={initials}
+                      avatar={emp.avatar}
+                      size={72}
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: -6,
+                        right: -6,
+                        background: "#F59E0B",
+                        borderRadius: 6,
+                        padding: "2px 7px",
+                        fontSize: 8,
+                        fontWeight: 800,
+                        color: "#fff",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 3,
+                      }}
+                    >
+                      <Award size={8} /> MGR
+                    </div>
+                  </div>
+                  <div style={{ paddingBottom: 16, flex: 1 }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <h2
+                        style={{
+                          fontSize: 20,
+                          fontWeight: 800,
+                          color: "#fff",
+                          fontFamily: "Sora,sans-serif",
+                        }}
+                      >
+                        {emp.first_name} {emp.last_name}
+                      </h2>
+                      <Chip
+                        label="Manager"
+                        color="#F59E0B"
+                        bg="rgba(245,158,11,0.18)"
+                      />
+                      <StatusBadge status={emp.employment_status} />
+                    </div>
+                    <p
+                      style={{
+                        fontSize: 13,
+                        color: "rgba(255,255,255,0.7)",
+                        marginTop: 2,
+                      }}
+                    >
+                      {emp.job_role_name} · {emp.department_name}
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 11,
+                        color: "rgba(255,255,255,0.45)",
+                        marginTop: 2,
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {emp.employee_code}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              {/* Profile completion bar */}
+              <div style={{ padding: "12px 24px", background: C.surfaceAlt }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: 4,
+                  }}
+                >
+                  <span style={{ fontSize: 11, color: C.textMuted }}>
+                    Profile completion
+                  </span>
+                  <span
+                    style={{ fontSize: 11, fontWeight: 700, color: C.primary }}
+                  >
+                    {completionScore}%
+                  </span>
+                </div>
+                <div
+                  style={{
+                    height: 4,
+                    borderRadius: 99,
+                    background: C.border,
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${completionScore}%`,
+                      height: "100%",
+                      background: `linear-gradient(90deg,${C.primary},${C.accent})`,
+                      borderRadius: 99,
+                      transition: "width 0.6s ease",
+                    }}
+                  />
+                </div>
+              </div>
+            </SectionCard>
+          </Motion.div>
+        )
+      )}
+
+      {/* Sub-tab bar */}
+      {!loading && emp && (
+        <Motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          custom={1}
+          style={{
+            display: "flex",
+            gap: 4,
+            background: C.surface,
+            padding: 4,
+            borderRadius: 14,
+            border: `1px solid ${C.border}`,
+            overflowX: "auto",
+            scrollbarWidth: "none",
+          }}
+        >
+          {PROFILE_SUBTABS.map(({ id, label, icon: Icon }) => {
+            const active = activeSubTab === id;
+            return (
+              <Motion.button
+                key={id}
+                whileHover={{ scale: active ? 1 : 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => setActiveSubTab(id)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "7px 14px",
+                  borderRadius: 10,
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  background: active ? C.primary : "transparent",
+                  color: active ? "#fff" : C.textSecondary,
+                  boxShadow: active ? "0 2px 8px rgba(79,70,229,0.25)" : "none",
+                  transition: "all 0.18s",
+                }}
+              >
+                <Icon size={12} /> {label}
+              </Motion.button>
+            );
+          })}
+        </Motion.div>
+      )}
+
+      {/* Sub-tab panels */}
+      {!loading && emp && (
+        <AnimatePresence mode="wait">
+          <div key={activeSubTab}>
+            {activeSubTab === "personal" && <PersonalSubTab emp={emp} />}
+            {activeSubTab === "job" && <JobSubTab emp={emp} />}
+            {activeSubTab === "payroll" && <PayrollSubTab emp={emp} />}
+            {activeSubTab === "documents" && <DocumentsSubTab />}
+            {activeSubTab === "leave" && <LeaveSubTab />}
+            {activeSubTab === "security" && <SecuritySubTab />}
+          </div>
+        </AnimatePresence>
+      )}
+    </Motion.div>
+  );
+}
+
 // ── Employee Profile Drawer ──
 function EmployeeDrawer({ emp, onClose }) {
   const [profile, setProfile] = useState(null);
@@ -1327,11 +2440,10 @@ function EmployeeDrawer({ emp, onClose }) {
           flexDirection: "column",
         }}
       >
-        {/* Header */}
         <div
           style={{
             padding: "20px 20px 16px",
-            background: `linear-gradient(135deg,${C.navy},${C.primary})`,
+            background: `linear-gradient(135deg,${C.navy ?? "#1E1B4B"},${C.primary})`,
           }}
         >
           <div
@@ -1388,7 +2500,6 @@ function EmployeeDrawer({ emp, onClose }) {
           </div>
         </div>
 
-        {/* Body */}
         <div style={{ flex: 1, overflowY: "auto", padding: 20 }}>
           {loading ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -1466,7 +2577,6 @@ export default function ManagerProfile() {
     setLoading(true);
     setError(null);
     try {
-      // Get direct reports (employees whose manager_id matches this user's employee ID)
       const [teamRes, approvalsRes, todayRes] = await Promise.all([
         getEmployees({ limit: 100 }),
         approvalApi.getAll({ status: "pending" }),
@@ -1474,7 +2584,6 @@ export default function ManagerProfile() {
       ]);
 
       const allEmployees = teamRes.data ?? [];
-      // Filter to only this manager's direct reports
       const myId = manager?.id ?? authEmployee?.employeeId;
       const myTeam = allEmployees.filter(
         (e) => e.manager_id === myId || e.managerId === myId,
@@ -1483,7 +2592,6 @@ export default function ManagerProfile() {
       setTeam(myTeam);
       setApprovals(approvalsRes.data ?? approvalsRes.approvals ?? []);
 
-      // Build attendance summary from today's records
       const todayRecords = todayRes.data ?? todayRes.records ?? [];
       const teamIds = new Set(myTeam.map((e) => e.id));
       const teamToday = todayRecords.filter((r) =>
@@ -1499,7 +2607,7 @@ export default function ManagerProfile() {
     } finally {
       setLoading(false);
     }
-  }, [manager?.id, authEmployee?.employeeId]);
+  }, [manager, authEmployee]);
 
   useEffect(() => {
     fetchAll();
@@ -1511,27 +2619,18 @@ export default function ManagerProfile() {
 
   return (
     <div
+      className="min-h-screen font-sans"
       style={{
-        minHeight: "100vh",
         background: C.bg,
-        fontFamily: "'DM Sans','Sora',sans-serif",
         color: C.textPrimary,
+        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <style>{`@keyframes mgr-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
-      <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-        {/* <SideNavbar sidebarOpen={sidebarOpen} /> */}
 
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            minWidth: 0,
-            overflow: "hidden",
-          }}
-        >
-          {/* Header */}
+      <div className="flex h-screen overflow-hidden">
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          {/* ── TOP NAV ── */}
           <header
             className="shrink-0 h-[60px] flex items-center px-5 gap-4 z-10"
             style={{
@@ -1555,44 +2654,26 @@ export default function ManagerProfile() {
             </Motion.button>
 
             <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                fontSize: 12,
-                color: C.textSecondary,
-              }}
+              className="flex items-center gap-1.5 text-xs"
+              style={{ color: C.textSecondary }}
             >
               <span>Home</span>
               <ChevronRight size={11} />
-              <span style={{ fontWeight: 700, color: C.textPrimary }}>
+              <span className="font-bold" style={{ color: C.textPrimary }}>
                 Manager Dashboard
               </span>
             </div>
 
-            <div
-              style={{
-                marginLeft: "auto",
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
+            <div className="flex items-center gap-2 ml-auto">
               {pendingCount > 0 && (
                 <Motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setActiveTab("approvals")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "6px 12px",
                     background: C.dangerLight,
                     border: `1px solid ${C.danger}33`,
-                    borderRadius: 8,
-                    fontSize: 11,
-                    fontWeight: 700,
                     color: C.danger,
                     cursor: "pointer",
                   }}
@@ -1603,38 +2684,15 @@ export default function ManagerProfile() {
               <Motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={fetchAll}
+                className="p-2 rounded-xl"
                 style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
                   background: C.surface,
                   border: `1px solid ${C.border}`,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                   cursor: "pointer",
                 }}
+                title="Refresh"
               >
                 <RefreshCw size={13} color={C.textMuted} />
-              </Motion.button>
-              <Motion.button
-                whileHover={{ scale: 1.03 }}
-                onClick={() => navigate("/profile")}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  padding: "5px 10px",
-                  background: C.surfaceAlt,
-                  border: `1px solid ${C.border}`,
-                  borderRadius: 8,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: C.textSecondary,
-                  cursor: "pointer",
-                }}
-              >
-                My Profile
               </Motion.button>
               <AvatarEl
                 initials={initials}
@@ -1644,34 +2702,28 @@ export default function ManagerProfile() {
             </div>
           </header>
 
-          <div style={{ flex: 1, overflowY: "auto", padding: "20px 24px" }}>
-            {/* Error */}
+          {/* ── SCROLLABLE MAIN ── */}
+          <main className="flex-1 overflow-y-auto p-5 md:p-7 space-y-6">
             {error && (
               <div
+                className="flex items-center gap-3 px-4 py-3 rounded-xl"
                 style={{
-                  marginBottom: 16,
                   background: C.dangerLight,
                   border: `1px solid ${C.danger}33`,
-                  borderRadius: 12,
-                  padding: "12px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
                 }}
               >
                 <AlertCircle size={14} color={C.danger} />
-                <p style={{ fontSize: 13, color: C.danger, flex: 1 }}>
+                <p className="text-sm flex-1" style={{ color: C.danger }}>
                   {error}
                 </p>
                 <button
                   onClick={fetchAll}
+                  className="text-xs font-bold"
                   style={{
-                    fontSize: 11,
                     color: C.danger,
                     background: "none",
                     border: "none",
                     cursor: "pointer",
-                    fontWeight: 700,
                   }}
                 >
                   Retry
@@ -1679,76 +2731,83 @@ export default function ManagerProfile() {
               </div>
             )}
 
-            {/* Page title */}
+            {/* ── HERO ── */}
             <Motion.div
-              variants={fadeUp}
-              initial="hidden"
-              animate="visible"
-              custom={0}
-              style={{ marginBottom: 18 }}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="relative rounded-2xl overflow-hidden"
+              style={{
+                background:
+                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 55%,#1E40AF 100%)",
+                minHeight: 140,
+              }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-                  marginBottom: 4,
-                }}
-              >
-                <h1
-                  style={{
-                    fontSize: 22,
-                    fontWeight: 800,
-                    color: C.textPrimary,
-                    fontFamily: "Sora,sans-serif",
-                  }}
-                >
-                  Manager Dashboard
-                </h1>
-                <span
-                  style={{
-                    background: "#FEF3C7",
-                    color: "#92400E",
-                    fontSize: 9,
-                    fontWeight: 800,
-                    padding: "3px 9px",
-                    borderRadius: 99,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 4,
-                  }}
-                >
-                  <Award size={9} /> {manager?.name}
-                </span>
+              <div className="p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-4">
+                <div className="flex items-center gap-4 flex-1">
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-white/15">
+                    <UserCheck size={22} color="white" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h1
+                        className="text-white text-2xl font-bold"
+                        style={{ fontFamily: "Sora,sans-serif" }}
+                      >
+                        Manager Dashboard
+                      </h1>
+                      {manager?.name && (
+                        <span
+                          className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                          style={{ background: "#FEF3C7", color: "#92400E" }}
+                        >
+                          <Award size={9} className="inline mr-1" />
+                          {manager.name}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-indigo-200 text-sm">
+                      Manage your team, approvals, and attendance — all in one
+                      place.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10">
+                    <Users size={12} color="rgba(255,255,255,0.7)" />
+                    <span className="text-white/80 text-xs">
+                      <strong className="text-white">{team.length}</strong>{" "}
+                      direct reports
+                    </span>
+                  </div>
+                  {pendingCount > 0 && (
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10">
+                      <Clock size={12} color="rgba(255,255,255,0.7)" />
+                      <span className="text-white/80 text-xs">
+                        <strong className="text-white">{pendingCount}</strong>{" "}
+                        pending
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-              <p style={{ fontSize: 13, color: C.textSecondary }}>
-                Manage your team, review approvals, and track attendance — all
-                in one place.
-              </p>
             </Motion.div>
 
-            {/* Tabs */}
+            {/* ── TABS ── */}
             {loading ? (
-              <div style={{ display: "flex", gap: 8, marginBottom: 18 }}>
-                {[70, 60, 80, 90, 80].map((w, i) => (
+              <div className="flex gap-2">
+                {[70, 60, 80, 90, 80, 80].map((w, i) => (
                   <Skeleton key={i} w={w} h={34} />
                 ))}
               </div>
             ) : (
-              <Motion.div
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                custom={1}
+              <div
+                className="flex gap-1 overflow-x-auto"
                 style={{
-                  display: "flex",
-                  gap: 4,
-                  marginBottom: 18,
                   background: C.surface,
                   padding: 4,
                   borderRadius: 14,
                   border: `1px solid ${C.border}`,
-                  overflowX: "auto",
+                  scrollbarWidth: "none",
                 }}
               >
                 {TABS.map(({ id, label, icon: Icon }) => {
@@ -1760,18 +2819,10 @@ export default function ManagerProfile() {
                       whileHover={{ scale: active ? 1 : 1.02 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setActiveTab(id)}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        padding: "7px 14px",
-                        borderRadius: 10,
                         border: "none",
                         cursor: "pointer",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
                         background: active ? C.primary : "transparent",
                         color: active ? "#fff" : C.textSecondary,
                         boxShadow: active
@@ -1780,8 +2831,7 @@ export default function ManagerProfile() {
                         transition: "all 0.18s",
                       }}
                     >
-                      <Icon size={12} />
-                      {label}
+                      <Icon size={12} /> {label}
                       {count > 0 && (
                         <span
                           style={{
@@ -1805,14 +2855,12 @@ export default function ManagerProfile() {
                     </Motion.button>
                   );
                 })}
-              </Motion.div>
+              </div>
             )}
 
-            {/* Tab Panels */}
+            {/* ── TAB PANELS ── */}
             {loading ? (
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: 14 }}
-              >
+              <div className="space-y-4">
                 {[100, 220, 140].map((h, i) => (
                   <Skeleton key={i} w="100%" h={h} />
                 ))}
@@ -1839,19 +2887,21 @@ export default function ManagerProfile() {
                         (a) => (a.status ?? "pending") === "pending",
                       )}
                       onApprove={fetchAll}
-                      onReject={fetchAll}
                     />
                   )}
                   {activeTab === "attendance" && <AttendanceTab team={team} />}
                   {activeTab === "performance" && (
                     <PerformanceTab team={team} />
                   )}
+                  {activeTab === "myprofile" && (
+                    <MyProfileTab authEmployee={authEmployee} />
+                  )}
                 </div>
               </AnimatePresence>
             )}
 
             <div style={{ height: 28 }} />
-          </div>
+          </main>
         </div>
       </div>
 

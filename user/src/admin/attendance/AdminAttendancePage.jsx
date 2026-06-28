@@ -125,7 +125,7 @@ export default function AdminAttendancePage() {
                 </div>
               </div>
 
-              {todayData && (
+              {/* {todayData && (
                 <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {[
                     { label: "Present", value: todayData.present ?? 0 },
@@ -142,7 +142,7 @@ export default function AdminAttendancePage() {
                     </div>
                   ))}
                 </div>
-              )}
+              )} */}
             </Motion.div>
 
             {/* Tabs */}
