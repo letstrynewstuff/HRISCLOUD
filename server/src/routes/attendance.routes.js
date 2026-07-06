@@ -1,11 +1,13 @@
-
-
 // // src/routes/attendance.routes.js
 // //
 // // FIX: GET /today and GET / used requireRole(HR_ROLES) which blocked managers.
 // //      Replaced with requireManagerial on both.
 // //      The controller (getTodayAttendance, getAllAttendanceHandler) reads
 // //      req.user.isHR to scope results to team vs full company.
+// //
+// // FIX: Added /break-start and /break-end routes (pause/resume) — these were
+// //      called by the frontend (attendanceApi.startBreak / endBreak) but
+// //      never registered, causing "Route not found".
 // //
 // // Mount in app.js:
 // //   import attendanceRouter from "./routes/attendance.routes.js";
@@ -17,6 +19,8 @@
 // import {
 //   clockIn,
 //   clockOut,
+//   breakStart,
+//   breakEnd,
 //   getAllAttendanceHandler,
 //   getTodayAttendance,
 //   getMyAttendance,
@@ -26,6 +30,17 @@
 //   updateShift,
 //   getShiftsHandler,
 // } from "../controllers/attendance.controller.js";
+//   import {
+//     getCorrections,
+//     approveCorrection,
+//     rejectCorrection,
+//     getOvertime,
+//     approveOvertime,
+//     rejectOvertime,
+//     getTimesheets,
+//     approveTimesheet,
+//     rejectTimesheet,
+//   } from "../controllers/attendanceExtras.controller.js";
 // import {
 //   clockInRules,
 //   correctRules,
@@ -63,11 +78,15 @@
 //   selfieUpload.single("selfie"),
 //   handleMulterError,
 //   ...clockInRules,
-//   // requireManagerial,          
+//   // requireManagerial,
 //   clockIn,
 // );
 
 // router.post("/clock-out", authenticate, clockOut);
+
+// // ── Break / pause ────────────────────────────────────────────
+// router.post("/break-start", authenticate, breakStart);
+// router.post("/break-end",   authenticate, breakEnd);
 
 // router.get("/me", authenticate, ...listQueryRules, getMyAttendance);
 
@@ -123,7 +142,6 @@
 //   createShift,
 // );
 
-
 // router.put(
 //   "/shifts/:id",
 //   authenticate,
@@ -132,9 +150,7 @@
 //   updateShift,
 // );
 
-
 // export default router;
-
 
 // src/routes/attendance.routes.js
 //
@@ -147,13 +163,25 @@
 //      called by the frontend (attendanceApi.startBreak / endBreak) but
 //      never registered, causing "Route not found".
 //
+// FIX: getCorrections/approveCorrection/rejectCorrection/getOvertime/
+//      approveOvertime/rejectOvertime were imported from
+//      attendanceExtras.controller.js but never mounted as routes — the
+//      handlers existed but were unreachable. Added them below under
+//      /corrections and /overtime.
+//
+
+//
 // Mount in app.js:
 //   import attendanceRouter from "./routes/attendance.routes.js";
 //   app.use("/api/attendance", attendanceRouter);
 
 import { Router } from "express";
 import multer from "multer";
-import { authenticate, requireRole, requireManagerial } from "../middleware/authenticate.js";
+import {
+  authenticate,
+  requireRole,
+  requireManagerial,
+} from "../middleware/authenticate.js";
 import {
   clockIn,
   clockOut,
@@ -166,8 +194,17 @@ import {
   correctAttendance,
   createShift,
   updateShift,
+  deleteShift,
   getShiftsHandler,
 } from "../controllers/attendance.controller.js";
+import {
+  getCorrections,
+  approveCorrection,
+  rejectCorrection,
+  getOvertime,
+  approveOvertime,
+  rejectOvertime,
+} from "../controllers/attendanceExtras.controller.js";
 import {
   clockInRules,
   correctRules,
@@ -184,7 +221,12 @@ const selfieUpload = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (file.mimetype.startsWith("image/")) return cb(null, true);
-    cb(new multer.MulterError("LIMIT_UNEXPECTED_FILE", "Only image files are allowed for selfies."));
+    cb(
+      new multer.MulterError(
+        "LIMIT_UNEXPECTED_FILE",
+        "Only image files are allowed for selfies.",
+      ),
+    );
   },
 });
 
@@ -213,7 +255,7 @@ router.post("/clock-out", authenticate, clockOut);
 
 // ── Break / pause ────────────────────────────────────────────
 router.post("/break-start", authenticate, breakStart);
-router.post("/break-end",   authenticate, breakEnd);
+router.post("/break-end", authenticate, breakEnd);
 
 router.get("/me", authenticate, ...listQueryRules, getMyAttendance);
 
@@ -226,7 +268,7 @@ router.get("/me", authenticate, ...listQueryRules, getMyAttendance);
 router.get(
   "/today",
   authenticate,
-  requireManagerial,              // ← FIX (was requireRole(HR_ROLES))
+  requireManagerial, // ← FIX (was requireRole(HR_ROLES))
   getTodayAttendance,
 );
 
@@ -234,7 +276,7 @@ router.get(
 router.get(
   "/",
   authenticate,
-  requireManagerial,              // ← FIX (was requireRole(HR_ROLES))
+  requireManagerial, // ← FIX (was requireRole(HR_ROLES))
   ...listQueryRules,
   getAllAttendanceHandler,
 );
@@ -243,7 +285,7 @@ router.get(
 router.get(
   "/employee/:id",
   authenticate,
-  requireManagerial,              // ← FIX (was requireRole(HR_ROLES))
+  requireManagerial, // ← FIX (was requireRole(HR_ROLES))
   ...listQueryRules,
   getEmployeeAttendanceHandler,
 );
@@ -252,14 +294,50 @@ router.get(
 router.put(
   "/:id/correct",
   authenticate,
-  requireRole(HR_ROLES),          // ← stays HR-only (correction is a privileged action)
+  requireRole(HR_ROLES), // ← stays HR-only (correction is a privileged action)
   ...correctRules,
   correctAttendance,
 );
 
+// ── Attendance corrections (employee-submitted fix requests) ──
+// FIX: handlers were imported but never mounted — routes now registered.
+router.get("/corrections", authenticate, requireRole(HR_ROLES), getCorrections);
+
+router.put(
+  "/corrections/:id/approve",
+  authenticate,
+  requireRole(HR_ROLES),
+  approveCorrection,
+);
+
+router.put(
+  "/corrections/:id/reject",
+  authenticate,
+  requireRole(HR_ROLES),
+  rejectCorrection,
+);
+
+// ── Overtime requests ──────────────────────────────────────────
+// FIX: handlers were imported but never mounted — routes now registered.
+router.get("/overtime", authenticate, requireRole(HR_ROLES), getOvertime);
+
+router.put(
+  "/overtime/:id/approve",
+  authenticate,
+  requireRole(HR_ROLES),
+  approveOvertime,
+);
+
+router.put(
+  "/overtime/:id/reject",
+  authenticate,
+  requireRole(HR_ROLES),
+  rejectOvertime,
+);
+
 // ── Shifts ────────────────────────────────────────────────────
 
-router.get("/shifts", authenticate, getShiftsHandler);  // any authenticated user
+router.get("/shifts", authenticate, getShiftsHandler); 
 
 router.post(
   "/shifts",
@@ -276,5 +354,8 @@ router.put(
   ...updateShiftRules,
   updateShift,
 );
+// router.delete("/shifts/:id", authenticate, requireRole(HR_ROLES), deleteShift);
+
+router.delete("/shifts/:id", authenticate, requireRole(HR_ROLES), deleteShift);
 
 export default router;

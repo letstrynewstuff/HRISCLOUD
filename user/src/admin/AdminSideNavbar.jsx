@@ -52,11 +52,7 @@ const NAV_ITEMS = [
     icon: UserCog,
     path: "/admin/employeemanagement/admin-jobroles",
   },
-  // {
-  //   label: "Approvals",
-  //   icon: ClipboardCheck,
-  //   path: "/admin/employeemanagement/admin-approvals",
-  // },
+
   { label: "Payroll", icon: DollarSign, path: "/admin/payroll/admin-payroll" },
   {
     label: "Attendance",
@@ -82,11 +78,7 @@ const NAV_ITEMS = [
   { label: "Benefits", icon: Heart, path: "/admin/benefits/admin-benefits" },
   // { label: "Reports", icon: BarChart2, path: "/admin/reports/admin-reports" },
   { label: "Announcements", icon: Bell, path: "/admin/announcements" },
-  // {
-  //   label: "Accounting",
-  //   icon: BookOpen,
-  //   path: "/admin/accounting",
-  // },
+
 ];
 
 function NavItem({ item, collapsed, badgeCount = 0, onClick }) {
@@ -199,20 +191,7 @@ function SidebarContent({
 
       {/* Footer */}
       <div className="p-2 border-t border-white/10 space-y-1 shrink-0">
-        {/* <NavLink to="/admin/settings/admin-settings">
-          {({ isActive }) => (
-            <div
-              className={`flex items-center ${collapsed ? "justify-center" : "gap-3"} px-3 py-2 rounded-xl cursor-pointer`}
-              style={{
-                color: isActive ? "#fff" : T.textMuted,
-                background: isActive ? T.sidebarActive : "transparent",
-              }}
-            >
-              <Settings size={16} />
-              {!collapsed && "Settings"}
-            </div>
-          )}
-        </NavLink> */}
+ 
 
         <button
           onClick={handleLogout}

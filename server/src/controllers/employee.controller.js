@@ -30,14 +30,7 @@ function handleValidationErrors(req, res) {
  * Format: EMP-0001, EMP-0042, …
  * Uses a DB sequence approach: counts existing employees in company + 1.
  */
-// async function generateEmployeeCode(client, companyId) {
-//   const result = await client.query(
-//     `SELECT COUNT(*) AS total FROM employees WHERE company_id = $1`,
-//     [companyId],
-//   );
-//   const next = parseInt(result.rows[0].total, 10) + 1;
-//   return `EMP-${String(next).padStart(4, "0")}`;
-// }
+
 // Replace generateEmployeeCode with this:
 async function generateEmployeeCode(client, companyId) {
   const result = await client.query(

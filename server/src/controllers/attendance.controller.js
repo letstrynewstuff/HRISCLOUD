@@ -118,16 +118,80 @@ async function resolveEmployeeId(userId, companyId) {
   return result.rows[0]?.id ?? null;
 }
 
+
+
+const DAY_CODES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+/** 'Sun'..'Sat' for a given Date, in the server's local time. */
+function todayDayCode(date = new Date()) {
+  return DAY_CODES[date.getDay()];
+}
+
+/** minutes-from-midnight → 'HH:MM' for user-facing messages */
+function minutesToHHMM(mins) {
+  const h = Math.floor((((mins % 1440) + 1440) % 1440) / 60);
+  const m = ((mins % 60) + 60) % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+}
+
+/** The shift assigned to this employee (employees.shift_id), or null. */
+async function resolveEmployeeShift(employeeId) {
+  const result = await db.query(
+    `SELECT s.*
+     FROM employees e
+     JOIN shifts s ON s.id = e.shift_id
+     WHERE e.id = $1 AND s.is_active IS NOT FALSE`,
+    [employeeId],
+  );
+  return result.rows[0] ?? null;
+}
+
+/**
+ * Resolves everything needed to evaluate a clock-in/out against a schedule:
+ * which days count as "working days", whether it's a fixed-window or
+ * hours-target shift, and the standard hours to compare worked time
+ * against (for overtime purposes).
+ */
+function resolveSchedule(shift, settings) {
+  const workingDays = shift?.days?.length
+    ? shift.days
+    : (settings?.working_days ?? ["Mon", "Tue", "Wed", "Thu", "Fri"]);
+
+  const scheduleType = shift?.schedule_type ?? "fixed";
+
+  if (scheduleType === "hours_target") {
+    return {
+      workingDays,
+      scheduleType,
+      standardHours: Number(shift?.target_hours_per_day ?? 8),
+    };
+  }
+
+  const workStart =
+    shift?.start_time ?? settings?.working_hours_start ?? "08:00";
+  const workEnd = shift?.end_time ?? settings?.working_hours_end ?? "17:00";
+  const [startH, startM] = workStart.split(":").map(Number);
+  const [endH, endM] = workEnd.split(":").map(Number);
+
+  return {
+    workingDays,
+    scheduleType,
+    workStart,
+    workEnd,
+    graceMinutesBefore: shift?.grace_minutes_before ?? 30,
+    lateGraceMinutes: shift?.late_grace_minutes ?? 15,
+    standardHours: (endH * 60 + endM - (startH * 60 + startM)) / 60,
+  };
+}
+
+
 // ══════════════════════════════════════════════════════════════
 // POST /api/attendance/clock-in
-//
-// Body (optional): { lat, lng }
 // ══════════════════════════════════════════════════════════════
 export async function clockIn(req, res) {
-  console.log("JWT payload:", req.user);
   try {
     const { companyId, userId } = req.user;
-
+ 
     const employeeId = await resolveEmployeeId(userId, companyId);
     if (!employeeId) {
       return res.status(403).json({
@@ -135,8 +199,7 @@ export async function clockIn(req, res) {
           "No active employee profile found for your account. Please contact HR.",
       });
     }
-
-    // Guard: already clocked in today?
+ 
     const existing = await getTodayRecord(employeeId);
     if (existing?.clock_in) {
       return res.status(409).json({
@@ -144,15 +207,41 @@ export async function clockIn(req, res) {
         record: serializeRecord(existing),
       });
     }
-
-    // Fetch company settings for late-check logic
-    const settings = await getCompanySettings(companyId);
-    const workStart = settings?.working_hours_start ?? "08:00";
-
+ 
+    const [shift, settings] = await Promise.all([
+      resolveEmployeeShift(employeeId),
+      getCompanySettings(companyId),
+    ]);
+    const schedule = resolveSchedule(shift, settings);
+ 
     const clockInTime = new Date();
-    const status = resolveStatus(clockInTime, workStart);
-
-    // Optional selfie upload
+    const today = todayDayCode(clockInTime);
+ 
+    // ── Day-of-week gate ── e.g. shift is Mon–Fri, today is Saturday.
+    if (!schedule.workingDays.includes(today)) {
+      return res.status(403).json({
+        message: `Today (${today}) isn't a working day on your schedule (${schedule.workingDays.join(", ")}).`,
+      });
+    }
+ 
+    let status = "present";
+ 
+    if (schedule.scheduleType === "hours_target") {
+      // No fixed window — always active, no lateness concept.
+      status = "present";
+    } else {
+      const nowMinutes = clockInTime.getHours() * 60 + clockInTime.getMinutes();
+      const startMinutes = parseTimeToMinutes(schedule.workStart);
+      const earliestAllowed = startMinutes - schedule.graceMinutesBefore;
+ 
+      if (nowMinutes < earliestAllowed) {
+        return res.status(403).json({
+          message: `Clock-in opens at ${minutesToHHMM(earliestAllowed)} (${schedule.graceMinutesBefore} min before your ${schedule.workStart} shift).`,
+        });
+      }
+      status = nowMinutes > startMinutes + schedule.lateGraceMinutes ? "late" : "present";
+    }
+ 
     let selfieUrl = null;
     if (req.file) {
       const { url } = await uploadToCloud(req.file.buffer, {
@@ -165,9 +254,9 @@ export async function clockIn(req, res) {
       });
       selfieUrl = url;
     }
-
+ 
     const { lat, lng } = req.body;
-
+ 
     const record = await dbClockIn({
       companyId,
       employeeId,
@@ -177,7 +266,7 @@ export async function clockIn(req, res) {
       selfieUrl,
       status,
     });
-
+ 
     return res.status(201).json({
       message:
         status === "late"
@@ -191,24 +280,21 @@ export async function clockIn(req, res) {
     return res.status(500).json({ message: "Server error during clock-in." });
   }
 }
-
+ 
 // ══════════════════════════════════════════════════════════════
 // POST /api/attendance/clock-out
-//
-// No body required.
-// Auto-closes any open break before recording clock-out.
 // ══════════════════════════════════════════════════════════════
 export async function clockOut(req, res) {
   try {
     const { companyId, userId } = req.user;
-
+ 
     const employeeId = await resolveEmployeeId(userId, companyId);
     if (!employeeId) {
       return res
         .status(403)
         .json({ message: "No active employee profile found." });
     }
-
+ 
     const today = await getTodayRecord(employeeId);
     if (!today) {
       return res.status(409).json({ message: "You haven't clocked in today." });
@@ -219,10 +305,9 @@ export async function clockOut(req, res) {
         record: serializeRecord(today),
       });
     }
-
+ 
     const clockOutTime = new Date();
-
-    // ── Auto-close an open break if the employee forgot to end it ──
+ 
     if (today.on_break && today.break_started_at) {
       const autoBreakMins = Math.round(
         (clockOutTime - new Date(today.break_started_at)) / 60000
@@ -237,22 +322,50 @@ export async function clockOut(req, res) {
         [autoBreakMins, today.id]
       );
     }
-
-    // Fetch standard working hours from settings
-    const settings = await getCompanySettings(companyId);
-    const workStart = settings?.working_hours_start ?? "08:00";
-    const workEnd = settings?.working_hours_end ?? "17:00";
-    const [endH, endM] = workEnd.split(":").map(Number);
-    const [startH, startM] = workStart.split(":").map(Number);
-    const standardHours = (endH * 60 + endM - (startH * 60 + startM)) / 60;
-
+ 
+    const [shift, settings] = await Promise.all([
+      resolveEmployeeShift(employeeId),
+      getCompanySettings(companyId),
+    ]);
+    const schedule = resolveSchedule(shift, settings);
+    const standardHours = schedule.standardHours;
+ 
     const updated = await dbClockOut(today.id, clockOutTime, standardHours);
     if (!updated) {
       return res
         .status(409)
         .json({ message: "Clock-out failed — record may already be closed." });
     }
-
+ 
+    // ── Overtime gate ── only ever recorded if the company has an
+    // overtime policy switched on. Otherwise it's zeroed out here
+    // regardless of what dbClockOut computed.
+    const overtimeEnabled = Boolean(settings?.overtime_enabled);
+    let overtimeHours = Number(updated.overtime_hours ?? 0);
+ 
+    if (!overtimeEnabled && overtimeHours > 0) {
+      await db.query(`UPDATE attendance SET overtime_hours = 0 WHERE id = $1`, [
+        updated.id,
+      ]);
+      updated.overtime_hours = 0;
+      overtimeHours = 0;
+    } else if (overtimeEnabled && overtimeHours > 0) {
+      // Don't auto-credit — create a pending request for HR to approve,
+      // same workflow OvertimeManagementView already expects.
+      await db.query(
+        `INSERT INTO overtime_requests (company_id, employee_id, attendance_id, date, hours, reason, status)
+         VALUES ($1, $2, $3, $4, $5, $6, 'pending')`,
+        [
+          companyId,
+          employeeId,
+          updated.id,
+          updated.attendance_date,
+          overtimeHours,
+          "Auto-detected from clock-out (worked past standard hours).",
+        ]
+      );
+    }
+ 
     return res.status(200).json({
       message: `Clocked out at ${clockOutTime.toLocaleTimeString()}. Hours worked: ${updated.hours_worked}h.`,
       record: serializeRecord(updated),
@@ -262,6 +375,7 @@ export async function clockOut(req, res) {
     return res.status(500).json({ message: "Server error during clock-out." });
   }
 }
+ 
 
 // ══════════════════════════════════════════════════════════════
 // POST /api/attendance/break-start
@@ -638,28 +752,65 @@ export async function correctAttendance(req, res) {
 
 // ══════════════════════════════════════════════════════════════
 // POST /api/attendance/shifts   [HR]
-// Body: { name, description?, startTime, endTime, days[] }
+// Body: { name, description?, scheduleType?, startTime?, endTime?, days[],
+//         targetHoursPerDay?, graceMinutesBefore?, lateGraceMinutes? }
+//
+// scheduleType defaults to 'fixed' for backward compatibility with any
+// existing caller that doesn't send it yet.
 // ══════════════════════════════════════════════════════════════
 export async function createShift(req, res) {
   if (handleValidationErrors(req, res)) return;
 
-  const { name, description, startTime, endTime, days } = req.body;
+  const {
+    name,
+    description,
+    scheduleType = "fixed",
+    startTime,
+    endTime,
+    days,
+    targetHoursPerDay,
+    graceMinutesBefore,
+    lateGraceMinutes,
+  } = req.body;
 
   try {
-    const [sh, sm] = startTime.split(":").map(Number);
-    const [eh, em] = endTime.split(":").map(Number);
-    if (eh * 60 + em <= sh * 60 + sm) {
-      return res
-        .status(422)
-        .json({ message: "endTime must be after startTime." });
+    if (scheduleType === "fixed") {
+      if (!startTime || !endTime) {
+        return res.status(422).json({
+          message: "startTime and endTime are required for a fixed shift.",
+        });
+      }
+      const [sh, sm] = startTime.split(":").map(Number);
+      const [eh, em] = endTime.split(":").map(Number);
+      if (eh * 60 + em <= sh * 60 + sm) {
+        return res
+          .status(422)
+          .json({ message: "endTime must be after startTime." });
+      }
+    } else if (scheduleType === "hours_target") {
+      if (!targetHoursPerDay) {
+        return res.status(422).json({
+          message: "targetHoursPerDay is required for an hours-based shift.",
+        });
+      }
     }
 
     const shift = await dbCreateShift(req.user.companyId, {
       name,
       description,
-      startTime,
-      endTime,
+      scheduleType,
+      // Only persist the fields relevant to the chosen schedule type —
+      // the other side is explicitly nulled so a shift can't end up with
+      // stale start/end times AND a target hour count at once.
+      startTime: scheduleType === "fixed" ? startTime : null,
+      endTime: scheduleType === "fixed" ? endTime : null,
       days,
+      targetHoursPerDay:
+        scheduleType === "hours_target" ? Number(targetHoursPerDay) : null,
+      graceMinutesBefore:
+        scheduleType === "fixed" ? Number(graceMinutesBefore ?? 30) : null,
+      lateGraceMinutes:
+        scheduleType === "fixed" ? Number(lateGraceMinutes ?? 15) : null,
     });
 
     return res.status(201).json({ message: "Shift created.", shift });
@@ -671,13 +822,29 @@ export async function createShift(req, res) {
 
 // ══════════════════════════════════════════════════════════════
 // PUT /api/attendance/shifts/:id   [HR]
-// Body: { name?, description?, startTime?, endTime?, days?, isActive? }
+// Body: { name?, description?, scheduleType?, startTime?, endTime?, days?,
+//         isActive?, targetHoursPerDay?, graceMinutesBefore?, lateGraceMinutes? }
+//
+// scheduleType, if omitted, stays whatever the shift already had — so a
+// caller that only wants to rename a shift or toggle isActive doesn't
+// need to resend the whole schedule.
 // ══════════════════════════════════════════════════════════════
 export async function updateShift(req, res) {
   if (handleValidationErrors(req, res)) return;
 
   const { id: shiftId } = req.params;
-  const { name, description, startTime, endTime, days, isActive } = req.body;
+  const {
+    name,
+    description,
+    scheduleType,
+    startTime,
+    endTime,
+    days,
+    isActive,
+    targetHoursPerDay,
+    graceMinutesBefore,
+    lateGraceMinutes,
+  } = req.body;
 
   try {
     const existing = await getShiftById(shiftId, req.user.companyId);
@@ -685,28 +852,101 @@ export async function updateShift(req, res) {
       return res.status(404).json({ message: "Shift not found." });
     }
 
-    if (startTime && endTime) {
-      const [sh, sm] = startTime.split(":").map(Number);
-      const [eh, em] = endTime.split(":").map(Number);
+    const effectiveType = scheduleType ?? existing.schedule_type ?? "fixed";
+
+    let effectiveStart = null;
+    let effectiveEnd = null;
+    let effectiveTarget = null;
+    let effectiveGraceBefore = null;
+    let effectiveLateGrace = null;
+
+    if (effectiveType === "fixed") {
+      effectiveStart = startTime ?? existing.start_time;
+      effectiveEnd = endTime ?? existing.end_time;
+
+      if (!effectiveStart || !effectiveEnd) {
+        return res.status(422).json({
+          message: "startTime and endTime are required for a fixed shift.",
+        });
+      }
+
+      const [sh, sm] = String(effectiveStart).slice(0, 5).split(":").map(Number);
+      const [eh, em] = String(effectiveEnd).slice(0, 5).split(":").map(Number);
       if (eh * 60 + em <= sh * 60 + sm) {
         return res
           .status(422)
           .json({ message: "endTime must be after startTime." });
+      }
+
+      effectiveGraceBefore = Number(
+        graceMinutesBefore ?? existing.grace_minutes_before ?? 30,
+      );
+      effectiveLateGrace = Number(
+        lateGraceMinutes ?? existing.late_grace_minutes ?? 15,
+      );
+    } else if (effectiveType === "hours_target") {
+      effectiveTarget = Number(
+        targetHoursPerDay ?? existing.target_hours_per_day,
+      );
+      if (!effectiveTarget) {
+        return res.status(422).json({
+          message: "targetHoursPerDay is required for an hours-based shift.",
+        });
       }
     }
 
     const updated = await dbUpdateShift(shiftId, req.user.companyId, {
       name,
       description,
-      startTime,
-      endTime,
       days,
       isActive,
+      scheduleType: effectiveType,
+      startTime: effectiveStart,
+      endTime: effectiveEnd,
+      targetHoursPerDay: effectiveTarget,
+      graceMinutesBefore: effectiveGraceBefore,
+      lateGraceMinutes: effectiveLateGrace,
     });
 
     return res.status(200).json({ message: "Shift updated.", shift: updated });
   } catch (err) {
     console.error("updateShift error:", err);
+    return res.status(500).json({ message: "Server error." });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// DELETE /api/attendance/shifts/:id   [HR]
+// ══════════════════════════════════════════════════════════════
+export async function deleteShift(req, res) {
+  try {
+    const { id: shiftId } = req.params;
+
+    const existing = await getShiftById(shiftId, req.user.companyId);
+    if (!existing) {
+      return res.status(404).json({ message: "Shift not found." });
+    }
+
+    // Optional: prevent deleting a shift that is actively assigned to employees
+    const assigned = await db.query(
+      `SELECT COUNT(*) FROM employees WHERE shift_id = $1 AND company_id = $2`,
+      [shiftId, req.user.companyId]
+    );
+    const count = parseInt(assigned.rows[0].count, 10);
+    if (count > 0) {
+      return res.status(409).json({
+        message: `Cannot delete — this shift is assigned to ${count} employee(s). Reassign them first.`,
+      });
+    }
+
+    await db.query(
+      `DELETE FROM shifts WHERE id = $1 AND company_id = $2`,
+      [shiftId, req.user.companyId]
+    );
+
+    return res.status(200).json({ message: "Shift deleted." });
+  } catch (err) {
+    console.error("deleteShift error:", err);
     return res.status(500).json({ message: "Server error." });
   }
 }

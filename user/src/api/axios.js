@@ -5,10 +5,14 @@
 import axios from "axios";
 
 // ─── Base URL ────────────────────────────────────────────────
-const BASE_URL =
+// const BASE_URL =
+  // import.meta.env.MODE === "development"
+  //   ? "http://localhost:5000/api"
+  //   : "https://bantahr.onrender.com/api";
+  const BASE_URL =
   import.meta.env.MODE === "development"
     ? "http://localhost:5000/api"
-    : "https://bantahr.onrender.com/api";
+    : "https://hriscloud.onrender.com/api";
 
 // ─── Axios Instance ──────────────────────────────────────────
 const API = axios.create({
