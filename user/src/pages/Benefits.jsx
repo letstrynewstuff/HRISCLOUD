@@ -46,7 +46,7 @@ const BENEFIT_ICONS = {
   insurance: { icon: Heart, color: C.danger, bg: C.dangerLight },
   allowance: { icon: TrendingUp, color: C.success, bg: C.successLight },
   pension: { icon: Award, color: C.primary, bg: C.primaryLight },
-  health: { icon: Shield, color: "#2563EB", bg: "#DBEAFE" },
+  health: { icon: Shield, color: C.primary, bg: C.primaryTint },
   custom: { icon: FileText, color: C.accent, bg: C.accentLight },
 };
 const getBenefitIcon = (type) =>
@@ -89,7 +89,7 @@ function Toast({ msg, type, onDone }) {
       className="fixed bottom-8 left-1/2 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
       style={{
         background: C.navy,
-        boxShadow: "0 12px 40px rgba(15,23,42,0.35)",
+        boxShadow: C.shadow.lift,
         minWidth: 260,
       }}
     >
@@ -215,7 +215,6 @@ export default function BenefitsPage() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <style>{`@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}`}</style>
@@ -241,7 +240,7 @@ export default function BenefitsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -275,7 +274,7 @@ export default function BenefitsPage() {
               <Motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={load}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -284,7 +283,7 @@ export default function BenefitsPage() {
                 <RefreshCw size={14} color={C.textSecondary} />
               </Motion.button>
               <Motion.button
-                className="relative p-2 rounded-xl"
+                className="relative p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -296,7 +295,7 @@ export default function BenefitsPage() {
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
                   style={{
-                    background: "linear-gradient(135deg,#4F46E5,#06B6D4)",
+                    background: "linear-gradient(135deg,#4F46E5,#6366F1)",
                   }}
                 >
                   {employee.initials}
@@ -313,7 +312,7 @@ export default function BenefitsPage() {
               className="rounded-2xl p-6 text-white relative overflow-hidden"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="absolute inset-0 opacity-10">
@@ -332,8 +331,7 @@ export default function BenefitsPage() {
                 </div>
                 <div>
                   <h1
-                    className="text-2xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-2xl "
                   >
                     Your Benefits
                   </h1>
@@ -380,7 +378,7 @@ export default function BenefitsPage() {
                   </div>
                   <div>
                     <h2
-                      className="font-bold text-base"
+                      className="text-base"
                       style={{ color: C.textPrimary }}
                     >
                       {insuranceBenefit.benefit_name}
@@ -472,14 +470,14 @@ export default function BenefitsPage() {
                   <div className="flex gap-3 pt-4">
                     <Motion.button
                       whileHover={{ scale: 1.02 }}
-                      className="flex-1 py-3 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                      className="flex-1 py-3 rounded-full text-sm font-semibold flex items-center justify-center gap-2"
                       style={{ background: C.primary, color: "#fff" }}
                     >
                       <Phone size={15} /> Contact Provider
                     </Motion.button>
                     <Motion.button
                       whileHover={{ scale: 1.02 }}
-                      className="flex-1 py-3 rounded-xl text-sm font-semibold border"
+                      className="flex-1 py-3 rounded-full text-sm font-semibold border"
                       style={{ borderColor: C.border, color: C.textPrimary }}
                     >
                       View Full Details

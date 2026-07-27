@@ -6,6 +6,7 @@
 //   • Imported the `Plus` icon from lucide-react.
 
 import { useState, useEffect } from "react";
+import C from "../styles/colors";
 import { useNavigate } from "react-router-dom";
 // import SideNavbar from "../components/SideNavbar";
 import { motion as Motion, AnimatePresence } from "framer-motion";
@@ -30,27 +31,6 @@ import { getEmployees } from "../api/service/employeeApi";
 import { chatApi } from "../api/service/chatApi";
 import { useAuth } from "../components/useAuth";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryDark: "#3730A3",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -170,7 +150,7 @@ export default function TeamPage() {
         </p>
         <button
           onClick={fetchData}
-          className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl"
+          className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full"
           style={{ background: C.primaryLight, color: C.primary }}
         >
           <RefreshCw size={13} /> Retry
@@ -185,7 +165,6 @@ export default function TeamPage() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -205,7 +184,7 @@ export default function TeamPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -244,7 +223,7 @@ export default function TeamPage() {
                   onClick={() =>
                     navigate("/chat", { state: { openCreateChannel: true } })
                   }
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold mr-2"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mr-2"
                   style={{
                     background: C.surface,
                     color: C.primary,
@@ -259,13 +238,13 @@ export default function TeamPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate("/chat")}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                 style={{ background: C.primary, color: "#fff" }}
               >
                 <MessageSquare size={13} /> Team Chat
               </Motion.button>
               <Motion.button
-                className="relative p-2 rounded-xl"
+                className="relative p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -276,7 +255,7 @@ export default function TeamPage() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#6366F1,#06B6D4)",
+                  background: "linear-gradient(135deg,#6366F1,#4338CA)",
                 }}
               >
                 {EMPLOYEE.initials}
@@ -291,11 +270,10 @@ export default function TeamPage() {
               initial="hidden"
               animate="visible"
               className="rounded-2xl overflow-hidden p-8"
-              style={{ background: "linear-gradient(135deg,#1E1B4B,#312E81)" }}
+              style={{ background: C.gradient.hero }}
             >
               <h1
-                className="text-white text-3xl font-bold"
-                style={{ fontFamily: "Sora,sans-serif" }}
+                className="text-white text-3xl "
               >
                 My Team
               </h1>
@@ -354,7 +332,7 @@ export default function TeamPage() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => navigate("/chat")}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
                       style={{ background: C.primary, color: "#fff" }}
                     >
                       Open Chat <ChevronRight size={12} />
@@ -382,7 +360,7 @@ export default function TeamPage() {
                       <div
                         className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl font-bold"
                         style={{
-                          background: "linear-gradient(135deg,#4F46E5,#8B5CF6)",
+                          background: "linear-gradient(135deg,#4F46E5,#6366F1)",
                         }}
                       >
                         {lineManager.first_name?.[0]}
@@ -409,7 +387,7 @@ export default function TeamPage() {
                         <Motion.button
                           whileHover={{ scale: 1.05 }}
                           onClick={() => openDMWith(lineManager.id)}
-                          className="px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2"
+                          className="px-4 py-2.5 rounded-full text-sm font-medium flex items-center gap-2"
                           style={{
                             background: C.primaryLight,
                             color: C.primary,
@@ -525,7 +503,7 @@ export default function TeamPage() {
                               <Motion.button
                                 whileHover={{ scale: 1.02 }}
                                 onClick={() => openDMWith(member.id)}
-                                className="flex-1 py-2 text-xs font-medium rounded-xl flex items-center justify-center gap-1.5"
+                                className="flex-1 py-2 text-xs font-medium rounded-full flex items-center justify-center gap-1.5"
                                 style={{
                                   background: C.primaryLight,
                                   color: C.primary,
@@ -592,7 +570,7 @@ export default function TeamPage() {
                           {person.return_date && (
                             <p
                               className="text-xs font-medium"
-                              style={{ color: "#92400E" }}
+                              style={{ color: C.warningInk }}
                             >
                               Returns{" "}
                               {new Date(person.return_date).toLocaleDateString(

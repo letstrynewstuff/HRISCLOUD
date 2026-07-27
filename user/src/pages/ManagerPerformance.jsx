@@ -48,19 +48,19 @@ const TABS = [
 ];
 
 const RATING_MAP = {
-  Outstanding:          { color: "#059669", bg: "#D1FAE5" },
-  "High Performer":     { color: "#2563EB", bg: "#DBEAFE" },
-  "Meets Expectations": { color: "#D97706", bg: "#FEF3C7" },
-  "Needs Improvement":  { color: "#DC2626", bg: "#FEE2E2" },
-  Underperforming:      { color: "#7C3AED", bg: "#F3E8FF" },
+  Outstanding:          { color: "#047857", bg: C.successLight },
+  "High Performer":     { color: C.primary, bg: C.primaryTint },
+  "Meets Expectations": { color: "#92400E", bg: C.warningLight },
+  "Needs Improvement":  { color: "#B91C1C", bg: C.dangerLight },
+  Underperforming:      { color: C.primary, bg: C.primaryTint },
 };
 
 const APPRAISAL_STATUS = {
-  draft:     { label: "Draft",        color: "#64748B", bg: "#F1F5F9"  },
-  submitted: { label: "Under Review", color: "#D97706", bg: "#FEF3C7"  },
-  hr_scored: { label: "HR Scored",    color: "#7C3AED", bg: "#F3E8FF"  },
-  completed: { label: "Completed",    color: "#059669", bg: "#D1FAE5"  },
-  rejected:  { label: "Returned",     color: "#DC2626", bg: "#FEE2E2"  },
+  draft:     { label: "Draft",        color: C.textSecondary, bg: C.bgMid  },
+  submitted: { label: "Under Review", color: "#92400E", bg: C.warningLight  },
+  hr_scored: { label: "HR Scored",    color: C.primary, bg: C.primaryTint  },
+  completed: { label: "Completed",    color: "#047857", bg: C.successLight  },
+  rejected:  { label: "Returned",     color: "#B91C1C", bg: C.dangerLight  },
 };
 
 const CRITERIA_DEFAULTS = [
@@ -122,7 +122,7 @@ function Chip({ label, color, bg }) {
 function Card({ children, className = "" }) {
   return (
     <div className={`rounded-2xl ${className}`}
-      style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", boxShadow: "0 2px 8px rgba(15,23,42,0.04)" }}>
+      style={{ background: C.surface, border: "1px solid #E4E7F0", boxShadow: C.shadow.card }}>
       {children}
     </div>
   );
@@ -130,14 +130,14 @@ function Card({ children, className = "" }) {
 
 function CardHead({ icon: Icon, title, sub, color, bg, action }) {
   return (
-    <div className="flex items-center gap-3 px-5 py-4" style={{ borderBottom: "1px solid #E2E8F0" }}>
+    <div className="flex items-center gap-3 px-5 py-4" style={{ borderBottom: "1px solid #E4E7F0" }}>
       <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
         style={{ background: bg ?? "#EEF2FF" }}>
         <Icon size={15} color={color ?? "#4F46E5"} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-bold text-sm" style={{ color: "#0F172A" }}>{title}</p>
-        {sub && <p className="text-[11px]" style={{ color: "#94A3B8" }}>{sub}</p>}
+        <p className="font-bold text-sm" style={{ color: C.textPrimary }}>{title}</p>
+        {sub && <p className="text-[11px]" style={{ color: C.textMuted }}>{sub}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>
@@ -146,12 +146,12 @@ function CardHead({ icon: Icon, title, sub, color, bg, action }) {
 
 function Toast({ msg, type, onDone }) {
   useEffect(() => { const t = setTimeout(onDone, 3500); return () => clearTimeout(t); }, [onDone]);
-  const color = type === "success" ? "#10B981" : "#EF4444";
+  const color = type === "success" ? "#10B981" : C.danger;
   return (
     <Motion.div
       initial={{ opacity: 0, y: 40, x: "-50%" }} animate={{ opacity: 1, y: 0, x: "-50%" }} exit={{ opacity: 0, y: 40, x: "-50%" }}
       className="fixed bottom-8 left-1/2 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
-      style={{ background: "#1E293B", boxShadow: "0 12px 40px rgba(15,23,42,0.35)", minWidth: 260 }}>
+      style={{ background: "#334155", boxShadow: C.shadow.lift, minWidth: 260 }}>
       {type === "success"
         ? <CheckCircle2 size={16} color={color} />
         : <AlertCircle size={16} color={color} />}
@@ -164,11 +164,11 @@ function ScoreRing({ score, size = 120 }) {
   const r    = (size - 12) / 2;
   const circ = 2 * Math.PI * r;
   const dash = ((score ?? 0) / 100) * circ;
-  const color = score >= 85 ? "#10B981" : score >= 60 ? "#4F46E5" : score >= 40 ? "#D97706" : "#DC2626";
+  const color = score >= 85 ? "#10B981" : score >= 60 ? "#4F46E5" : score >= 40 ? "#92400E" : "#B91C1C";
   return (
     <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" strokeWidth={10} stroke="#E2E8F0" />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" strokeWidth={10} stroke={C.border} />
         <Motion.circle
           cx={size/2} cy={size/2} r={r} fill="none" strokeWidth={10} stroke={color}
           strokeLinecap="round" strokeDasharray={`${circ}`}
@@ -178,8 +178,8 @@ function ScoreRing({ score, size = 120 }) {
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-3xl font-black" style={{ color: "#0F172A", fontFamily: "Sora,sans-serif" }}>{score ?? "—"}</span>
-        <span className="text-[10px] font-semibold" style={{ color: "#94A3B8" }}>/ 100</span>
+        <span className="text-3xl font-black" style={{ color: C.textPrimary }}>{score ?? "—"}</span>
+        <span className="text-[10px] font-semibold" style={{ color: C.textMuted }}>/ 100</span>
       </div>
     </div>
   );
@@ -199,7 +199,7 @@ function TrendLine({ data }) {
   const last = scores.at(-1);
   const prev = scores.at(-2);
   const trend = prev == null ? "new" : last > prev + 2 ? "up" : last < prev - 2 ? "down" : "stable";
-  const color = trend === "up" ? "#10B981" : trend === "down" ? "#DC2626" : "#4F46E5";
+  const color = trend === "up" ? "#10B981" : trend === "down" ? "#B91C1C" : C.primary;
   return (
     <div className="flex items-center gap-3">
       <svg width={W} height={H} style={{ overflow: "visible" }}>
@@ -211,9 +211,9 @@ function TrendLine({ data }) {
         })}
       </svg>
       <div className="flex items-center gap-1">
-        {trend === "up"     && <ArrowUpRight size={16} color="#10B981" />}
-        {trend === "down"   && <ArrowDownRight size={16} color="#DC2626" />}
-        {trend === "stable" && <Minus size={16} color="#94A3B8" />}
+        {trend === "up"     && <ArrowUpRight size={16} color={C.success} />}
+        {trend === "down"   && <ArrowDownRight size={16} color="#B91C1C" />}
+        {trend === "stable" && <Minus size={16} color={C.textMuted} />}
         <span className="text-xs font-semibold" style={{ color }}>
           {trend === "new" ? "First score" : trend === "stable" ? "Stable"
             : `${trend === "up" ? "+" : ""}${(last - (prev ?? last)).toFixed(0)}`}
@@ -224,14 +224,14 @@ function TrendLine({ data }) {
 }
 
 function GoalBar({ progress }) {
-  const color = progress >= 100 ? "#10B981" : progress >= 60 ? "#4F46E5" : progress >= 30 ? "#D97706" : "#DC2626";
+  const color = progress >= 100 ? "#10B981" : progress >= 60 ? "#4F46E5" : progress >= 30 ? "#92400E" : "#B91C1C";
   return (
     <div>
       <div className="flex justify-between mb-1">
-        <span className="text-xs" style={{ color: "#64748B" }}>{progress}% complete</span>
+        <span className="text-xs" style={{ color: C.textSecondary }}>{progress}% complete</span>
         <span className="text-xs font-bold" style={{ color }}>{progress}%</span>
       </div>
-      <div className="h-2 rounded-full overflow-hidden" style={{ background: "#F1F5F9" }}>
+      <div className="h-2 rounded-full overflow-hidden" style={{ background: C.bgMid }}>
         <Motion.div className="h-full rounded-full" initial={{ width: 0 }} animate={{ width: `${progress}%` }}
           transition={{ duration: 0.8, ease: "easeOut" }} style={{ background: color }} />
       </div>
@@ -332,9 +332,9 @@ function LiveScorePreview({ ratings }) {
   if (ratedCount === 0) {
     return (
       <div className="rounded-xl p-4 flex items-center gap-3"
-        style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
-        <Star size={16} color="#94A3B8" />
-        <p className="text-xs" style={{ color: "#94A3B8" }}>
+        style={{ background: C.surfaceAlt, border: "1px solid #E4E7F0" }}>
+        <Star size={16} color={C.textMuted} />
+        <p className="text-xs" style={{ color: C.textMuted }}>
           Rate the criteria above to see the live appraisal score.
         </p>
       </div>
@@ -342,40 +342,40 @@ function LiveScorePreview({ ratings }) {
   }
 
   const pct = Math.round((ratedCount / totalCount) * 100);
-  const barColor = appraisalScore >= 75 ? "#10B981" : appraisalScore >= 50 ? "#4F46E5" : appraisalScore >= 30 ? "#D97706" : "#DC2626";
+  const barColor = appraisalScore >= 75 ? "#10B981" : appraisalScore >= 50 ? "#4F46E5" : appraisalScore >= 30 ? "#92400E" : "#B91C1C";
 
   return (
-    <div className="rounded-xl p-4 space-y-3" style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
+    <div className="rounded-xl p-4 space-y-3" style={{ background: C.surfaceAlt, border: "1px solid #E4E7F0" }}>
       <div className="flex items-center justify-between">
-        <p className="text-xs font-bold" style={{ color: "#0F172A" }}>Live Appraisal Score</p>
-        <p className="text-[10px]" style={{ color: "#94A3B8" }}>{ratedCount}/{totalCount} criteria rated</p>
+        <p className="text-xs font-bold" style={{ color: C.textPrimary }}>Live Appraisal Score</p>
+        <p className="text-[10px]" style={{ color: C.textMuted }}>{ratedCount}/{totalCount} criteria rated</p>
       </div>
 
       {/* Big score */}
       <div className="flex items-center gap-4">
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center font-black text-2xl shrink-0"
-          style={{ background: ratingCfg?.bg ?? "#F1F5F9", color: ratingCfg?.color ?? "#64748B", fontFamily: "Sora,sans-serif" }}>
+          style={{ background: ratingCfg?.bg ?? "#F0F2F8", color: ratingCfg?.color ?? "#5F6D7E" }}>
           {appraisalScore ?? "—"}
         </div>
         <div className="flex-1">
           {ratingLabel && (
             <Chip label={ratingLabel} color={ratingCfg?.color} bg={ratingCfg?.bg} />
           )}
-          <div className="mt-2 h-2 rounded-full overflow-hidden" style={{ background: "#E2E8F0" }}>
+          <div className="mt-2 h-2 rounded-full overflow-hidden" style={{ background: C.border }}>
             <div className="h-full rounded-full transition-all duration-500"
               style={{ width: `${appraisalScore ?? 0}%`, background: barColor }} />
           </div>
-          <p className="text-[10px] mt-1" style={{ color: "#94A3B8" }}>
-            {pct < 100 ? `${100 - pct}% of criteria still unrated` : "All criteria rated ✓"}
+          <p className="text-[10px] mt-1" style={{ color: C.textMuted }}>
+            {pct < 100 ? `${100 - pct}% of criteria still unrated` : "All criteria rated"}
           </p>
         </div>
       </div>
 
       {/* Performance score impact */}
       {appraisalContribution != null && (
-        <div className="rounded-lg p-3" style={{ background: "#EEF2FF", border: "1px solid #C7D2FE" }}>
-          <p className="text-[10px] font-bold mb-1.5" style={{ color: "#4F46E5" }}>
-            📊 Impact on Performance Score
+        <div className="rounded-lg p-3" style={{ background: C.primaryLight, border: "1px solid #C7D2FE" }}>
+          <p className="text-[10px] font-bold mb-1.5" style={{ color: C.primary }}>
+ Impact on Performance Score
           </p>
           <div className="grid grid-cols-4 gap-1.5 text-center">
             {[
@@ -385,14 +385,14 @@ function LiveScorePreview({ ratings }) {
               { label: "Appraisal",  pct: "20%", note: `~${appraisalContribution}pts`, highlight: true },
             ].map((s) => (
               <div key={s.label} className="rounded-lg p-1.5"
-                style={{ background: s.highlight ? "#4F46E5" : "white", border: `1px solid ${s.highlight ? "#4F46E5" : "#E2E8F0"}` }}>
-                <p className="text-[9px] font-bold" style={{ color: s.highlight ? "white" : "#4F46E5" }}>{s.pct}</p>
-                <p className="text-[8px]" style={{ color: s.highlight ? "#C7D2FE" : "#94A3B8" }}>{s.label}</p>
-                <p className="text-[8px] font-semibold" style={{ color: s.highlight ? "white" : "#64748B" }}>{s.note}</p>
+                style={{ background: s.highlight ? "#4F46E5" : "white", border: `1px solid ${s.highlight ? "#4F46E5" : C.border}` }}>
+                <p className="text-[9px] font-bold" style={{ color: s.highlight ? "white" : C.primary }}>{s.pct}</p>
+                <p className="text-[8px]" style={{ color: s.highlight ? "#C7D2FE" : C.textMuted }}>{s.label}</p>
+                <p className="text-[8px] font-semibold" style={{ color: s.highlight ? "white" : C.textSecondary }}>{s.note}</p>
               </div>
             ))}
           </div>
-          <p className="text-[9px] mt-2" style={{ color: "#6366F1" }}>
+          <p className="text-[9px] mt-2" style={{ color: C.accent }}>
             This appraisal contributes ~{appraisalContribution} points to the employee's final performance score once HR finalises it.
           </p>
         </div>
@@ -404,9 +404,9 @@ function LiveScorePreview({ ratings }) {
           const contribution = Math.round((r.score / (r.maxScore ?? 5)) * 100 * (r.weight / 100));
           return (
             <div key={i} className="flex items-center gap-2">
-              <p className="text-[10px] flex-1 truncate" style={{ color: "#475569" }}>{r.label}</p>
+              <p className="text-[10px] flex-1 truncate" style={{ color: "#334155" }}>{r.label}</p>
               <StarDisplay score={r.score} max={r.maxScore ?? 5} />
-              <span className="text-[10px] font-bold w-10 text-right shrink-0" style={{ color: "#4F46E5" }}>
+              <span className="text-[10px] font-bold w-10 text-right shrink-0" style={{ color: C.primary }}>
                 +{contribution}
               </span>
             </div>
@@ -437,25 +437,25 @@ function AppraisalDetailModal({ appraisal, onClose }) {
         initial={{ scale: 0.93, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.93, y: 20 }}
         transition={{ type: "spring", stiffness: 260, damping: 24 }}
         className="w-full max-w-lg rounded-2xl overflow-hidden max-h-[88vh] flex flex-col"
-        style={{ background: "#FFFFFF", boxShadow: "0 24px 64px rgba(15,23,42,0.2)" }}
+        style={{ background: C.surface, boxShadow: C.shadow.lift }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-5 py-4 flex items-center justify-between shrink-0" style={{ borderBottom: "1px solid #E2E8F0" }}>
+        <div className="px-5 py-4 flex items-center justify-between shrink-0" style={{ borderBottom: "1px solid #E4E7F0" }}>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "#EEF2FF" }}>
-              <ClipboardList size={14} color="#4F46E5" />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: C.primaryLight }}>
+              <ClipboardList size={14} color={C.primary} />
             </div>
             <div>
-              <p className="font-bold text-sm" style={{ color: "#0F172A" }}>
+              <p className="font-bold text-sm" style={{ color: C.textPrimary }}>
                 {empName} — {appraisal.cycleName ?? appraisal.period}
               </p>
-              <p className="text-[10px]" style={{ color: "#94A3B8" }}>Period: {appraisal.period}</p>
+              <p className="text-[10px]" style={{ color: C.textMuted }}>Period: {appraisal.period}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <Chip label={statusCfg.label} color={statusCfg.color} bg={statusCfg.bg} />
-            <button onClick={onClose} className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ background: "#F1F5F9" }}>
-              <X size={13} color="#94A3B8" />
+            <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: C.bgMid }}>
+              <X size={13} color={C.textMuted} />
             </button>
           </div>
         </div>
@@ -465,12 +465,12 @@ function AppraisalDetailModal({ appraisal, onClose }) {
           {(appraisal.appraisalScore != null || appraisal.managerOverall != null) && (
             <div className="grid grid-cols-3 gap-3">
               {[
-                { label: "Your Score",  value: appraisal.managerOverall  != null ? Math.round(appraisal.managerOverall)  : "—", color: "#4F46E5", bg: "#EEF2FF"  },
-                { label: "HR Score",    value: appraisal.hrOverall        != null ? Math.round(appraisal.hrOverall)        : "—", color: "#7C3AED", bg: "#F3E8FF"  },
-                { label: "Final Score", value: appraisal.appraisalScore   != null ? Math.round(appraisal.appraisalScore)   : "—", color: "#059669", bg: "#D1FAE5"  },
+                { label: "Your Score",  value: appraisal.managerOverall  != null ? Math.round(appraisal.managerOverall)  : "—", color: C.primary, bg: C.primaryLight  },
+                { label: "HR Score",    value: appraisal.hrOverall        != null ? Math.round(appraisal.hrOverall)        : "—", color: C.primary, bg: C.primaryTint  },
+                { label: "Final Score", value: appraisal.appraisalScore   != null ? Math.round(appraisal.appraisalScore)   : "—", color: "#047857", bg: C.successLight  },
               ].map((s) => (
                 <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: s.bg }}>
-                  <p className="text-xl font-black" style={{ color: s.color, fontFamily: "Sora,sans-serif" }}>{s.value}</p>
+                  <p className="text-xl font-black" style={{ color: s.color }}>{s.value}</p>
                   <p className="text-[10px] font-semibold mt-0.5" style={{ color: s.color }}>{s.label}</p>
                 </div>
               ))}
@@ -480,18 +480,18 @@ function AppraisalDetailModal({ appraisal, onClose }) {
           {/* Your ratings breakdown */}
           {Array.isArray(appraisal.managerRatings) && appraisal.managerRatings.length > 0 && (
             <div>
-              <p className="text-xs font-bold mb-2" style={{ color: "#94A3B8" }}>Your Ratings</p>
-              <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #E2E8F0" }}>
+              <p className="text-xs font-bold mb-2" style={{ color: C.textMuted }}>Your Ratings</p>
+              <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #E4E7F0" }}>
                 {appraisal.managerRatings.map((r, i) => (
                   <div key={i} className="flex items-center justify-between px-4 py-3"
-                    style={{ background: i % 2 === 0 ? "#FFFFFF" : "#F8FAFC", borderBottom: i < appraisal.managerRatings.length - 1 ? "1px solid #E2E8F0" : "none" }}>
+                    style={{ background: i % 2 === 0 ? "#FFFFFF" : C.surfaceAlt, borderBottom: i < appraisal.managerRatings.length - 1 ? "1px solid #E4E7F0" : "none" }}>
                     <div>
-                      <p className="text-xs font-semibold" style={{ color: "#0F172A" }}>{r.label}</p>
-                      {r.comment && <p className="text-[10px] mt-0.5" style={{ color: "#94A3B8" }}>{r.comment}</p>}
+                      <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{r.label}</p>
+                      {r.comment && <p className="text-[10px] mt-0.5" style={{ color: C.textMuted }}>{r.comment}</p>}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
                       <StarDisplay score={r.score} max={r.maxScore ?? 5} />
-                      <span className="text-xs font-bold w-8 text-right" style={{ color: "#4F46E5" }}>{r.score}/{r.maxScore ?? 5}</span>
+                      <span className="text-xs font-bold w-8 text-right" style={{ color: C.primary }}>{r.score}/{r.maxScore ?? 5}</span>
                     </div>
                   </div>
                 ))}
@@ -500,30 +500,30 @@ function AppraisalDetailModal({ appraisal, onClose }) {
           )}
 
           {appraisal.managerFeedback && (
-            <div className="rounded-xl p-4" style={{ background: "#EEF2FF", border: "1px solid #C7D2FE" }}>
-              <p className="text-xs font-bold mb-1" style={{ color: "#4F46E5" }}>Your Feedback</p>
-              <p className="text-xs leading-relaxed" style={{ color: "#0F172A" }}>{appraisal.managerFeedback}</p>
+            <div className="rounded-xl p-4" style={{ background: C.primaryLight, border: "1px solid #C7D2FE" }}>
+              <p className="text-xs font-bold mb-1" style={{ color: C.primary }}>Your Feedback</p>
+              <p className="text-xs leading-relaxed" style={{ color: C.textPrimary }}>{appraisal.managerFeedback}</p>
             </div>
           )}
 
           {appraisal.status === "completed" && appraisal.hrFeedback && (
-            <div className="rounded-xl p-4" style={{ background: "#F3E8FF", border: "1px solid #DDD6FE" }}>
-              <p className="text-xs font-bold mb-1" style={{ color: "#7C3AED" }}>HR Feedback</p>
-              <p className="text-xs leading-relaxed" style={{ color: "#0F172A" }}>{appraisal.hrFeedback}</p>
+            <div className="rounded-xl p-4" style={{ background: C.primaryTint, border: "1px solid #C7D2FE" }}>
+              <p className="text-xs font-bold mb-1" style={{ color: C.primary }}>HR Feedback</p>
+              <p className="text-xs leading-relaxed" style={{ color: C.textPrimary }}>{appraisal.hrFeedback}</p>
             </div>
           )}
 
           {appraisal.status === "rejected" && appraisal.hrFeedback && (
-            <div className="rounded-xl p-4" style={{ background: "#FEE2E2", border: "1px solid #FECACA" }}>
-              <p className="text-xs font-bold mb-1" style={{ color: "#DC2626" }}>Returned — HR Notes</p>
-              <p className="text-xs leading-relaxed" style={{ color: "#0F172A" }}>{appraisal.hrFeedback}</p>
+            <div className="rounded-xl p-4" style={{ background: C.dangerLight, border: "1px solid #FEE2E2" }}>
+              <p className="text-xs font-bold mb-1" style={{ color: "#B91C1C" }}>Returned — HR Notes</p>
+              <p className="text-xs leading-relaxed" style={{ color: C.textPrimary }}>{appraisal.hrFeedback}</p>
             </div>
           )}
 
           {["submitted", "hr_scored"].includes(appraisal.status) && (
-            <div className="rounded-xl p-4 flex items-center gap-3" style={{ background: "#FEF3C7", border: "1px solid #FDE68A" }}>
-              <Clock size={14} color="#D97706" className="shrink-0" />
-              <p className="text-xs" style={{ color: "#92400E" }}>
+            <div className="rounded-xl p-4 flex items-center gap-3" style={{ background: C.warningLight, border: "1px solid #FEF3C7" }}>
+              <Clock size={14} color="#92400E" className="shrink-0" />
+              <p className="text-xs" style={{ color: C.warningInk }}>
                 {appraisal.status === "submitted"
                   ? "Appraisal is in the HR review queue. You'll be notified when HR completes their review."
                   : "HR has completed their scoring. Awaiting final sign-off."}
@@ -533,8 +533,8 @@ function AppraisalDetailModal({ appraisal, onClose }) {
         </div>
 
         <div className="px-5 pb-5 shrink-0">
-          <button onClick={onClose} className="w-full py-2.5 rounded-xl text-sm font-semibold"
-            style={{ background: "#F1F5F9", border: "1px solid #E2E8F0", color: "#64748B" }}>
+          <button onClick={onClose} className="w-full py-2.5 rounded-full text-sm font-semibold"
+            style={{ background: C.bgMid, border: "1px solid #E4E7F0", color: C.textSecondary }}>
             Close
           </button>
         </div>
@@ -634,37 +634,37 @@ function CreateAppraisalModal({ deptEmployees, templates, editAppraisal, onClose
         initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 260, damping: 24 }}
         className="relative w-full max-w-2xl rounded-2xl overflow-hidden max-h-[94vh] flex flex-col"
-        style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", boxShadow: "0 24px 64px rgba(15,23,42,0.25)" }}
+        style={{ background: C.surface, border: "1px solid #E4E7F0", boxShadow: C.shadow.lift }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #E2E8F0" }}>
+        <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ borderBottom: "1px solid #E4E7F0" }}>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "#EEF2FF" }}>
-              <ClipboardList size={14} color="#4F46E5" />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: C.primaryLight }}>
+              <ClipboardList size={14} color={C.primary} />
             </div>
             <div>
-              <p className="font-bold text-sm" style={{ color: "#0F172A" }}>{isEdit ? "Edit Appraisal" : "New Appraisal"}</p>
-              <p className="text-[10px]" style={{ color: "#94A3B8" }}>Rate · Feedback · Submit to HR</p>
+              <p className="font-bold text-sm" style={{ color: C.textPrimary }}>{isEdit ? "Edit Appraisal" : "New Appraisal"}</p>
+              <p className="text-[10px]" style={{ color: C.textMuted }}>Rate · Feedback · Submit to HR</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-7 h-7 rounded-xl flex items-center justify-center" style={{ background: "#F1F5F9" }}>
-            <X size={13} color="#94A3B8" />
+          <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: C.bgMid }}>
+            <X size={13} color={C.textMuted} />
           </button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
           {error && (
-            <div className="flex items-center gap-2 p-3 rounded-xl" style={{ background: "#FEE2E2" }}>
-              <AlertTriangle size={13} color="#DC2626" />
-              <p className="text-xs" style={{ color: "#DC2626" }}>{error}</p>
+            <div className="flex items-center gap-2 p-3 rounded-xl" style={{ background: C.dangerLight }}>
+              <AlertTriangle size={13} color="#B91C1C" />
+              <p className="text-xs" style={{ color: "#B91C1C" }}>{error}</p>
             </div>
           )}
 
           {/* Dept scope notice */}
-          <div className="flex items-center gap-2 p-3 rounded-xl" style={{ background: "#EEF2FF", border: "1px solid #C7D2FE" }}>
-            <Shield size={13} color="#4F46E5" className="shrink-0" />
-            <p className="text-xs" style={{ color: "#4F46E5" }}>
+          <div className="flex items-center gap-2 p-3 rounded-xl" style={{ background: C.primaryLight, border: "1px solid #C7D2FE" }}>
+            <Shield size={13} color={C.primary} className="shrink-0" />
+            <p className="text-xs" style={{ color: C.primary }}>
               You can only appraise employees in your own department.
             </p>
           </div>
@@ -672,13 +672,13 @@ function CreateAppraisalModal({ deptEmployees, templates, editAppraisal, onClose
           {/* Employee + Period row */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: "#0F172A" }}>
-                Employee <span style={{ color: "#DC2626" }}>*</span>
+              <label className="block text-xs font-semibold mb-1" style={{ color: C.textPrimary }}>
+                Employee <span style={{ color: "#B91C1C" }}>*</span>
               </label>
               <select
                 value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} disabled={isEdit}
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", color: "#0F172A", opacity: isEdit ? 0.6 : 1 }}>
+                style={{ background: C.surfaceAlt, border: "1.5px solid #E4E7F0", color: C.textPrimary, opacity: isEdit ? 0.6 : 1 }}>
                 <option value="">— Select employee —</option>
                 {deptEmployees.map((e) => (
                   <option key={e.id} value={e.id}>
@@ -688,29 +688,29 @@ function CreateAppraisalModal({ deptEmployees, templates, editAppraisal, onClose
                 ))}
               </select>
               {deptEmployees.length === 0 && (
-                <p className="text-[10px] mt-1" style={{ color: "#94A3B8" }}>No employees found in your department.</p>
+                <p className="text-[10px] mt-1" style={{ color: C.textMuted }}>No employees found in your department.</p>
               )}
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: "#0F172A" }}>
-                Period <span style={{ color: "#DC2626" }}>*</span>
+              <label className="block text-xs font-semibold mb-1" style={{ color: C.textPrimary }}>
+                Period <span style={{ color: "#B91C1C" }}>*</span>
               </label>
               <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", color: "#0F172A" }} />
+                style={{ background: C.surfaceAlt, border: "1.5px solid #E4E7F0", color: C.textPrimary }} />
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: "#0F172A" }}>Cycle Name (optional)</label>
+              <label className="block text-xs font-semibold mb-1" style={{ color: C.textPrimary }}>Cycle Name (optional)</label>
               <input value={cycleName} onChange={(e) => setCycleName(e.target.value)}
                 placeholder="e.g. H1 2025 Review"
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", color: "#0F172A" }} />
+                style={{ background: C.surfaceAlt, border: "1.5px solid #E4E7F0", color: C.textPrimary }} />
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: "#0F172A" }}>Template (optional)</label>
+              <label className="block text-xs font-semibold mb-1" style={{ color: C.textPrimary }}>Template (optional)</label>
               <select value={templateId} onChange={(e) => setTemplateId(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", color: "#0F172A" }}>
+                style={{ background: C.surfaceAlt, border: "1.5px solid #E4E7F0", color: C.textPrimary }}>
                 <option value="">— Default criteria —</option>
                 {templates.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
               </select>
@@ -720,20 +720,20 @@ function CreateAppraisalModal({ deptEmployees, templates, editAppraisal, onClose
           {/* ── CRITERIA WITH STAR PICKERS ── */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-xs font-bold" style={{ color: "#0F172A" }}>Performance Criteria</p>
-              <p className="text-[10px]" style={{ color: "#94A3B8" }}>
+              <p className="text-xs font-bold" style={{ color: C.textPrimary }}>Performance Criteria</p>
+              <p className="text-[10px]" style={{ color: C.textMuted }}>
                 Click stars to rate (1–5) · click again to clear
               </p>
             </div>
             <div className="space-y-3">
               {ratings.map((r, i) => (
                 <div key={i} className="rounded-xl p-4"
-                  style={{ background: r.score > 0 ? "#F8FAFF" : "#F8FAFC", border: `1.5px solid ${r.score > 0 ? "#C7D2FE" : "#E2E8F0"}` }}>
+                  style={{ background: r.score > 0 ? "#F7F8FC" : C.surfaceAlt, border: `1.5px solid ${r.score > 0 ? "#C7D2FE" : C.border}` }}>
                   <div className="flex items-start justify-between gap-4">
                     {/* Left: label + weight */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold" style={{ color: "#0F172A" }}>{r.label}</p>
-                      <p className="text-[10px]" style={{ color: "#94A3B8" }}>
+                      <p className="text-sm font-semibold" style={{ color: C.textPrimary }}>{r.label}</p>
+                      <p className="text-[10px]" style={{ color: C.textMuted }}>
                         Weight: {r.weight}% of appraisal score
                       </p>
                     </div>
@@ -758,7 +758,7 @@ function CreateAppraisalModal({ deptEmployees, templates, editAppraisal, onClose
                     onChange={(e) => setRating(i, "comment", e.target.value)}
                     placeholder={`Comment on ${r.label.toLowerCase()} (optional)…`}
                     className="mt-3 w-full px-3 py-1.5 rounded-lg text-xs outline-none"
-                    style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", color: "#0F172A" }}
+                    style={{ background: C.surface, border: "1px solid #E4E7F0", color: C.textPrimary }}
                   />
                 </div>
               ))}
@@ -770,37 +770,37 @@ function CreateAppraisalModal({ deptEmployees, templates, editAppraisal, onClose
 
           {/* Overall feedback */}
           <div>
-            <label className="block text-xs font-semibold mb-1" style={{ color: "#0F172A" }}>
+            <label className="block text-xs font-semibold mb-1" style={{ color: C.textPrimary }}>
               Overall Feedback
             </label>
             <textarea
               rows={4} value={feedback} onChange={(e) => setFeedback(e.target.value)}
               placeholder="Summarise the employee's performance this period. This will be visible to the employee once the appraisal is finalised by HR."
               className="w-full px-3 py-2 rounded-xl text-sm outline-none resize-none"
-              style={{ background: "#F8FAFC", border: "1.5px solid #E2E8F0", color: "#0F172A" }}
+              style={{ background: C.surfaceAlt, border: "1.5px solid #E4E7F0", color: C.textPrimary }}
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex gap-3 px-5 pb-5 shrink-0" style={{ borderTop: "1px solid #E2E8F0", paddingTop: 16 }}>
-          <button onClick={onClose} className="py-2.5 px-4 rounded-xl text-sm font-semibold"
-            style={{ background: "#F8FAFC", color: "#64748B", border: "1px solid #E2E8F0" }}>
+        <div className="flex gap-3 px-5 pb-5 shrink-0" style={{ borderTop: "1px solid #E4E7F0", paddingTop: 16 }}>
+          <button onClick={onClose} className="py-2.5 px-4 rounded-full text-sm font-semibold"
+            style={{ background: C.surfaceAlt, color: C.textSecondary, border: "1px solid #E4E7F0" }}>
             Cancel
           </button>
           <Motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={() => handleSave(false)} disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
-            style={{ background: "#F8FAFC", color: "#0F172A", border: "1px solid #E2E8F0", opacity: saving ? 0.7 : 1 }}>
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2"
+            style={{ background: C.surfaceAlt, color: C.textPrimary, border: "1px solid #E4E7F0", opacity: saving ? 0.7 : 1 }}>
             {saving ? <Loader2 size={13} className="animate-spin" /> : null}
             Save Draft
           </Motion.button>
           <Motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={() => handleSave(true)} disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
-            style={{ background: "#4F46E5", opacity: saving ? 0.8 : 1 }}>
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
+            style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}>
             {saving ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
             Submit to HR
           </Motion.button>
@@ -881,7 +881,7 @@ export default function ManagerPerformance() {
   const completedGoals  = goals.filter((g) => g.status?.toLowerCase() === "completed" || g.progress >= 100);
   const inProgressGoals = goals.filter((g) => g.status?.toLowerCase() === "in_progress" && g.progress < 100);
   const pendingDrafts   = mgrAppraisals.filter((a) => ["draft", "rejected"].includes(a.status));
-  const ratingCfg       = RATING_MAP[latestScore?.rating] ?? { color: "#64748B", bg: "#F1F5F9" };
+  const ratingCfg       = RATING_MAP[latestScore?.rating] ?? { color: C.textSecondary, bg: C.bgMid };
 
   const handleSubmitDraft = async (appraisal) => {
     try {
@@ -895,30 +895,30 @@ export default function ManagerPerformance() {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#F0F2F8" }}>
-        <Loader2 size={28} className="animate-spin" style={{ color: "#4F46E5" }} />
+      <div className="min-h-screen flex items-center justify-center" style={{ background: C.bgMid }}>
+        <Loader2 size={28} className="animate-spin" style={{ color: C.primary }} />
       </div>
     );
 
   return (
-    <div className="min-h-screen" style={{ background: "#F0F2F8", color: "#0F172A", fontFamily: "'DM Sans','Sora',sans-serif" }}>
+    <div className="min-h-screen" style={{ background: C.bgMid, color: C.textPrimary }}>
       <div className="flex h-screen overflow-hidden">
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
           {/* TOPBAR */}
           <header className="shrink-0 h-[60px] flex items-center px-5 gap-4 z-10"
-            style={{ background: "rgba(240,242,248,0.9)", backdropFilter: "blur(12px)", borderBottom: "1px solid #E2E8F0" }}>
+            style={{ background: "rgba(240,242,248,0.9)", backdropFilter: "blur(12px)", borderBottom: "1px solid #E4E7F0" }}>
             <Motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => navigate("/managerprofile")}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold"
-              style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", color: "#64748B" }}>
+              className="flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold"
+              style={{ background: C.surface, border: "1px solid #E4E7F0", color: C.textSecondary }}>
               <Menu size={14} /> Manager Dashboard
             </Motion.button>
             <div className="flex items-center gap-2 ml-auto">
               <Motion.button whileHover={{ scale: 1.05 }} onClick={load}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
-                style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
-                <RefreshCw size={14} color="#64748B" />
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: C.surface, border: "1px solid #E4E7F0" }}>
+                <RefreshCw size={14} color={C.textSecondary} />
               </Motion.button>
             </div>
           </header>
@@ -928,13 +928,13 @@ export default function ManagerPerformance() {
             {/* HERO */}
             <Motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl p-6 text-white relative overflow-hidden"
-              style={{ background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)" }}>
+              style={{ background: C.gradient.hero }}>
               <div className="relative flex items-center gap-5">
                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-white/15 shrink-0">
                   <BarChart2 size={30} />
                 </div>
                 <div className="flex-1">
-                  <h1 className="text-2xl font-bold" style={{ fontFamily: "Sora,sans-serif" }}>Manager Performance</h1>
+                  <h1 className="text-2xl ">Manager Performance</h1>
                   <p className="text-indigo-200 text-sm mt-0.5">
                     {authEmployee?.name ?? "Manager"}
                     <span className="ml-2 text-indigo-300 text-xs font-semibold">· {myDeptName || "Manager"}</span>
@@ -946,9 +946,9 @@ export default function ManagerPerformance() {
             </Motion.div>
 
             {error && (
-              <div className="rounded-xl p-4 flex items-center gap-3" style={{ background: "#FEE2E2" }}>
-                <AlertTriangle size={16} color="#DC2626" />
-                <p className="text-sm" style={{ color: "#DC2626" }}>{error}</p>
+              <div className="rounded-xl p-4 flex items-center gap-3" style={{ background: C.dangerLight }}>
+                <AlertTriangle size={16} color="#B91C1C" />
+                <p className="text-sm" style={{ color: "#B91C1C" }}>{error}</p>
               </div>
             )}
 
@@ -956,20 +956,20 @@ export default function ManagerPerformance() {
             {pendingDrafts.length > 0 && (
               <Motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
                 className="rounded-2xl p-4 flex items-center gap-3"
-                style={{ background: "#EEF2FF", border: "1px solid #C7D2FE" }}>
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#4F46E5" }}>
+                style={{ background: C.primaryLight, border: "1px solid #C7D2FE" }}>
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.primary }}>
                   <ClipboardList size={15} color="#fff" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-sm" style={{ color: "#0F172A" }}>
+                  <p className="font-semibold text-sm" style={{ color: C.textPrimary }}>
                     {pendingDrafts.length} appraisal draft{pendingDrafts.length > 1 ? "s" : ""} awaiting submission
                   </p>
-                  <p className="text-xs mt-0.5" style={{ color: "#4F46E5" }}>Submit to HR to complete the review cycle.</p>
+                  <p className="text-xs mt-0.5" style={{ color: C.primary }}>Submit to HR to complete the review cycle.</p>
                 </div>
                 <Motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
                   onClick={() => setActiveTab("appraisals")}
-                  className="text-xs font-bold px-3 py-1.5 rounded-xl shrink-0"
-                  style={{ background: "#4F46E5", color: "#fff" }}>
+                  className="text-xs font-bold px-3 py-1.5 rounded-full shrink-0"
+                  style={{ background: C.primary, color: "#fff" }}>
                   View Drafts
                 </Motion.button>
               </Motion.div>
@@ -977,20 +977,20 @@ export default function ManagerPerformance() {
 
             {/* TABS */}
             <div className="flex gap-1 p-1 rounded-2xl overflow-x-auto"
-              style={{ background: "#FFFFFF", border: "1px solid #E2E8F0", scrollbarWidth: "none" }}>
+              style={{ background: C.surface, border: "1px solid #E4E7F0", scrollbarWidth: "none" }}>
               {TABS.map((t) => {
                 const active = activeTab === t.id;
                 const badge  = t.id === "appraisals" ? mgrAppraisals.length : null;
                 return (
                   <Motion.button key={t.id} whileTap={{ scale: 0.97 }}
                     onClick={() => setActiveTab(t.id)}
-                    className="px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
-                    style={{ background: active ? "#4F46E5" : "transparent", color: active ? "#fff" : "#64748B",
+                    className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
+                    style={{ background: active ? "#4F46E5" : "transparent", color: active ? "#fff" : C.textSecondary,
                       boxShadow: active ? "0 2px 8px rgba(79,70,229,0.25)" : "none" }}>
                     {t.label}
                     {badge > 0 && (
                       <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full"
-                        style={{ background: active ? "rgba(255,255,255,0.25)" : "#EEF2FF", color: active ? "#fff" : "#4F46E5" }}>
+                        style={{ background: active ? "rgba(255,255,255,0.25)" : C.primaryLight, color: active ? "#fff" : C.primary }}>
                         {badge}
                       </span>
                     )}
@@ -1009,10 +1009,10 @@ export default function ManagerPerformance() {
                       <ScoreRing score={latestScore?.final_score} />
                       <div className="flex-1 space-y-3">
                         <div>
-                          <p className="text-xs" style={{ color: "#64748B" }}>Current Rating</p>
+                          <p className="text-xs" style={{ color: C.textSecondary }}>Current Rating</p>
                           {latestScore?.rating
                             ? <Chip label={latestScore.rating} color={ratingCfg.color} bg={ratingCfg.bg} />
-                            : <p className="text-sm font-semibold" style={{ color: "#94A3B8" }}>No data</p>}
+                            : <p className="text-sm font-semibold" style={{ color: C.textMuted }}>No data</p>}
                         </div>
                         <div className="grid grid-cols-3 gap-2">
                           {[
@@ -1020,26 +1020,26 @@ export default function ManagerPerformance() {
                             { label: "Attendance", value: latestScore?.attendance_score ?? "—" },
                             { label: "Training",   value: latestScore?.training_score   ?? "—" },
                           ].map((s) => (
-                            <div key={s.label} className="rounded-xl p-2 text-center" style={{ background: "#F8FAFC" }}>
-                              <p className="text-sm font-black" style={{ color: "#0F172A" }}>{s.value}</p>
-                              <p className="text-[9px] font-semibold" style={{ color: "#94A3B8" }}>{s.label}</p>
+                            <div key={s.label} className="rounded-xl p-2 text-center" style={{ background: C.surfaceAlt }}>
+                              <p className="text-sm font-black" style={{ color: C.textPrimary }}>{s.value}</p>
+                              <p className="text-[9px] font-semibold" style={{ color: C.textMuted }}>{s.label}</p>
                             </div>
                           ))}
                         </div>
                         {latestScore?.appraisal_score != null && (
-                          <div className="rounded-xl p-2 text-center" style={{ background: "#F3E8FF" }}>
-                            <p className="text-sm font-black" style={{ color: "#7C3AED" }}>{Math.round(latestScore.appraisal_score)}</p>
-                            <p className="text-[9px] font-semibold" style={{ color: "#7C3AED" }}>Appraisal</p>
+                          <div className="rounded-xl p-2 text-center" style={{ background: C.primaryTint }}>
+                            <p className="text-sm font-black" style={{ color: C.primary }}>{Math.round(latestScore.appraisal_score)}</p>
+                            <p className="text-[9px] font-semibold" style={{ color: C.primary }}>Appraisal</p>
                           </div>
                         )}
                       </div>
                     </Card>
 
                     <Card className="p-6">
-                      <CardHead icon={TrendingUp} title="Score Trend" sub="Monthly performance history" color="#10B981" bg="#D1FAE5" />
+                      <CardHead icon={TrendingUp} title="Score Trend" sub="Monthly performance history" color={C.success} bg={C.successLight} />
                       <div className="p-4">
                         {trends.length === 0
-                          ? <p className="text-sm text-center py-6" style={{ color: "#94A3B8" }}>No trend data yet</p>
+                          ? <p className="text-sm text-center py-6" style={{ color: C.textMuted }}>No trend data yet</p>
                           : <TrendLine data={trends.slice(-6)} />}
                       </div>
                     </Card>
@@ -1047,15 +1047,15 @@ export default function ManagerPerformance() {
 
                   {insights.length > 0 && (
                     <Card>
-                      <CardHead icon={Sparkles} title="Performance Insights" sub="Auto-generated" color="#7C3AED" bg="#F3E8FF" />
+                      <CardHead icon={Sparkles} title="Performance Insights" sub="Auto-generated" color={C.primary} bg={C.primaryTint} />
                       <div className="p-4 space-y-2">
                         {insights.map((ins, i) => {
                           const cfg = {
-                            positive:   { color: "#059669", bg: "#D1FAE5", icon: TrendingUp    },
-                            warning:    { color: "#DC2626", bg: "#FEE2E2", icon: AlertCircle   },
-                            leadership: { color: "#7C3AED", bg: "#F3E8FF", icon: Trophy        },
-                            pip:        { color: "#DC2626", bg: "#FEE2E2", icon: AlertTriangle },
-                          }[ins.type] ?? { color: "#4F46E5", bg: "#EEF2FF", icon: Info };
+                            positive:   { color: "#047857", bg: C.successLight, icon: TrendingUp    },
+                            warning:    { color: "#B91C1C", bg: C.dangerLight, icon: AlertCircle   },
+                            leadership: { color: C.primary, bg: C.primaryTint, icon: Trophy        },
+                            pip:        { color: "#B91C1C", bg: C.dangerLight, icon: AlertTriangle },
+                          }[ins.type] ?? { color: C.primary, bg: C.primaryLight, icon: Info };
                           const Icon = cfg.icon;
                           return (
                             <Motion.div key={i} custom={i} variants={fadeUp} initial="hidden" animate="visible"
@@ -1072,20 +1072,20 @@ export default function ManagerPerformance() {
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
-                      { label: "Goals In Progress",  value: inProgressGoals.length, icon: Target,        color: "#4F46E5", bg: "#EEF2FF"  },
-                      { label: "Goals Completed",    value: completedGoals.length,  icon: CheckCircle2,  color: "#059669", bg: "#D1FAE5"  },
-                      { label: "Team Appraisals",    value: mgrAppraisals.length,   icon: ClipboardList, color: "#7C3AED", bg: "#F3E8FF"  },
-                      { label: "Drafts Pending",     value: pendingDrafts.length,   icon: Clock,         color: "#D97706", bg: "#FEF3C7"  },
+                      { label: "Goals In Progress",  value: inProgressGoals.length, icon: Target,        color: C.primary, bg: C.primaryLight  },
+                      { label: "Goals Completed",    value: completedGoals.length,  icon: CheckCircle2,  color: "#047857", bg: C.successLight  },
+                      { label: "Team Appraisals",    value: mgrAppraisals.length,   icon: ClipboardList, color: C.primary, bg: C.primaryTint  },
+                      { label: "Drafts Pending",     value: pendingDrafts.length,   icon: Clock,         color: "#92400E", bg: C.warningLight  },
                     ].map((s, i) => (
                       <Motion.div key={s.label} custom={i} variants={fadeUp} initial="hidden" animate="visible" whileHover={{ y: -2 }}
                         className="rounded-2xl p-4 flex items-center gap-3"
-                        style={{ background: "#FFFFFF", border: "1px solid #E2E8F0" }}>
+                        style={{ background: C.surface, border: "1px solid #E4E7F0" }}>
                         <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: s.bg }}>
                           <s.icon size={16} color={s.color} />
                         </div>
                         <div>
-                          <p className="text-xl font-black" style={{ color: "#0F172A" }}>{s.value}</p>
-                          <p className="text-[11px]" style={{ color: "#64748B" }}>{s.label}</p>
+                          <p className="text-xl font-black" style={{ color: C.textPrimary }}>{s.value}</p>
+                          <p className="text-[11px]" style={{ color: C.textSecondary }}>{s.label}</p>
                         </div>
                       </Motion.div>
                     ))}
@@ -1104,16 +1104,16 @@ export default function ManagerPerformance() {
                     <div className="p-4 space-y-3">
                       {goals.length === 0 ? (
                         <div className="py-12 text-center">
-                          <Target size={36} color="#94A3B8" className="mx-auto mb-2" />
-                          <p className="font-semibold text-sm" style={{ color: "#64748B" }}>No goals assigned yet</p>
+                          <Target size={36} color={C.textMuted} className="mx-auto mb-2" />
+                          <p className="font-semibold text-sm" style={{ color: C.textSecondary }}>No goals assigned yet</p>
                         </div>
                       ) : goals.map((goal, i) => (
                         <Motion.div key={goal.id} custom={i} variants={fadeUp} initial="hidden" animate="visible"
-                          className="rounded-2xl border p-4" style={{ borderColor: "#E2E8F0", background: "#FFFFFF" }}>
-                          <p className="font-semibold text-sm mb-2" style={{ color: "#0F172A" }}>{goal.title}</p>
+                          className="rounded-2xl border p-4" style={{ borderColor: C.border, background: C.surface }}>
+                          <p className="font-semibold text-sm mb-2" style={{ color: C.textPrimary }}>{goal.title}</p>
                           <GoalBar progress={goal.progress ?? 0} />
                           {goal.due_date && (
-                            <p className="text-[10px] mt-2" style={{ color: "#94A3B8" }}>Due: {goal.due_date}</p>
+                            <p className="text-[10px] mt-2" style={{ color: C.textMuted }}>Due: {goal.due_date}</p>
                           )}
                         </Motion.div>
                       ))}
@@ -1128,12 +1128,12 @@ export default function ManagerPerformance() {
                   <Card>
                     <CardHead icon={Users} title="My Team Appraisals"
                       sub={`Department: ${myDeptName || "—"}`}
-                      color="#4F46E5" bg="#EEF2FF"
+                      color={C.primary} bg={C.primaryLight}
                       action={
                         <Motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
                           onClick={() => setCreateModal("new")}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white"
-                          style={{ background: "#4F46E5" }}>
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
+                          style={{ background: C.primary }}>
                           <Plus size={13} /> New Appraisal
                         </Motion.button>
                       }
@@ -1141,15 +1141,15 @@ export default function ManagerPerformance() {
                     <div className="p-4 space-y-3">
                       {mgrAppraisals.length === 0 ? (
                         <div className="py-10 text-center">
-                          <Users size={32} color="#94A3B8" className="mx-auto mb-2" />
-                          <p className="font-semibold text-sm" style={{ color: "#64748B" }}>No appraisals created yet</p>
-                          <p className="text-xs mt-1 mb-4" style={{ color: "#94A3B8" }}>
+                          <Users size={32} color={C.textMuted} className="mx-auto mb-2" />
+                          <p className="font-semibold text-sm" style={{ color: C.textSecondary }}>No appraisals created yet</p>
+                          <p className="text-xs mt-1 mb-4" style={{ color: C.textMuted }}>
                             Rate your team members to help HR assess their performance.
                           </p>
                           <Motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                             onClick={() => setCreateModal("new")}
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
-                            style={{ background: "#4F46E5" }}>
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white"
+                            style={{ background: C.primary }}>
                             <Plus size={15} /> Create First Appraisal
                           </Motion.button>
                         </div>
@@ -1165,28 +1165,28 @@ export default function ManagerPerformance() {
                         return (
                           <Motion.div key={apr.id} custom={i} variants={fadeUp} initial="hidden" animate="visible"
                             className="rounded-2xl border overflow-hidden"
-                            style={{ borderColor: apr.status === "rejected" ? "#FECACA" : "#E2E8F0", background: "#FFFFFF" }}>
+                            style={{ borderColor: apr.status === "rejected" ? "#FEE2E2" : C.border, background: C.surface }}>
                             <div className="flex items-center gap-4 p-4">
                               {/* Avatar initials */}
                               <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-sm text-white"
-                                style={{ background: isLocked ? "#059669" : isWaiting ? "#D97706" : "#4F46E5" }}>
+                                style={{ background: isLocked ? "#047857" : isWaiting ? "#92400E" : C.primary }}>
                                 {empName.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()}
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                                  <p className="font-semibold text-sm" style={{ color: "#0F172A" }}>{empName}</p>
+                                  <p className="font-semibold text-sm" style={{ color: C.textPrimary }}>{empName}</p>
                                   <Chip label={statusCfg.label} color={statusCfg.color} bg={statusCfg.bg} />
                                 </div>
-                                <div className="flex items-center gap-3 text-[11px] flex-wrap" style={{ color: "#94A3B8" }}>
+                                <div className="flex items-center gap-3 text-[11px] flex-wrap" style={{ color: C.textMuted }}>
                                   <span>{apr.cycleName ?? `Period ${apr.period}`}</span>
                                   {apr.employee?.department && <><span>·</span><span>{apr.employee.department}</span></>}
                                   {isLocked && apr.appraisalScore != null && (
-                                    <span className="font-bold" style={{ color: "#059669" }}>
+                                    <span className="font-bold" style={{ color: "#047857" }}>
                                       Final: {Math.round(apr.appraisalScore)}/100
                                     </span>
                                   )}
                                   {apr.managerOverall != null && !isLocked && (
-                                    <span style={{ color: "#4F46E5" }}>
+                                    <span style={{ color: C.primary }}>
                                       Your score: {Math.round(apr.managerOverall)}
                                     </span>
                                   )}
@@ -1197,7 +1197,7 @@ export default function ManagerPerformance() {
                               <div className="flex gap-2 shrink-0">
                                 {isLocked && (
                                   <span className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-xl"
-                                    style={{ background: "#F1F5F9", color: "#94A3B8" }}>
+                                    style={{ background: C.bgMid, color: C.textMuted }}>
                                     <Lock size={11} /> Locked
                                   </span>
                                 )}
@@ -1205,14 +1205,14 @@ export default function ManagerPerformance() {
                                   <>
                                     <Motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
                                       onClick={() => setCreateModal(apr)}
-                                      className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl"
-                                      style={{ background: "#EEF2FF", color: "#4F46E5" }}>
+                                      className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-full"
+                                      style={{ background: C.primaryLight, color: C.primary }}>
                                       <Eye size={12} /> Edit
                                     </Motion.button>
                                     <Motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
                                       onClick={() => handleSubmitDraft(apr)}
-                                      className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-xl text-white"
-                                      style={{ background: "#4F46E5" }}>
+                                      className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-full text-white"
+                                      style={{ background: C.primary }}>
                                       <Send size={11} /> Submit
                                     </Motion.button>
                                   </>
@@ -1220,8 +1220,8 @@ export default function ManagerPerformance() {
                                 {(isWaiting || isLocked) && (
                                   <Motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
                                     onClick={() => setDetailModal(apr)}
-                                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl"
-                                    style={{ background: "#EEF2FF", color: "#4F46E5" }}>
+                                    className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-full"
+                                    style={{ background: C.primaryLight, color: C.primary }}>
                                     <Eye size={12} /> View
                                   </Motion.button>
                                 )}
@@ -1231,7 +1231,7 @@ export default function ManagerPerformance() {
                             {/* Rejected reason */}
                             {apr.status === "rejected" && apr.hrFeedback && (
                               <div className="px-4 pb-4">
-                                <div className="p-3 rounded-xl text-xs" style={{ background: "#FEE2E2", color: "#DC2626" }}>
+                                <div className="p-3 rounded-xl text-xs" style={{ background: C.dangerLight, color: "#B91C1C" }}>
                                   <span className="font-bold">HR returned: </span>
                                   {apr.hrFeedback.slice(0, 160)}{apr.hrFeedback.length > 160 ? "…" : ""}
                                 </div>
@@ -1241,7 +1241,7 @@ export default function ManagerPerformance() {
                             {/* Progress stepper */}
                             {isWaiting && (
                               <div className="px-4 pb-4">
-                                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "#E2E8F0" }}>
+                                <div className="h-1.5 rounded-full overflow-hidden" style={{ background: C.border }}>
                                   <div className="h-full rounded-full transition-all duration-500"
                                     style={{ width: apr.status === "submitted" ? "60%" : "85%", background: statusCfg.color }} />
                                 </div>
@@ -1249,7 +1249,7 @@ export default function ManagerPerformance() {
                                   {["Draft", "Submitted", "HR Review", "Complete"].map((step, si) => {
                                     const stepIdx = ["draft", "submitted", "hr_scored", "completed"].indexOf(apr.status);
                                     return (
-                                      <span key={step} style={{ color: si <= stepIdx ? statusCfg.color : "#94A3B8" }}>{step}</span>
+                                      <span key={step} style={{ color: si <= stepIdx ? statusCfg.color : C.textMuted }}>{step}</span>
                                     );
                                   })}
                                 </div>
@@ -1271,32 +1271,32 @@ export default function ManagerPerformance() {
                     <div className="p-4 space-y-3">
                       {scores.length === 0 ? (
                         <div className="py-12 text-center">
-                          <BarChart2 size={36} color="#94A3B8" className="mx-auto mb-2" />
-                          <p className="font-semibold text-sm" style={{ color: "#64748B" }}>No score history yet</p>
+                          <BarChart2 size={36} color={C.textMuted} className="mx-auto mb-2" />
+                          <p className="font-semibold text-sm" style={{ color: C.textSecondary }}>No score history yet</p>
                         </div>
                       ) : scores.map((sc, i) => {
-                        const rCfg = RATING_MAP[sc.rating] ?? { color: "#64748B", bg: "#F1F5F9" };
+                        const rCfg = RATING_MAP[sc.rating] ?? { color: C.textSecondary, bg: C.bgMid };
                         return (
                           <Motion.div key={sc.id ?? i} custom={i} variants={fadeUp} initial="hidden" animate="visible"
                             className="flex items-center gap-4 p-4 rounded-2xl"
-                            style={{ background: "#F8FAFC", border: "1px solid #E2E8F0" }}>
+                            style={{ background: C.surfaceAlt, border: "1px solid #E4E7F0" }}>
                             <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 font-black text-lg"
-                              style={{ background: rCfg.bg, color: rCfg.color, fontFamily: "Sora,sans-serif" }}>
+                              style={{ background: rCfg.bg, color: rCfg.color }}>
                               {sc.final_score}
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-2 flex-wrap mb-1">
-                                <p className="font-semibold text-sm" style={{ color: "#0F172A" }}>{sc.period}</p>
+                                <p className="font-semibold text-sm" style={{ color: C.textPrimary }}>{sc.period}</p>
                                 <Chip label={sc.rating} color={rCfg.color} bg={rCfg.bg} />
                               </div>
-                              <div className="flex gap-3 text-[11px] flex-wrap" style={{ color: "#94A3B8" }}>
+                              <div className="flex gap-3 text-[11px] flex-wrap" style={{ color: C.textMuted }}>
                                 <span>KPI: {sc.kpi_score}</span>
                                 <span>·</span>
                                 <span>Attendance: {sc.attendance_score}</span>
                                 <span>·</span>
                                 <span>Training: {sc.training_score}</span>
                                 {sc.appraisal_score != null && (
-                                  <><span>·</span><span style={{ color: "#7C3AED", fontWeight: 700 }}>Appraisal: {Math.round(sc.appraisal_score)}</span></>
+                                  <><span>·</span><span style={{ color: C.primary, fontWeight: 700 }}>Appraisal: {Math.round(sc.appraisal_score)}</span></>
                                 )}
                               </div>
                             </div>

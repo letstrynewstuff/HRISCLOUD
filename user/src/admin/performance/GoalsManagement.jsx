@@ -61,25 +61,25 @@ const modalAnim = {
 const STATUS_CFG = {
   completed: {
     bg: "#d1fae5",
-    color: "#059669",
+    color: "#047857",
     icon: CheckCircle2,
     label: "Completed",
   },
   in_progress: {
-    bg: "#dbeafe",
-    color: "#2563eb",
+    bg: "#E0E7FF",
+    color: "#4F46E5",
     icon: Clock,
     label: "In Progress",
   },
   not_started: {
-    bg: "#f1f5f9",
-    color: "#64748b",
+    bg: "#F0F2F8",
+    color: "#5F6D7E",
     icon: Circle,
     label: "Not Started",
   },
   overdue: {
     bg: "#fee2e2",
-    color: "#dc2626",
+    color: "#B91C1C",
     icon: AlertCircle,
     label: "Overdue",
   },
@@ -104,9 +104,9 @@ function StatusPill({ status }) {
 function ProgressBar({ progress = 0 }) {
   const color =
     progress >= 100
-      ? "#059669"
+      ? "#047857"
       : progress >= 60
-        ? "#2563eb"
+        ? "#4F46E5"
         : progress >= 30
           ? "#f59e0b"
           : "#ef4444";
@@ -114,7 +114,7 @@ function ProgressBar({ progress = 0 }) {
     <div className="flex items-center gap-2 w-full">
       <div
         className="flex-1 h-1.5 rounded-full overflow-hidden"
-        style={{ background: "#e2e8f0" }}
+        style={{ background: "#E4E7F0" }}
       >
         <motion.div
           className="h-full rounded-full"
@@ -166,7 +166,7 @@ function EmployeeSelect({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm outline-none"
+        className="w-full flex items-center justify-between px-3 py-2.5 rounded-full text-sm outline-none"
         style={{
           background: C.surfaceAlt,
           border: `1.5px solid ${open ? C.primary : C.border}`,
@@ -213,7 +213,7 @@ function EmployeeSelect({
             style={{
               background: C.surface,
               border: `1px solid ${C.border}`,
-              boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+              boxShadow: C.shadow.lift,
             }}
           >
             <div className="p-2 border-b" style={{ borderColor: C.border }}>
@@ -390,7 +390,7 @@ function GoalModal({ goal, employees, loadingEmployees, onClose, onSaved }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 32px 80px rgba(0,0,0,0.22)",
+          boxShadow: C.shadow.lift,
           maxHeight: "90vh",
           display: "flex",
           flexDirection: "column",
@@ -414,7 +414,7 @@ function GoalModal({ goal, employees, loadingEmployees, onClose, onSaved }) {
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:opacity-70 transition-opacity"
+            className="p-1.5 rounded-full hover:opacity-70 transition-opacity"
             style={{ background: C.surfaceAlt }}
           >
             <X size={14} color={C.textMuted} />
@@ -428,8 +428,8 @@ function GoalModal({ goal, employees, loadingEmployees, onClose, onSaved }) {
               className="flex items-center gap-2 p-3 rounded-xl"
               style={{ background: "#fee2e2" }}
             >
-              <AlertTriangle size={13} color="#dc2626" />
-              <p className="text-xs" style={{ color: "#dc2626" }}>
+              <AlertTriangle size={13} color="#B91C1C" />
+              <p className="text-xs" style={{ color: "#B91C1C" }}>
                 {error}
               </p>
             </div>
@@ -633,7 +633,7 @@ function GoalModal({ goal, employees, loadingEmployees, onClose, onSaved }) {
         >
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -647,7 +647,7 @@ function GoalModal({ goal, employees, loadingEmployees, onClose, onSaved }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.primary, opacity: saving ? 0.75 : 1 }}
           >
             {saving ? (
@@ -705,7 +705,7 @@ function ProgressModal({ goal, onClose, onSaved }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 32px 80px rgba(0,0,0,0.22)",
+          boxShadow: C.shadow.lift,
         }}
       >
         <div
@@ -720,7 +720,7 @@ function ProgressModal({ goal, onClose, onSaved }) {
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg"
+            className="p-1.5 rounded-full"
             style={{ background: C.surfaceAlt }}
           >
             <X size={14} color={C.textMuted} />
@@ -733,8 +733,8 @@ function ProgressModal({ goal, onClose, onSaved }) {
               className="flex items-center gap-2 p-3 rounded-xl"
               style={{ background: "#fee2e2" }}
             >
-              <AlertTriangle size={13} color="#dc2626" />
-              <p className="text-xs" style={{ color: "#dc2626" }}>
+              <AlertTriangle size={13} color="#B91C1C" />
+              <p className="text-xs" style={{ color: "#B91C1C" }}>
                 {error}
               </p>
             </div>
@@ -770,7 +770,7 @@ function ProgressModal({ goal, onClose, onSaved }) {
         <div className="flex gap-3 px-5 pb-5">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -784,7 +784,7 @@ function ProgressModal({ goal, onClose, onSaved }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.primary, opacity: saving ? 0.75 : 1 }}
           >
             {saving ? (
@@ -895,7 +895,7 @@ function GoalRow({ goal, index, onEdit, onUpdateProgress }) {
       <td className="px-5 py-4">
         <span
           className={`text-xs flex items-center gap-1 ${isOverdue ? "font-semibold" : ""}`}
-          style={{ color: isOverdue ? "#dc2626" : C.textSecondary }}
+          style={{ color: isOverdue ? "#B91C1C" : C.textSecondary }}
         >
           <Calendar size={11} />
           {dueDate
@@ -915,7 +915,7 @@ function GoalRow({ goal, index, onEdit, onUpdateProgress }) {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onUpdateProgress(goal)}
-            className="p-1.5 rounded-lg"
+            className="p-1.5 rounded-full"
             title="Update progress"
             style={{ background: C.primaryLight, color: C.primary }}
           >
@@ -925,7 +925,7 @@ function GoalRow({ goal, index, onEdit, onUpdateProgress }) {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onEdit(goal)}
-            className="p-1.5 rounded-lg"
+            className="p-1.5 rounded-full"
             title="Edit goal"
             style={{ background: C.surfaceAlt, color: C.textSecondary }}
           >
@@ -1054,14 +1054,14 @@ export default function GoalsManagement({ searchQuery }) {
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row justify-between gap-3 items-start sm:items-center">
         <div>
-          <h2 className="font-bold text-lg" style={{ color: C.textPrimary }}>
+          <h2 className="text-lg" style={{ color: C.textPrimary }}>
             Goals & KPIs
           </h2>
           <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>
             {stats.total} total · {stats.in_progress} in progress ·{" "}
             {stats.completed} completed
             {stats.overdue > 0 && (
-              <span style={{ color: "#dc2626" }}>
+              <span style={{ color: "#B91C1C" }}>
                 {" "}
                 · {stats.overdue} overdue
               </span>
@@ -1072,7 +1072,7 @@ export default function GoalsManagement({ searchQuery }) {
           <motion.button
             whileHover={{ scale: 1.04 }}
             onClick={loadGoals}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -1088,7 +1088,7 @@ export default function GoalsManagement({ searchQuery }) {
               setSelected(null);
               setModal("create");
             }}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-sm font-semibold text-white"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold text-white"
             style={{ background: C.primary }}
           >
             <Plus size={14} /> New Goal
@@ -1130,14 +1130,14 @@ export default function GoalsManagement({ searchQuery }) {
           className="rounded-2xl p-4 flex items-center gap-3"
           style={{ background: "#fee2e2" }}
         >
-          <AlertTriangle size={16} color="#dc2626" />
-          <p className="text-sm" style={{ color: "#dc2626" }}>
+          <AlertTriangle size={16} color="#B91C1C" />
+          <p className="text-sm" style={{ color: "#B91C1C" }}>
             {error}
           </p>
           <button
             onClick={loadGoals}
             className="ml-auto text-xs font-semibold underline"
-            style={{ color: "#dc2626" }}
+            style={{ color: "#B91C1C" }}
           >
             Retry
           </button>
@@ -1221,7 +1221,7 @@ export default function GoalsManagement({ searchQuery }) {
                           whileHover={{ scale: 1.04 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => setModal("create")}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+                          className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white"
                           style={{ background: C.primary }}
                         >
                           <Plus size={13} /> Create First Goal

@@ -161,7 +161,7 @@ export default function PayslipViewer({
           whileHover={{ scale: 1.02 }}
           onClick={fetchSlip}
           disabled={loading}
-          className="px-4 py-2.5 rounded-xl text-sm font-semibold"
+          className="px-4 py-2.5 rounded-full text-sm font-semibold"
           style={{
             background: C.primary,
             color: "#fff",
@@ -230,7 +230,6 @@ export default function PayslipViewer({
                   <div>
                     <p
                       className="text-white font-bold text-base"
-                      style={{ fontFamily: "Sora,sans-serif" }}
                     >
                       {slip.company_name ?? "HRISCloud Ltd"}
                     </p>
@@ -243,7 +242,7 @@ export default function PayslipViewer({
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     onClick={handlePrint}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
                     style={{
                       background: "rgba(255,255,255,0.15)",
                       color: "#fff",
@@ -256,7 +255,7 @@ export default function PayslipViewer({
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     onClick={handleDownloadCSV}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
                     style={{
                       background: "rgba(255,255,255,0.15)",
                       color: "#fff",
@@ -440,7 +439,7 @@ export default function PayslipViewer({
                 </div>
                 <p
                   className="text-3xl font-bold"
-                  style={{ color: C.success, fontFamily: "Sora,sans-serif" }}
+                  style={{ color: C.success }}
                 >
                   {fmt(slip.net_pay)}
                 </p>

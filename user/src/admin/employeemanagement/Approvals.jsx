@@ -4,7 +4,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 // import AdminSideNavbar from "../AdminSideNavbar";
-import Header from "../../components/Header"; // ✅ IMPORT YOUR HEADER
+import Header from "../../components/Header"; // IMPORT YOUR HEADER
 import {
   ClipboardCheck,
   CheckCircle2,
@@ -166,7 +166,7 @@ export default function ApprovalsPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex h-screen overflow-hidden">
         {/* <AdminSideNavbar
@@ -177,7 +177,7 @@ export default function ApprovalsPage() {
         /> */}
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-          {/* ✅ USING YOUR HEADER COMPONENT */}
+          {/* USING YOUR HEADER COMPONENT */}
           <Header
             title="Approval Center"
             subtitle="Review and action all requests across modules"
@@ -200,7 +200,7 @@ export default function ApprovalsPage() {
                   <button
                     key={s}
                     onClick={() => setStatusTab(s)}
-                    className="px-4 py-2 rounded-xl text-sm font-semibold"
+                    className="px-4 py-2 rounded-full text-sm font-semibold"
                     style={{
                       background: active ? C.primary : C.surface,
                       color: active ? "#fff" : C.textSecondary,
@@ -225,7 +225,7 @@ export default function ApprovalsPage() {
                   <CheckCircle2 size={40} color={C.success} />
                   <p className="mt-3 font-semibold">
                     {statusTab === "pending"
-                      ? "No pending approvals 🎉"
+                      ? "No pending approvals"
                       : "No approvals found"}
                   </p>
                 </div>

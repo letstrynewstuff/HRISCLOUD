@@ -32,15 +32,15 @@ const TABS = [
 ];
 
 const PAYMENT_STATUS = {
-  success: { bg: "#F0FDF4", text: "#16A34A" },
-  pending: { bg: "#FFFBEB", text: "#D97706" },
-  failed: { bg: "#FEF2F2", text: "#EF4444" },
-  refunded: { bg: "#F8FAFC", text: "#64748B" },
+  success: { bg: "#D1FAE5", text: "#10B981" },
+  pending: { bg: "#FEF3C7", text: "#92400E" },
+  failed: { bg: "#FEE2E2", text: "#EF4444" },
+  refunded: { bg: "#F7F8FC", text: "#5F6D7E" },
 };
 
 const PLAN_GRADIENT = [
-  "linear-gradient(135deg,#F8FAFC 0%,#EFF6FF 100%)",
-  "linear-gradient(135deg,#F5F3FF 0%,#EEF2FF 100%)",
+  "linear-gradient(135deg,#F7F8FC 0%,#EEF2FF 100%)",
+  "linear-gradient(135deg,#EEF2FF 0%,#C7D2FE 100%)",
   "linear-gradient(135deg,#1E1B4B 0%,#312E81 100%)",
 ];
 
@@ -145,7 +145,6 @@ function PlansTab({ plans }) {
               <div className="flex items-baseline gap-1">
                 <span
                   className="text-4xl font-bold"
-                  style={{ fontFamily: "Sora,sans-serif" }}
                 >
                   {plan.price === 0 ? "Free" : fmtCurrency(plan.price)}
                 </span>
@@ -197,7 +196,7 @@ function PlansTab({ plans }) {
                   <Check
                     size={14}
                     style={{
-                      color: isDark ? "#86EFAC" : "#4F46E5",
+                      color: isDark ? "#10B981" : "#4F46E5",
                       flexShrink: 0,
                     }}
                   />
@@ -218,7 +217,7 @@ function PlansTab({ plans }) {
                     <Check
                       size={14}
                       style={{
-                        color: isDark ? "#86EFAC" : "#4F46E5",
+                        color: isDark ? "#10B981" : "#4F46E5",
                         flexShrink: 0,
                       }}
                     />
@@ -278,7 +277,7 @@ function PaymentsTab({ payments, loading }) {
         style={{
           background: "#fff",
           border: `1px solid ${C.border}`,
-          boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+          boxShadow: C.shadow.card,
         }}
       >
         <table className="w-full">
@@ -286,7 +285,7 @@ function PaymentsTab({ payments, loading }) {
             <tr
               style={{
                 borderBottom: `1px solid ${C.border}`,
-                background: "#F8FAFC",
+                background: "#F7F8FC",
               }}
             >
               {["Company", "Amount", "Date", "Plan", "Status"].map((h) => (
@@ -308,7 +307,7 @@ function PaymentsTab({ payments, loading }) {
                     <td key={j} className="px-5 py-4">
                       <div
                         className="h-4 rounded animate-pulse"
-                        style={{ background: "#F1F5F9", width: "70%" }}
+                        style={{ background: "#F0F2F8", width: "70%" }}
                       />
                     </td>
                   ))}
@@ -356,7 +355,7 @@ function PaymentsTab({ payments, loading }) {
                     <td className="px-5 py-3.5">
                       <span
                         className="text-sm font-bold"
-                        style={{ color: "#059669" }}
+                        style={{ color: "#047857" }}
                       >
                         {fmtCurrency(p.amount)}
                       </span>
@@ -432,7 +431,7 @@ function FeaturesTab() {
         <thead>
           <tr
             style={{
-              background: "#F8FAFC",
+              background: "#F7F8FC",
               borderBottom: `1px solid ${C.border}`,
             }}
           >
@@ -448,7 +447,7 @@ function FeaturesTab() {
                   className="px-3 py-1 rounded-full text-xs font-bold"
                   style={{
                     background:
-                      i === 2 ? "#1E1B4B" : i === 1 ? "#EEF2FF" : "#F8FAFC",
+                      i === 2 ? "#1E1B4B" : i === 1 ? "#EEF2FF" : "#F7F8FC",
                     color:
                       i === 2 ? "#fff" : i === 1 ? "#4F46E5" : C.textSecondary,
                   }}
@@ -468,7 +467,7 @@ function FeaturesTab() {
                   i < FEATURE_MATRIX.length - 1
                     ? `1px solid ${C.border}`
                     : "none",
-                background: i % 2 === 0 ? "transparent" : "#FAFAFA",
+                background: i % 2 === 0 ? "transparent" : "#F7F8FC",
               }}
             >
               <td
@@ -481,7 +480,7 @@ function FeaturesTab() {
                 <td key={j} className="px-5 py-3.5 text-center">
                   {typeof val === "boolean" ? (
                     val ? (
-                      <Check size={16} color="#22C55E" className="mx-auto" />
+                      <Check size={16} color="#10B981" className="mx-auto" />
                     ) : (
                       <span className="text-slate-300 text-lg">—</span>
                     )
@@ -579,7 +578,7 @@ export default function SuperSubscriptionBillingPage() {
           className="rounded-2xl p-8 text-white relative overflow-hidden mt-6"
           style={{
             background:
-              "linear-gradient(135deg,#064E3B 0%,#065F46 50%,#0F766E 100%)",
+              C.gradient.hero,
           }}
         >
           <div className="flex flex-col md:flex-row md:items-center gap-6">
@@ -589,8 +588,7 @@ export default function SuperSubscriptionBillingPage() {
               </div>
               <div>
                 <h1
-                  className="text-3xl font-bold"
-                  style={{ fontFamily: "Sora,sans-serif" }}
+                  className="text-3xl "
                 >
                   Subscription & Billing
                 </h1>
@@ -626,8 +624,8 @@ export default function SuperSubscriptionBillingPage() {
               label: "Monthly Revenue",
               value: fmtCurrency(totalRevenue),
               icon: DollarSign,
-              color: "#059669",
-              bg: "#F0FDF4",
+              color: "#047857",
+              bg: "#D1FAE5",
               delta: "+12.4%",
             },
             {
@@ -642,8 +640,8 @@ export default function SuperSubscriptionBillingPage() {
               label: "Total Payments",
               value: payments.length,
               icon: CreditCard,
-              color: "#0891B2",
-              bg: "#F0F9FF",
+              color: "#4338CA",
+              bg: "#EEF2FF",
               delta: null,
             },
             {
@@ -654,8 +652,8 @@ export default function SuperSubscriptionBillingPage() {
                   : 0,
               ),
               icon: TrendingUp,
-              color: "#D97706",
-              bg: "#FFFBEB",
+              color: "#92400E",
+              bg: "#FEF3C7",
               delta: null,
             },
           ].map((card, i) => (
@@ -668,7 +666,7 @@ export default function SuperSubscriptionBillingPage() {
               style={{
                 background: "#fff",
                 border: `1px solid ${C.border}`,
-                boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+                boxShadow: C.shadow.card,
               }}
             >
               <div className="flex items-start justify-between mb-3">
@@ -681,7 +679,7 @@ export default function SuperSubscriptionBillingPage() {
                 {card.delta && (
                   <span
                     className="flex items-center gap-0.5 text-xs font-semibold"
-                    style={{ color: "#059669" }}
+                    style={{ color: "#047857" }}
                   >
                     <ArrowUpRight size={11} />
                     {card.delta}
@@ -693,7 +691,7 @@ export default function SuperSubscriptionBillingPage() {
               </p>
               <p
                 className="text-xl font-bold"
-                style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+                style={{ color: C.textPrimary }}
               >
                 {card.value}
               </p>
@@ -718,7 +716,7 @@ export default function SuperSubscriptionBillingPage() {
                 key={tab.id}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setActiveTab(tab.id)}
-                className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-medium transition-all"
+                className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium transition-all"
                 style={{
                   background: active ? "#4F46E5" : "transparent",
                   color: active ? "#fff" : C.textSecondary,
@@ -735,7 +733,7 @@ export default function SuperSubscriptionBillingPage() {
         {error && (
           <div
             className="flex items-center gap-3 p-4 rounded-xl"
-            style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}
+            style={{ background: "#FEE2E2", border: "1px solid #FEE2E2" }}
           >
             <AlertCircle size={16} color="#EF4444" />
             <span className="text-sm" style={{ color: "#EF4444" }}>

@@ -65,10 +65,10 @@ const MONTH_NAMES = [
 ];
 
 const STATUS_CFG = {
-  draft:      { label: "Draft",      bg: "#F1F5F9", color: "#64748B" },
-  processing: { label: "Processing", bg: "#FEF3C7", color: "#F59E0B" },
-  approved:   { label: "Approved",   bg: "#DBEAFE", color: "#2563EB" },
-  paid:       { label: "Paid",       bg: "#D1FAE5", color: "#10B981" },
+  draft:      { label: "Draft",      bg: C.bgMid, color: C.textSecondary },
+  processing: { label: "Processing", bg: C.warningLight, color: C.warning },
+  approved:   { label: "Approved",   bg: C.primaryTint, color: C.primary },
+  paid:       { label: "Paid",       bg: C.successLight, color: C.success },
 };
 
 const fadeUp = {
@@ -439,7 +439,7 @@ export default function PayslipsPage() {
   return (
     <div
       className="min-h-screen font-sans"
-      style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex h-screen overflow-hidden">
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -457,7 +457,7 @@ export default function PayslipsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.textSecondary} strokeWidth="2">
@@ -493,7 +493,7 @@ export default function PayslipsPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setMasked((p) => !p)}
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{ background: C.surface, border: `1px solid ${C.border}` }}
                 title={masked ? "Show amounts" : "Hide amounts"}
               >
@@ -503,7 +503,7 @@ export default function PayslipsPage() {
               </Motion.button>
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                style={{ background: "linear-gradient(135deg,#4F46E5,#06B6D4)" }}
+                style={{ background: "linear-gradient(135deg,#4F46E5,#6366F1)" }}
               >
                 {initials(employee)}
               </div>
@@ -517,7 +517,7 @@ export default function PayslipsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl p-7 text-white relative overflow-hidden"
-              style={{ background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 55%,#1E40AF 100%)" }}
+              style={{ background: C.gradient.hero }}
             >
               <div className="flex items-start justify-between flex-wrap gap-4">
                 <div className="flex items-center gap-4">
@@ -525,7 +525,7 @@ export default function PayslipsPage() {
                     <DollarSign size={28} />
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold" style={{ fontFamily: "Sora,sans-serif" }}>
+                    <h1 className="text-2xl ">
                       My Payslips
                     </h1>
                     <p className="text-indigo-200 text-sm">
@@ -542,7 +542,7 @@ export default function PayslipsPage() {
                     <button
                       key={y}
                       onClick={() => setSelectedYear(y)}
-                      className="px-3 py-1.5 rounded-xl text-sm font-semibold transition-all"
+                      className="px-3 py-1.5 rounded-full text-sm font-semibold transition-all"
                       style={{
                         background: selectedYear === y ? "rgba(255,255,255,0.25)" : "rgba(255,255,255,0.1)",
                         color: "#fff",
@@ -584,7 +584,7 @@ export default function PayslipsPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className="px-5 py-2 rounded-xl text-sm font-medium transition-all"
+                    className="px-5 py-2 rounded-full text-sm font-medium transition-all"
                     style={{
                       background:  active ? C.primary : "transparent",
                       color:       active ? "#fff"    : C.textSecondary,
@@ -625,7 +625,7 @@ export default function PayslipsPage() {
                           variants={fadeUp}
                           initial="hidden"
                           animate="visible"
-                          whileHover={{ y: -2, boxShadow: "0 8px 32px rgba(79,70,229,0.10)" }}
+                          whileHover={{ y: -2, boxShadow: C.shadow.lift }}
                           onClick={() => setSelectedPayslip(p)}
                           className="rounded-2xl p-5 flex items-center gap-4 cursor-pointer"
                           style={{ background: C.surface, border: `1px solid ${C.border}` }}
@@ -662,7 +662,7 @@ export default function PayslipsPage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={(e) => handleDownload(p, e)}
-                            className="p-2 rounded-xl ml-2"
+                            className="p-2 rounded-full ml-2"
                             style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}
                           >
                             {downloadingId === p.id
@@ -720,14 +720,14 @@ export default function PayslipsPage() {
                             <td className="px-5 py-3 text-sm">
                               {disp(p.grossSalary)}
                             </td>
-                            {/* ✅ FIXED: correct field names from API */}
+                            {/* FIXED: correct field names from API */}
                             <td className="px-5 py-3 text-sm" style={{ color: C.danger }}>
                               {disp(p.payeTax)}
                             </td>
                             <td className="px-5 py-3 text-sm" style={{ color: C.warning }}>
                               {disp(p.pensionEmployee)}
                             </td>
-                            <td className="px-5 py-3 text-sm" style={{ color: "#8B5CF6" }}>
+                            <td className="px-5 py-3 text-sm" style={{ color: "#6366F1" }}>
                               {disp(p.nhfDeduction)}
                             </td>
                             <td className="px-5 py-3 text-sm font-bold" style={{ color: C.success }}>
@@ -744,14 +744,14 @@ export default function PayslipsPage() {
                           <td className="px-5 py-3 font-bold text-sm">
                             {disp(ytdGross)}
                           </td>
-                          {/* ✅ FIXED: correct field names in YTD totals */}
+                          {/* FIXED: correct field names in YTD totals */}
                           <td className="px-5 py-3 font-bold text-sm" style={{ color: C.danger }}>
                             {disp(payslips.reduce((s, p) => s + (p.payeTax       ?? 0), 0))}
                           </td>
                           <td className="px-5 py-3 font-bold text-sm" style={{ color: C.warning }}>
                             {disp(payslips.reduce((s, p) => s + (p.pensionEmployee ?? 0), 0))}
                           </td>
-                          <td className="px-5 py-3 font-bold text-sm" style={{ color: "#8B5CF6" }}>
+                          <td className="px-5 py-3 font-bold text-sm" style={{ color: "#6366F1" }}>
                             {disp(payslips.reduce((s, p) => s + (p.nhfDeduction  ?? 0), 0))}
                           </td>
                           <td className="px-5 py-3 font-bold text-sm" style={{ color: C.success }}>
@@ -783,10 +783,10 @@ export default function PayslipsPage() {
               {/* Modal header */}
               <div
                 className="px-6 py-5 flex items-center justify-between"
-                style={{ background: "linear-gradient(135deg,#1E1B4B,#312E81)", color: "#fff" }}
+                style={{ background: C.gradient.hero, color: "#fff" }}
               >
                 <div>
-                  <p className="font-bold text-lg" style={{ fontFamily: "Sora,sans-serif" }}>
+                  <p className="font-bold text-lg">
                     {MONTH_NAMES[selectedPayslip.month]} {selectedPayslip.year} Payslip
                   </p>
                   <p className="text-indigo-200 text-sm">
@@ -798,14 +798,14 @@ export default function PayslipsPage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={(e) => handleDownload(selectedPayslip, e)}
-                    className="p-2 rounded-xl bg-white/15"
+                    className="p-2 rounded-full bg-white/15"
                     title="Download PDF"
                   >
                     <Download size={15} color="#fff" />
                   </Motion.button>
                   <button
                     onClick={() => setSelectedPayslip(null)}
-                    className="p-2 rounded-xl bg-white/15"
+                    className="p-2 rounded-full bg-white/15"
                   >
                     <X size={15} color="#fff" />
                   </button>
@@ -864,8 +864,8 @@ export default function PayslipsPage() {
                   </div>
                 </div>
 
-                {/* Deductions — ✅ FIXED: all three use correct API field names */}
-                <div className="rounded-xl p-4" style={{ background: "#FFF5F5" }}>
+                {/* Deductions — FIXED: all three use correct API field names */}
+                <div className="rounded-xl p-4" style={{ background: "#FEE2E2" }}>
                   <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: C.danger }}>
                     Deductions
                   </p>
@@ -884,7 +884,7 @@ export default function PayslipsPage() {
                     value={disp(selectedPayslip.nhfDeduction)}
                     indent
                   />
-                  <div className="border-t mt-2 pt-2" style={{ borderColor: "#FCA5A5" }}>
+                  <div className="border-t mt-2 pt-2" style={{ borderColor: "#EF4444" }}>
                     <DetailRow label="Total Deductions" value={disp(selectedPayslip.totalDeductions)} bold />
                   </div>
                 </div>
@@ -892,7 +892,7 @@ export default function PayslipsPage() {
                 {/* Net Pay */}
                 <div
                   className="rounded-xl p-4 flex items-center justify-between"
-                  style={{ background: C.successLight, border: `1px solid #6EE7B7` }}
+                  style={{ background: C.successLight, border: `1px solid #10B981` }}
                 >
                   <span className="font-bold" style={{ color: C.success }}>Net Pay</span>
                   <span className="text-xl font-bold" style={{ color: C.success }}>

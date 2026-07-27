@@ -33,31 +33,31 @@ export const koboToNaira = (kobo) => Number(kobo) / 100;
 
 // Status badge colours used across accounting tabs
 export const JE_STATUS_COLORS = {
-  Draft:  { bg: "#FEF3C7", color: "#D97706" },
-  Posted: { bg: "#D1FAE5", color: "#059669" },
-  Void:   { bg: "#FEE2E2", color: "#DC2626" },
+  Draft:  { bg: "#FEF3C7", color: "#92400E" },
+  Posted: { bg: "#D1FAE5", color: "#047857" },
+  Void:   { bg: "#FEE2E2", color: "#B91C1C" },
 };
 
 export const RECON_STATUS_COLORS = {
-  "In Progress": { bg: "#DBEAFE", color: "#2563EB" },
-  Completed:     { bg: "#D1FAE5", color: "#059669" },
+  "In Progress": { bg: "#E0E7FF", color: "#4F46E5" },
+  Completed:     { bg: "#D1FAE5", color: "#047857" },
 };
 
 export const TAX_STATUS_COLORS = {
-  Pending:   { bg: "#FEF3C7", color: "#D97706" },
-  Remitted:  { bg: "#D1FAE5", color: "#059669" },
-  Filed:     { bg: "#DBEAFE", color: "#2563EB" },
-  Paid:      { bg: "#D1FAE5", color: "#059669" },
-  Open:      { bg: "#F3E8FF", color: "#7C3AED" },
+  Pending:   { bg: "#FEF3C7", color: "#92400E" },
+  Remitted:  { bg: "#D1FAE5", color: "#047857" },
+  Filed:     { bg: "#E0E7FF", color: "#4F46E5" },
+  Paid:      { bg: "#D1FAE5", color: "#047857" },
+  Open:      { bg: "#E0E7FF", color: "#4F46E5" },
 };
 
 // COA type colours
 export const COA_TYPE_COLORS = {
-  Asset:     { bg: "#DBEAFE", color: "#1D4ED8" },
-  Liability: { bg: "#FEE2E2", color: "#DC2626" },
-  Equity:    { bg: "#F3E8FF", color: "#7C3AED" },
-  Income:    { bg: "#D1FAE5", color: "#059669" },
-  Expense:   { bg: "#FEF3C7", color: "#D97706" },
+  Asset:     { bg: "#E0E7FF", color: "#4338CA" },
+  Liability: { bg: "#FEE2E2", color: "#B91C1C" },
+  Equity:    { bg: "#E0E7FF", color: "#4F46E5" },
+  Income:    { bg: "#D1FAE5", color: "#047857" },
+  Expense:   { bg: "#FEF3C7", color: "#92400E" },
 };
 
 // ═════════════════════════════════════════════════════════════

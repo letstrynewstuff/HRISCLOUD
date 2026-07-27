@@ -35,9 +35,9 @@ const modalAnim = {
 
 // ─── Status config ────────────────────────────────────────────
 const STATUS_CFG = {
-  active:    { bg: "#fef3c7", color: "#d97706", icon: Clock,        label: "Active" },
-  completed: { bg: "#d1fae5", color: "#059669", icon: CheckCircle2, label: "Completed" },
-  failed:    { bg: "#fee2e2", color: "#dc2626", icon: AlertCircle,  label: "Failed" },
+  active:    { bg: "#fef3c7", color: "#92400E", icon: Clock,        label: "Active" },
+  completed: { bg: "#d1fae5", color: "#047857", icon: CheckCircle2, label: "Completed" },
+  failed:    { bg: "#fee2e2", color: "#B91C1C", icon: AlertCircle,  label: "Failed" },
 };
 
 // ─── Reusable: Employee Dropdown ──────────────────────────────
@@ -59,7 +59,7 @@ function EmployeeSelect({ employees, value, onChange, loading, disabled }) {
     <div className="relative">
       <button type="button" disabled={disabled}
         onClick={() => !disabled && setOpen(o => !o)}
-        className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm outline-none"
+        className="w-full flex items-center justify-between px-3 py-2.5 rounded-full text-sm outline-none"
         style={{
           background: C.surfaceAlt,
           border: `1.5px solid ${open ? C.danger : C.border}`,
@@ -95,7 +95,7 @@ function EmployeeSelect({ employees, value, onChange, loading, disabled }) {
             <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
             <motion.div initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
               className="absolute z-50 w-full mt-1 rounded-xl overflow-hidden"
-              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
+              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: C.shadow.lift }}>
               <div className="p-2" style={{ borderBottom: `1px solid ${C.border}` }}>
                 <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg" style={{ background: C.surfaceAlt }}>
                   <Search size={12} color={C.textMuted} />
@@ -125,7 +125,7 @@ function EmployeeSelect({ employees, value, onChange, loading, disabled }) {
                     onClick={() => { onChange(e.id); setOpen(false); setQ(""); }}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors"
                     style={{
-                      background: value === e.id ? "#fef2f2" : "transparent",
+                      background: value === e.id ? "#FEE2E2" : "transparent",
                       color: C.textPrimary,
                     }}>
                     <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
@@ -165,10 +165,10 @@ function StatusPill({ status }) {
 
 // ─── Progress Bar ─────────────────────────────────────────────
 function ProgressBar({ progress = 0 }) {
-  const color = progress >= 80 ? "#059669" : progress >= 40 ? "#d97706" : "#dc2626";
+  const color = progress >= 80 ? "#047857" : progress >= 40 ? "#92400E" : "#B91C1C";
   return (
     <div className="flex items-center gap-2 w-full">
-      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#e2e8f0" }}>
+      <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "#E4E7F0" }}>
         <motion.div className="h-full rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${Math.min(progress, 100)}%` }}
@@ -246,7 +246,7 @@ function PIPModal({ pip, employees, loadingEmployees, onClose, onSaved }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 32px 80px rgba(0,0,0,0.22)",
+          boxShadow: C.shadow.lift,
           maxHeight: "90vh",
         }}>
 
@@ -262,7 +262,7 @@ function PIPModal({ pip, employees, loadingEmployees, onClose, onSaved }) {
               {isEdit ? "Edit PIP" : "Create Performance Improvement Plan"}
             </p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:opacity-70 transition-opacity"
+          <button onClick={onClose} className="p-1.5 rounded-full hover:opacity-70 transition-opacity"
             style={{ background: C.surfaceAlt }}>
             <X size={14} color={C.textMuted} />
           </button>
@@ -272,8 +272,8 @@ function PIPModal({ pip, employees, loadingEmployees, onClose, onSaved }) {
         <div className="p-5 space-y-4 overflow-y-auto flex-1">
           {error && (
             <div className="flex items-center gap-2 p-3 rounded-xl" style={{ background: "#fee2e2" }}>
-              <AlertTriangle size={13} color="#dc2626" />
-              <p className="text-xs" style={{ color: "#dc2626" }}>{error}</p>
+              <AlertTriangle size={13} color="#B91C1C" />
+              <p className="text-xs" style={{ color: "#B91C1C" }}>{error}</p>
             </div>
           )}
 
@@ -354,9 +354,9 @@ function PIPModal({ pip, employees, loadingEmployees, onClose, onSaved }) {
                   <span className="text-xs" style={{ color: C.textMuted }}>%</span>
                   {form.goals.length > 1 && (
                     <button onClick={() => removeGoal(i)}
-                      className="p-1.5 rounded-lg flex-shrink-0"
+                      className="p-1.5 rounded-full flex-shrink-0"
                       style={{ background: "#fee2e2" }}>
-                      <X size={11} color="#dc2626" />
+                      <X size={11} color="#B91C1C" />
                     </button>
                   )}
                 </div>
@@ -369,13 +369,13 @@ function PIPModal({ pip, employees, loadingEmployees, onClose, onSaved }) {
         <div className="flex gap-3 px-5 pb-5 pt-3 flex-shrink-0"
           style={{ borderTop: `1px solid ${C.border}` }}>
           <button onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
             Cancel
           </button>
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={handleSubmit} disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.danger, opacity: saving ? 0.75 : 1 }}>
             {saving ? <><Loader2 size={13} className="animate-spin" /> Saving…</> : isEdit ? "Save Changes" : "Create PIP"}
           </motion.button>
@@ -409,14 +409,14 @@ function ProgressModal({ pip, onClose, onSaved }) {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       <motion.div variants={modalAnim} initial="hidden" animate="visible" exit="exit"
         className="relative w-full max-w-sm rounded-2xl overflow-hidden"
-        style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: "0 32px 80px rgba(0,0,0,0.22)" }}>
+        style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: C.shadow.lift }}>
 
         <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: `1px solid ${C.border}` }}>
           <div className="flex items-center gap-2">
             <BarChart2 size={15} color={C.danger} />
             <p className="font-bold text-sm" style={{ color: C.textPrimary }}>Update Progress</p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg" style={{ background: C.surfaceAlt }}>
+          <button onClick={onClose} className="p-1.5 rounded-full" style={{ background: C.surfaceAlt }}>
             <X size={14} color={C.textMuted} />
           </button>
         </div>
@@ -424,8 +424,8 @@ function ProgressModal({ pip, onClose, onSaved }) {
         <div className="p-5 space-y-4">
           {error && (
             <div className="flex items-center gap-2 p-3 rounded-xl" style={{ background: "#fee2e2" }}>
-              <AlertTriangle size={13} color="#dc2626" />
-              <p className="text-xs" style={{ color: "#dc2626" }}>{error}</p>
+              <AlertTriangle size={13} color="#B91C1C" />
+              <p className="text-xs" style={{ color: "#B91C1C" }}>{error}</p>
             </div>
           )}
 
@@ -446,8 +446,8 @@ function ProgressModal({ pip, onClose, onSaved }) {
               onChange={e => setProgress(Number(e.target.value))}
               className="w-full mt-3" style={{ accentColor: C.danger }} />
             {progress === 100 && (
-              <p className="text-xs mt-2 text-center font-semibold" style={{ color: "#059669" }}>
-                ✓ Will be automatically marked as Completed
+              <p className="text-xs mt-2 text-center font-semibold" style={{ color: "#047857" }}>
+ Will be automatically marked as Completed
               </p>
             )}
           </div>
@@ -455,13 +455,13 @@ function ProgressModal({ pip, onClose, onSaved }) {
 
         <div className="flex gap-3 px-5 pb-5">
           <button onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
             Cancel
           </button>
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={handleSave} disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.danger, opacity: saving ? 0.75 : 1 }}>
             {saving ? <><Loader2 size={13} className="animate-spin" /> Saving…</> : "Update"}
           </motion.button>
@@ -496,11 +496,11 @@ function StatusModal({ pip, onClose, onSaved }) {
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
       <motion.div variants={modalAnim} initial="hidden" animate="visible" exit="exit"
         className="relative w-full max-w-xs rounded-2xl overflow-hidden"
-        style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: "0 32px 80px rgba(0,0,0,0.22)" }}>
+        style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: C.shadow.lift }}>
 
         <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: `1px solid ${C.border}` }}>
           <p className="font-bold text-sm" style={{ color: C.textPrimary }}>Change Status</p>
-          <button onClick={onClose} className="p-1.5 rounded-lg" style={{ background: C.surfaceAlt }}>
+          <button onClick={onClose} className="p-1.5 rounded-full" style={{ background: C.surfaceAlt }}>
             <X size={14} color={C.textMuted} />
           </button>
         </div>
@@ -508,15 +508,15 @@ function StatusModal({ pip, onClose, onSaved }) {
         <div className="p-5 space-y-3">
           {error && (
             <div className="flex items-center gap-2 p-3 rounded-xl" style={{ background: "#fee2e2" }}>
-              <AlertTriangle size={13} color="#dc2626" />
-              <p className="text-xs" style={{ color: "#dc2626" }}>{error}</p>
+              <AlertTriangle size={13} color="#B91C1C" />
+              <p className="text-xs" style={{ color: "#B91C1C" }}>{error}</p>
             </div>
           )}
           {Object.entries(STATUS_CFG).map(([key, cfg]) => {
             const Icon = cfg.icon;
             return (
               <button key={key} onClick={() => setStatus(key)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-full text-left transition-all"
                 style={{
                   background: status === key ? cfg.bg : C.surfaceAlt,
                   border: `2px solid ${status === key ? cfg.color : C.border}`,
@@ -533,13 +533,13 @@ function StatusModal({ pip, onClose, onSaved }) {
 
         <div className="flex gap-3 px-5 pb-5">
           <button onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
             Cancel
           </button>
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={handleSave} disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.danger, opacity: saving ? 0.75 : 1 }}>
             {saving ? <><Loader2 size={13} className="animate-spin" /> Saving…</> : "Apply"}
           </motion.button>
@@ -586,14 +586,14 @@ function PIPRow({ pip, index, onEdit, onProgress, onStatus }) {
       <td className="px-5 py-4">
         <StatusPill status={pip.status} />
         {isOverdue && (
-          <p className="text-[10px] mt-0.5 font-semibold" style={{ color: "#dc2626" }}>Overdue</p>
+          <p className="text-[10px] mt-0.5 font-semibold" style={{ color: "#B91C1C" }}>Overdue</p>
         )}
       </td>
 
       {/* Review Date */}
       <td className="px-5 py-4">
         <span className={`text-xs flex items-center gap-1 ${isOverdue ? "font-semibold" : ""}`}
-          style={{ color: isOverdue ? "#dc2626" : C.textSecondary }}>
+          style={{ color: isOverdue ? "#B91C1C" : C.textSecondary }}>
           <Calendar size={11} />
           {reviewDate
             ? reviewDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
@@ -609,17 +609,17 @@ function PIPRow({ pip, index, onEdit, onProgress, onStatus }) {
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
             onClick={() => onProgress(pip)} title="Update progress"
-            className="p-1.5 rounded-lg" style={{ background: "#fee2e2", color: C.danger }}>
+            className="p-1.5 rounded-full" style={{ background: "#fee2e2", color: C.danger }}>
             <BarChart2 size={13} />
           </motion.button>
           <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
             onClick={() => onStatus(pip)} title="Change status"
-            className="p-1.5 rounded-lg" style={{ background: "#fef3c7", color: "#d97706" }}>
+            className="p-1.5 rounded-full" style={{ background: "#fef3c7", color: "#92400E" }}>
             <TrendingUp size={13} />
           </motion.button>
           <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
             onClick={() => onEdit(pip)} title="Edit PIP"
-            className="p-1.5 rounded-lg" style={{ background: C.surfaceAlt, color: C.textSecondary }}>
+            className="p-1.5 rounded-full" style={{ background: C.surfaceAlt, color: C.textSecondary }}>
             <Edit2 size={13} />
           </motion.button>
         </div>
@@ -685,23 +685,23 @@ export default function PIPManagement() {
       {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="font-bold text-lg" style={{ color: C.textPrimary }}>
+          <h2 className="text-lg" style={{ color: C.textPrimary }}>
             Performance Improvement Plans
           </h2>
           <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>
             {stats.total} total · {stats.active} active · {stats.completed} completed
-            {stats.failed > 0 && <span style={{ color: "#dc2626" }}> · {stats.failed} failed</span>}
+            {stats.failed > 0 && <span style={{ color: "#B91C1C" }}> · {stats.failed} failed</span>}
           </p>
         </div>
         <div className="flex gap-2 flex-wrap items-center">
           <motion.button whileHover={{ scale: 1.04 }} onClick={loadPIPs}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold"
             style={{ background: C.surfaceAlt, border: `1px solid ${C.border}`, color: C.textSecondary }}>
             <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
           </motion.button>
           <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
             onClick={() => { setSelected(null); setModal("create"); }}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-xl text-sm font-semibold text-white"
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold text-white"
             style={{ background: C.danger }}>
             <Plus size={14} /> Create New PIP
           </motion.button>
@@ -735,10 +735,10 @@ export default function PIPManagement() {
       {/* ── Error ── */}
       {error && (
         <div className="rounded-2xl p-4 flex items-center gap-3" style={{ background: "#fee2e2" }}>
-          <AlertTriangle size={16} color="#dc2626" />
-          <p className="text-sm" style={{ color: "#dc2626" }}>{error}</p>
+          <AlertTriangle size={16} color="#B91C1C" />
+          <p className="text-sm" style={{ color: "#B91C1C" }}>{error}</p>
           <button onClick={loadPIPs} className="ml-auto text-xs font-semibold underline"
-            style={{ color: "#dc2626" }}>Retry</button>
+            style={{ color: "#B91C1C" }}>Retry</button>
         </div>
       )}
 
@@ -782,7 +782,7 @@ export default function PIPManagement() {
                       {!statusFilter && (
                         <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
                           onClick={() => setModal("create")}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+                          className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold text-white"
                           style={{ background: C.danger }}>
                           <Plus size={13} /> Create First PIP
                         </motion.button>
@@ -842,7 +842,7 @@ export default function PIPManagement() {
         {toast && (
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
             className="fixed bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-3 px-5 py-3 rounded-2xl z-50"
-            style={{ background: "#1e293b", color: "#fff", boxShadow: "0 8px 32px rgba(0,0,0,0.3)", minWidth: 260 }}>
+            style={{ background: "#334155", color: "#fff", boxShadow: C.shadow.lift, minWidth: 260 }}>
             <CheckCircle2 size={14} color="#10b981" />
             <span className="text-sm font-medium">{toast}</span>
           </motion.div>

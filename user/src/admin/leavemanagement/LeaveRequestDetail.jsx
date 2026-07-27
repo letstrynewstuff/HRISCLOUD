@@ -6,40 +6,46 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminSideNavbar from "../AdminSideNavbar";
 import {
-  ChevronRight,
-  Check,
-  X,
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Menu,
-  Calendar,
-  User,
-  Briefcase,
-  MapPin,
-  FileText,
-  MessageSquare,
   AlertTriangle,
   ArrowLeft,
-  UserCheck,
+  Baby,
+  Briefcase,
   Building2,
+  Calendar,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  FileText,
+  GraduationCap,
+  Heart,
+  MapPin,
+  Menu,
+  MessageSquare,
   RefreshCw,
+  Stethoscope,
+  Sun,
+  User,
+  UserCheck,
+  Users,
+  X,
+  XCircle,
 } from "lucide-react";
 import {C} from "../employeemanagement/sharedData";
 import { leaveApi } from "../../api/service/leaveApi";
 
 const LEAVE_TYPE_UI = {
-  "Annual Leave": { color: "#4F46E5", light: "#EEF2FF", icon: "☀️" },
-  "Sick Leave": { color: "#EF4444", light: "#FEE2E2", icon: "🏥" },
-  "Maternity Leave": { color: "#EC4899", light: "#FDF2F8", icon: "🤱" },
-  "Paternity Leave": { color: "#06B6D4", light: "#ECFEFF", icon: "👨‍👩‍👧" },
-  Compassionate: { color: "#8B5CF6", light: "#EDE9FE", icon: "🕊️" },
-  "Study Leave": { color: "#10B981", light: "#D1FAE5", icon: "📚" },
-  "Unpaid Leave": { color: "#F59E0B", light: "#FEF3C7", icon: "⏸️" },
+  "Annual Leave": { color: "#4F46E5", light: "#EEF2FF", icon: Sun },
+  "Sick Leave": { color: "#EF4444", light: "#FEE2E2", icon: Stethoscope },
+  "Maternity Leave": { color: "#6366F1", light: "#EEF2FF", icon: Baby },
+  "Paternity Leave": { color: "#6366F1", light: "#EEF2FF", icon: Users },
+  Compassionate: { color: "#6366F1", light: "#E0E7FF", icon: Heart },
+  "Study Leave": { color: "#10B981", light: "#D1FAE5", icon: GraduationCap },
+  "Unpaid Leave": { color: "#F59E0B", light: "#FEF3C7", icon: "⏸" },
 };
 const getTypeColor = (type) => LEAVE_TYPE_UI[type]?.color ?? C.primary;
 const getTypeLight = (type) => LEAVE_TYPE_UI[type]?.light ?? C.primaryLight;
-const getTypeIcon = (type) => LEAVE_TYPE_UI[type]?.icon ?? "📋";
+const getTypeIcon = (type) => LEAVE_TYPE_UI[type]?.icon ?? "";
 const getInitials = (name) =>
   name
     ?.split(" ")
@@ -198,7 +204,7 @@ function ConfirmModal({ action, request, onConfirm, onClose, loading }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -214,7 +220,7 @@ function ConfirmModal({ action, request, onConfirm, onClose, loading }) {
             )}
           </div>
           <div>
-            <h3 className="font-bold text-sm" style={{ color: C.textPrimary }}>
+            <h3 className="text-sm" style={{ color: C.textPrimary }}>
               {isApprove ? "Approve Leave" : "Reject Leave"}
             </h3>
             <p className="text-[11px]" style={{ color: C.textMuted }}>
@@ -223,7 +229,7 @@ function ConfirmModal({ action, request, onConfirm, onClose, loading }) {
           </div>
           <button
             onClick={onClose}
-            className="ml-auto w-7 h-7 rounded-xl flex items-center justify-center"
+            className="ml-auto w-7 h-7 rounded-full flex items-center justify-center"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -272,7 +278,7 @@ function ConfirmModal({ action, request, onConfirm, onClose, loading }) {
         <div className="flex gap-2 mt-4">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold"
+            className="flex-1 py-2.5 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -286,7 +292,7 @@ function ConfirmModal({ action, request, onConfirm, onClose, loading }) {
             whileTap={{ scale: 0.97 }}
             onClick={() => onConfirm(comment)}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-xs font-semibold text-white flex items-center justify-center gap-2"
             style={{
               background: isApprove ? C.success : C.danger,
               opacity: loading ? 0.7 : 1,
@@ -458,7 +464,7 @@ export default function LeaveRequestDetail() {
   return (
     <div
       className="flex h-screen overflow-hidden"
-      style={{ background: C.bg, fontFamily: "Inter,sans-serif" }}
+      style={{ background: C.bg }}
     >
       <AdminSideNavbar
         sidebarOpen={sidebarOpen}
@@ -473,13 +479,13 @@ export default function LeaveRequestDetail() {
           style={{
             background: C.surface,
             borderBottom: `1px solid ${C.border}`,
-            boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+            boxShadow: C.shadow.card,
           }}
         >
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen((p) => !p)}
-              className="w-8 h-8 rounded-xl flex items-center justify-center md:hidden"
+              className="w-8 h-8 rounded-full flex items-center justify-center md:hidden"
               style={{
                 background: C.surfaceAlt,
                 border: `1px solid ${C.border}`,
@@ -514,7 +520,7 @@ export default function LeaveRequestDetail() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/admin/leave-management/requests")}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -546,7 +552,7 @@ export default function LeaveRequestDetail() {
                       />
                       <div>
                         <h2
-                          className="font-bold text-base"
+                          className="text-base"
                           style={{ color: C.textPrimary }}
                         >
                           {request.employee_name}
@@ -574,7 +580,7 @@ export default function LeaveRequestDetail() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setModal({ action: "approve" })}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white"
+                          className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold text-white"
                           style={{ background: C.success }}
                         >
                           <Check size={13} /> Approve
@@ -583,7 +589,7 @@ export default function LeaveRequestDetail() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => setModal({ action: "reject" })}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
+                          className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
                           style={{ background: C.dangerLight, color: C.danger }}
                         >
                           <X size={13} /> Reject
@@ -688,7 +694,7 @@ export default function LeaveRequestDetail() {
               >
                 <Card>
                   <h3
-                    className="text-sm font-bold mb-3"
+                    className="text-sm mb-3"
                     style={{ color: C.textPrimary }}
                   >
                     Request Details
@@ -711,7 +717,7 @@ export default function LeaveRequestDetail() {
                   />
                   <InfoRow
                     label="Paid Leave"
-                    value={request.is_paid ? "Yes ✅" : "No ❌"}
+                    value={request.is_paid ? "Yes" : "No"}
                     icon={FileText}
                   />
                   {request.approved_by_name && (
@@ -749,7 +755,7 @@ export default function LeaveRequestDetail() {
               >
                 <Card>
                   <h3
-                    className="text-sm font-bold mb-4"
+                    className="text-sm mb-4"
                     style={{ color: C.textPrimary }}
                   >
                     Request Timeline
@@ -817,7 +823,7 @@ export default function LeaveRequestDetail() {
               >
                 <Card>
                   <h3
-                    className="text-sm font-bold mb-3"
+                    className="text-sm mb-3"
                     style={{ color: C.textPrimary }}
                   >
                     Employee Info
@@ -857,7 +863,7 @@ export default function LeaveRequestDetail() {
                       onClick={() =>
                         navigate(`/admin/employees/${request.employee_id}`)
                       }
-                      className="w-full py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5"
+                      className="w-full py-2.5 rounded-full text-xs font-semibold flex items-center justify-center gap-1.5"
                       style={{
                         background: C.primaryLight,
                         color: C.primary,
@@ -879,7 +885,7 @@ export default function LeaveRequestDetail() {
               >
                 <Card>
                   <h3
-                    className="text-sm font-bold mb-4"
+                    className="text-sm mb-4"
                     style={{ color: C.textPrimary }}
                   >
                     Leave Balance

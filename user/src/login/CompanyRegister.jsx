@@ -139,7 +139,7 @@ function Field({
       <div className="relative">
         {Icon && (
           <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
-            <Icon size={14} color={value ? C.primary : C.textMuted} />
+            <Icon size={14} color={value ? C.primary : C.textSecondary} />
           </div>
         )}
         <input
@@ -171,7 +171,7 @@ function Field({
         )}
       </div>
       {hint && !error && (
-        <p className="text-[11px] mt-1" style={{ color: C.textMuted }}>
+        <p className="text-[11px] mt-1" style={{ color: C.textSecondary }}>
           {hint}
         </p>
       )}
@@ -219,7 +219,7 @@ function LeftPanel() {
       style={{
         width: 420,
         minWidth: 420,
-        background: `linear-gradient(160deg, ${C.navy} 0%, ${C.navyMid} 60%, ${C.navyLight} 100%)`,
+        background: C.gradient.hero,
       }}
     >
       <Particles />
@@ -260,7 +260,6 @@ function LeftPanel() {
         >
           <p
             className="text-4xl font-bold leading-tight mb-3 text-white"
-            style={{ fontFamily: "Sora, sans-serif" }}
           >
             Power Your <br />
             <span style={{ color: C.accent }}>HR Operations.</span>
@@ -308,7 +307,7 @@ function LeftPanel() {
                 className="flex items-center gap-4"
               >
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
                   style={{
                     background: "rgba(255,255,255,0.06)",
                     border: "1px solid rgba(255,255,255,0.12)",
@@ -498,7 +497,6 @@ export default function CompanyRegister() {
     return (
       <div
         className="min-h-screen flex"
-        style={{ fontFamily: "Sora, sans-serif" }}
       >
         <LeftPanel />
         <div
@@ -516,19 +514,19 @@ export default function CompanyRegister() {
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
               className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto"
-              style={{ background: "linear-gradient(135deg,#D1FAE5,#ECFEFF)" }}
+              style={{ background: "linear-gradient(135deg,#D1FAE5,#EEF2FF)" }}
             >
               <CheckCircle2 size={44} color={C.success} />
             </Motion.div>
 
             <div>
               <h2
-                className="text-2xl font-bold mb-1"
-                style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+                className="text-2xl mb-1"
+                style={{ color: C.textPrimary }}
               >
-                Welcome to BantaHR! 🎉
+                Welcome to BantaHR!
               </h2>
-              <p className="text-sm" style={{ color: C.textMuted }}>
+              <p className="text-sm" style={{ color: C.textSecondary }}>
                 Your company workspace has been created. A verification email
                 has been sent to{" "}
                 <strong style={{ color: C.textPrimary }}>{form.email}</strong>.
@@ -544,7 +542,7 @@ export default function CompanyRegister() {
             >
               <p
                 className="text-xs font-bold uppercase tracking-wide mb-2"
-                style={{ color: C.textMuted }}
+                style={{ color: C.textSecondary }}
               >
                 What's next
               </p>
@@ -573,7 +571,7 @@ export default function CompanyRegister() {
               className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white"
               style={{
                 background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-                boxShadow: `0 4px 16px ${C.primary}44`,
+                boxShadow: C.shadow.card,
                 display: "flex",
               }}
             >
@@ -598,12 +596,12 @@ export default function CompanyRegister() {
     >
       <div className="mb-5">
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Company Details
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Tell us about your organisation
         </p>
       </div>
@@ -658,13 +656,13 @@ export default function CompanyRegister() {
             className="block text-xs font-semibold mb-1.5"
             style={{ color: C.textPrimary }}
           >
-            Industry <span style={{ color: C.textMuted }}>(optional)</span>
+            Industry <span style={{ color: C.textSecondary }}>(optional)</span>
           </label>
           <div className="relative">
             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
               <BarChart3
                 size={14}
-                color={form.industry ? C.primary : C.textMuted}
+                color={form.industry ? C.primary : C.textSecondary}
               />
             </div>
             <select
@@ -678,7 +676,7 @@ export default function CompanyRegister() {
                 paddingBottom: "0.7rem",
                 background: C.surfaceAlt,
                 border: `1.5px solid ${form.industry ? C.primary + "55" : C.border}`,
-                color: form.industry ? C.textPrimary : C.textMuted,
+                color: form.industry ? C.textPrimary : C.textSecondary,
                 boxShadow: form.industry
                   ? `0 0 0 3px ${C.primaryLight}`
                   : "none",
@@ -717,7 +715,7 @@ export default function CompanyRegister() {
             className="block text-xs font-semibold mb-1.5"
             style={{ color: C.textPrimary }}
           >
-            Company Size <span style={{ color: C.textMuted }}>(optional)</span>
+            Company Size <span style={{ color: C.textSecondary }}>(optional)</span>
           </label>
           <div className="grid grid-cols-3 gap-2">
             {["1–10", "11–50", "51–200", "201–500", "501–1000", "1000+"].map(
@@ -726,7 +724,7 @@ export default function CompanyRegister() {
                   key={size}
                   type="button"
                   onClick={() => set("companySize", size)}
-                  className="py-2.5 rounded-2xl text-xs font-semibold transition-all"
+                  className="py-2.5 rounded-full text-xs font-semibold transition-all"
                   style={{
                     background:
                       form.companySize === size ? C.primary : C.surfaceAlt,
@@ -761,12 +759,12 @@ export default function CompanyRegister() {
     >
       <div className="mb-5">
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Your Account
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           You'll be the HR Admin — the owner of your company workspace
         </p>
       </div>
@@ -842,9 +840,9 @@ export default function CompanyRegister() {
           rightEl={
             <button onClick={() => setShowPw((p) => !p)} className="p-1">
               {showPw ? (
-                <EyeOff size={14} color={C.textMuted} />
+                <EyeOff size={14} color={C.textSecondary} />
               ) : (
-                <Eye size={14} color={C.textMuted} />
+                <Eye size={14} color={C.textSecondary} />
               )}
             </button>
           }
@@ -867,7 +865,7 @@ export default function CompanyRegister() {
             <span className="font-semibold" style={{ color: strColor }}>
               {strLabel}
             </span>
-            <span style={{ color: C.textMuted }}>
+            <span style={{ color: C.textSecondary }}>
               Use uppercase, number & symbol
             </span>
           </div>
@@ -892,9 +890,9 @@ export default function CompanyRegister() {
           rightEl={
             <button onClick={() => setShowCPw((p) => !p)} className="p-1">
               {showCPw ? (
-                <EyeOff size={14} color={C.textMuted} />
+                <EyeOff size={14} color={C.textSecondary} />
               ) : (
-                <Eye size={14} color={C.textMuted} />
+                <Eye size={14} color={C.textSecondary} />
               )}
             </button>
           }
@@ -931,7 +929,7 @@ export default function CompanyRegister() {
             </div>
             <span
               className="text-[11px]"
-              style={{ color: r.pass ? C.success : C.textMuted }}
+              style={{ color: r.pass ? C.success : C.textSecondary }}
             >
               {r.rule}
             </span>
@@ -1002,12 +1000,12 @@ export default function CompanyRegister() {
     >
       <div className="mb-5">
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Review & Submit
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Confirm your details before we create your workspace
         </p>
       </div>
@@ -1024,7 +1022,7 @@ export default function CompanyRegister() {
         <div className="flex items-center justify-between">
           <p
             className="text-xs font-bold uppercase tracking-wide"
-            style={{ color: C.textMuted }}
+            style={{ color: C.textSecondary }}
           >
             Company
           </p>
@@ -1062,7 +1060,7 @@ export default function CompanyRegister() {
         <div className="flex items-center justify-between">
           <p
             className="text-xs font-bold uppercase tracking-wide"
-            style={{ color: C.textMuted }}
+            style={{ color: C.textSecondary }}
           >
             HR Admin Account
           </p>
@@ -1114,7 +1112,6 @@ export default function CompanyRegister() {
   return (
     <div
       className="min-h-screen flex"
-      style={{ fontFamily: "Sora, sans-serif" }}
     >
       <LeftPanel />
 
@@ -1127,8 +1124,8 @@ export default function CompanyRegister() {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2.5 mb-6">
             <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg,#6366F1,#4F46E5)" }}
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{ background: C.gradient.accent }}
             >
               <Shield size={15} color="#fff" />
             </div>
@@ -1154,7 +1151,7 @@ export default function CompanyRegister() {
                           : step === s.id
                             ? C.primary
                             : C.surfaceAlt,
-                      color: step >= s.id ? "#fff" : C.textMuted,
+                      color: step >= s.id ? "#fff" : C.textSecondary,
                       border: `2px solid ${step > s.id ? C.success : step === s.id ? C.primary : C.border}`,
                     }}
                   >
@@ -1168,7 +1165,7 @@ export default function CompanyRegister() {
                           ? C.primary
                           : step > s.id
                             ? C.success
-                            : C.textMuted,
+                            : C.textSecondary,
                     }}
                   >
                     {s.label}
@@ -1195,7 +1192,7 @@ export default function CompanyRegister() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={goBack}
-                  className="flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold"
+                  className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-semibold"
                   style={{
                     background: C.surfaceAlt,
                     color: C.textSecondary,
@@ -1209,15 +1206,15 @@ export default function CompanyRegister() {
               <Motion.button
                 whileHover={{
                   scale: 1.01,
-                  boxShadow: `0 8px 24px ${C.primary}55`,
+                  boxShadow: C.shadow.lift,
                 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={step < 3 ? goNext : handleSubmit}
                 disabled={loading}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white transition-all"
+                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white transition-all"
                 style={{
                   background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-                  boxShadow: `0 4px 16px ${C.primary}44`,
+                  boxShadow: C.shadow.card,
                   opacity: loading ? 0.8 : 1,
                 }}
               >
@@ -1271,7 +1268,7 @@ export default function CompanyRegister() {
 function ReviewRow({ label, value }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-xs" style={{ color: C.textMuted }}>
+      <span className="text-xs" style={{ color: C.textSecondary }}>
         {label}
       </span>
       <span className="text-xs font-semibold" style={{ color: C.textPrimary }}>

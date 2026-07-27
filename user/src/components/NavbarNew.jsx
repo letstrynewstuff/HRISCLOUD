@@ -4,26 +4,27 @@
 // src/components/NavbarNew.jsx
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import {
-  Settings,
-  HelpCircle,
-  Home,
-  Clock,
-  Plane,
-  DollarSign,
-  FileText,
+  Award,
   BarChart2,
-  Users,
-  BookOpen,
-  Heart,
-  ClipboardList,
   Bell,
-  LogOut,
+  BookOpen,
+  CalendarRange,
   ChevronLeft,
   ChevronRight,
-  User,
-  Award,
-  X,
+  ClipboardList,
+  Clock,
+  DollarSign,
+  FileText,
+  Heart,
+  HelpCircle,
+  Home,
+  LogOut,
   Menu,
+  Plane,
+  Settings,
+  User,
+  Users,
+  X,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "./useAuth";
@@ -38,7 +39,7 @@ import BantaHRLogo from "../styles/BantaHRLogo";
 const BASE_NAV = [
   { label: "Home", icon: Home, path: "/dashboard" },
   { label: "Attendance", icon: Clock, path: "/attendance" },
-  { label: "TimeSheet", icon: Clock, path: "/timesheet" },
+  { label: "TimeSheet", icon: CalendarRange, path: "/timesheet" },
   { label: "Leave", icon: Plane, path: "/leave" },
   { label: "Payslips", icon: DollarSign, path: "/payslips" },
   { label: "Documents", icon: FileText, path: "/documents" },
@@ -89,7 +90,10 @@ function SidebarContent({
   return (
     <div
       className="flex flex-col h-full"
-      style={{ background: C.navy, transition: "width 0.3s ease" }}
+      style={{
+        background: C.gradient.rail,
+        transition: "width 0.3s ease",
+      }}
     >
       {/* Sidebar Header */}
       <div className="px-4 pt-6 pb-5 flex items-center gap-3 shrink-0">
@@ -137,7 +141,7 @@ function SidebarContent({
                   className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors cursor-pointer"
                   style={{
                     background: isActive
-                      ? "rgba(79,70,229,0.30)"
+                      ? "rgba(255,255,255,0.16)"
                       : isManagerItem && !isActive
                         ? "rgba(245,158,11,0.10)"
                         : "transparent",
@@ -145,7 +149,7 @@ function SidebarContent({
                       ? "#fff"
                       : isManagerItem
                         ? "rgba(253,230,138,0.85)"
-                        : "rgba(255,255,255,0.55)",
+                        : "rgba(255,255,255,0.72)",
                     border:
                       isManagerItem && !isActive
                         ? "1px solid rgba(245,158,11,0.25)"
@@ -195,8 +199,8 @@ function SidebarContent({
           style={{ background: "rgba(255,255,255,0.08)" }}
         >
           <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-            style={{ background: C.primary }}
+            className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0"
+            style={{ background: C.gradient.accent }}
           >
             {emp.initials}
           </div>
@@ -215,14 +219,14 @@ function SidebarContent({
               logout();
               close();
             }}
-            className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
             style={{
               background: "rgba(239,68,68,0.18)",
               border: "1px solid rgba(239,68,68,0.25)",
               cursor: "pointer",
             }}
           >
-            <LogOut size={13} color="#FCA5A5" />
+            <LogOut size={13} color="#EF4444" />
           </Motion.button>
         </div>
       </div>
@@ -243,8 +247,8 @@ export default function NavbarNew({
       <div
         className="lg:hidden fixed top-0 left-0 right-0 h-16 flex items-center justify-between px-4 z-[40]"
         style={{
-          background: C.navy,
-          borderBottom: "1px solid rgba(255,255,255,0.1)",
+          background: C.gradient.rail,
+          borderBottom: "1px solid rgba(255,255,255,0.12)",
           backdropFilter: "blur(10px)",
         }}
       >
@@ -262,10 +266,10 @@ export default function NavbarNew({
         {/* PERMANENT LOGOUT BUTTON (Mobile/MD) */}
         <button
           onClick={() => logout()}
-          className="flex items-center justify-center w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 active:scale-95 transition-transform"
+          className="flex items-center justify-center w-10 h-10 rounded-full bg-red-500/10 border border-red-500/20 active:scale-95 transition-transform"
           title="Logout"
         >
-          <LogOut size={20} color="#FCA5A5" />
+          <LogOut size={20} color="#EF4444" />
         </button>
       </div>
 

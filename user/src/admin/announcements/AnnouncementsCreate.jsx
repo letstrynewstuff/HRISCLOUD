@@ -5,69 +5,50 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useRef } from "react";
+import C from "../../styles/colors";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Megaphone,
-  Bell,
-  Menu,
-  ChevronRight,
-  X,
-  Check,
-  Eye,
-  Calendar,
-  Users,
-  Building2,
-  Globe,
-  Clock,
-  Send,
-  Save,
   AlertCircle,
-  CheckCircle2,
-  RefreshCw,
-  Bold,
-  Italic,
-  Underline,
-  List,
-  AlignLeft,
+  AlertTriangle,
   AlignCenter,
+  AlignLeft,
   AlignRight,
-  Hash,
+  Bell,
+  Bold,
+  Building2,
+  Calendar,
+  CalendarDays,
+  Check,
+  CheckCircle2,
   ChevronDown,
-  Zap,
-  Star,
+  ChevronRight,
+  ClipboardList,
+  Clock,
+  Eye,
   FileText,
+  Globe,
+  Hash,
+  Italic,
+  Lightbulb,
+  List,
+  Megaphone,
+  Menu,
+  PartyPopper,
   Pin,
+  RefreshCw,
+  Rocket,
+  Save,
+  Send,
+  Star,
+  Trophy,
+  Underline,
+  Users,
+  X,
+  Zap,
 } from "lucide-react";
 import { announcementApi } from "../../api/service/announcementApi";
 
 /* ─── Design tokens ─── */
-const C = {
-  bg: "#F0F2F8",
-  bgMid: "#E8EBF4",
-  surface: "#FFFFFF",
-  surfaceHover: "#F7F8FC",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryDark: "#3730A3",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  pink: "#EC4899",
-  pinkLight: "#FDF2F8",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const ADMIN = {
   name: "Ngozi Adeleke",
@@ -135,20 +116,27 @@ const PRIORITY_LEVELS = [
   { id: "high", label: "High", color: C.danger },
 ];
 
-const EMOJIS = [
-  "📢",
-  "🎉",
-  "⚠️",
-  "📋",
-  "🗓️",
-  "🏆",
-  "💡",
-  "🔔",
-  "✅",
-  "🚀",
-  "❗",
-  "📌",
+/* Announcement markers. The stored value is a stable key, not a glyph, so the
+   rendered mark can change without migrating saved announcements. */
+const MARKERS = [
+  { id: "announce", label: "Announcement", Icon: Megaphone },
+  { id: "celebrate", label: "Celebration", Icon: PartyPopper },
+  { id: "warning", label: "Warning", Icon: AlertTriangle },
+  { id: "policy", label: "Policy", Icon: ClipboardList },
+  { id: "schedule", label: "Schedule", Icon: CalendarDays },
+  { id: "award", label: "Award", Icon: Trophy },
+  { id: "idea", label: "Idea", Icon: Lightbulb },
+  { id: "reminder", label: "Reminder", Icon: Bell },
+  { id: "done", label: "Complete", Icon: CheckCircle2 },
+  { id: "launch", label: "Launch", Icon: Rocket },
+  { id: "important", label: "Important", Icon: AlertCircle },
+  { id: "pinned", label: "Pinned", Icon: Pin },
 ];
+const markerOf = (id) => MARKERS.find((m) => m.id === id);
+const MarkerIcon = ({ id, size = 18 }) => {
+  const m = markerOf(id);
+  return m ? <m.Icon size={size} /> : null;
+};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -220,7 +208,7 @@ function RichEditor({ value, onChange, placeholder }) {
                 execCmd(action.action);
               }}
               title={action.label}
-              className="w-7 h-7 rounded-lg flex items-center justify-center transition-all"
+              className="w-7 h-7 rounded-full flex items-center justify-center transition-all"
               style={{
                 background: activeFormats.has(action.action)
                   ? C.primaryLight
@@ -281,7 +269,7 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="relative h-full w-full max-w-lg flex flex-col"
-        style={{ background: C.bg, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+        style={{ background: C.bg, boxShadow: C.shadow.card }}
       >
         <div
           className="flex items-center justify-between px-5 py-4 shrink-0"
@@ -294,14 +282,14 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
             <Eye size={16} color={C.primary} />
             <span
               className="text-sm font-bold"
-              style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+              style={{ color: C.textPrimary }}
             >
               Announcement Preview
             </span>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors"
           >
             <X size={15} color={C.textMuted} />
           </button>
@@ -319,7 +307,7 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
             style={{
               background: C.surface,
               border: `1px solid ${C.border}`,
-              boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+              boxShadow: C.shadow.card,
             }}
           >
             <div
@@ -342,14 +330,13 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
               <div className="flex items-start gap-2 mb-3">
                 {form.emoji && (
                   <span className="text-2xl leading-none mt-0.5">
-                    {form.emoji}
+                    <MarkerIcon id={form.emoji} size={20} />
                   </span>
                 )}
                 <h2
-                  className="text-lg font-bold leading-snug"
+                  className="text-lg leading-snug"
                   style={{
                     color: C.textPrimary,
-                    fontFamily: "Sora, sans-serif",
                   }}
                 >
                   {form.title || (
@@ -478,7 +465,7 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onDraft}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -492,10 +479,10 @@ function PreviewModal({ form, onClose, onPublish, onDraft, publishing }) {
             whileTap={{ scale: 0.98 }}
             onClick={onPublish}
             disabled={publishing}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-white"
             style={{
               background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-              boxShadow: `0 4px 16px ${C.primary}44`,
+              boxShadow: C.shadow.card,
               opacity: publishing ? 0.7 : 1,
             }}
           >
@@ -656,7 +643,7 @@ export default function AnnouncementsCreate() {
   return (
     <div
       className="flex h-screen overflow-hidden"
-      style={{ background: C.bg, fontFamily: "Sora, sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
@@ -665,7 +652,7 @@ export default function AnnouncementsCreate() {
           style={{
             background: C.surface,
             borderBottom: `1px solid ${C.border}`,
-            boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+            boxShadow: C.shadow.card,
           }}
         >
           <div
@@ -677,7 +664,7 @@ export default function AnnouncementsCreate() {
             <span style={{ color: C.primary, fontWeight: 600 }}>Create</span>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
+            <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
               <Bell size={16} color={C.textSecondary} />
               <span
                 className="absolute top-1 right-1 w-2 h-2 rounded-full"
@@ -686,7 +673,7 @@ export default function AnnouncementsCreate() {
             </button>
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-              style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}
+              style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}
             >
               {ADMIN.initials}
             </div>
@@ -731,17 +718,16 @@ export default function AnnouncementsCreate() {
                   className="w-10 h-10 rounded-2xl flex items-center justify-center"
                   style={{
                     background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-                    boxShadow: `0 4px 16px ${C.primary}44`,
+                    boxShadow: C.shadow.card,
                   }}
                 >
                   <Megaphone size={18} color="#fff" />
                 </div>
                 <div>
                   <h1
-                    className="text-xl font-bold"
+                    className="text-xl "
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora, sans-serif",
                     }}
                   >
                     Create Announcement
@@ -757,7 +743,7 @@ export default function AnnouncementsCreate() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleDraft}
                   disabled={saving}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
                   style={{
                     background: C.surface,
                     color: C.textSecondary,
@@ -775,7 +761,7 @@ export default function AnnouncementsCreate() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setShowPreview(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold"
                   style={{ background: C.primaryLight, color: C.primary }}
                 >
                   <Eye size={13} /> Preview
@@ -785,10 +771,10 @@ export default function AnnouncementsCreate() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handlePublish}
                   disabled={publishing}
-                  className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white"
+                  className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-white"
                   style={{
                     background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-                    boxShadow: `0 4px 16px ${C.primary}44`,
+                    boxShadow: C.shadow.card,
                     opacity: publishing ? 0.7 : 1,
                   }}
                 >
@@ -833,7 +819,7 @@ export default function AnnouncementsCreate() {
                           whileHover={{ y: -2 }}
                           whileTap={{ scale: 0.97 }}
                           onClick={() => set("type", type.id)}
-                          className="flex flex-col items-center gap-1.5 p-3 rounded-xl text-center transition-all"
+                          className="flex flex-col items-center gap-1.5 p-3 rounded-full text-center transition-all"
                           style={{
                             background: active ? type.bg : C.surfaceAlt,
                             border: `2px solid ${active ? type.color : C.border}`,
@@ -882,15 +868,15 @@ export default function AnnouncementsCreate() {
                     <div className="relative">
                       <button
                         onClick={() => setShowEmojiPicker((p) => !p)}
-                        className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg"
+                        className="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full"
                         style={{
                           background: C.surfaceAlt,
                           color: C.textSecondary,
                           border: `1px solid ${C.border}`,
                         }}
                       >
-                        <span>{form.emoji || "😊"}</span>
-                        {form.emoji ? "Change" : "Add Emoji"}
+                        <MarkerIcon id={form.emoji} size={16} />
+                        {form.emoji ? "Change marker" : "Add marker"}
                       </button>
                       <AnimatePresence>
                         {showEmojiPicker && (
@@ -902,19 +888,23 @@ export default function AnnouncementsCreate() {
                             style={{
                               background: C.surface,
                               border: `1px solid ${C.border}`,
-                              boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                              boxShadow: C.shadow.lift,
                             }}
                           >
-                            {EMOJIS.map((em) => (
+                            {MARKERS.map(({ id, label, Icon }) => (
                               <button
-                                key={em}
+                                key={id}
+                                type="button"
+                                title={label}
+                                aria-label={label}
                                 onClick={() => {
-                                  set("emoji", em);
+                                  set("emoji", id);
                                   setShowEmojiPicker(false);
                                 }}
-                                className="w-8 h-8 text-lg hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center"
+                                className="w-8 h-8 rounded-full transition-colors flex items-center justify-center hover:bg-[color:var(--color-primary-light)]"
+                                style={{ color: C.primary }}
                               >
-                                {em}
+                                <Icon size={17} />
                               </button>
                             ))}
                             <button
@@ -922,7 +912,7 @@ export default function AnnouncementsCreate() {
                                 set("emoji", "");
                                 setShowEmojiPicker(false);
                               }}
-                              className="col-span-6 text-[10px] text-center py-1 hover:bg-gray-100 rounded-lg transition-colors"
+                              className="col-span-6 text-[10px] text-center py-1 hover:bg-gray-100 rounded-full transition-colors"
                               style={{ color: C.textMuted }}
                             >
                               Clear
@@ -934,7 +924,7 @@ export default function AnnouncementsCreate() {
                   </div>
                   <div className="flex items-center gap-3">
                     {form.emoji && (
-                      <span className="text-2xl shrink-0">{form.emoji}</span>
+                      <span className="shrink-0" style={{ color: C.primary }}><MarkerIcon id={form.emoji} size={22} /></span>
                     )}
                     <input
                       value={form.title}
@@ -948,7 +938,6 @@ export default function AnnouncementsCreate() {
                         boxShadow: form.title
                           ? `0 0 0 3px ${C.primaryLight}`
                           : "none",
-                        fontFamily: "Sora, sans-serif",
                       }}
                     />
                   </div>
@@ -1099,7 +1088,7 @@ export default function AnnouncementsCreate() {
                       <button
                         key={opt.val}
                         onClick={() => set("audience", opt.val)}
-                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all"
+                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full text-left transition-all"
                         style={{
                           background:
                             form.audience === opt.val
@@ -1224,7 +1213,7 @@ export default function AnnouncementsCreate() {
                       <button
                         key={opt.val}
                         onClick={() => set("schedule", opt.val)}
-                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-left transition-all"
+                        className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full text-left transition-all"
                         style={{
                           background:
                             form.schedule === opt.val
@@ -1354,7 +1343,7 @@ export default function AnnouncementsCreate() {
                       <button
                         key={p.id}
                         onClick={() => set("priority", p.id)}
-                        className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
+                        className="flex-1 py-2 rounded-full text-xs font-bold transition-all"
                         style={{
                           background:
                             form.priority === p.id
@@ -1489,7 +1478,7 @@ export default function AnnouncementsCreate() {
             style={{
               background: C.navy,
               color: "#fff",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+              boxShadow: C.shadow.lift,
               minWidth: 320,
             }}
           >

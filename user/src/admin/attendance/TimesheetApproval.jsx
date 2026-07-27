@@ -56,7 +56,7 @@ const Skeleton = ({ h = 16, w = "100%" }) => (
       width: w,
       borderRadius: 8,
       background:
-        "linear-gradient(90deg,#E2E8F4 25%,#EFF6FF 50%,#E2E8F4 75%)",
+        "linear-gradient(90deg,#E4E7F0 25%,#EEF2FF 50%,#E4E7F0 75%)",
       backgroundSize: "200% 100%",
       animation: "ts-shimmer 1.4s infinite linear",
     }}
@@ -90,7 +90,6 @@ const Avatar = ({ name, avatar, size = 36 }) =>
         color: "#fff",
         fontWeight: 700,
         fontSize: size * 0.33,
-        fontFamily: "Sora,sans-serif",
       }}
     >
       {initials(name)}
@@ -99,10 +98,10 @@ const Avatar = ({ name, avatar, size = 36 }) =>
 
 const StatusBadge = ({ status }) => {
   const map = {
-    Draft: { bg: C.surfaceAlt ?? "#F1F5F9", color: C.textMuted },
-    Submitted: { bg: "#FEF3C7", color: "#D97706" },
-    Approved: { bg: "#D1FAE5", color: "#059669" },
-    Rejected: { bg: "#FEE2E2", color: "#DC2626" },
+    Draft: { bg: C.surfaceAlt ?? "#F0F2F8", color: C.textMuted },
+    Submitted: { bg: "#FEF3C7", color: "#92400E" },
+    Approved: { bg: "#D1FAE5", color: "#047857" },
+    Rejected: { bg: "#FEE2E2", color: "#B91C1C" },
   };
   const s = map[status] ?? map.Draft;
   return (
@@ -151,21 +150,21 @@ const Toast = ({ toasts }) => (
                 ? "#D1FAE5"
                 : t.type === "error"
                   ? "#FEE2E2"
-                  : "#EFF6FF",
+                  : "#EEF2FF",
             color:
               t.type === "success"
-                ? "#059669"
+                ? "#047857"
                 : t.type === "error"
-                  ? "#DC2626"
+                  ? "#B91C1C"
                   : C.primary,
             border: `1px solid ${
               t.type === "success"
-                ? "#6EE7B7"
+                ? "#10B981"
                 : t.type === "error"
-                  ? "#FCA5A5"
-                  : "#BFDBFE"
+                  ? "#EF4444"
+                  : "#C7D2FE"
             }`,
-            boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+            boxShadow: C.shadow.card,
             display: "flex",
             alignItems: "center",
             gap: 8,
@@ -225,7 +224,7 @@ const RejectionModal = ({ entry, onConfirm, onCancel, loading }) => {
             padding: 28,
             width: "100%",
             maxWidth: 420,
-            boxShadow: "0 20px 60px rgba(15,23,42,0.18)",
+            boxShadow: C.shadow.lift,
           }}
         >
           <div
@@ -240,9 +239,8 @@ const RejectionModal = ({ entry, onConfirm, onCancel, loading }) => {
               <h3
                 style={{
                   fontSize: 15,
-                  fontWeight: 700,
+                  fontWeight: 500,
                   color: C.textPrimary,
-                  fontFamily: "Sora,sans-serif",
                 }}
               >
                 Reject Entry
@@ -273,7 +271,7 @@ const RejectionModal = ({ entry, onConfirm, onCancel, loading }) => {
             }}
           >
             Reason for rejection{" "}
-            <span style={{ color: "#DC2626" }}>*</span>
+            <span style={{ color: "#B91C1C" }}>*</span>
           </p>
           <textarea
             value={reason}
@@ -284,13 +282,12 @@ const RejectionModal = ({ entry, onConfirm, onCancel, loading }) => {
               width: "100%",
               borderRadius: 10,
               border: `1.5px solid ${C.border}`,
-              background: C.surfaceAlt ?? "#F8FAFC",
+              background: C.surfaceAlt ?? "#F7F8FC",
               padding: "10px 12px",
               fontSize: 13,
               color: C.textPrimary,
               outline: "none",
               resize: "vertical",
-              fontFamily: "'DM Sans',sans-serif",
             }}
           />
           <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
@@ -301,7 +298,7 @@ const RejectionModal = ({ entry, onConfirm, onCancel, loading }) => {
               style={{
                 flex: 1,
                 padding: "9px",
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 border: `1px solid ${C.border}`,
                 background: C.surfaceAlt,
                 fontSize: 12,
@@ -320,9 +317,9 @@ const RejectionModal = ({ entry, onConfirm, onCancel, loading }) => {
               style={{
                 flex: 2,
                 padding: "9px",
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 border: "none",
-                background: !reason.trim() || loading ? "#FCA5A5" : "#DC2626",
+                background: !reason.trim() || loading ? "#EF4444" : "#B91C1C",
                 color: "#fff",
                 fontSize: 12,
                 fontWeight: 700,
@@ -398,13 +395,13 @@ const EntryDrawer = ({ entry, onClose }) => {
           zIndex: 51,
           display: "flex",
           flexDirection: "column",
-          boxShadow: "-8px 0 40px rgba(15,23,42,0.14)",
+          boxShadow: C.shadow.card,
         }}
       >
         <div
           style={{
             padding: "20px 24px 16px",
-            background: "linear-gradient(135deg,#1E1B4B,#1E40AF)",
+            background: "linear-gradient(135deg,#1E1B4B,#3730A3)",
           }}
         >
           <div
@@ -420,7 +417,7 @@ const EntryDrawer = ({ entry, onClose }) => {
               style={{
                 width: 32,
                 height: 32,
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 background: "rgba(255,255,255,0.15)",
                 border: "none",
                 cursor: "pointer",
@@ -442,9 +439,8 @@ const EntryDrawer = ({ entry, onClose }) => {
               <h2
                 style={{
                   fontSize: 17,
-                  fontWeight: 800,
+                  fontWeight: 500,
                   color: "#fff",
-                  fontFamily: "Sora,sans-serif",
                 }}
               >
                 {entry.employeeName ?? "—"}
@@ -525,7 +521,7 @@ const EntryDrawer = ({ entry, onClose }) => {
               </p>
               <div
                 style={{
-                  background: C.surfaceAlt ?? "#F8FAFC",
+                  background: C.surfaceAlt ?? "#F7F8FC",
                   borderRadius: 10,
                   padding: "12px 14px",
                   fontSize: 13,
@@ -543,23 +539,23 @@ const EntryDrawer = ({ entry, onClose }) => {
             <div
               style={{
                 marginTop: 16,
-                background: "#FEF2F2",
+                background: "#FEE2E2",
                 borderRadius: 10,
                 padding: "12px 14px",
-                border: "1px solid #FECACA",
+                border: "1px solid #FEE2E2",
               }}
             >
               <p
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: "#DC2626",
+                  color: "#B91C1C",
                   marginBottom: 4,
                 }}
               >
                 Rejection Reason
               </p>
-              <p style={{ fontSize: 13, color: "#7F1D1D" }}>
+              <p style={{ fontSize: 13, color: "#B91C1C" }}>
                 {entry.rejectionReason}
               </p>
             </div>
@@ -775,7 +771,7 @@ function PendingApprovalsTab({ addToast }) {
             label: "Entries Pending",
             value: allEntries.length,
             icon: Clock,
-            color: "#D97706",
+            color: "#92400E",
             bg: "#FEF3C7",
           },
           {
@@ -789,7 +785,7 @@ function PendingApprovalsTab({ addToast }) {
             label: "Employees",
             value: empCount,
             icon: Users,
-            color: "#059669",
+            color: "#047857",
             bg: "#D1FAE5",
           },
         ].map((s) => (
@@ -823,9 +819,8 @@ function PendingApprovalsTab({ addToast }) {
               <p
                 style={{
                   fontSize: 20,
-                  fontWeight: 800,
+                  fontWeight: 500,
                   color: C.textPrimary,
-                  fontFamily: "Sora,sans-serif",
                 }}
               >
                 {s.value}
@@ -881,9 +876,9 @@ function PendingApprovalsTab({ addToast }) {
                   alignItems: "center",
                   gap: 6,
                   padding: "6px 14px",
-                  borderRadius: 10,
+                  borderRadius: C.radius.pill,
                   border: "none",
-                  background: "#059669",
+                  background: "#047857",
                   color: "#fff",
                   fontSize: 12,
                   fontWeight: 700,
@@ -925,7 +920,7 @@ function PendingApprovalsTab({ addToast }) {
               borderRadius: 16,
               border: `1px solid ${C.border}`,
               overflow: "hidden",
-              boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+              boxShadow: C.shadow.card,
             }}
           >
             {/* Group header */}
@@ -937,7 +932,7 @@ function PendingApprovalsTab({ addToast }) {
                 gap: 12,
                 cursor: "pointer",
                 borderBottom: isExp ? `1px solid ${C.border}` : "none",
-                background: isExp ? (C.surfaceAlt ?? "#F8FAFC") : "transparent",
+                background: isExp ? (C.surfaceAlt ?? "#F7F8FC") : "transparent",
               }}
               onClick={() =>
                 setExpanded((p) => ({ ...p, [group.employeeId]: !isExp }))
@@ -998,9 +993,8 @@ function PendingApprovalsTab({ addToast }) {
                   <p
                     style={{
                       fontSize: 15,
-                      fontWeight: 800,
+                      fontWeight: 500,
                       color: C.primary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {fmtHours(empHours)}
@@ -1023,10 +1017,10 @@ function PendingApprovalsTab({ addToast }) {
                     alignItems: "center",
                     gap: 5,
                     padding: "6px 12px",
-                    borderRadius: 10,
+                    borderRadius: C.radius.pill,
                     border: "none",
                     background: "#D1FAE5",
-                    color: "#059669",
+                    color: "#047857",
                     fontSize: 11,
                     fontWeight: 700,
                     cursor: actAll ? "not-allowed" : "pointer",
@@ -1169,10 +1163,10 @@ function PendingApprovalsTab({ addToast }) {
                               alignItems: "center",
                               gap: 4,
                               padding: "5px 10px",
-                              borderRadius: 8,
+                              borderRadius: C.radius.pill,
                               border: "none",
                               background: "#D1FAE5",
-                              color: "#059669",
+                              color: "#047857",
                               fontSize: 11,
                               fontWeight: 700,
                               cursor: actioning ? "not-allowed" : "pointer",
@@ -1196,10 +1190,10 @@ function PendingApprovalsTab({ addToast }) {
                               alignItems: "center",
                               gap: 4,
                               padding: "5px 10px",
-                              borderRadius: 8,
-                              border: "1.5px solid #FCA5A5",
+                              borderRadius: C.radius.pill,
+                              border: "1.5px solid #EF4444",
                               background: "transparent",
-                              color: "#DC2626",
+                              color: "#B91C1C",
                               fontSize: 11,
                               fontWeight: 700,
                               cursor: actioning ? "not-allowed" : "pointer",
@@ -1384,7 +1378,7 @@ function AllEntriesTab({ addToast }) {
             ...inputStyle,
             cursor: "pointer",
             color: C.textMuted,
-            background: C.surfaceAlt ?? "#F8FAFC",
+            background: C.surfaceAlt ?? "#F7F8FC",
           }}
         >
           Clear
@@ -1401,7 +1395,7 @@ function AllEntriesTab({ addToast }) {
             alignItems: "center",
             gap: 6,
             padding: "7px 14px",
-            borderRadius: 10,
+            borderRadius: C.radius.pill,
             border: "none",
             background: C.primary,
             color: "#fff",
@@ -1446,7 +1440,7 @@ function AllEntriesTab({ addToast }) {
                 <thead>
                   <tr
                     style={{
-                      background: C.surfaceAlt ?? "#F8FAFC",
+                      background: C.surfaceAlt ?? "#F7F8FC",
                       borderBottom: `1px solid ${C.border}`,
                     }}
                   >
@@ -1476,7 +1470,7 @@ function AllEntriesTab({ addToast }) {
                   {entries.map((entry) => (
                     <Motion.tr
                       key={entry.id}
-                      whileHover={{ background: C.surfaceAlt ?? "#F8FAFC" }}
+                      whileHover={{ background: C.surfaceAlt ?? "#F7F8FC" }}
                       onClick={() => setDrawerEntry(entry)}
                       style={{
                         borderBottom: `1px solid ${C.border}`,
@@ -1625,7 +1619,7 @@ function AllEntriesTab({ addToast }) {
                     style={{
                       width: 32,
                       height: 32,
-                      borderRadius: 8,
+                      borderRadius: C.radius.pill,
                       background: page === p ? C.primary : C.surface,
                       color: page === p ? "#fff" : C.textSecondary,
                       fontSize: 12,
@@ -1790,7 +1784,7 @@ function ReportsTab({ addToast }) {
               alignItems: "center",
               gap: 6,
               padding: "6px 12px",
-              borderRadius: 10,
+              borderRadius: C.radius.pill,
               border: `1px solid ${C.border}`,
               background: C.surface,
               fontSize: 12,
@@ -1802,7 +1796,7 @@ function ReportsTab({ addToast }) {
             ← Back to Reports
           </Motion.button>
           <h2
-            style={{ fontSize: 15, fontWeight: 700, color: C.textPrimary }}
+            style={{ fontSize: 15, fontWeight: 500, color: C.textPrimary }}
           >
             {histName} — Timesheet History
           </h2>
@@ -1828,7 +1822,7 @@ function ReportsTab({ addToast }) {
                 <thead>
                   <tr
                     style={{
-                      background: C.surfaceAlt ?? "#F8FAFC",
+                      background: C.surfaceAlt ?? "#F7F8FC",
                       borderBottom: `1px solid ${C.border}`,
                     }}
                   >
@@ -1963,7 +1957,7 @@ function ReportsTab({ addToast }) {
               onClick={() => setPeriod(p)}
               style={{
                 padding: "5px 12px",
-                borderRadius: 8,
+                borderRadius: C.radius.pill,
                 border: "none",
                 background: period === p ? C.primary : "transparent",
                 color: period === p ? "#fff" : C.textSecondary,
@@ -2002,7 +1996,7 @@ function ReportsTab({ addToast }) {
             alignItems: "center",
             gap: 5,
             padding: "6px 12px",
-            borderRadius: 10,
+            borderRadius: C.radius.pill,
             border: `1px solid ${C.border}`,
             background: C.surface,
             fontSize: 12,
@@ -2046,7 +2040,7 @@ function ReportsTab({ addToast }) {
                 label: "Approved Entries",
                 value: summary.totals?.byStatus?.Approved ?? 0,
                 icon: CheckCircle2,
-                color: "#059669",
+                color: "#047857",
                 bg: "#D1FAE5",
               },
               {
@@ -2057,14 +2051,14 @@ function ReportsTab({ addToast }) {
                     : 0,
                 ),
                 icon: TrendingUp,
-                color: "#7C3AED",
-                bg: "#EDE9FE",
+                color: "#4F46E5",
+                bg: "#E0E7FF",
               },
               {
                 label: "Employees with No Entries",
                 value: summary.zeroEntryEmployees?.length ?? 0,
                 icon: AlertTriangle,
-                color: "#D97706",
+                color: "#92400E",
                 bg: "#FEF3C7",
               },
             ].map((s) => (
@@ -2098,13 +2092,12 @@ function ReportsTab({ addToast }) {
                   <p
                     style={{
                       fontSize: 20,
-                      fontWeight: 800,
+                      fontWeight: 500,
                       color:
                         s.label === "Employees with No Entries" &&
                         (summary.zeroEntryEmployees?.length ?? 0) > 0
-                          ? "#D97706"
+                          ? "#92400E"
                           : C.textPrimary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {s.value}
@@ -2170,7 +2163,7 @@ function ReportsTab({ addToast }) {
                 <thead>
                   <tr
                     style={{
-                      background: C.surfaceAlt ?? "#F8FAFC",
+                      background: C.surfaceAlt ?? "#F7F8FC",
                       borderBottom: `1px solid ${C.border}`,
                     }}
                   >
@@ -2299,13 +2292,13 @@ function ReportsTab({ addToast }) {
                   width: 30,
                   height: 30,
                   borderRadius: 8,
-                  background: "#EDE9FE",
+                  background: "#E0E7FF",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Users size={14} color="#7C3AED" />
+                <Users size={14} color="#4F46E5" />
               </div>
               <div>
                 <p
@@ -2327,7 +2320,7 @@ function ReportsTab({ addToast }) {
                 <thead>
                   <tr
                     style={{
-                      background: C.surfaceAlt ?? "#F8FAFC",
+                      background: C.surfaceAlt ?? "#F7F8FC",
                       borderBottom: `1px solid ${C.border}`,
                     }}
                   >
@@ -2399,7 +2392,7 @@ function ReportsTab({ addToast }) {
                       return (
                         <Motion.tr
                           key={emp.employeeId ?? emp.id}
-                          whileHover={{ background: C.surfaceAlt ?? "#F8FAFC" }}
+                          whileHover={{ background: C.surfaceAlt ?? "#F7F8FC" }}
                           onClick={() => openHistory(emp)}
                           style={{
                             borderBottom: `1px solid ${C.border}`,
@@ -2447,7 +2440,7 @@ function ReportsTab({ addToast }) {
                                     padding: "2px 6px",
                                     borderRadius: 6,
                                     background: "#FEF3C7",
-                                    color: "#D97706",
+                                    color: "#92400E",
                                     marginLeft: 4,
                                   }}
                                 >
@@ -2514,7 +2507,7 @@ const ErrorState = ({ message, onRetry }) => (
   <div style={{ padding: 48, textAlign: "center" }}>
     <AlertCircle
       size={32}
-      style={{ color: "#DC2626", margin: "0 auto 10px" }}
+      style={{ color: "#B91C1C", margin: "0 auto 10px" }}
     />
     <p
       style={{
@@ -2618,7 +2611,7 @@ export default function TimesheetApproval() {
                 alignItems: "center",
                 gap: 6,
                 padding: "7px 16px",
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 border: "none",
                 cursor: "pointer",
                 fontSize: 12,

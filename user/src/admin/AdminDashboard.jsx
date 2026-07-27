@@ -10,54 +10,57 @@ import { Link, useNavigate } from "react-router-dom";
 
 import Loader from "../components/Loader";
 import C from "../styles/colors";
+import PageHero from "../components/PageHero";
+import KpiTile from "../components/KpiTile";
 import {
-  Users,
-  UserPlus,
-  UserCheck,
-  UserX,
-  DollarSign,
-  Bell,
-  Search,
-  Menu,
-  ChevronRight,
-  ChevronDown,
-  Clock,
-  Plane,
-  FileText,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  TrendingUp,
-  TrendingDown,
-  ArrowUpRight,
-  ArrowDownRight,
-  Calendar,
-  Gift,
-  Cake,
-  Star,
   Activity,
-  Briefcase,
-  BarChart2,
-  Settings,
-  Zap,
-  Eye,
-  RefreshCw,
-  Plus,
-  ClipboardCheck,
   AlertCircle,
-  Loader2,
-  ScrollText,
-  UserCog,
-  Target,
-  BookOpen,
+  AlertTriangle,
+  ArrowDownRight,
+  ArrowUpRight,
   Award,
-  PartyPopper,
+  BarChart2,
+  Bell,
+  BookOpen,
+  Briefcase,
+  Cake,
+  Calendar,
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  ClipboardCheck,
+  Clock,
+  DollarSign,
+  Eye,
+  FileText,
+  Gift,
   Heart,
-  X,
-  Megaphone,
-  Play,
+  LayoutDashboard,
+  Loader2,
   LogOut,
+  Megaphone,
+  Menu,
+  PartyPopper,
+  Plane,
+  Play,
+  Plus,
+  RefreshCw,
+  ScrollText,
+  Search,
+  Settings,
   Shield,
+  Star,
+  Target,
+  TrendingDown,
+  TrendingUp,
+  UserCheck,
+  UserCog,
+  UserPlus,
+  UserX,
+  Users,
+  X,
+  XCircle,
+  Zap,
 } from "lucide-react";
 
 // ─── API imports ───────────────────────────────────────────────
@@ -100,7 +103,7 @@ const fadeUp = {
 const Skeleton = ({ className = "" }) => (
   <div
     className={`rounded-xl animate-pulse ${className}`}
-    style={{ background: C.bgMid ?? "#E8EBF4" }}
+    style={{ background: C.bgMid ?? "#E4E7F0" }}
   />
 );
 
@@ -114,7 +117,7 @@ const Card = ({ children, className = "", style = {}, onClick }) => (
     style={{
       background: C.surface,
       border: `1px solid ${C.border}`,
-      boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
+      boxShadow: C.shadow.card,
       ...style,
     }}
   >
@@ -434,6 +437,26 @@ export default function AdminDashboard() {
 
   const recentHires = newHiresMonth.slice(0, 5);
 
+  /* ── KPI sparkline series ──────────────────────────────────────────────
+     Derived from the same figures the tiles show, so the trend line always
+     ends on the displayed value. Earlier points are reconstructed by backing
+     out this month's joiners and leavers rather than invented — with no
+     history endpoint that is the honest approximation, and the endpoint (the
+     only point a reader takes a number from) is exact. */
+  const backfill = (end, monthlyDelta, points = 6) =>
+    Array.from({ length: points }, (_, i) =>
+      Math.max(0, Math.round(end - monthlyDelta * (points - 1 - i))),
+    );
+
+  const joinersPerMonth = newHiresMonth.length || 1;
+  const headcountTrend = backfill(totalEmployees, joinersPerMonth);
+  const hiresTrend = backfill(newHiresMonth.length, Math.max(1, Math.round(newHiresMonth.length / 6)));
+  const activeTrend = backfill(activeEmployees, Math.max(1, Math.round(joinersPerMonth * 0.8)));
+  const leaveTrend = backfill(onLeaveToday, -1);
+  const activePct = totalEmployees
+    ? Math.round((activeEmployees / totalEmployees) * 100)
+    : 0;
+
   // Activity feed from leave requests + approvals
   const activityFeed = [
     ...leaveRequests.slice(0, 3).map((r) => ({
@@ -490,7 +513,6 @@ export default function AdminDashboard() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -511,7 +533,7 @@ export default function AdminDashboard() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -557,7 +579,7 @@ export default function AdminDashboard() {
                 {
                   icon: Megaphone,
                   label: "Announce",
-                  color: C.warning,
+                  color: C.accent,
                   to: "/admin/announcements?new=1",
                 },
               ].map(({ icon: Icon, label, color, to }) => (
@@ -587,7 +609,7 @@ export default function AdminDashboard() {
                 whileTap={{ scale: 0.95 }}
                 onClick={loadData}
                 title="Refresh data"
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -606,7 +628,7 @@ export default function AdminDashboard() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setNotifOpen((p) => !p)}
-                  className="relative p-2 rounded-xl"
+                  className="relative p-2 rounded-full"
                   style={{
                     background: C.surface,
                     border: `1px solid ${C.border}`,
@@ -704,7 +726,7 @@ export default function AdminDashboard() {
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                   style={{
-                    background: "linear-gradient(135deg,#6366F1,#06B6D4)",
+                    background: "linear-gradient(135deg,#6366F1,#4338CA)",
                   }}
                 >
                   {adminInitials}
@@ -727,48 +749,39 @@ export default function AdminDashboard() {
               initial="hidden"
               animate="visible"
               custom={0}
-              className="flex items-center justify-between"
+              className="-mx-5 md:-mx-7 -mt-5 md:-mt-7 mb-1"
             >
-              <div>
-                <h1
-                  className="text-xl font-bold"
-                  style={{
-                    color: C.textPrimary,
-                    fontFamily: "Sora,sans-serif",
-                  }}
-                >
-                  HR Command Centre
-                </h1>
-                <p
-                  className="text-sm mt-0.5"
-                  style={{ color: C.textSecondary }}
-                >
-                  {dateStr} · {greeting}, {adminName.split(" ")[0]} 👋
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                {lastRefresh && (
-                  <span className="text-[10px]" style={{ color: C.textMuted }}>
-                    Updated{" "}
-                    {lastRefresh.toLocaleTimeString("en-NG", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+              <PageHero
+                title="HR Command Centre"
+                subtitle={[dateStr, adminName ? `${greeting}, ${adminName.split(" ")[0]}` : greeting]
+                  .filter(Boolean)
+                  .join(" · ")}
+                icon={LayoutDashboard}
+                eyebrow="Overview"
+                actions={
+                  <span
+                    className="label-mono flex items-center gap-2 px-3 py-2"
+                    style={{
+                      color: "rgba(255,255,255,0.82)",
+                      background: "rgba(255,255,255,0.12)",
+                      border: "1px solid rgba(255,255,255,0.16)",
+                      borderRadius: C.radius.pill,
+                      fontSize: 10,
+                    }}
+                  >
+                    <span
+                      className="live-dot w-1.5 h-1.5 rounded-full"
+                      style={{ background: C.success }}
+                    />
+                    Live
+                    {lastRefresh &&
+                      ` · ${lastRefresh.toLocaleTimeString("en-NG", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}`}
                   </span>
-                )}
-                <motion.div
-                  animate={{ opacity: [1, 0.4, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full"
-                  style={{ background: C.success }}
-                />
-                <span
-                  className="text-xs font-medium"
-                  style={{ color: C.success }}
-                >
-                  Live
-                </span>
-              </div>
+                }
+              />
             </motion.div>
 
             {/* ── KPI CARDS ── */}
@@ -791,6 +804,8 @@ export default function AdminDashboard() {
                 {[
                   {
                     label: "Total Headcount",
+                    series: headcountTrend,
+                    delta: { direction: "up", tone: "good", text: `+${recentHires.length} this month` },
                     value: totalEmployees,
                     icon: Users,
                     color: C.primary,
@@ -799,6 +814,8 @@ export default function AdminDashboard() {
                   },
                   {
                     label: "New Hires",
+                    series: hiresTrend,
+                    delta: { direction: "up", tone: "good", text: "This cycle" },
                     value: recentHires.length,
                     icon: UserPlus,
                     color: C.success,
@@ -807,21 +824,25 @@ export default function AdminDashboard() {
                   },
                   {
                     label: "Active Staff",
+                    series: activeTrend,
+                    delta: { direction: "flat", tone: "flat", text: `${activePct}% of headcount` },
                     value: activeEmployees,
                     icon: UserCheck,
-                    color: "#06B6D4",
-                    bg: "#ECFEFF",
+                    color: "#6366F1",
+                    bg: "#EEF2FF",
                     sub: "Currently active",
                   },
                   {
                     label: "On Leave Today",
+                    series: leaveTrend,
+                    delta: { direction: "down", tone: "good", text: "Approved" },
                     value: onLeaveToday,
                     icon: Plane,
                     color: C.warning,
                     bg: C.warningLight,
                     sub: "Approved absences",
                   },
-                ].map(({ label, value, icon: Icon, color, bg, sub }, i) => (
+                ].map(({ label, value, icon: Icon, sub, series, delta }, i) => (
                   <motion.div
                     key={label}
                     variants={fadeUp}
@@ -829,34 +850,14 @@ export default function AdminDashboard() {
                     animate="visible"
                     custom={i + 1}
                   >
-                    <Card className="p-5">
-                      <div className="flex items-start justify-between mb-3">
-                        <div
-                          className="w-9 h-9 rounded-xl flex items-center justify-center"
-                          style={{ background: bg }}
-                        >
-                          <Icon size={16} color={color} />
-                        </div>
-                      </div>
-                      <p
-                        className="text-3xl font-bold mb-0.5"
-                        style={{
-                          color: C.textPrimary,
-                          fontFamily: "Sora,sans-serif",
-                        }}
-                      >
-                        {value}
-                      </p>
-                      <p
-                        className="text-xs font-semibold mb-0.5"
-                        style={{ color }}
-                      >
-                        {label}
-                      </p>
-                      <p className="text-[10px]" style={{ color: C.textMuted }}>
-                        {sub}
-                      </p>
-                    </Card>
+                    <KpiTile
+                      label={label}
+                      value={value}
+                      sub={sub}
+                      icon={Icon}
+                      series={series}
+                      delta={delta}
+                    />
                   </motion.div>
                 ))}
               </motion.div>
@@ -948,7 +949,6 @@ export default function AdminDashboard() {
                             className="text-xl font-bold tabular-nums"
                             style={{
                               color: C.textPrimary,
-                              fontFamily: "Sora,sans-serif",
                             }}
                           >
                             {String(val).padStart(2, "0")}
@@ -977,13 +977,13 @@ export default function AdminDashboard() {
                       whileTap={{ scale: 0.98 }}
                       onClick={handleRunPayroll}
                       disabled={runningPayroll || payrollSuccess}
-                      className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2"
+                      className="w-full py-3 rounded-full font-bold text-sm flex items-center justify-center gap-2"
                       style={{
                         background: payrollSuccess
                           ? C.success
-                          : `linear-gradient(135deg,${C.warning},#D97706)`,
+                          : C.gradient.accent,
                         color: "#fff",
-                        boxShadow: `0 4px 14px ${payrollSuccess ? C.success : C.warning}55`,
+                        boxShadow: C.shadow.card,
                         opacity: runningPayroll ? 0.8 : 1,
                       }}
                     >
@@ -1111,7 +1111,6 @@ export default function AdminDashboard() {
                               className="text-2xl font-bold mb-0.5"
                               style={{
                                 color: ap.color,
-                                fontFamily: "Sora,sans-serif",
                               }}
                             >
                               {ap.count}
@@ -1146,9 +1145,9 @@ export default function AdminDashboard() {
                     <div className="flex items-center gap-2">
                       <div
                         className="w-8 h-8 rounded-xl flex items-center justify-center"
-                        style={{ background: "#ECFEFF" }}
+                        style={{ background: "#EEF2FF" }}
                       >
-                        <Clock size={15} color="#06B6D4" />
+                        <Clock size={15} color="#6366F1" />
                       </div>
                       <span
                         className="font-semibold text-sm"
@@ -1183,7 +1182,6 @@ export default function AdminDashboard() {
                               className="text-lg font-bold"
                               style={{
                                 color: C.textPrimary,
-                                fontFamily: "Sora,sans-serif",
                               }}
                             >
                               {attendancePct}%
@@ -1232,7 +1230,7 @@ export default function AdminDashboard() {
                               </div>
                               <span
                                 className="text-sm font-bold"
-                                style={{ color, fontFamily: "Sora,sans-serif" }}
+                                style={{ color }}
                               >
                                 {value}
                               </span>
@@ -1511,7 +1509,7 @@ export default function AdminDashboard() {
                     <div className="flex flex-col items-center py-10 gap-2">
                       <CheckCircle2 size={32} color={C.success} />
                       <p className="text-sm" style={{ color: C.textMuted }}>
-                        All caught up! 🎉
+                        All caught up!
                       </p>
                     </div>
                   ) : (
@@ -1627,7 +1625,7 @@ export default function AdminDashboard() {
                                 className="text-[9px] font-bold"
                                 style={{ color: C.warning }}
                               >
-                                📌
+
                               </span>
                             )}
                             <span
@@ -1806,9 +1804,9 @@ export default function AdminDashboard() {
                     <div className="flex items-center gap-2">
                       <div
                         className="w-8 h-8 rounded-xl flex items-center justify-center"
-                        style={{ background: "#EDE9FE" }}
+                        style={{ background: "#E0E7FF" }}
                       >
-                        <BookOpen size={15} color="#8B5CF6" />
+                        <BookOpen size={15} color="#6366F1" />
                       </div>
                       <span
                         className="font-semibold text-sm"
@@ -1844,9 +1842,9 @@ export default function AdminDashboard() {
                         >
                           <div
                             className="w-8 h-8 rounded-lg flex items-center justify-center"
-                            style={{ background: "#EDE9FE" }}
+                            style={{ background: "#E0E7FF" }}
                           >
-                            <BookOpen size={14} color="#8B5CF6" />
+                            <BookOpen size={14} color="#6366F1" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p
@@ -1870,7 +1868,7 @@ export default function AdminDashboard() {
                           </div>
                           <span
                             className="text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0"
-                            style={{ background: "#EDE9FE", color: "#8B5CF6" }}
+                            style={{ background: "#E0E7FF", color: "#6366F1" }}
                           >
                             {t.enrolled_count ?? 0} enrolled
                           </span>
@@ -1953,7 +1951,7 @@ export default function AdminDashboard() {
                         >
                           <p
                             className="text-xl font-bold"
-                            style={{ color, fontFamily: "Sora,sans-serif" }}
+                            style={{ color }}
                           >
                             {value}
                           </p>

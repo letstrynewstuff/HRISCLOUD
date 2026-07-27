@@ -1,0 +1,1226 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#5b68d6" />
+<title>BantaHR homepage mockup (Trusted Indigo)</title>
+
+<!-- ── Appt Jobs typefaces: General Sans + DM Mono ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link rel="preconnect" href="https://api.fontshare.com" />
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ══════════════════════════════════════════════════════════
+   Appt Jobs "Trusted Indigo" tokens — pasted verbatim.
+   The BantaHR homepage copy is unchanged; only the colour,
+   typeface and type scale are new.
+   ══════════════════════════════════════════════════════════ */
+:root {
+  /* Surfaces */
+  --color-paper:   #ffffff;
+  --color-paper-2: #f5f4fa;
+  --color-paper-3: #e9e8f3;
+  /* Ink */
+  --color-ink:   #16151f;
+  --color-ink-2: #5c5a72;
+  /* Lines */
+  --color-rule: #e7e6f1;
+  /* Accent — Appt Jobs indigo */
+  --color-accent:        #5b5bd6;
+  --color-accent-strong: #3e3eae;
+  --color-accent-2:      #7c7ce8;
+  --color-accent-ink:    #ffffff;
+  --color-accent-tint:   #e4e3fa;
+  --color-focus:         #3e3eae;
+  /* Brand canvas */
+  --color-canvas-1: #f4f3fd;
+  --color-canvas-2: #e7e6fb;
+  --color-accent-glow: rgba(91, 91, 214, 0.16);
+
+  /* Hero ink */
+  --color-hero-ink:   #ffffff;
+  --color-hero-ink-2: rgba(255, 255, 255, 0.76);
+  --color-hero-line:  rgba(255, 255, 255, 0.16);
+
+  /* ── Gradients — every indigo surface is a gradient ──────
+     All stops come from the Trusted Indigo ramp:
+     #7c7ce8 (400) · #5b5bd6 (500) · #3e3eae (600) · #2a2878 (700)
+     and the tint ramp: #e4e3fa · #e7e6fb · #f4f3fd · #f5f4fa   */
+  --grad-hero: linear-gradient(158deg,
+      #a3a3f4 0%, #7c7ce8 18%, #5b5bd6 40%, #4340b8 62%, #322a92 82%, #221c68 100%);
+  --grad-accent: linear-gradient(135deg, #9292f2 0%, #5b5bd6 45%, #35299c 100%);
+  /* Closing CTA: nine stops so the fall is gradual, but travelling
+     from #b4b4f9 to #1d1758 so it still lands hard */
+  --grad-cta: linear-gradient(152deg,
+      #b4b4f9 0%,  #9c9cf4 12%, #8484ec 24%, #6d6de2 36%,
+      #5b5bd6 48%, #4c48c6 60%, #3d34ac 72%, #2f248a 86%, #1d1758 100%);
+  --grad-accent-soft: linear-gradient(135deg, #f2f1fe 0%, #bfbcf0 100%);
+  --grad-canvas-down: linear-gradient(180deg, #ffffff 0%, #efedfc 42%, #d4d0f6 100%);
+  --grad-canvas-up:   linear-gradient(180deg, #d4d0f6 0%, #efedfc 58%, #ffffff 100%);
+  --grad-canvas-diag: linear-gradient(152deg, #ffffff 0%, #e8e5fb 40%, #c9c5f2 100%);
+
+  /* Secondary text needs to darken where a band bottoms out deep */
+  --color-ink-2-deep: #46445e;
+
+  /* Fonts */
+  --font-display: "General Sans", system-ui, -apple-system, sans-serif;
+  --font-body:    "General Sans", system-ui, -apple-system, sans-serif;
+  --font-mono:    "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Spacing — 4-point scale */
+  --space-3xs: 0.25rem; --space-2xs: 0.5rem;  --space-xs: 0.75rem;
+  --space-sm:  1rem;    --space-md:  1.5rem;  --space-lg: 2rem;
+  --space-xl:  3rem;    --space-2xl: 4.5rem;  --space-3xl: 7rem;
+
+  /* Type scale */
+  --text-xs:  0.75rem;  --text-sm: 0.875rem; --text-md: 1.125rem;
+  --text-lg:  1.375rem; --text-xl: 1.75rem;  --text-2xl: 2.25rem;
+  --text-3xl: 3rem;
+  --text-display-s: clamp(2.25rem, 4.5vw, 3.25rem);
+  --text-display:   clamp(2.75rem, 6vw, 4.5rem);
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --dur-short: 220ms;
+  --dur-mid:   360ms;
+
+  /* Shape */
+  --radius-card:  16px;
+  --radius-input: 10px;
+  --radius-pill:  64px;
+
+  /* Flat depth */
+  --shadow-card: 0 1px 2px rgba(22, 21, 31, 0.05);
+  --shadow-lift: 0 10px 30px rgba(22, 21, 31, 0.08);
+
+  --maxw: 1120px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-short: 120ms; --dur-mid: 120ms; }
+  * { animation: none !important; transition-duration: 1ms !important; }
+}
+
+/* ── Base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; overflow-x: clip; }
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--text-md);          /* 18px */
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  color: var(--color-ink);
+  background-color: var(--color-paper);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Signature rule: headings at weight 500, never bold, tight tracking */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.14;
+  color: var(--color-ink);
+  margin: 0;
+  text-wrap: balance;
+}
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+ul { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; cursor: pointer; }
+figure { margin: 0; }
+
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.shell { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 var(--space-md); }
+
+/* Eyebrow / kicker — DM Mono, uppercase */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+/* ── Buttons — 64px pill ──────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  height: 3rem; padding: 0 var(--space-md);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm); font-weight: 600; letter-spacing: 0;
+  transition: background-color 140ms var(--ease-out),
+              color 140ms var(--ease-out),
+              transform 140ms var(--ease-out);
+}
+.btn--primary { background: var(--grad-accent); color: var(--color-accent-ink); }
+.btn--primary:hover { background: linear-gradient(135deg, #5b5bd6 0%, #3e3eae 48%, #2f2f92 100%); }
+.btn--ghost { background: var(--color-paper); color: var(--color-accent); border-color: var(--color-accent); }
+.btn--ghost:hover { background: var(--color-accent-tint); }
+.btn--onaccent { background: var(--color-paper); color: var(--color-accent); }
+.btn--onaccent:hover { background: var(--color-paper-2); }
+.btn--sm { height: 2.5rem; padding: 0 1.15rem; }
+.btn--wide { width: 100%; }
+.btn:active { transform: scale(0.98); }
+
+/* ── Nav — light text while it sits over the dark hero,
+       flips to the paper treatment once you scroll past it ─ */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color var(--dur-short) var(--ease-out),
+              border-color var(--dur-short) var(--ease-out);
+  --nav-ink:   var(--color-hero-ink);
+  --nav-ink-2: var(--color-hero-ink-2);
+  --nav-line:  var(--color-hero-line);
+  --nav-hr:    #d9d8fb;   /* "HR" needs to clear the indigo, not blend into it */
+}
+.nav.is-stuck {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  border-bottom-color: var(--color-rule);
+  --nav-ink:   var(--color-ink);
+  --nav-ink-2: var(--color-ink-2);
+  --nav-line:  var(--color-rule);
+  --nav-hr:    var(--color-accent);
+}
+.nav__inner { display: flex; align-items: center; gap: var(--space-lg); height: 74px; }
+.nav__links { display: flex; align-items: center; gap: var(--space-md); margin-left: var(--space-lg); }
+.nav__links a { font-size: var(--text-sm); color: var(--nav-ink-2); transition: color var(--dur-short) var(--ease-out); }
+.nav__links a:hover { color: var(--nav-ink); }
+.nav__cta { margin-left: auto; display: flex; align-items: center; gap: var(--space-2xs); }
+.nav__burger {
+  display: none; width: 40px; height: 40px; align-items: center; justify-content: center;
+  border: 1px solid var(--nav-line); border-radius: var(--radius-pill);
+  background: transparent; color: var(--nav-ink);
+}
+.nav__sheet { display: none; border-top: 1px solid var(--color-rule); background: var(--color-paper); }
+.nav__sheet.is-open { display: block; }
+.nav__sheet ul { display: flex; flex-direction: column; padding: var(--space-sm) 0; }
+.nav__sheet a { display: block; padding: var(--space-xs) 0; font-size: var(--text-sm); color: var(--color-ink-2); border-bottom: 1px solid var(--color-rule); }
+.nav__sheet .btn { margin: var(--space-sm) 0 var(--space-md); }
+
+/* ── Logo ─────────────────────────────────────────────── */
+.logo { display: inline-flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+.logo__mark { width: 40px; height: 40px; display: block; }
+.logo__word {
+  font-family: var(--font-display); font-size: 1.3rem; font-weight: 500;
+  letter-spacing: -0.03em; color: var(--color-ink); line-height: 1;
+}
+.logo__word em { font-style: normal; color: var(--color-accent); }
+.logo__sub {
+  display: block; font-family: var(--font-mono); font-size: 0.5625rem; font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-ink-2);
+  margin-top: 4px; line-height: 1;
+}
+/* Logo inherits whichever ground it is sitting on */
+.nav .logo__word    { color: var(--nav-ink); }
+.nav .logo__word em { color: var(--nav-hr); }
+.nav .logo__sub     { color: var(--nav-ink-2); }
+.nav:not(.is-stuck) .logo__mark { --logo-bg: rgba(255, 255, 255, 0.14); }
+
+/* ── Reveal ───────────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(16px); transition: opacity 620ms var(--ease-out), transform 620ms var(--ease-out); }
+.reveal.is-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+/* ── Section rhythm ───────────────────────────────────── */
+.band { padding: var(--space-3xl) 0; }
+/* Tinted bands are gradients too, alternating direction so the
+   page reads as one continuous violet wash rather than stripes */
+.band--grad-down { background: var(--grad-canvas-down); }
+.band--grad-up   { background: var(--grad-canvas-up); }
+.band--grad-diag { background: var(--grad-canvas-diag); }
+/* Where a band's deep end sits under running text, darken it to stay legible */
+.band--grad-up .section-head p,
+.band--grad-diag .section-head p,
+.band--grad-up .plans__note { color: var(--color-ink-2-deep); }
+
+.section-head { display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); max-width: 46ch; margin: 0 auto; text-align: center; }
+.section-head h2 { font-size: var(--text-2xl); }
+.section-head p { font-size: var(--text-md); color: var(--color-ink-2); }
+.section-body { margin-top: var(--space-2xl); }
+
+/* ── Hero — the Trusted Indigo itself, as a gradient ───── */
+.hero {
+  position: relative;
+  margin-top: -74px;              /* runs up behind the transparent nav */
+  padding: calc(74px + var(--space-3xl)) 0 var(--space-3xl);
+  overflow: clip;
+  background: var(--grad-hero);
+  color: var(--color-hero-ink);
+}
+.hero__glow {
+  position: absolute; left: 50%; translate: -50% 0; top: -20%;
+  width: min(920px, 112%); aspect-ratio: 1.5; pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.22), transparent 64%);
+}
+.hero__grid {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+  background-image:
+    linear-gradient(var(--color-hero-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-hero-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 35%, #000 20%, transparent 75%);
+}
+.hero__inner { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-md); }
+.hero__badge {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  padding: 0.4rem 0.95rem; border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: var(--color-hero-ink);
+  font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.04em; text-transform: uppercase;
+}
+/* On a saturated indigo ground the CTA inverts to paper */
+.hero .btn--primary { background: var(--color-paper); color: var(--color-accent-strong); }
+.hero .btn--primary:hover { background: var(--color-paper-2); }
+
+/* One weight, one colour across the whole headline */
+.hero h1 {
+  font-size: var(--text-display);
+  max-width: 17ch;
+  color: var(--color-hero-ink);
+  font-weight: 500;
+}
+.hero h1 .tint { font-weight: inherit; color: inherit; }
+.hero__sub { font-size: var(--text-md); color: var(--color-hero-ink-2); max-width: 58ch; }
+.hero__sub b { font-weight: inherit; color: inherit; }
+.hero__actions { margin-top: var(--space-2xs); }
+.hero__trust { display: flex; flex-wrap: wrap; gap: var(--space-sm) var(--space-lg); justify-content: center; margin-top: var(--space-md); }
+.hero__trust li {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 500; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--color-hero-ink-2);
+}
+.hero__trust svg { color: var(--color-hero-ink); flex-shrink: 0; }
+
+/* ── Stats ────────────────────────────────────────────── */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.stats > div { padding: var(--space-md) var(--space-sm); border-left: 1px solid var(--color-rule); display: flex; flex-direction: column; gap: 4px; text-align: center; }
+.stats > div:first-child { border-left: 0; }
+.stats b { font-family: var(--font-display); font-weight: 500; font-size: var(--text-2xl); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+.stats span { font-size: var(--text-sm); color: var(--color-ink-2); }
+
+/* ── Feature cards ────────────────────────────────────── */
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-sm); }
+.card {
+  background: var(--color-paper); border: 1px solid var(--color-rule);
+  border-radius: var(--radius-card); box-shadow: var(--shadow-card);
+  padding: var(--space-md); display: flex; flex-direction: column; gap: 0.6rem; height: 100%;
+  transition: border-color var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
+}
+.card:hover { border-color: var(--color-accent-2); box-shadow: var(--shadow-lift); }
+.card__icon {
+  width: 44px; height: 44px; border-radius: var(--radius-input);
+  background: var(--grad-accent-soft); color: var(--color-accent-strong);
+  display: grid; place-items: center; margin-bottom: var(--space-2xs);
+}
+.card h3 { font-size: var(--text-md); }
+.card p { font-size: var(--text-sm); color: var(--color-ink-2); }
+
+/* ── Feature deck — cards slide right to left, front card leads ──
+   Every card shares one grid cell, so the stage self-sizes to the
+   tallest card and nothing is absolutely positioned. --i is the
+   card's distance ahead of the active one, written by the script. */
+.deck { display: flex; flex-direction: column; gap: var(--space-lg); overflow: clip; margin-inline: calc(var(--space-md) * -1); padding-inline: var(--space-md); }
+.deck__stage {
+  display: grid;
+  justify-items: center;
+  perspective: 1700px;
+  perspective-origin: 50% 45%;
+  padding: var(--space-xs) 0 var(--space-lg);
+  overflow: visible;
+}
+.deck__stage > .card {
+  grid-area: 1 / 1;
+  width: min(560px, 100%);
+  padding: var(--space-lg) var(--space-md);
+  gap: 0.8rem;
+  transform-origin: 50% 60%;
+  will-change: transform, opacity;
+  transition:
+    transform 720ms var(--ease-drawer),
+    opacity   520ms var(--ease-out),
+    box-shadow 520ms var(--ease-out),
+    filter    520ms var(--ease-out);
+}
+
+/* Off-stage: parked left or right so cards never fly across the deck */
+.deck__stage > .card {
+  transform: translate3d(0, 0, -220px) scale(0.7);
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: var(--shadow-card);
+  z-index: 0;
+}
+.deck__stage > .card[data-slot="far-left"]  { transform: translate3d(-96%, 0, -220px) rotateY(26deg)  scale(0.7); }
+.deck__stage > .card[data-slot="far-right"] { transform: translate3d(96%, 0, -220px)  rotateY(-26deg) scale(0.7); }
+
+/* The card that just left, still visible on the left */
+.deck__stage > .card[data-slot="prev"] {
+  transform: translate3d(-60%, 0, -150px) rotateY(19deg) scale(0.84);
+  opacity: 0.55;
+  z-index: 2;
+}
+/* The card coming up next, waiting on the right */
+.deck__stage > .card[data-slot="next"] {
+  transform: translate3d(60%, 0, -150px) rotateY(-19deg) scale(0.84);
+  opacity: 0.55;
+  z-index: 2;
+}
+/* Both flankers are live targets: click one to bring it forward */
+.deck__stage > .card[data-slot="prev"],
+.deck__stage > .card[data-slot="next"] { pointer-events: auto; cursor: pointer; }
+.deck__stage > .card[data-slot="prev"]:hover { opacity: 0.82; transform: translate3d(-58%, 0, -120px) rotateY(16deg) scale(0.87); }
+.deck__stage > .card[data-slot="next"]:hover { opacity: 0.82; transform: translate3d(58%, 0, -120px) rotateY(-16deg) scale(0.87); }
+
+/* The active card: square on, lifted, fully readable */
+.deck__stage > .card[data-slot="0"] {
+  transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+  border-color: var(--color-accent-2);
+  box-shadow: 0 24px 60px rgba(45, 40, 130, 0.22);
+  z-index: 5;
+}
+
+.deck__stage > .card h3 { font-size: var(--text-lg); }
+.deck__stage > .card p  { font-size: var(--text-md); line-height: 1.6; }
+.deck__stage > .card .card__icon { width: 52px; height: 52px; }
+.deck__stage > .card .card__icon svg { width: 26px; height: 26px; }
+
+/* ── Deck controls ────────────────────────────────────── */
+.deck__controls { display: flex; align-items: center; justify-content: center; gap: var(--space-sm); flex-wrap: wrap; }
+.deck__arrow {
+  width: 44px; height: 44px; flex-shrink: 0;
+  display: grid; place-items: center;
+  border: 1px solid var(--color-accent); border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.7); color: var(--color-accent);
+  transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+.deck__arrow:hover { background: var(--color-accent); color: var(--color-accent-ink); }
+.deck__arrow[data-go="prev"] svg { transform: rotate(180deg); }
+
+.deck__dots { display: flex; align-items: center; gap: 7px; }
+.deck__dot {
+  width: 9px; height: 9px; padding: 0;
+  border: 0; border-radius: var(--radius-pill);
+  background: rgba(62, 62, 174, 0.26);
+  transition: width var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+}
+.deck__dot:hover { background: rgba(62, 62, 174, 0.5); }
+.deck__dot[aria-current="true"] { width: 30px; background: var(--grad-accent); }
+
+
+/* Progress ring around the active dot's timer */
+.deck__live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+@media (prefers-reduced-motion: reduce) {
+  .deck__stage > .card { transition: opacity 1ms linear; }
+}
+@media (max-width: 640px) {
+  .deck__stage { padding-bottom: var(--space-md); }
+  .deck__stage > .card { padding: var(--space-md); }
+  .deck__stage > .card p { font-size: var(--text-sm); }
+  .deck__controls { gap: var(--space-2xs); }
+}
+
+/* ── Steps ────────────────────────────────────────────── */
+.steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-lg); }
+.step { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.5rem; }
+.step__badge { position: relative; display: inline-flex; margin-bottom: var(--space-2xs); }
+.step__badge > span {
+  width: 64px; height: 64px; border-radius: 18px;
+  background: var(--grad-accent-soft); color: var(--color-accent-strong);
+  display: grid; place-items: center;
+}
+.step__n {
+  position: absolute; top: -8px; right: -10px;
+  min-width: 26px; height: 26px; padding: 0 6px; border-radius: var(--radius-pill);
+  background: var(--grad-accent); color: var(--color-accent-ink);
+  font-family: var(--font-mono); font-size: 0.6875rem;
+  display: grid; place-items: center;
+}
+.step h3 { font-size: var(--text-md); }
+.step p { font-size: var(--text-sm); color: var(--color-ink-2); }
+
+/* ── Testimonials ─────────────────────────────────────── */
+.quotes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-sm); }
+.quote { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: var(--space-md); display: flex; flex-direction: column; gap: var(--space-sm); height: 100%; }
+.quote blockquote { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: var(--text-lg); letter-spacing: -0.03em; line-height: 1.4; }
+.quote figcaption { display: flex; align-items: center; gap: 0.7rem; margin-top: auto; }
+.quote figcaption b { font-size: var(--text-sm); font-weight: 500; letter-spacing: 0; }
+.stars { display: flex; gap: 2px; color: var(--color-accent); }
+.avatar {
+  width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%;
+  background: var(--grad-accent-soft); color: var(--color-accent-strong);
+  display: grid; place-items: center;
+  font-family: var(--font-mono); font-size: var(--text-xs);
+}
+
+/* ── Pricing ──────────────────────────────────────────── */
+.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); align-items: start; max-width: 880px; margin: 0 auto; }
+.plan { position: relative; background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: var(--space-lg) var(--space-md) var(--space-md); display: flex; flex-direction: column; gap: var(--space-sm); }
+.plan--lead { border-color: var(--color-accent); box-shadow: 0 0 0 3px var(--color-accent-tint); }
+.plan__badge {
+  position: absolute; top: var(--space-sm); right: var(--space-sm);
+  padding: 0.25rem 0.7rem; border-radius: var(--radius-pill);
+  background: var(--grad-accent); color: var(--color-accent-ink);
+  font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.02em;
+}
+.plan h3 { font-size: var(--text-lg); }
+.plan__desc { font-size: var(--text-sm); color: var(--color-ink-2); }
+.plan__price { display: flex; align-items: baseline; gap: 0.4rem; flex-wrap: wrap; }
+.plan__price b { font-family: var(--font-display); font-weight: 500; font-size: var(--text-2xl); letter-spacing: -0.03em; color: var(--color-accent); font-variant-numeric: tabular-nums; }
+.plan__price del { font-size: var(--text-lg); color: var(--color-ink-2); font-variant-numeric: tabular-nums; }
+.plan__price span { font-size: var(--text-sm); color: var(--color-ink-2); }
+.plan__min { font-size: var(--text-sm); color: var(--color-accent); }
+.plan__eg { font-size: var(--text-sm); color: var(--color-ink-2); }
+.plan ul { display: flex; flex-direction: column; gap: 0.55rem; }
+.plan li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: var(--text-sm); color: var(--color-ink-2); }
+.plan li svg { color: var(--color-accent); flex-shrink: 0; margin-top: 4px; }
+.plan .btn { margin-top: auto; }
+.plans__note { text-align: center; font-size: var(--text-sm); color: var(--color-ink-2); margin-top: var(--space-lg); max-width: 52ch; margin-inline: auto; }
+
+/* ── About ────────────────────────────────────────────── */
+.abouts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-sm); }
+.about-card { background: var(--color-paper); border: 1px solid var(--color-rule); border-radius: var(--radius-card); box-shadow: var(--shadow-card); padding: var(--space-md); display: flex; flex-direction: column; gap: 0.6rem; height: 100%; }
+.about-card__icon {
+  width: 48px; height: 48px; border-radius: var(--radius-input);
+  background: var(--grad-accent-soft); color: var(--color-accent-strong);
+  display: grid; place-items: center; margin-bottom: var(--space-2xs);
+}
+.about-card h3 { font-size: var(--text-md); }
+.about-card p { font-size: var(--text-sm); color: var(--color-ink-2); }
+
+/* ── Final CTA — the one saturated surface ────────────── */
+.close {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--grad-cta);
+  color: var(--color-accent-ink);
+  border-radius: var(--radius-card);
+  padding: var(--space-3xl) var(--space-md);
+  text-align: center;
+}
+/* Same bloom the hero carries, so the two indigo slabs read as a pair */
+.close::before {
+  content: "";
+  position: absolute; z-index: -1;
+  left: 50%; top: -34%; translate: -50% 0;
+  width: min(820px, 118%); aspect-ratio: 1.35;
+  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.22), transparent 66%);
+  pointer-events: none;
+}
+.close h2 { color: var(--color-accent-ink); font-size: var(--text-2xl); max-width: 20ch; margin: 0 auto; }
+.close p { color: rgba(255, 255, 255, 0.8); max-width: 46ch; margin: var(--space-sm) auto 0; font-size: var(--text-md); }
+.close .btn { margin-top: var(--space-lg); }
+.close small { display: block; margin-top: var(--space-sm); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.04em; color: rgba(255, 255, 255, 0.72); }
+
+/* ── Footer ───────────────────────────────────────────── */
+.foot { border-top: 1px solid var(--color-rule); padding: var(--space-2xl) 0 var(--space-md); }
+.foot__cols { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: var(--space-lg); }
+.foot__blurb { font-size: var(--text-sm); color: var(--color-ink-2); max-width: 34ch; margin-top: var(--space-sm); }
+.foot h4 { font-family: var(--font-mono); font-size: var(--text-xs); font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ink-2); margin-bottom: var(--space-sm); }
+.foot ul { display: flex; flex-direction: column; gap: 0.5rem; }
+.foot li a { font-size: var(--text-sm); color: var(--color-ink-2); transition: color var(--dur-short) var(--ease-out); }
+.foot li a:hover { color: var(--color-accent); }
+.foot__base { margin-top: var(--space-2xl); padding-top: var(--space-sm); border-top: 1px solid var(--color-rule); display: flex; flex-wrap: wrap; gap: var(--space-xs) var(--space-md); justify-content: space-between; }
+.foot__base p { font-size: var(--text-sm); color: var(--color-ink-2); }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 1000px) {
+  .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .quotes { grid-template-columns: minmax(0, 1fr); }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .abouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .foot__cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 768px) {
+  .nav__links { display: none; }
+  .nav__burger { display: flex; }
+  .band { padding: var(--space-2xl) 0; }
+  .hero { padding-top: var(--space-2xl); }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stats > div:nth-child(odd) { border-left: 0; }
+  .stats > div:nth-child(n + 3) { border-top: 1px solid var(--color-rule); }
+  .grid-3 { grid-template-columns: minmax(0, 1fr); }
+  .plans { grid-template-columns: minmax(0, 1fr); }
+  .abouts { grid-template-columns: minmax(0, 1fr); }
+  .foot__cols { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+  .steps { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.6 20v-1a5.4 5.4 0 0 1 5.4-5.4h2A5.4 5.4 0 0 1 15.4 19v1"/><path d="M16.2 5.2a3.4 3.4 0 0 1 0 6.6"/><path d="M21.4 20v-1a5.4 5.4 0 0 0-3.6-5.1"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.4 16.8l5.6-5.6 3.6 3.6 7-7.4"/><path d="M15.4 7.4h4.2v4.2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.2l7.6 2.8v6c0 4.8-3.8 7.8-7.6 8.8-3.8-1-7.6-4-7.6-8.8V6z"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><path d="M3.4 12h17.2"/><path d="M12 3.4a13 13 0 0 1 0 17.2 13 13 0 0 1 0-17.2z"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M13.2 3.2L5.6 13.8h5.4l-1 7 7.6-10.6h-5.4z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.4" width="16.8" height="15" rx="2.2"/><path d="M3.6 10h16.8"/><path d="M8.4 3.4v4M15.6 3.4v4"/></symbol>
+  <symbol id="i-award" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9.2" r="5.2"/><path d="M9 13.8L7.6 21l4.4-2.4 4.4 2.4L15 13.8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 12.4l4.8 4.8 10.4-10.4"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.4 12h14.4"/><path d="M13 6.4l5.8 5.6-5.8 5.6"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.6l2.5 5.4 5.9.7-4.4 4 1.2 5.8L12 16.6 6.8 19.5 8 13.7l-4.4-4 5.9-.7z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 7.5h16M4 12h16M4 16.5h16"/></symbol>
+
+  <!-- Feature icons: one literal object per HR function -->
+  <symbol id="f-employee" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.6" y="4.6" width="18.8" height="15.4" rx="2.4"/>
+    <path d="M9.4 4.6V3.2h5.2v1.4"/>
+    <circle cx="8.6" cy="11" r="2.3"/>
+    <path d="M5.4 16.6a3.3 3.3 0 0 1 6.4 0"/>
+    <path d="M14.8 10.2h4M14.8 13.6h4"/>
+  </symbol>
+
+  <symbol id="f-attendance" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10.4" cy="10.4" r="6.9"/>
+    <path d="M10.4 6.3v4.3l2.9 1.7"/>
+    <path d="M14.8 18.4l2.2 2.2 4.2-4.4"/>
+  </symbol>
+
+  <symbol id="f-payroll" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2.2" y="5.6" width="19.6" height="12.8" rx="2.2"/>
+    <path d="M5.4 8.8v0M18.6 15.2v0"/>
+    <text x="12" y="15.6" text-anchor="middle" font-size="9.4" font-weight="600" fill="currentColor" stroke="none" font-family="system-ui, sans-serif">&#8358;</text>
+  </symbol>
+
+  <symbol id="f-performance" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="11.4" cy="12.6" r="8.2"/>
+    <circle cx="11.4" cy="12.6" r="4.3"/>
+    <circle cx="11.4" cy="12.6" r="0.9" fill="currentColor"/>
+    <path d="M11.4 12.6l8-8"/>
+    <path d="M16.6 4.4h3.4v3.4"/>
+  </symbol>
+
+  <symbol id="f-documents" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.4 3.4h8l5.2 5.2v11.9a1 1 0 0 1-1 1H5.4a1 1 0 0 1-1-1V4.4a1 1 0 0 1 1-1z"/>
+    <path d="M13.4 3.4v5.2h5.2"/>
+    <path d="M7.6 16.8c1.3-2.1 2.6-2.1 3.9 0s2.6 2.1 3.9 0"/>
+  </symbol>
+
+  <symbol id="f-analytics" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="8.4"/>
+    <path d="M12 3.6A8.4 8.4 0 0 1 20.4 12H12z" fill="currentColor" stroke="none"/>
+    <path d="M12 3.6v8.4l6 5.9"/>
+  </symbol>
+
+  <symbol id="f-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2.8 4.6h11.6a1 1 0 0 1 1 1v5.6a1 1 0 0 1-1 1H7.2l-4.4 3.2V5.6a1 1 0 0 1 1-1z"/>
+    <path d="M18 9.2h3.2a1 1 0 0 1 1 1v5.6a1 1 0 0 1-1 1h-1.4v3l-4.1-3h-3.1"/>
+  </symbol>
+
+  <symbol id="f-announce" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.2 10.2v3.6a1.4 1.4 0 0 0 1.4 1.4h2.2l7.6 4.4V4.4L7.2 8.8H4.6a1.4 1.4 0 0 0-1.4 1.4z"/>
+    <path d="M7.4 15.4l1 4.6h3l-.9-4.6"/>
+    <path d="M17.8 9.4a3.9 3.9 0 0 1 0 5.2"/>
+    <path d="M20.2 7a7.2 7.2 0 0 1 0 10"/>
+  </symbol>
+
+  <symbol id="f-offboarding" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.6 3.4H5.4a1 1 0 0 0-1 1v15.2a1 1 0 0 0 1 1h7.2"/>
+    <circle cx="10.2" cy="12" r="0.9" fill="currentColor" stroke="none"/>
+    <path d="M15 12h6.6"/>
+    <path d="M18.6 8.8l3.2 3.2-3.2 3.2"/>
+  </symbol>
+
+  <!-- BantaHR mark, recoloured to the brand indigo -->
+  <symbol id="i-logo" viewBox="0 0 56 56">
+    <rect width="56" height="56" rx="14" fill="var(--logo-bg, #5b5bd6)"/>
+    <circle cx="14" cy="19" r="5" fill="#fff" fill-opacity="0.55"/>
+    <path d="M6 38c0-5.523 3.582-10 8-10s8 4.477 8 10" stroke="#fff" stroke-opacity="0.55" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+    <circle cx="42" cy="19" r="5" fill="#fff" fill-opacity="0.55"/>
+    <path d="M34 38c0-5.523 3.582-10 8-10s8 4.477 8 10" stroke="#fff" stroke-opacity="0.55" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+    <circle cx="28" cy="17" r="6.5" fill="#fff"/>
+    <path d="M18 40c0-6.627 4.477-12 10-12s10 5.373 10 12" stroke="#fff" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+    <path d="M14 32 Q28 26 42 32" stroke="#fff" stroke-opacity="0.22" stroke-width="1.5" stroke-dasharray="3 3" fill="none" stroke-linecap="round"/>
+    <circle cx="44" cy="44" r="5" fill="#e4e3fa"/>
+    <path d="M41.5 44l1.8 1.8 3.2-3.2" stroke="#3e3eae" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </symbol>
+</svg>
+
+<!-- ══ NAVBAR ══ -->
+<header class="nav" id="nav">
+  <div class="shell nav__inner">
+    <a class="logo" href="#top" aria-label="BantaHR home">
+      <svg class="logo__mark" aria-hidden="true"><use href="#i-logo"/></svg>
+      <span>
+        <span class="logo__word">Banta<em>HR</em></span>
+        <span class="logo__sub">People Platform</span>
+      </span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#testimonials">Testimonials</a>
+      <a href="#about">About</a>
+    </nav>
+
+    <div class="nav__cta">
+      <a class="btn btn--primary btn--sm" href="#demo">Request a Demo</a>
+      <button class="nav__burger" id="burger" aria-expanded="false" aria-controls="sheet" aria-label="Open menu">
+        <svg width="20" height="20" aria-hidden="true"><use href="#i-menu"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="nav__sheet" id="sheet">
+    <div class="shell">
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#testimonials">Testimonials</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+      <a class="btn btn--primary btn--wide" href="#demo">Request a Demo</a>
+    </div>
+  </div>
+</header>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="top">
+  <div class="hero__grid" aria-hidden="true"></div>
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="shell hero__inner">
+    <span class="hero__badge reveal">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-bolt"/></svg>
+      Built for African Businesses
+    </span>
+
+    <h1 class="reveal">The HR Platform That <span class="tint">Actually Works</span> for Your Business</h1>
+
+    <p class="hero__sub reveal">Automate payroll, manage attendance, track performance, and empower your people, <b>all in one modern HRIS</b> built for Nigeria and Africa.</p>
+
+    <div class="hero__actions reveal">
+      <a class="btn btn--primary" href="#demo">Request a Demo <svg width="17" height="17" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+
+    <ul class="hero__trust reveal">
+      <li><svg width="14" height="14" aria-hidden="true"><use href="#i-check"/></svg> Secure &amp; Compliant</li>
+      <li><svg width="14" height="14" aria-hidden="true"><use href="#i-check"/></svg> NDPR Ready</li>
+      <li><svg width="14" height="14" aria-hidden="true"><use href="#i-check"/></svg> 99.9% Uptime</li>
+      <li><svg width="14" height="14" aria-hidden="true"><use href="#i-check"/></svg> No Setup Fee</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ STATS BAND ══ -->
+<section class="band band--grad-up" style="padding: var(--space-2xl) 0">
+  <div class="shell reveal">
+    <div class="stats">
+      <div><b>500+</b><span>Companies onboarded</span></div>
+      <div><b>95%</b><span>Customer satisfaction</span></div>
+      <div><b>40%</b><span>HR time saved</span></div>
+      <div><b>₦2B+</b><span>Payroll processed</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="band band--grad-down" id="features">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="eyebrow">Everything You Need</p>
+      <h2>One Platform. Every HR Function.</h2>
+      <p>From hire to retire, BantaHR handles every step of the employee lifecycle with intelligence and ease.</p>
+    </div>
+
+    <div class="deck section-body reveal" id="deck"
+         role="region" aria-roledescription="carousel" aria-label="HR functions">
+      <div class="deck__stage">
+      <article class="card" role="group" aria-roledescription="slide" aria-label="1 of 9: Employee Management">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-employee"/></svg></span>
+        <h3>Employee Management</h3>
+        <p>Centralise every employee record: contracts, role history, org charts, onboarding checklists and offboarding flows, all in one secure hub. HR admins get full visibility; employees can view and request updates to their own profiles.</p>
+      </article>
+      <article class="card" role="group" aria-roledescription="slide" aria-label="2 of 9: Attendance & Leave">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-attendance"/></svg></span>
+        <h3>Attendance &amp; Leave</h3>
+        <p>Real-time clock-in with location awareness, automated leave balance calculations, and intelligent approval workflows. Managers approve or decline leave requests in one tap, and the system updates balances instantly.</p>
+      </article>
+      <article class="card" role="group" aria-roledescription="slide" aria-label="3 of 9: Payroll Processing">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-payroll"/></svg></span>
+        <h3>Payroll Processing</h3>
+        <p>Run fully compliant Nigerian payroll in minutes. PAYE, pension (PFA), NHF, and NSITF all automated. Generate payslips, process bulk payments, and stay audit-ready with detailed payroll reports every cycle.</p>
+      </article>
+      <article class="card" role="group" aria-roledescription="slide" aria-label="4 of 9: Performance Management">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-performance"/></svg></span>
+        <h3>Performance Management</h3>
+        <p>Set team and individual OKRs, run structured appraisal cycles, and track employee growth with real-time dashboards. Managers give continuous feedback; employees see exactly where they stand and what to improve.</p>
+      </article>
+      <article class="card" role="group" aria-roledescription="slide" aria-label="5 of 9: Document Management">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-documents"/></svg></span>
+        <h3>Document Management</h3>
+        <p>Create, send, and e-sign offer letters, contracts, and HR policy documents digitally. Employees receive documents in their portal, sign electronically, and all records are stored securely with full audit trails.</p>
+      </article>
+      <article class="card" role="group" aria-roledescription="slide" aria-label="6 of 9: HR Analytics">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-analytics"/></svg></span>
+        <h3>HR Analytics</h3>
+        <p>Live dashboards that turn your workforce data into strategic decisions: headcount trends, attrition rates, department costs, and custom reports. Export to PDF or Excel for board-level presentations.</p>
+      </article>
+      <article class="card" role="group" aria-roledescription="slide" aria-label="7 of 9: Team Chat">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-chat"/></svg></span>
+        <h3>Team Chat</h3>
+        <p>Built-in messaging so your workforce stays connected. Managers create team channels for group announcements; employees send direct messages and share documents, all within the same platform, no external tools needed.</p>
+      </article>
+      <article class="card" role="group" aria-roledescription="slide" aria-label="8 of 9: Announcements">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-announce"/></svg></span>
+        <h3>Announcements</h3>
+        <p>HR admins broadcast company-wide or department-specific announcements with rich text, file attachments, and scheduled publishing. Pin important notices so they stay visible, and track who has read each announcement.</p>
+      </article>
+      <article class="card" role="group" aria-roledescription="slide" aria-label="9 of 9: Offboarding">
+        <span class="card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#f-offboarding"/></svg></span>
+        <h3>Offboarding</h3>
+        <p>Structure every exit with automated offboarding checklists: asset returns, system access revocation, exit interviews, and final payroll. Reduce admin chaos and ensure every departure is handled professionally.</p>
+      </article>
+      </div>
+
+      <div class="deck__controls">
+        <button class="deck__arrow" type="button" data-go="prev" aria-label="Previous function">
+          <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </button>
+
+        <div class="deck__dots" role="tablist" aria-label="Choose a function">
+          <button class="deck__dot" type="button" data-go="0" aria-label="Show Employee Management" aria-current="true"></button>
+          <button class="deck__dot" type="button" data-go="1" aria-label="Show Attendance & Leave"></button>
+          <button class="deck__dot" type="button" data-go="2" aria-label="Show Payroll Processing"></button>
+          <button class="deck__dot" type="button" data-go="3" aria-label="Show Performance Management"></button>
+          <button class="deck__dot" type="button" data-go="4" aria-label="Show Document Management"></button>
+          <button class="deck__dot" type="button" data-go="5" aria-label="Show HR Analytics"></button>
+          <button class="deck__dot" type="button" data-go="6" aria-label="Show Team Chat"></button>
+          <button class="deck__dot" type="button" data-go="7" aria-label="Show Announcements"></button>
+          <button class="deck__dot" type="button" data-go="8" aria-label="Show Offboarding"></button>
+        </div>
+
+        <button class="deck__arrow" type="button" data-go="next" aria-label="Next function">
+          <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg>
+        </button>
+
+      </div>
+
+      <p class="deck__live" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="band">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="eyebrow">Simple Onboarding</p>
+      <h2>Up and Running in 48 Hours</h2>
+    </div>
+
+    <div class="steps section-body reveal">
+      <div class="step">
+        <span class="step__badge">
+          <span><svg width="28" height="28" aria-hidden="true"><use href="#i-calendar"/></svg></span>
+          <span class="step__n">01</span>
+        </span>
+        <h3>Book Your Demo</h3>
+        <p>Schedule a personalised walkthrough with our team.</p>
+      </div>
+      <div class="step">
+        <span class="step__badge">
+          <span><svg width="28" height="28" aria-hidden="true"><use href="#i-globe"/></svg></span>
+          <span class="step__n">02</span>
+        </span>
+        <h3>We Set You Up</h3>
+        <p>We handle your data migration and company configuration, with zero spreadsheet chaos.</p>
+      </div>
+      <div class="step">
+        <span class="step__badge">
+          <span><svg width="28" height="28" aria-hidden="true"><use href="#i-award"/></svg></span>
+          <span class="step__n">03</span>
+        </span>
+        <h3>Train Your Team</h3>
+        <p>Intuitive interface means your HR team is productive from day one.</p>
+      </div>
+      <div class="step">
+        <span class="step__badge">
+          <span><svg width="28" height="28" aria-hidden="true"><use href="#i-trend"/></svg></span>
+          <span class="step__n">04</span>
+        </span>
+        <h3>Scale Confidently</h3>
+        <p>From 10 to 10,000 employees, BantaHR grows with your ambition.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="band band--grad-diag" id="testimonials">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="eyebrow">Social Proof</p>
+      <h2>Trusted by HR Teams Across Africa</h2>
+    </div>
+
+    <div class="quotes section-body reveal">
+      <figure class="quote">
+        <span class="stars" aria-label="Rated 5 out of 5">
+          <svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg>
+        </span>
+        <blockquote>"BantaHR cut our monthly payroll processing from 3 days to 45 minutes. The ROI was immediate."</blockquote>
+        <figcaption><span class="avatar">AO</span><b>Adaeze Okonkwo</b></figcaption>
+      </figure>
+      <figure class="quote">
+        <span class="stars" aria-label="Rated 5 out of 5">
+          <svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg>
+        </span>
+        <blockquote>"Finally an HR platform built for African businesses. The leave management alone is worth every kobo."</blockquote>
+        <figcaption><span class="avatar">EE</span><b>Emeka Eze</b></figcaption>
+      </figure>
+      <figure class="quote">
+        <span class="stars" aria-label="Rated 5 out of 5">
+          <svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg><svg width="15" height="15" aria-hidden="true"><use href="#i-star"/></svg>
+        </span>
+        <blockquote>"Our team of 300 now manages their own HR needs. We've reduced admin overhead by 60%."</blockquote>
+        <figcaption><span class="avatar">FB</span><b>Fatima Bello</b></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══ -->
+<section class="band band--grad-up" id="pricing">
+  <div class="shell">
+    <div class="section-head reveal">
+      <p class="eyebrow">Transparent Pricing</p>
+      <h2>Pay for What You Use</h2>
+      <p>Simple per-employee pricing with no hidden fees and no long-term lock-in. The bigger your team, the more you save.</p>
+    </div>
+
+    <div class="plans section-body reveal">
+      <div class="plan plan--lead">
+        <span class="plan__badge">Limited offer Pricing</span>
+        <div>
+          <h3>Growth</h3>
+          <p class="plan__desc">Everything your growing team needs to run HR professionally.</p>
+        </div>
+        <div class="plan__price">
+          <del>₦1,259</del><b>₦989</b><span>/ employee / month</span>
+        </div>
+        <p class="plan__min">Minimum 1 employees</p>
+        <ul>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Unlimited employees (min. 1)</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Employee Management</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Attendance &amp; Leave</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Payroll Processing</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Document Management</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Team Chat &amp; Announcements</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>HR Analytics Dashboard</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Email &amp; chat support</li>
+        </ul>
+        <a class="btn btn--primary btn--wide" href="#demo">Request Demo</a>
+      </div>
+
+      <div class="plan">
+        <div>
+          <h3>Enterprise</h3>
+          <p class="plan__desc">Custom contracts, SLA guarantees, and dedicated support for large organisations.</p>
+        </div>
+        <div class="plan__price">
+          <b>Let's Talk</b>
+        </div>
+        <p class="plan__eg">Volume discounts available</p>
+        <ul>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Everything in Growth</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Custom integrations &amp; API access</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Dedicated Customer Success Manager</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>SLA guarantee (99.9% uptime)</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>On-site training &amp; onboarding</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Custom reporting &amp; exports</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Multi-entity / subsidiary support</li>
+          <li><svg width="16" height="16" aria-hidden="true"><use href="#i-check"/></svg>Priority 24/7 support</li>
+        </ul>
+        <a class="btn btn--ghost btn--wide" href="#demo">Contact Sales</a>
+      </div>
+    </div>
+
+    <p class="plans__note reveal">All plans include free onboarding by our team. No debit card required to start. Cancel anytime.</p>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section class="band band--grad-diag" id="about">
+  <div class="shell">
+    <div class="section-head reveal" style="max-width: 62ch">
+      <svg class="logo__mark" style="width:52px;height:52px;margin-bottom:var(--space-2xs)" aria-hidden="true"><use href="#i-logo"/></svg>
+      <h2>Why We Built BantaHR</h2>
+      <p>Nigerian and African businesses deserve HR software built for their reality, not adapted from tools designed for Silicon Valley. We built BantaHR from the ground up for local payroll laws, local compliance requirements, and the way African teams actually work.</p>
+    </div>
+
+    <div class="abouts section-body reveal">
+      <div class="about-card">
+        <span class="about-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#i-shield"/></svg></span>
+        <h3>Security First</h3>
+        <p>Bank-grade encryption, NDPR compliance, and role-based access control keep your sensitive employee data locked tight.</p>
+      </div>
+      <div class="about-card">
+        <span class="about-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#i-globe"/></svg></span>
+        <h3>Built for Africa</h3>
+        <p>Nigerian PAYE, pension fund deductions, NHF, and NSITF are built in, not bolt-ons. We know local compliance because we live it.</p>
+      </div>
+      <div class="about-card">
+        <span class="about-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#i-users"/></svg></span>
+        <h3>People Obsessed</h3>
+        <p>Every feature is designed around the employee experience, not just HR admin efficiency. Happy employees, better retention.</p>
+      </div>
+      <div class="about-card">
+        <span class="about-card__icon"><svg width="22" height="22" aria-hidden="true"><use href="#i-bolt"/></svg></span>
+        <h3>Always Improving</h3>
+        <p>We ship updates every two weeks based on customer feedback. If you need a feature, tell us. It's probably already on the roadmap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="band" id="demo" style="padding-top: var(--space-2xl)">
+  <div class="shell">
+    <div class="close reveal">
+      <h2>Ready to Transform Your HR?</h2>
+      <p>Join 500+ companies using BantaHR to build happier, more productive teams.</p>
+      <a class="btn btn--onaccent" href="#demo">Request Your Free Demo <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      <small>No debit card required · Set up in 48 hours · We handle onboarding</small>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer class="foot">
+  <div class="shell">
+    <div class="foot__cols">
+      <div>
+        <a class="logo" href="#top" aria-label="BantaHR home">
+          <svg class="logo__mark" aria-hidden="true"><use href="#i-logo"/></svg>
+          <span>
+            <span class="logo__word">Banta<em>HR</em></span>
+            <span class="logo__sub">People Platform</span>
+          </span>
+        </a>
+        <p class="foot__blurb">The all-in-one HR platform built for African businesses.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#about">Security</a></li>
+          <li><a href="#features">Changelog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#about">Careers</a></li>
+          <li><a href="#about">Blog</a></li>
+          <li><a href="#about">Press</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#demo">Help Centre</a></li>
+          <li><a href="#demo">Contact Us</a></li>
+          <li><a href="#demo">Status</a></li>
+          <li><a href="#demo">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot__base">
+      <p>© 2026 BantaHR Ltd. All rights reserved.</p>
+      <p>No 1 Adetunji Adegbite Street, Ogudu, Lagos, Nigeria</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var nav = document.getElementById("nav");
+  var onScroll = function () { nav.classList.toggle("is-stuck", window.scrollY > 40); };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  var burger = document.getElementById("burger");
+  var sheet = document.getElementById("sheet");
+  burger.addEventListener("click", function () {
+    var open = sheet.classList.toggle("is-open");
+    burger.setAttribute("aria-expanded", String(open));
+    burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  });
+  sheet.addEventListener("click", function (e) {
+    if (e.target.closest("a")) {
+      sheet.classList.remove("is-open");
+      burger.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ── Feature deck ──────────────────────────────────────
+     Cards advance right to left every 5s. Slot 0 is the card
+     in front, 1..3 are fanned behind it, "out" is the card
+     leaving to the left. Everything else waits off-stage. */
+  (function () {
+    var deck = document.getElementById("deck");
+    if (!deck) return;
+
+    var stage = deck.querySelector(".deck__stage");
+    var cards = Array.prototype.slice.call(stage.querySelectorAll(".card"));
+    var dots  = Array.prototype.slice.call(deck.querySelectorAll(".deck__dot"));
+    var live  = deck.querySelector(".deck__live");
+    var total = cards.length;
+
+    var active = 0;
+    var paused = reduced;
+    var timer = null;
+    var DWELL = 5000;
+
+    function render() {
+      cards.forEach(function (card, i) {
+        var ahead = (i - active + total) % total;
+        var slot;
+        if (ahead === 0) slot = "0";
+        else if (ahead === 1) slot = "next";
+        else if (ahead === total - 1) slot = "prev";
+        else slot = ahead <= total / 2 ? "far-right" : "far-left";
+
+        card.setAttribute("data-slot", slot);
+        card.setAttribute("aria-hidden", ahead === 0 ? "false" : "true");
+      });
+
+      dots.forEach(function (dot, i) {
+        if (i === active) dot.setAttribute("aria-current", "true");
+        else dot.removeAttribute("aria-current");
+      });
+
+      var title = cards[active].querySelector("h3").textContent;
+      live.textContent = title + ", " + (active + 1) + " of " + total;
+    }
+
+    function goTo(next) {
+      active = (next + total) % total;
+      render();
+    }
+
+    function start() {
+      stop();
+      if (paused) return;
+      timer = setInterval(function () { goTo(active + 1); }, DWELL);
+    }
+    function stop() {
+      if (timer) { clearInterval(timer); timer = null; }
+    }
+
+    deck.addEventListener("click", function (e) {
+      /* Clicking a flanking card pulls it to the front */
+      var card = e.target.closest(".card");
+      if (card) {
+        var slot = card.getAttribute("data-slot");
+        if (slot === "next") { goTo(active + 1); if (!paused) start(); }
+        else if (slot === "prev") { goTo(active - 1); if (!paused) start(); }
+        return;
+      }
+
+      var btn = e.target.closest("[data-go]");
+      if (!btn) return;
+      var go = btn.getAttribute("data-go");
+      if (go === "next") goTo(active + 1);
+      else if (go === "prev") goTo(active - 1);
+      else goTo(parseInt(go, 10));
+      if (!paused) start();          // restart the dwell after a manual move
+    });
+
+    /* Hovering or tabbing into the deck holds the current card */
+    deck.addEventListener("mouseenter", stop);
+    deck.addEventListener("mouseleave", function () { if (!paused) start(); });
+    deck.addEventListener("focusin", stop);
+    deck.addEventListener("focusout", function (e) {
+      if (!deck.contains(e.relatedTarget) && !paused) start();
+    });
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) stop(); else if (!paused) start();
+    });
+
+    /* Left/right arrows when the deck has focus */
+    deck.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { goTo(active + 1); e.preventDefault(); }
+      if (e.key === "ArrowLeft")  { goTo(active - 1); e.preventDefault(); }
+    });
+
+    /* Swipe on touch */
+    var x0 = null;
+    stage.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; stop(); }, { passive: true });
+    stage.addEventListener("touchend", function (e) {
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 45) goTo(active + (dx < 0 ? 1 : -1));
+      x0 = null;
+      if (!paused) start();
+    });
+
+    render();
+    if (reduced) {
+      paused = true;
+      stop();
+    } else {
+      /* Only run while the deck is actually on screen */
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(function (entries) {
+          entries[0].isIntersecting ? start() : stop();
+        }, { threshold: 0.25 }).observe(deck);
+      } else start();
+    }
+  })();
+
+  var items = document.querySelectorAll(".reveal");
+  if (reduced || !("IntersectionObserver" in window)) {
+    items.forEach(function (el) { el.classList.add("is-in"); });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-in");
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  items.forEach(function (el, i) {
+    el.style.transitionDelay = Math.min(i, 4) * 60 + "ms";
+    io.observe(el);
+  });
+})();
+</script>
+</body>
+</html>

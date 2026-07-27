@@ -132,7 +132,7 @@ export default function TrainingAttendance() {
         </select>
         <button
           onClick={fetchRecords}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
           style={{
             background: C.surface,
             border: `1px solid ${C.border}`,
@@ -259,7 +259,7 @@ export default function TrainingAttendance() {
                           whileHover={{ scale: 1.05 }}
                           onClick={() => handleMark(r, "attended")}
                           disabled={actionLoading[`${r.employee_id}-attend`]}
-                          className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+                          className="px-3 py-1.5 text-xs font-semibold rounded-full"
                           style={{
                             background: C.successLight,
                             color: C.success,
@@ -280,7 +280,7 @@ export default function TrainingAttendance() {
                             whileHover={{ scale: 1.05 }}
                             onClick={() => handleCert(r)}
                             disabled={actionLoading[`${r.employee_id}-cert`]}
-                            className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+                            className="px-3 py-1.5 text-xs font-semibold rounded-full"
                             style={{
                               background: C.primaryLight,
                               color: C.primary,

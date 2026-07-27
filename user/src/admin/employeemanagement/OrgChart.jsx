@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import C from "../../styles/colors";
 import { motion, AnimatePresence, useDragControls } from "framer-motion";
 import AdminSideNavbar from "../AdminSideNavbar";
 import {
@@ -40,31 +41,6 @@ import {
 } from "lucide-react";
 
 /* ─── Design tokens ─── */
-const C = {
-  bg: "#F0F2F8",
-  bgMid: "#E8EBF4",
-  surface: "#FFFFFF",
-  surfaceHover: "#F7F8FC",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryDark: "#3730A3",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const ADMIN = {
   name: "Ngozi Adeleke",
@@ -75,13 +51,13 @@ const ADMIN = {
 const DEPT_COLORS = {
   Executive: { bg: "#1E1B4B", light: "#EEF2FF", text: "#4F46E5" },
   Engineering: { bg: "#4F46E5", light: "#EEF2FF", text: "#4F46E5" },
-  Product: { bg: "#06B6D4", light: "#ECFEFF", text: "#0891B2" },
-  Finance: { bg: "#10B981", light: "#D1FAE5", text: "#059669" },
-  HR: { bg: "#F59E0B", light: "#FEF3C7", text: "#D97706" },
-  Marketing: { bg: "#8B5CF6", light: "#EDE9FE", text: "#7C3AED" },
-  Operations: { bg: "#EC4899", light: "#FDF2F8", text: "#DB2777" },
-  Sales: { bg: "#F97316", light: "#FFF7ED", text: "#EA580C" },
-  Legal: { bg: "#EF4444", light: "#FEE2E2", text: "#DC2626" },
+  Product: { bg: "#6366F1", light: "#EEF2FF", text: "#4338CA" },
+  Finance: { bg: "#10B981", light: "#D1FAE5", text: "#047857" },
+  HR: { bg: "#F59E0B", light: "#FEF3C7", text: "#92400E" },
+  Marketing: { bg: "#6366F1", light: "#E0E7FF", text: "#4F46E5" },
+  Operations: { bg: "#6366F1", light: "#EEF2FF", text: "#4F46E5" },
+  Sales: { bg: "#F59E0B", light: "#FEF3C7", text: "#92400E" },
+  Legal: { bg: "#EF4444", light: "#FEE2E2", text: "#B91C1C" },
 };
 
 /* ─── Org tree data ─── */
@@ -398,7 +374,7 @@ function EmpCard({
         e.stopPropagation();
         onSelect(node);
       }}
-      whileHover={{ y: -2, boxShadow: `0 8px 24px rgba(0,0,0,0.1)` }}
+      whileHover={{ y: -2, boxShadow: C.shadow.lift }}
       className="relative cursor-pointer select-none"
       style={{
         width: 200,
@@ -440,7 +416,7 @@ function EmpCard({
           className="w-9 h-9 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0"
           style={{
             background: isSelected ? "rgba(255,255,255,0.25)" : deptStyle.bg,
-            boxShadow: `0 2px 8px ${deptStyle.bg}55`,
+            boxShadow: C.shadow.card,
           }}
         >
           {node.initials}
@@ -511,7 +487,7 @@ function EmpCard({
               e.stopPropagation();
               onToggle(node.id);
             }}
-            className="w-5 h-5 rounded-lg flex items-center justify-center transition-all"
+            className="w-5 h-5 rounded-full flex items-center justify-center transition-all"
             style={{
               background: isSelected ? "rgba(255,255,255,0.2)" : C.surfaceAlt,
             }}
@@ -644,7 +620,7 @@ function ReassignModal({ draggedNode, targetNode, onConfirm, onCancel }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
+          boxShadow: C.shadow.lift,
         }}
       >
         <div className="p-5">
@@ -655,8 +631,8 @@ function ReassignModal({ draggedNode, targetNode, onConfirm, onCancel }) {
             <GitBranch size={22} color={C.warning} />
           </div>
           <h3
-            className="text-base font-bold mb-1"
-            style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+            className="text-base mb-1"
+            style={{ color: C.textPrimary }}
           >
             Reassign Reporting Line?
           </h3>
@@ -735,17 +711,17 @@ function ReassignModal({ draggedNode, targetNode, onConfirm, onCancel }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={onConfirm}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white"
             style={{
               background: C.warning,
-              boxShadow: `0 4px 12px ${C.warning}44`,
+              boxShadow: C.shadow.card,
             }}
           >
             Confirm Reassignment
           </motion.button>
           <button
             onClick={onCancel}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -929,7 +905,7 @@ export default function OrgChart() {
             </div>
             <p
               className="text-sm font-bold"
-              style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+              style={{ color: C.textPrimary }}
             >
               {selected.name}
             </p>
@@ -961,7 +937,7 @@ export default function OrgChart() {
             >
               <p
                 className="text-xl font-bold"
-                style={{ color: s.color, fontFamily: "Sora, sans-serif" }}
+                style={{ color: s.color }}
               >
                 {s.value}
               </p>
@@ -1018,7 +994,7 @@ export default function OrgChart() {
                 <button
                   key={child.id}
                   onClick={() => setSelected(child)}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-gray-50 transition-colors text-left"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-full hover:bg-gray-50 transition-colors text-left"
                   style={{ border: `1px solid ${C.border}` }}
                 >
                   <div
@@ -1054,16 +1030,16 @@ export default function OrgChart() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full py-2 rounded-xl text-xs font-semibold text-white"
+            className="w-full py-2 rounded-full text-xs font-semibold text-white"
             style={{
               background: C.primary,
-              boxShadow: `0 2px 8px ${C.primary}44`,
+              boxShadow: C.shadow.card,
             }}
           >
             View Full Profile
           </motion.button>
           <button
-            className="w-full py-2 rounded-xl text-xs font-semibold"
+            className="w-full py-2 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -1085,7 +1061,7 @@ export default function OrgChart() {
   return (
     <div
       className="flex h-screen overflow-hidden"
-      style={{ background: C.bg, fontFamily: "Sora, sans-serif" }}
+      style={{ background: C.bg }}
     >
       <AdminSideNavbar
         sidebarOpen={sidebarOpen}
@@ -1101,12 +1077,12 @@ export default function OrgChart() {
           style={{
             background: C.surface,
             borderBottom: `1px solid ${C.border}`,
-            boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+            boxShadow: C.shadow.card,
           }}
         >
           <button
             onClick={() => setSidebarOpen((p) => !p)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors md:hidden"
+            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors md:hidden"
           >
             <Menu size={18} color={C.textSecondary} />
           </button>
@@ -1119,7 +1095,7 @@ export default function OrgChart() {
             <span style={{ color: C.primary, fontWeight: 600 }}>Org Chart</span>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
+            <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
               <Bell size={16} color={C.textSecondary} />
               <span
                 className="absolute top-1 right-1 w-2 h-2 rounded-full"
@@ -1128,7 +1104,7 @@ export default function OrgChart() {
             </button>
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-              style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}
+              style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}
             >
               {ADMIN.initials}
             </div>
@@ -1183,7 +1159,7 @@ export default function OrgChart() {
                       style={{
                         background: C.surface,
                         border: `1px solid ${C.border}`,
-                        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                        boxShadow: C.shadow.lift,
                       }}
                     >
                       {searchResults.slice(0, 6).map((r) => (
@@ -1233,7 +1209,7 @@ export default function OrgChart() {
                   <button
                     key={d}
                     onClick={() => setDeptFilter(d)}
-                    className="px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all capitalize"
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all capitalize"
                     style={{
                       background:
                         deptFilter === d
@@ -1252,7 +1228,7 @@ export default function OrgChart() {
                 {/* Expand/collapse all */}
                 <button
                   onClick={() => setTree((p) => expandAll(p))}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                   style={{
                     background: C.surfaceAlt,
                     color: C.textSecondary,
@@ -1264,7 +1240,7 @@ export default function OrgChart() {
                 </button>
                 <button
                   onClick={() => setTree((p) => collapseAll(p))}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                   style={{
                     background: C.surfaceAlt,
                     color: C.textSecondary,
@@ -1276,7 +1252,7 @@ export default function OrgChart() {
                 </button>
                 <button
                   onClick={() => setTree(buildOrgTree())}
-                  className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
                   title="Reset tree"
                 >
                   <RotateCcw size={14} color={C.textMuted} />
@@ -1315,7 +1291,7 @@ export default function OrgChart() {
                     setZoom(0.85);
                     setPan({ x: 0, y: 0 });
                   }}
-                  className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-full hover:bg-gray-100 transition-colors"
                   title="Reset view"
                 >
                   <Maximize2 size={14} color={C.textMuted} />
@@ -1409,7 +1385,7 @@ export default function OrgChart() {
             >
               <p
                 className="text-sm font-bold"
-                style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+                style={{ color: C.textPrimary }}
               >
                 {selected ? "Employee Detail" : "Select Employee"}
               </p>
@@ -1483,7 +1459,7 @@ export default function OrgChart() {
             style={{
               background: C.navy,
               color: "#fff",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+              boxShadow: C.shadow.lift,
               minWidth: 300,
             }}
           >

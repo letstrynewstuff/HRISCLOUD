@@ -12,12 +12,12 @@ import { C } from "../employeemanagement/sharedData";
 
 // ─── Status config — covers every possible DB value ───────────
 const STATUS = {
-  paid:       { bg: "#D1FAE5", color: "#065F46",  label: "Paid",       icon: CheckCircle2 },
-  approved:   { bg: "#EDE9FE", color: "#5B21B6",  label: "Approved",   icon: CheckCircle2 },
-  processed:  { bg: "#DBEAFE", color: "#1D4ED8",  label: "Processed",  icon: CheckCircle2 },
+  paid:       { bg: "#D1FAE5", color: "#047857",  label: "Paid",       icon: CheckCircle2 },
+  approved:   { bg: "#E0E7FF", color: "#3730A3",  label: "Approved",   icon: CheckCircle2 },
+  processed:  { bg: "#E0E7FF", color: "#4338CA",  label: "Processed",  icon: CheckCircle2 },
   processing: { bg: "#FEF3C7", color: "#92400E",  label: "Processing", icon: Clock        },
-  draft:      { bg: "#F1F5F9", color: "#475569",  label: "Draft",      icon: Clock        },
-  cancelled:  { bg: "#FEE2E2", color: "#991B1B",  label: "Cancelled",  icon: XCircle      },
+  draft:      { bg: "#F0F2F8", color: "#334155",  label: "Draft",      icon: Clock        },
+  cancelled:  { bg: "#FEE2E2", color: "#B91C1C",  label: "Cancelled",  icon: XCircle      },
 };
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -93,13 +93,13 @@ export default function PayrollHistory() {
       {/* Header row */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="font-bold text-base" style={{ color: C.textPrimary }}>Payroll History</h2>
+          <h2 className="text-base" style={{ color: C.textPrimary }}>Payroll History</h2>
           <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>
             {total} total run{total !== 1 ? "s" : ""}
           </p>
         </div>
         <button onClick={load}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
           style={{ background: C.surface, border: `1px solid ${C.border}`, color: C.textSecondary, cursor: "pointer" }}
         >
           <RefreshCw size={11} /> Refresh
@@ -115,7 +115,7 @@ export default function PayrollHistory() {
           >
             <AlertCircle size={14} color={C.danger} />
             <p className="text-xs flex-1" style={{ color: C.danger }}>{error}</p>
-            <button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer" }}>✕</button>
+            <button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer" }}></button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -237,7 +237,7 @@ export default function PayrollHistory() {
                             onClick={() => handleDownload(run)}
                             disabled={downloading === run.id}
                             title="Download bank transfer CSV"
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                             style={{
                               background: C.primaryLight,
                               color: C.primary,
@@ -275,7 +275,7 @@ export default function PayrollHistory() {
             </p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
                   background: page === 1 ? C.border : C.surface,
                   border: `1px solid ${C.border}`,
@@ -286,7 +286,7 @@ export default function PayrollHistory() {
                 <ChevronLeft size={14} />
               </button>
               <button onClick={() => setPage((p) => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
                   background: page === totalPages ? C.border : C.surface,
                   border: `1px solid ${C.border}`,

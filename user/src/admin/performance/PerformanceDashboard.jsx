@@ -47,11 +47,11 @@ const fadeUp = {
 // ─── Rating badge ──────────────────────────────────────────────
 function RatingBadge({ rating }) {
   const map = {
-    Outstanding: { bg: "#D1FAE5", color: "#059669" },
-    "High Performer": { bg: "#DBEAFE", color: "#2563EB" },
-    "Meets Expectations": { bg: "#FEF3C7", color: "#D97706" },
-    "Needs Improvement": { bg: "#FEE2E2", color: "#DC2626" },
-    Underperforming: { bg: "#F3E8FF", color: "#7C3AED" },
+    Outstanding: { bg: "#D1FAE5", color: "#047857" },
+    "High Performer": { bg: "#E0E7FF", color: "#4F46E5" },
+    "Meets Expectations": { bg: "#FEF3C7", color: "#92400E" },
+    "Needs Improvement": { bg: "#FEE2E2", color: "#B91C1C" },
+    Underperforming: { bg: "#E0E7FF", color: "#4F46E5" },
   };
   const s = map[rating] ?? { bg: C.surfaceAlt, color: C.textMuted };
   return (
@@ -201,7 +201,7 @@ function PIPModal({ employee, onClose, onCreated }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
+          boxShadow: C.shadow.lift,
         }}
       >
         <div
@@ -221,7 +221,7 @@ function PIPModal({ employee, onClose, onCreated }) {
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg"
+            className="p-1.5 rounded-full"
             style={{ background: C.surfaceAlt }}
           >
             <X size={14} color={C.textMuted} />
@@ -325,7 +325,7 @@ function PIPModal({ employee, onClose, onCreated }) {
         <div className="flex gap-3 px-5 pb-5">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -339,7 +339,7 @@ function PIPModal({ employee, onClose, onCreated }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.danger, opacity: saving ? 0.8 : 1 }}
           >
             {saving ? (
@@ -458,7 +458,7 @@ export default function PerformanceDashboard() {
         </p>
         <button
           onClick={fetchAll}
-          className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl"
+          className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full"
           style={{ background: C.primaryLight, color: C.primary }}
         >
           <RefreshCw size={13} />
@@ -519,7 +519,7 @@ export default function PerformanceDashboard() {
         </select>
         <button
           onClick={fetchAll}
-          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl"
+          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full"
           style={{
             background: C.surfaceAlt,
             border: `1px solid ${C.border}`,
@@ -539,7 +539,7 @@ export default function PerformanceDashboard() {
           whileTap={{ scale: 0.98 }}
           onClick={handleCalculateAll}
           disabled={calculating}
-          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-semibold"
+          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full font-semibold"
           style={{
             background: calculating ? C.surfaceAlt : C.primaryLight,
             border: `1px solid ${C.border}`,
@@ -579,7 +579,7 @@ export default function PerformanceDashboard() {
             label: "Top Performer",
             value: d?.topPerformer?.name ?? "—",
             icon: Crown,
-            color: "#D97706",
+            color: "#92400E",
             bg: "#FEF3C7",
             text: true,
           },
@@ -595,7 +595,7 @@ export default function PerformanceDashboard() {
             value: pips.length,
             icon: AlertCircle,
             color: C.purple,
-            bg: "#EDE9FE",
+            bg: "#E0E7FF",
           },
         ].map((s, i) => (
           <motion.div
@@ -620,7 +620,6 @@ export default function PerformanceDashboard() {
                     className={`font-bold truncate ${s.text ? "text-sm" : "text-3xl"}`}
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {s.value}
@@ -645,7 +644,7 @@ export default function PerformanceDashboard() {
           <div className="flex items-center gap-2 mb-4">
             <BarChart2 size={15} color={C.primary} />
             <h3
-              className="font-semibold text-sm"
+              className="text-sm"
               style={{ color: C.textPrimary }}
             >
               Department Comparison
@@ -660,9 +659,9 @@ export default function PerformanceDashboard() {
           style={{ background: C.surface, borderColor: C.border }}
         >
           <div className="flex items-center gap-2 mb-4">
-            <Award size={15} color="#D97706" />
+            <Award size={15} color="#92400E" />
             <h3
-              className="font-semibold text-sm"
+              className="text-sm"
               style={{ color: C.textPrimary }}
             >
               Top Performers
@@ -705,9 +704,9 @@ export default function PerformanceDashboard() {
                   {emp.leadershipCandidate && (
                     <span
                       className="text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-                      style={{ background: "#FEF3C7", color: "#D97706" }}
+                      style={{ background: "#FEF3C7", color: "#92400E" }}
                     >
-                      🏅 Leader
+ Leader
                     </span>
                   )}
                   <span
@@ -738,10 +737,10 @@ export default function PerformanceDashboard() {
           style={{ background: C.surface, borderColor: C.border }}
         >
           <h3
-            className="font-semibold text-sm mb-3"
+            className="text-sm mb-3"
             style={{ color: C.textPrimary }}
           >
-            ⚡ Auto Insights
+ Auto Insights
           </h3>
           <div className="space-y-2">
             {d?.highPerformers?.slice(0, 2).map((e) => (
@@ -751,10 +750,10 @@ export default function PerformanceDashboard() {
                 style={{ background: C.successLight }}
               >
                 <CheckCircle2 size={14} color="#10B981" />
-                <p className="text-xs" style={{ color: "#065F46" }}>
+                <p className="text-xs" style={{ color: "#047857" }}>
                   <strong>{e.name}</strong> is a top performer this period with
                   a score of {e.finalScore}
-                  {e.leadershiCandidate && " — Leadership candidate 🏅"}
+                  {e.leadershiCandidate && " — Leadership candidate"}
                 </p>
               </div>
             ))}
@@ -766,7 +765,7 @@ export default function PerformanceDashboard() {
               >
                 <div className="flex items-center gap-2.5">
                   <AlertTriangle size={14} color={C.danger} />
-                  <p className="text-xs" style={{ color: "#7F1D1D" }}>
+                  <p className="text-xs" style={{ color: "#B91C1C" }}>
                     <strong>{e.name}</strong> is underperforming with a score of{" "}
                     {e.finalScore} — {e.rating}
                   </p>
@@ -797,7 +796,7 @@ export default function PerformanceDashboard() {
           }}
         >
           <h3
-            className="font-semibold text-sm"
+            className="text-sm"
             style={{ color: C.textPrimary }}
           >
             All Employees
@@ -890,9 +889,9 @@ export default function PerformanceDashboard() {
                           {emp.leadershiCandidate && (
                             <span
                               className="text-[9px] font-bold"
-                              style={{ color: "#D97706" }}
+                              style={{ color: "#92400E" }}
                             >
-                              🏅 Leadership
+ Leadership
                             </span>
                           )}
                         </div>
@@ -966,7 +965,7 @@ export default function PerformanceDashboard() {
             }}
           >
             <h3
-              className="font-semibold text-sm"
+              className="text-sm"
               style={{ color: C.textPrimary }}
             >
               Active Improvement Plans ({pips.length})
@@ -1036,7 +1035,7 @@ export default function PerformanceDashboard() {
                     <td className="px-4 py-3">
                       <span
                         className="text-[10px] font-bold px-2.5 py-0.5 rounded-full"
-                        style={{ background: "#FEF3C7", color: "#D97706" }}
+                        style={{ background: "#FEF3C7", color: "#92400E" }}
                       >
                         Active
                       </span>
@@ -1075,7 +1074,7 @@ export default function PerformanceDashboard() {
             style={{
               background: "#1E1B4B",
               color: "#fff",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+              boxShadow: C.shadow.lift,
               minWidth: 280,
             }}
           >

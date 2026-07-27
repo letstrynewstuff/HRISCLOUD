@@ -37,10 +37,10 @@ const fadeUp = {
 };
 
 const BENEFIT_TYPE_CONFIG = {
-  insurance: { label: "Insurance", bg: "#DBEAFE", color: "#2563EB" },
+  insurance: { label: "Insurance", bg: "#E0E7FF", color: "#4F46E5" },
   allowance: { label: "Allowance", bg: C.successLight, color: C.success },
   custom: { label: "Custom", bg: C.primaryLight, color: C.primary },
-  pension: { label: "Pension", bg: "#F3E8FF", color: "#7C3AED" },
+  pension: { label: "Pension", bg: "#E0E7FF", color: "#4F46E5" },
   health: { label: "Health", bg: C.dangerLight, color: C.danger },
 };
 
@@ -75,7 +75,7 @@ function Toast({ msg, type, onDone }) {
       className="fixed bottom-8 left-1/2 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
       style={{
         background: "#1E1B4B",
-        boxShadow: "0 12px 40px rgba(15,23,42,0.35)",
+        boxShadow: C.shadow.lift,
         minWidth: 260,
       }}
     >
@@ -131,7 +131,7 @@ function CreateBenefitModal({ onClose, onSaved }) {
         className="w-full max-w-md rounded-2xl overflow-hidden"
         style={{
           background: C.surface,
-          boxShadow: "0 24px 64px rgba(15,23,42,0.2)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -152,7 +152,7 @@ function CreateBenefitModal({ onClose, onSaved }) {
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-xl flex items-center justify-center"
+            className="w-7 h-7 rounded-full flex items-center justify-center"
             style={{ background: C.surfaceAlt }}
           >
             <X size={13} color={C.textMuted} />
@@ -280,7 +280,7 @@ function CreateBenefitModal({ onClose, onSaved }) {
         <div className="flex gap-3 px-5 pb-5">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -294,7 +294,7 @@ function CreateBenefitModal({ onClose, onSaved }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}
           >
             {saving ? (
@@ -361,7 +361,7 @@ function AssignModal({ benefit, onClose, onAssigned }) {
         className="w-full max-w-md rounded-2xl overflow-hidden"
         style={{
           background: C.surface,
-          boxShadow: "0 24px 64px rgba(15,23,42,0.2)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -387,7 +387,7 @@ function AssignModal({ benefit, onClose, onAssigned }) {
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-xl flex items-center justify-center"
+            className="w-7 h-7 rounded-full flex items-center justify-center"
             style={{ background: C.surfaceAlt }}
           >
             <X size={13} color={C.textMuted} />
@@ -476,7 +476,7 @@ function AssignModal({ benefit, onClose, onAssigned }) {
         <div className="flex gap-3 px-5 pb-5">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -490,7 +490,7 @@ function AssignModal({ benefit, onClose, onAssigned }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleAssign}
             disabled={assigning}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.success, opacity: assigning ? 0.8 : 1 }}
           >
             {assigning ? (
@@ -515,12 +515,12 @@ function InsuranceBanner({ onDismiss }) {
       className="rounded-2xl p-6 relative overflow-hidden"
       style={{
         background:
-          "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+          C.gradient.hero,
       }}
     >
       <button
         onClick={onDismiss}
-        className="absolute top-4 right-4 w-7 h-7 rounded-xl flex items-center justify-center"
+        className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center"
         style={{ background: "rgba(255,255,255,0.15)" }}
       >
         <X size={13} color="rgba(255,255,255,0.7)" />
@@ -532,14 +532,12 @@ function InsuranceBanner({ onDismiss }) {
         </div>
         <div className="flex-1">
           <h1
-           className="text-xl font-bold text-white mb-1"
-            style={{ fontFamily: "Sora,sans-serif" }}
+           className="text-xl text-white mb-1"
           >
             Benefits
           </h1>
           <h3
-            className="text-xl font-bold text-white mb-1"
-            style={{ fontFamily: "Sora,sans-serif" }}
+            className="text-xl text-white mb-1"
           >
             Protect Your Business, Staff & Equipment
           </h3>
@@ -571,7 +569,7 @@ function InsuranceBanner({ onDismiss }) {
           <motion.button
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: "rgba(255,255,255,0.15)",
               color: "#fff",
@@ -638,7 +636,7 @@ export default function AdminBenefitsPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex h-screen overflow-hidden">
      
@@ -657,7 +655,7 @@ export default function AdminBenefitsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -685,7 +683,7 @@ export default function AdminBenefitsPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setCreateModal(true)}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold text-white"
+                className="flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold text-white"
                 style={{ background: C.primary }}
               >
                 <Plus size={14} /> Create Benefit
@@ -696,8 +694,8 @@ export default function AdminBenefitsPage() {
           <main className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
             {/* <div>
               <h1
-                className="text-2xl font-bold"
-                style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+                className="text-2xl "
+                style={{ color: C.textPrimary }}
               >
                 Benefits
               </h1>
@@ -784,7 +782,7 @@ export default function AdminBenefitsPage() {
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setCreateModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white"
                   style={{ background: C.primary }}
                 >
                   <Plus size={14} /> Create First Benefit
@@ -801,7 +799,7 @@ export default function AdminBenefitsPage() {
                     animate="visible"
                     whileHover={{
                       y: -3,
-                      boxShadow: `0 8px 24px rgba(79,70,229,0.1)`,
+                      boxShadow: C.shadow.lift,
                     }}
                     className="rounded-2xl p-5 flex flex-col gap-3"
                     style={{
@@ -815,12 +813,12 @@ export default function AdminBenefitsPage() {
                           className="w-10 h-10 rounded-xl flex items-center justify-center"
                           style={{
                             background: benefit.is_insurance
-                              ? "#DBEAFE"
+                              ? "#E0E7FF"
                               : C.dangerLight,
                           }}
                         >
                           {benefit.is_insurance ? (
-                            <Shield size={18} color="#2563EB" />
+                            <Shield size={18} color="#4F46E5" />
                           ) : (
                             <Heart size={18} color={C.danger} />
                           )}
@@ -863,7 +861,7 @@ export default function AdminBenefitsPage() {
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setAssignTarget(benefit)}
-                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold"
+                        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold"
                         style={{
                           background: C.successLight,
                           color: C.success,

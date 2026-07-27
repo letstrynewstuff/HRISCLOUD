@@ -111,7 +111,7 @@ export default function ShiftManagement() {
     if (h < 6) return { label: "Night", bg: "#FEE2E2", color: "#EF4444" };
     if (h < 12) return { label: "Morning", bg: "#D1FAE5", color: "#10B981" };
     if (h < 17) return { label: "Afternoon", bg: "#FEF3C7", color: "#F59E0B" };
-    return { label: "Evening", bg: "#EDE9FE", color: "#8B5CF6" };
+    return { label: "Evening", bg: "#E0E7FF", color: "#6366F1" };
   };
 
   return (
@@ -122,14 +122,14 @@ export default function ShiftManagement() {
       className="space-y-4"
     >
       <div className="flex justify-between items-center">
-        <h2 className="text-base font-bold" style={{ color: C.textPrimary }}>
+        <h2 className="text-base " style={{ color: C.textPrimary }}>
           Shift Patterns
         </h2>
         <Motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full"
           style={{ background: C.primary, color: "#fff" }}
         >
           <Plus size={15} /> New Shift
@@ -227,7 +227,7 @@ export default function ShiftManagement() {
                         <Motion.button
                           whileHover={{ scale: 1.05 }}
                           onClick={() => openEdit(shift)}
-                          className="p-2 rounded-lg"
+                          className="p-2 rounded-full"
                           style={{
                             background: C.primaryLight,
                             color: C.primary,
@@ -258,7 +258,7 @@ export default function ShiftManagement() {
             >
               <div className="flex items-center justify-between">
                 <h3
-                  className="font-bold text-lg"
+                  className="text-lg"
                   style={{ color: C.textPrimary }}
                 >
                   {editing ? "Edit Shift" : "New Shift"}
@@ -351,7 +351,7 @@ export default function ShiftManagement() {
                           key={day}
                           type="button"
                           onClick={() => toggleDay(day)}
-                          className="px-3 py-1.5 text-xs font-semibold rounded-xl transition-all"
+                          className="px-3 py-1.5 text-xs font-semibold rounded-full transition-all"
                           style={{
                             background: active ? C.primary : C.surfaceAlt,
                             color: active ? "#fff" : C.textSecondary,
@@ -398,7 +398,7 @@ export default function ShiftManagement() {
               <div className="flex gap-3 pt-1">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="flex-1 py-3 rounded-xl font-semibold text-sm"
+                  className="flex-1 py-3 rounded-full font-semibold text-sm"
                   style={{ background: C.surfaceAlt, color: C.textSecondary }}
                 >
                   Cancel
@@ -408,7 +408,7 @@ export default function ShiftManagement() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-1 py-3 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
+                  className="flex-1 py-3 rounded-full font-semibold text-sm text-white flex items-center justify-center gap-2"
                   style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}
                 >
                   {saving ? (

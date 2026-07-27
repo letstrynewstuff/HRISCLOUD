@@ -88,17 +88,17 @@ const PRIORITY_MAP = {
 };
 
 const RATING_MAP = {
-  Outstanding: { color: "#059669", bg: "#D1FAE5" },
-  "High Performer": { color: "#2563EB", bg: "#DBEAFE" },
+  Outstanding: { color: "#047857", bg: C.successLight },
+  "High Performer": { color: C.primary, bg: C.primaryTint },
   "Meets Expectations": { color: C.warning, bg: C.warningLight },
   "Needs Improvement": { color: C.danger, bg: C.dangerLight },
-  Underperforming: { color: "#7C3AED", bg: "#F3E8FF" },
+  Underperforming: { color: C.primary, bg: C.primaryTint },
 };
 
 const APPRAISAL_STATUS = {
   draft: { label: "Draft", color: C.textMuted, bg: C.surfaceAlt },
   submitted: { label: "Under Review", color: C.warning, bg: C.warningLight },
-  hr_scored: { label: "HR Scored", color: "#7C3AED", bg: "#F3E8FF" },
+  hr_scored: { label: "HR Scored", color: C.primary, bg: C.primaryTint },
   completed: { label: "Completed", color: C.success, bg: C.successLight },
   rejected: { label: "Returned", color: C.danger, bg: C.dangerLight },
 };
@@ -143,7 +143,7 @@ function Card({ children, className = "" }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
       }}
     >
       {children}
@@ -193,7 +193,7 @@ function Toast({ msg, type, onDone }) {
       className="fixed bottom-8 left-1/2 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
       style={{
         background: C.navy,
-        boxShadow: "0 12px 40px rgba(15,23,42,0.35)",
+        boxShadow: C.shadow.lift,
         minWidth: 260,
       }}
     >
@@ -248,7 +248,7 @@ function ScoreRing({ score, size = 120 }) {
       <div className="absolute flex flex-col items-center">
         <span
           className="text-3xl font-black"
-          style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+          style={{ color: C.textPrimary }}
         >
           {score ?? "—"}
         </span>
@@ -446,7 +446,7 @@ function AppraisalDetailModal({ appraisal, onClose }) {
         className="w-full max-w-lg rounded-2xl overflow-hidden max-h-[88vh] flex flex-col"
         style={{
           background: C.surface,
-          boxShadow: "0 24px 64px rgba(15,23,42,0.2)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -479,7 +479,7 @@ function AppraisalDetailModal({ appraisal, onClose }) {
             />
             <button
               onClick={onClose}
-              className="w-7 h-7 rounded-xl flex items-center justify-center"
+              className="w-7 h-7 rounded-full flex items-center justify-center"
               style={{ background: C.surfaceAlt }}
             >
               <X size={13} color={C.textMuted} />
@@ -508,8 +508,8 @@ function AppraisalDetailModal({ appraisal, onClose }) {
                     appraisal.hrOverall != null
                       ? Math.round(appraisal.hrOverall)
                       : "—",
-                  color: "#7C3AED",
-                  bg: "#F3E8FF",
+                  color: C.primary,
+                  bg: C.primaryTint,
                 },
                 {
                   label: "Final Score",
@@ -528,7 +528,7 @@ function AppraisalDetailModal({ appraisal, onClose }) {
                 >
                   <p
                     className="text-xl font-black"
-                    style={{ color: s.color, fontFamily: "Sora,sans-serif" }}
+                    style={{ color: s.color }}
                   >
                     {s.value}
                   </p>
@@ -691,7 +691,7 @@ function AppraisalDetailModal({ appraisal, onClose }) {
                         <StarRating score={r.score} max={r.maxScore ?? 5} />
                         <span
                           className="text-xs font-bold w-8 text-right"
-                          style={{ color: "#7C3AED" }}
+                          style={{ color: C.primary }}
                         >
                           {r.score}/{r.maxScore ?? 5}
                         </span>
@@ -706,13 +706,13 @@ function AppraisalDetailModal({ appraisal, onClose }) {
           {appraisal.status === "completed" && appraisal.hrFeedback && (
             <div
               className="rounded-xl p-4"
-              style={{ background: "#F3E8FF", border: "1px solid #7C3AED22" }}
+              style={{ background: C.primaryTint, border: "1px solid #4F46E522" }}
             >
               <div className="flex items-center gap-2 mb-2">
                 <div
                   className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[9px] font-bold"
                   style={{
-                    background: "linear-gradient(135deg,#7C3AED,#9333EA)",
+                    background: "linear-gradient(135deg,#6366F1,#3730A3)",
                   }}
                 >
                   {hrName
@@ -722,7 +722,7 @@ function AppraisalDetailModal({ appraisal, onClose }) {
                     .slice(0, 2)}
                 </div>
                 <div>
-                  <p className="text-xs font-bold" style={{ color: "#7C3AED" }}>
+                  <p className="text-xs font-bold" style={{ color: C.primary }}>
                     {hrName} · HR Review
                   </p>
                   <p className="text-[10px]" style={{ color: C.textMuted }}>
@@ -786,7 +786,7 @@ function AppraisalDetailModal({ appraisal, onClose }) {
         <div className="px-5 pb-5 shrink-0">
           <button
             onClick={onClose}
-            className="w-full py-2.5 rounded-xl text-sm font-semibold"
+            className="w-full py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -925,7 +925,7 @@ function CreateAppraisalModal({
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(15,23,42,0.25)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -952,7 +952,7 @@ function CreateAppraisalModal({
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-xl flex items-center justify-center"
+            className="w-7 h-7 rounded-full flex items-center justify-center"
             style={{ background: C.surfaceAlt }}
           >
             <X size={13} color={C.textMuted} />
@@ -1180,7 +1180,7 @@ function CreateAppraisalModal({
         >
           <button
             onClick={onClose}
-            className="py-2.5 px-4 rounded-xl text-sm font-semibold"
+            className="py-2.5 px-4 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -1194,7 +1194,7 @@ function CreateAppraisalModal({
             whileTap={{ scale: 0.98 }}
             onClick={() => handleSave(false)}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2"
             style={{
               background: C.surfaceAlt,
               color: C.textPrimary,
@@ -1210,7 +1210,7 @@ function CreateAppraisalModal({
             whileTap={{ scale: 0.98 }}
             onClick={() => handleSave(true)}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}
           >
             {saving ? (
@@ -1275,7 +1275,7 @@ function AssessmentModal({ review, onClose, onSubmitted }) {
         className="w-full max-w-lg rounded-2xl overflow-hidden max-h-[85vh] flex flex-col"
         style={{
           background: C.surface,
-          boxShadow: "0 24px 64px rgba(15,23,42,0.2)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -1301,7 +1301,7 @@ function AssessmentModal({ review, onClose, onSubmitted }) {
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-xl flex items-center justify-center"
+            className="w-7 h-7 rounded-full flex items-center justify-center"
             style={{ background: C.surfaceAlt }}
           >
             <X size={13} color={C.textMuted} />
@@ -1372,7 +1372,7 @@ function AssessmentModal({ review, onClose, onSubmitted }) {
         <div className="flex gap-3 px-5 pb-5 shrink-0">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -1386,7 +1386,7 @@ function AssessmentModal({ review, onClose, onSubmitted }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}
           >
             {saving ? (
@@ -1616,7 +1616,6 @@ export default function PerformancePage() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <style>{`@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}`}</style>
@@ -1636,7 +1635,7 @@ export default function PerformancePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -1670,7 +1669,7 @@ export default function PerformancePage() {
               <Motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={load}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -1680,7 +1679,7 @@ export default function PerformancePage() {
               </Motion.button>
               <div className="relative">
                 <Motion.button
-                  className="p-2 rounded-xl"
+                  className="p-2 rounded-full"
                   style={{
                     background: C.surface,
                     border: `1px solid ${C.border}`,
@@ -1701,7 +1700,7 @@ export default function PerformancePage() {
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                   style={{
-                    background: "linear-gradient(135deg,#4F46E5,#06B6D4)",
+                    background: "linear-gradient(135deg,#4F46E5,#6366F1)",
                   }}
                 >
                   {employee.initials}
@@ -1718,7 +1717,7 @@ export default function PerformancePage() {
               className="rounded-2xl p-6 text-white relative overflow-hidden"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="absolute inset-0 opacity-5">
@@ -1737,8 +1736,7 @@ export default function PerformancePage() {
                 </div>
                 <div className="flex-1">
                   <h1
-                    className="text-2xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-2xl "
                   >
                     Performance
                   </h1>
@@ -1823,7 +1821,7 @@ export default function PerformancePage() {
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setActiveTab("appraisals")}
-                  className="text-xs font-bold px-3 py-1.5 rounded-xl shrink-0"
+                  className="text-xs font-bold px-3 py-1.5 rounded-full shrink-0"
                   style={{ background: C.warning, color: "#fff" }}
                 >
                   Review Now
@@ -1867,7 +1865,7 @@ export default function PerformancePage() {
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setActiveTab("appraisals")}
-                  className="text-xs font-bold px-3 py-1.5 rounded-xl shrink-0"
+                  className="text-xs font-bold px-3 py-1.5 rounded-full shrink-0"
                   style={{ background: C.primary, color: "#fff" }}
                 >
                   View Drafts
@@ -1892,7 +1890,7 @@ export default function PerformancePage() {
                     key={t.id}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setActiveTab(t.id)}
-                    className="px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
+                    className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"
                     style={{
                       background: active ? C.primary : "transparent",
                       color: active ? "#fff" : C.textSecondary,
@@ -2011,17 +2009,17 @@ export default function PerformancePage() {
                         {latestScore?.appraisal_score != null && (
                           <div
                             className="rounded-xl p-2 text-center"
-                            style={{ background: "#F3E8FF" }}
+                            style={{ background: C.primaryTint }}
                           >
                             <p
                               className="text-sm font-black"
-                              style={{ color: "#7C3AED" }}
+                              style={{ color: C.primary }}
                             >
                               {Math.round(latestScore.appraisal_score)}
                             </p>
                             <p
                               className="text-[9px] font-semibold"
-                              style={{ color: "#7C3AED" }}
+                              style={{ color: C.primary }}
                             >
                               Appraisal
                             </p>
@@ -2079,8 +2077,8 @@ export default function PerformancePage() {
                         icon={Sparkles}
                         title="Performance Insights"
                         sub="Auto-generated analysis"
-                        color="#7C3AED"
-                        bg="#F3E8FF"
+                        color={C.primary}
+                        bg={C.primaryTint}
                       />
                       <div className="p-4 space-y-2">
                         {insights.map((ins, i) => {
@@ -2096,8 +2094,8 @@ export default function PerformancePage() {
                               icon: AlertCircle,
                             },
                             leadership: {
-                              color: "#7C3AED",
-                              bg: "#F3E8FF",
+                              color: C.primary,
+                              bg: C.primaryTint,
                               icon: Trophy,
                             },
                             pip: {
@@ -2173,8 +2171,8 @@ export default function PerformancePage() {
                           ? mgrAppraisals.length
                           : myAppraisals.length,
                         icon: ClipboardList,
-                        color: "#7C3AED",
-                        bg: "#F3E8FF",
+                        color: C.primary,
+                        bg: C.primaryTint,
                       },
                     ].map((s, i) => (
                       <Motion.div
@@ -2316,7 +2314,7 @@ export default function PerformancePage() {
                                     />
                                     {isCompleted && (
                                       <Chip
-                                        label="✓ Complete"
+                                        label=" Complete"
                                         color={C.success}
                                         bg={C.successLight}
                                       />
@@ -2419,7 +2417,7 @@ export default function PerformancePage() {
                             whileHover={{ scale: 1.04 }}
                             whileTap={{ scale: 0.97 }}
                             onClick={() => setCreateModal("new")}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
                             style={{ background: C.primary }}
                           >
                             <Plus size={13} /> New Appraisal
@@ -2451,7 +2449,7 @@ export default function PerformancePage() {
                               whileHover={{ scale: 1.03 }}
                               whileTap={{ scale: 0.97 }}
                               onClick={() => setCreateModal("new")}
-                              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+                              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white"
                               style={{ background: C.primary }}
                             >
                               <Plus size={15} /> Create First Appraisal
@@ -2566,7 +2564,7 @@ export default function PerformancePage() {
                                           whileHover={{ scale: 1.04 }}
                                           whileTap={{ scale: 0.97 }}
                                           onClick={() => setCreateModal(apr)}
-                                          className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl"
+                                          className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-full"
                                           style={{
                                             background: C.primaryLight,
                                             color: C.primary,
@@ -2578,7 +2576,7 @@ export default function PerformancePage() {
                                           whileHover={{ scale: 1.04 }}
                                           whileTap={{ scale: 0.97 }}
                                           onClick={() => handleSubmitDraft(apr)}
-                                          className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-xl text-white"
+                                          className="flex items-center gap-1 px-3 py-1.5 text-xs font-bold rounded-full text-white"
                                           style={{ background: C.primary }}
                                         >
                                           <Send size={11} /> Submit
@@ -2590,7 +2588,7 @@ export default function PerformancePage() {
                                         whileHover={{ scale: 1.04 }}
                                         whileTap={{ scale: 0.97 }}
                                         onClick={() => setDetailModal(apr)}
-                                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl"
+                                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-full"
                                         style={{
                                           background: C.primaryLight,
                                           color: C.primary,
@@ -2604,7 +2602,7 @@ export default function PerformancePage() {
                                         whileHover={{ scale: 1.04 }}
                                         whileTap={{ scale: 0.97 }}
                                         onClick={() => setDetailModal(apr)}
-                                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl"
+                                        className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-full"
                                         style={{
                                           background: C.primaryLight,
                                           color: C.primary,
@@ -2752,7 +2750,7 @@ export default function PerformancePage() {
                               whileHover={{ scale: 1.04 }}
                               whileTap={{ scale: 0.97 }}
                               onClick={() => setAssessModal(rev)}
-                              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white shrink-0"
+                              className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold text-white shrink-0"
                               style={{
                                 background: `linear-gradient(135deg,${C.primary},#6366F1)`,
                               }}
@@ -2887,7 +2885,6 @@ export default function PerformancePage() {
                                     style={{
                                       background: C.successLight,
                                       color: C.success,
-                                      fontFamily: "Sora,sans-serif",
                                     }}
                                   >
                                     {Math.round(apr.appraisalScore)}
@@ -2898,7 +2895,7 @@ export default function PerformancePage() {
                                   whileHover={{ scale: 1.04 }}
                                   whileTap={{ scale: 0.97 }}
                                   onClick={() => setDetailModal(apr)}
-                                  className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold shrink-0"
+                                  className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold shrink-0"
                                   style={{
                                     background: C.primaryLight,
                                     color: C.primary,
@@ -3054,7 +3051,7 @@ export default function PerformancePage() {
                                     className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
                                     style={{
                                       background:
-                                        "linear-gradient(135deg,#6366F1,#8B5CF6)",
+                                        "linear-gradient(135deg,#6366F1,#4338CA)",
                                     }}
                                   >
                                     {rev.reviewed_by_name
@@ -3155,7 +3152,7 @@ export default function PerformancePage() {
                                     >
                                       <p
                                         className="text-[10px] font-bold mb-1"
-                                        style={{ color: "#7C3AED" }}
+                                        style={{ color: C.primary }}
                                       >
                                         HR Comment
                                       </p>
@@ -3231,7 +3228,6 @@ export default function PerformancePage() {
                                 style={{
                                   background: rCfg.bg,
                                   color: rCfg.color,
-                                  fontFamily: "Sora,sans-serif",
                                 }}
                               >
                                 {sc.final_score}
@@ -3264,7 +3260,7 @@ export default function PerformancePage() {
                                       <span>·</span>
                                       <span
                                         style={{
-                                          color: "#7C3AED",
+                                          color: C.primary,
                                           fontWeight: 700,
                                         }}
                                       >

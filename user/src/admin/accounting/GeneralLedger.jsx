@@ -57,18 +57,18 @@
 //   return (
 //     <div
 //       className="rounded-xl p-3 flex flex-wrap items-center gap-3"
-//       style={{ background: exempt ? "#FEF3C7" : "#ECFDF5", border: `1px solid ${exempt ? "#FCD34D" : "#6EE7B7"}` }}
+//       style={{ background: exempt ? "#FEF3C7" : "#D1FAE5", border: `1px solid ${exempt ? "#F59E0B" : "#10B981"}` }}
 //     >
 //       <div className="flex items-center gap-2 flex-1">
 //         {exempt
-//           ? <ShieldOff size={15} color="#D97706" />
-//           : <Shield size={15} color="#059669" />
+//           ? <ShieldOff size={15} color="#92400E" />
+//           : <Shield size={15} color="#047857" />
 //         }
 //         <div>
-//           <p className="text-xs font-bold" style={{ color: exempt ? "#92400E" : "#065F46" }}>
+//           <p className="text-xs font-bold" style={{ color: exempt ? "#92400E" : "#047857" }}>
 //             {exempt ? "VAT Exempt" : "VAT Applicable (7.5%)"}
 //           </p>
-//           <p className="text-[10px]" style={{ color: exempt ? "#B45309" : "#047857" }}>
+//           <p className="text-[10px]" style={{ color: exempt ? "#92400E" : "#047857" }}>
 //             {exempt
 //               ? "This transaction is exempt from VAT"
 //               : "7.5% VAT will be auto-calculated and added as a separate line"}
@@ -78,9 +78,9 @@
 
 //       <button
 //         onClick={onToggle}
-//         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
+//         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
 //         style={{
-//           background: exempt ? "#FDE68A" : C.primary,
+//           background: exempt ? "#FEF3C7" : C.primary,
 //           color: exempt ? "#92400E" : "#fff",
 //         }}
 //       >
@@ -96,12 +96,12 @@
 //             placeholder="Enter tax exempt code…"
 //             maxLength={8}
 //             className="flex-1 p-2 rounded-lg text-xs font-mono outline-none tracking-widest"
-//             style={{ background: "#FEF3C7", border: "1.5px solid #FCD34D", color: "#92400E" }}
+//             style={{ background: "#FEF3C7", border: "1.5px solid #F59E0B", color: "#92400E" }}
 //           />
 //           <button
 //             onClick={onVerify}
-//             className="px-3 py-2 rounded-lg text-xs font-bold text-white"
-//             style={{ background: "#D97706" }}
+//             className="px-3 py-2 rounded-full text-xs font-bold text-white"
+//             style={{ background: "#92400E" }}
 //           >
 //             Verify
 //           </button>
@@ -109,8 +109,8 @@
 //       )}
 //       {exempt && codeVerified && (
 //         <div className="w-full flex items-center gap-1.5 mt-1">
-//           <CheckCircle2 size={13} color="#059669" />
-//           <span className="text-xs font-semibold" style={{ color: "#065F46" }}>
+//           <CheckCircle2 size={13} color="#047857" />
+//           <span className="text-xs font-semibold" style={{ color: "#047857" }}>
 //             Code verified — transaction exempt from VAT
 //           </span>
 //         </div>
@@ -269,12 +269,12 @@
 //         initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
 //         transition={{ type: "spring", stiffness: 300, damping: 30 }}
 //         className="relative h-full w-full max-w-2xl flex flex-col"
-//         style={{ background: C.bg, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+//         style={{ background: C.bg, boxShadow: C.shadow.card }}
 //       >
 //         {/* Header */}
 //         <div className="flex items-center justify-between px-6 py-4 shrink-0" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
-//           <h2 className="font-bold text-base" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>New Journal Entry</h2>
-//           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100"><X size={15} color={C.textMuted} /></button>
+//           <h2 className="text-base" style={{ color: C.textPrimary }}>New Journal Entry</h2>
+//           <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100"><X size={15} color={C.textMuted} /></button>
 //         </div>
 
 //         <div className="flex-1 overflow-y-auto p-6 space-y-5">
@@ -333,7 +333,7 @@
 //               <p className="text-xs font-bold uppercase tracking-wide" style={{ color: C.textMuted }}>Line Items</p>
 //               <button
 //                 onClick={addLine}
-//                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
+//                 className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
 //                 style={{ background: C.primaryLight, color: C.primary }}
 //               >
 //                 <Plus size={12} /> Add Line
@@ -349,7 +349,7 @@
 //               <div className="col-span-3">Description</div>
 //               <div className="col-span-2 text-right" style={{ color: "#1E1B4B" }}>Debit (₦)</div>
 //               {/* ✅ Credit column more visible */}
-//               <div className="col-span-2 text-right" style={{ color: "#0F766E", fontWeight: 800 }}>Credit (₦)</div>
+//               <div className="col-span-2 text-right" style={{ color: "#3730A3", fontWeight: 500 }}>Credit (₦)</div>
 //               <div className="col-span-1" />
 //             </div>
 
@@ -400,9 +400,9 @@
 //                     placeholder="0.00"
 //                     className="w-full p-2 rounded-xl text-xs outline-none text-right font-mono font-bold"
 //                     style={{
-//                       background: "#CCFBF1",
-//                       border: `1.5px solid #0F766E`,
-//                       color: "#0F766E",
+//                       background: "#E0E7FF",
+//                       border: `1.5px solid #3730A3`,
+//                       color: "#3730A3",
 //                     }}
 //                   />
 //                 </div>
@@ -418,18 +418,18 @@
 //             {applyVat && vatAmount > 0 && (
 //               <div
 //                 className="grid grid-cols-12 gap-2 px-4 py-2.5 items-center"
-//                 style={{ borderBottom: `1px solid ${C.border}`, background: "#FFFBEB" }}
+//                 style={{ borderBottom: `1px solid ${C.border}`, background: "#FEF3C7" }}
 //               >
 //                 <div className="col-span-4">
 //                   <div className="flex items-center gap-1.5">
-//                     <Shield size={11} color="#D97706" />
+//                     <Shield size={11} color="#92400E" />
 //                     <span className="text-xs font-semibold" style={{ color: "#92400E" }}>
 //                       VAT Payable (2200) — Auto
 //                     </span>
 //                   </div>
 //                 </div>
 //                 <div className="col-span-3">
-//                   <span className="text-xs" style={{ color: "#B45309" }}>7.5% VAT on ₦{totalCredit.toFixed(2)}</span>
+//                   <span className="text-xs" style={{ color: "#92400E" }}>7.5% VAT on ₦{totalCredit.toFixed(2)}</span>
 //                 </div>
 //                 <div className="col-span-2 text-right">
 //                   <span className="text-xs font-mono font-bold" style={{ color: "#1E1B4B" }}>
@@ -437,7 +437,7 @@
 //                   </span>
 //                 </div>
 //                 <div className="col-span-2 text-right">
-//                   <span className="text-xs font-mono font-bold" style={{ color: "#0F766E" }}>
+//                   <span className="text-xs font-mono font-bold" style={{ color: "#3730A3" }}>
 //                     ₦{vatAmount.toFixed(2)}
 //                   </span>
 //                 </div>
@@ -456,7 +456,7 @@
 //               <div className="col-span-7 text-xs font-bold uppercase tracking-wide" style={{ color: C.textMuted }}>
 //                 Totals {balanced ? "✓ Balanced" : "⚠ Not balanced"}
 //                 {applyVat && vatAmount > 0 && (
-//                   <span className="ml-2 text-[10px] font-normal" style={{ color: "#D97706" }}>
+//                   <span className="ml-2 text-[10px] font-normal" style={{ color: "#92400E" }}>
 //                     (incl. ₦{vatAmount.toFixed(2)} VAT)
 //                   </span>
 //                 )}
@@ -464,7 +464,7 @@
 //               <div className="col-span-2 text-right font-mono" style={{ color: "#1E1B4B" }}>
 //                 ₦{totalDebit.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
 //               </div>
-//               <div className="col-span-2 text-right font-mono font-bold" style={{ color: "#0F766E" }}>
+//               <div className="col-span-2 text-right font-mono font-bold" style={{ color: "#3730A3" }}>
 //                 ₦{totalCredit.toLocaleString("en-NG", { minimumFractionDigits: 2 })}
 //               </div>
 //               <div className="col-span-1" />
@@ -479,7 +479,7 @@
 //           <Motion.button
 //             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
 //             onClick={handleSave} disabled={saving}
-//             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold"
+//             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold"
 //             style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}`, opacity: saving ? 0.7 : 1 }}
 //           >
 //             {saving ? <RefreshCw size={14} className="animate-spin" /> : <Save size={14} />}
@@ -488,9 +488,9 @@
 //           <Motion.button
 //             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
 //             onClick={handlePost} disabled={posting || !balanced}
-//             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white"
+//             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-white"
 //             style={{
-//               background: balanced ? `linear-gradient(135deg,${C.primary},#06B6D4)` : C.border,
+//               background: balanced ? `linear-gradient(135deg,${C.primary},#6366F1)` : C.border,
 //               color: balanced ? "#fff" : C.textMuted,
 //               opacity: posting ? 0.7 : 1,
 //               cursor: !balanced ? "not-allowed" : "pointer",
@@ -682,7 +682,7 @@
 //             <Motion.button
 //               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
 //               onClick={exportCSV}
-//               className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl"
+//               className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-full"
 //               style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}
 //             >
 //               <Download size={13} /> Export Account CSV
@@ -693,11 +693,11 @@
 //             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
 //             onClick={exportAllAccountsCSV}
 //             disabled={exportingAll || accounts.length === 0}
-//             className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl"
+//             className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-full"
 //             style={{
-//               background: exportingAll ? C.surfaceAlt : "#0F766E",
+//               background: exportingAll ? C.surfaceAlt : "#3730A3",
 //               color: exportingAll ? C.textMuted : "#fff",
-//               border: `1px solid ${exportingAll ? C.border : "#0F766E"}`,
+//               border: `1px solid ${exportingAll ? C.border : "#3730A3"}`,
 //               opacity: exportingAll ? 0.7 : 1,
 //             }}
 //           >
@@ -707,7 +707,7 @@
 //           <Motion.button
 //             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
 //             onClick={() => setShowDrawer(true)}
-//             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl"
+//             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full"
 //             style={{ background: C.primary, color: "#fff" }}
 //           >
 //             <Plus size={14} /> New Journal Entry
@@ -781,7 +781,7 @@
 //             <>
 //               <div className="px-5 py-4 flex items-center justify-between" style={{ borderBottom: `1px solid ${C.border}` }}>
 //                 <div>
-//                   <h3 className="font-bold text-sm" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+//                   <h3 className="text-sm" style={{ color: C.textPrimary }}>
 //                     {selectedAcc?.accountName ?? selectedAcc?.account_name}
 //                   </h3>
 //                   <p className="text-[11px] font-mono" style={{ color: C.textMuted }}>
@@ -790,7 +790,7 @@
 //                 </div>
 //                 <div className="text-right">
 //                   <p className="text-xs" style={{ color: C.textMuted }}>Closing Balance</p>
-//                   <p className="text-base font-bold" style={{ color: C.primary, fontFamily: "Sora,sans-serif" }}>
+//                   <p className="text-base font-bold" style={{ color: C.primary }}>
 //                     {fmt(ledger?.closingBalance)}
 //                   </p>
 //                 </div>
@@ -804,7 +804,7 @@
 //                         <th
 //                           key={h}
 //                           className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide"
-//                           style={{ color: h === "Credit" ? "#0F766E" : C.textMuted, fontWeight: h === "Credit" ? 800 : 700 }}
+//                           style={{ color: h === "Credit" ? "#3730A3" : C.textMuted, fontWeight: h === "Credit" ? 800 : 700 }}
 //                         >
 //                           {h}
 //                         </th>
@@ -847,7 +847,7 @@
 //                             {t.debitAmount ? fmt(t.debitAmount) : "—"}
 //                           </td>
 //                           {/* ✅ Credit column — bold teal */}
-//                           <td className="px-4 py-3 font-mono text-sm font-bold text-right" style={{ color: "#0F766E" }}>
+//                           <td className="px-4 py-3 font-mono text-sm font-bold text-right" style={{ color: "#3730A3" }}>
 //                             {t.creditAmount ? fmt(t.creditAmount) : "—"}
 //                           </td>
 //                           <td className="px-4 py-3 font-mono text-sm font-bold" style={{ color: C.primary }}>
@@ -928,9 +928,9 @@ const monthStart = () => {
 };
 
 // High-contrast credit colours — dark teal on pale mint
-const CREDIT_COLOR  = "#0D5C4E";
-const CREDIT_BG     = "#C6F6EE";
-const CREDIT_BORDER = "#0D9488";
+const CREDIT_COLOR  = "#312E81";
+const CREDIT_BG     = "#E0E7FF";
+const CREDIT_BORDER = "#4F46E5";
 
 // ── Toast ─────────────────────────────────────────────────────
 function Toast({ msg, type, onDismiss }) {
@@ -955,25 +955,25 @@ function VatExemptToggle({ exempt, onToggle, exemptCode, onCodeChange, codeVerif
   return (
     <div
       className="rounded-xl p-3 flex flex-wrap items-start gap-3"
-      style={{ background: exempt ? "#FEF3C7" : "#ECFDF5", border: `1px solid ${exempt ? "#FCD34D" : "#6EE7B7"}` }}
+      style={{ background: exempt ? "#FEF3C7" : "#D1FAE5", border: `1px solid ${exempt ? "#F59E0B" : "#10B981"}` }}
     >
       <div className="flex items-start gap-2 flex-1 min-w-0">
         {exempt
-          ? <ShieldOff size={15} color="#D97706" className="mt-0.5 shrink-0" />
-          : <Shield size={15} color="#059669" className="mt-0.5 shrink-0" />}
+          ? <ShieldOff size={15} color="#92400E" className="mt-0.5 shrink-0" />
+          : <Shield size={15} color="#047857" className="mt-0.5 shrink-0" />}
         <div>
-          <p className="text-xs font-bold" style={{ color: exempt ? "#92400E" : "#065F46" }}>
+          <p className="text-xs font-bold" style={{ color: exempt ? "#92400E" : "#047857" }}>
             {exempt ? "VAT Exempt" : "VAT Applicable (7.5%)"}
           </p>
-          <p className="text-[10px]" style={{ color: exempt ? "#B45309" : "#047857" }}>
+          <p className="text-[10px]" style={{ color: exempt ? "#92400E" : "#047857" }}>
             {exempt ? "This transaction is exempt from VAT" : "7.5% VAT will be auto-calculated and added as a separate line"}
           </p>
         </div>
       </div>
       <button
         onClick={onToggle}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shrink-0"
-        style={{ background: exempt ? "#FDE68A" : C.primary, color: exempt ? "#92400E" : "#fff" }}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold shrink-0"
+        style={{ background: exempt ? "#FEF3C7" : C.primary, color: exempt ? "#92400E" : "#fff" }}
       >
         {exempt ? "Remove Exemption" : "Exempt from VAT"}
       </button>
@@ -985,17 +985,17 @@ function VatExemptToggle({ exempt, onToggle, exemptCode, onCodeChange, codeVerif
             placeholder="Enter tax exempt code…"
             maxLength={8}
             className="flex-1 p-2 rounded-lg text-xs font-mono outline-none tracking-widest"
-            style={{ background: "#FEF3C7", border: "1.5px solid #FCD34D", color: "#92400E" }}
+            style={{ background: "#FEF3C7", border: "1.5px solid #F59E0B", color: "#92400E" }}
           />
-          <button onClick={onVerify} className="px-3 py-2 rounded-lg text-xs font-bold text-white shrink-0" style={{ background: "#D97706" }}>
+          <button onClick={onVerify} className="px-3 py-2 rounded-full text-xs font-bold text-white shrink-0" style={{ background: "#92400E" }}>
             Verify
           </button>
         </div>
       )}
       {exempt && codeVerified && (
         <div className="w-full flex items-center gap-1.5">
-          <CheckCircle2 size={13} color="#059669" />
-          <span className="text-xs font-semibold" style={{ color: "#065F46" }}>Code verified — exempt from VAT</span>
+          <CheckCircle2 size={13} color="#047857" />
+          <span className="text-xs font-semibold" style={{ color: "#047857" }}>Code verified — exempt from VAT</span>
         </div>
       )}
     </div>
@@ -1092,12 +1092,12 @@ function JournalEntryDrawer({ accounts, onClose, onSaved, showToast }) {
         initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="relative h-full w-full flex flex-col"
-        style={{ maxWidth: "min(680px, 100vw)", background: C.bg, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+        style={{ maxWidth: "min(680px, 100vw)", background: C.bg, boxShadow: C.shadow.card }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 md:px-6 py-4 shrink-0" style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}>
-          <h2 className="font-bold text-sm md:text-base" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>New Journal Entry</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100"><X size={15} color={C.textMuted} /></button>
+          <h2 className="text-sm md:text-base" style={{ color: C.textPrimary }}>New Journal Entry</h2>
+          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100"><X size={15} color={C.textMuted} /></button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
@@ -1141,7 +1141,7 @@ function JournalEntryDrawer({ accounts, onClose, onSaved, showToast }) {
           <div className="rounded-2xl overflow-hidden" style={{ background: C.surface, border: `1px solid ${C.border}` }}>
             <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: `1px solid ${C.border}` }}>
               <p className="text-xs font-bold uppercase tracking-wide" style={{ color: C.textMuted }}>Line Items</p>
-              <button onClick={addLine} className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
+              <button onClick={addLine} className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
                 style={{ background: C.primaryLight, color: C.primary }}>
                 <Plus size={12} /> Add Line
               </button>
@@ -1240,14 +1240,14 @@ function JournalEntryDrawer({ accounts, onClose, onSaved, showToast }) {
 
                   {/* VAT auto-row */}
                   {applyVat && vatAmount > 0 && (
-                    <tr style={{ background: "#FFFBEB", borderBottom: `1px solid ${C.border}` }}>
+                    <tr style={{ background: "#FEF3C7", borderBottom: `1px solid ${C.border}` }}>
                       <td className="px-4 py-2">
                         <div className="flex items-center gap-1.5">
-                          <Shield size={11} color="#D97706" />
+                          <Shield size={11} color="#92400E" />
                           <span className="text-xs font-semibold" style={{ color: "#92400E" }}>VAT Payable (2200) — Auto</span>
                         </div>
                       </td>
-                      <td className="px-2 py-2 text-xs" style={{ color: "#B45309" }}>7.5% of ₦{totalCredit.toFixed(2)}</td>
+                      <td className="px-2 py-2 text-xs" style={{ color: "#92400E" }}>7.5% of ₦{totalCredit.toFixed(2)}</td>
                       <td className="px-2 py-2 text-right font-mono text-xs font-bold" style={{ color: "#1E1B4B" }}>₦{vatAmount.toFixed(2)}</td>
                       <td className="px-2 py-2 text-right font-mono text-xs font-bold" style={{ color: CREDIT_COLOR }}>₦{vatAmount.toFixed(2)}</td>
                       <td />
@@ -1262,10 +1262,10 @@ function JournalEntryDrawer({ accounts, onClose, onSaved, showToast }) {
               className="px-4 py-3 flex items-center justify-between flex-wrap gap-2"
               style={{ background: balanced ? "#D1FAE533" : "#FEE2E233", borderTop: `2px solid ${balanced ? "#10B981" : "#EF4444"}` }}
             >
-              <span className="text-xs font-bold" style={{ color: balanced ? "#065F46" : "#991B1B" }}>
-                {balanced ? "✓ Balanced" : "⚠ Not balanced"}
+              <span className="text-xs font-bold" style={{ color: balanced ? "#047857" : "#B91C1C" }}>
+                {balanced ? " Balanced" : " Not balanced"}
                 {applyVat && vatAmount > 0 && (
-                  <span className="ml-2 font-normal" style={{ color: "#D97706" }}>incl. ₦{vatAmount.toFixed(2)} VAT</span>
+                  <span className="ml-2 font-normal" style={{ color: "#92400E" }}>incl. ₦{vatAmount.toFixed(2)} VAT</span>
                 )}
               </span>
               <div className="flex items-center gap-4 text-xs font-mono font-bold">
@@ -1281,13 +1281,13 @@ function JournalEntryDrawer({ accounts, onClose, onSaved, showToast }) {
         {/* Footer */}
         <div className="px-4 md:px-6 py-4 shrink-0 flex gap-3" style={{ background: C.surface, borderTop: `1px solid ${C.border}` }}>
           <Motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleSave} disabled={saving}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold"
             style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}`, opacity: saving ? 0.7 : 1 }}>
             {saving ? <RefreshCw size={14} className="animate-spin" /> : <Save size={14} />}
             {saving ? "Saving…" : "Save Draft"}
           </Motion.button>
           <Motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handlePost} disabled={posting || !balanced}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-white"
             style={{ background: balanced ? C.primary : C.border, opacity: posting ? 0.7 : 1, cursor: !balanced ? "not-allowed" : "pointer" }}>
             {posting ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />}
             {posting ? "Posting…" : `Post Entry${applyVat && vatAmount > 0 ? ` (+ ₦${vatAmount.toFixed(2)} VAT)` : ""}`}
@@ -1445,7 +1445,7 @@ export default function GeneralLedger({ searchQuery }) {
           <div className="px-4 md:px-5 py-3 md:py-4 flex items-start md:items-center justify-between gap-2"
             style={{ borderBottom: `1px solid ${C.border}` }}>
             <div className="min-w-0">
-              <h3 className="font-bold text-sm truncate" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+              <h3 className="text-sm truncate" style={{ color: C.textPrimary }}>
                 {selectedAcc?.accountName ?? selectedAcc?.account_name}
               </h3>
               <p className="text-[11px] font-mono" style={{ color: C.textMuted }}>
@@ -1454,7 +1454,7 @@ export default function GeneralLedger({ searchQuery }) {
             </div>
             <div className="text-right shrink-0">
               <p className="text-xs" style={{ color: C.textMuted }}>Closing</p>
-              <p className="text-base font-bold" style={{ color: C.primary, fontFamily: "Sora,sans-serif" }}>
+              <p className="text-base font-bold" style={{ color: C.primary }}>
                 {fmt(ledger?.closingBalance)}
               </p>
             </div>
@@ -1599,20 +1599,20 @@ export default function GeneralLedger({ searchQuery }) {
         <div className="flex items-center gap-2 ml-auto flex-wrap">
           {selectedAccId && (
             <Motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={exportCSV}
-              className="flex items-center gap-1.5 px-2.5 md:px-3 py-2 text-xs font-semibold rounded-xl"
+              className="flex items-center gap-1.5 px-2.5 md:px-3 py-2 text-xs font-semibold rounded-full"
               style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
               <Download size={12} /><span className="hidden sm:inline">Export Account</span>
             </Motion.button>
           )}
           <Motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={exportAllAccountsCSV} disabled={exportingAll || accounts.length === 0}
-            className="flex items-center gap-1.5 px-2.5 md:px-3 py-2 text-xs font-semibold rounded-xl"
+            className="flex items-center gap-1.5 px-2.5 md:px-3 py-2 text-xs font-semibold rounded-full"
             style={{ background: exportingAll ? C.surfaceAlt : CREDIT_COLOR, color: exportingAll ? C.textMuted : "#fff", opacity: exportingAll ? 0.7 : 1 }}>
             {exportingAll ? <RefreshCw size={12} className="animate-spin" /> : <FileDown size={12} />}
             <span className="hidden sm:inline">{exportingAll ? "Exporting…" : "Export All"}</span>
           </Motion.button>
           <Motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setShowDrawer(true)}
-            className="flex items-center gap-1.5 px-3 md:px-4 py-2 text-xs md:text-sm font-semibold rounded-xl"
+            className="flex items-center gap-1.5 px-3 md:px-4 py-2 text-xs md:text-sm font-semibold rounded-full"
             style={{ background: C.primary, color: "#fff" }}>
             <Plus size={13} />
             <span className="hidden sm:inline">New Journal Entry</span>

@@ -122,8 +122,7 @@ function AssignModal({ training, onClose, onAssigned }) {
                 Assign Training
               </p>
               <h3
-                className="text-white font-bold mt-0.5"
-                style={{ fontFamily: "Sora,sans-serif" }}
+                className="text-white mt-0.5"
               >
                 {training.title}
               </h3>
@@ -131,7 +130,7 @@ function AssignModal({ training, onClose, onAssigned }) {
             <motion.button
               whileHover={{ scale: 1.1, rotate: 90 }}
               onClick={onClose}
-              className="w-8 h-8 rounded-xl flex items-center justify-center"
+              className="w-8 h-8 rounded-full flex items-center justify-center"
               style={{
                 background: "rgba(255,255,255,0.15)",
                 border: "none",
@@ -242,7 +241,7 @@ function AssignModal({ training, onClose, onAssigned }) {
             <motion.button
               whileHover={{ scale: 1.02 }}
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+              className="flex-1 py-2.5 rounded-full text-sm font-semibold"
               style={{
                 background: C.surfaceAlt,
                 color: C.textSecondary,
@@ -257,7 +256,7 @@ function AssignModal({ training, onClose, onAssigned }) {
               whileTap={{ scale: 0.98 }}
               onClick={handleAssign}
               disabled={saving || !selected.size}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 text-white"
+              className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 text-white"
               style={{
                 background: C.primary,
                 cursor: saving || !selected.size ? "not-allowed" : "pointer",
@@ -414,7 +413,7 @@ export default function TrainingCatalog({ searchQuery }) {
               key={t}
               whileTap={{ scale: 0.95 }}
               onClick={() => setFilterType(t)}
-              className="px-4 py-1.5 text-xs rounded-xl font-medium transition-all"
+              className="px-4 py-1.5 text-xs rounded-full font-medium transition-all"
               style={{
                 background: filterType === t ? C.primary : C.surface,
                 color: filterType === t ? "#fff" : C.textSecondary,
@@ -430,7 +429,7 @@ export default function TrainingCatalog({ searchQuery }) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl shadow-sm text-white"
+          className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full shadow-sm text-white"
           style={{ background: C.primary, border: "none", cursor: "pointer" }}
         >
           <Plus size={16} /> New Training Program
@@ -454,7 +453,7 @@ export default function TrainingCatalog({ searchQuery }) {
           </p>
           <button
             onClick={fetchTrainings}
-            className="text-xs font-bold px-3 py-1 rounded-lg"
+            className="text-xs font-bold px-3 py-1 rounded-full"
             style={{
               background: C.danger,
               color: "#fff",
@@ -499,7 +498,7 @@ export default function TrainingCatalog({ searchQuery }) {
               transition={{ delay: i * 0.03 }}
               whileHover={{
                 y: -4,
-                boxShadow: "0 20px 40px rgba(79,70,229,0.12)",
+                boxShadow: C.shadow.lift,
               }}
               className="rounded-2xl border overflow-hidden"
               style={{ background: C.surface, borderColor: C.border }}
@@ -508,13 +507,13 @@ export default function TrainingCatalog({ searchQuery }) {
                 className="h-1.5"
                 style={{
                   background:
-                    training.type === "Internal" ? C.primary : "#06B6D4",
+                    training.type === "Internal" ? C.primary : "#6366F1",
                 }}
               />
               <div className="p-6">
                 <div className="flex justify-between items-start mb-3">
                   <h3
-                    className="font-semibold text-[15px] leading-tight pr-2"
+                    className="text-[15px] leading-tight pr-2"
                     style={{ color: C.textPrimary }}
                   >
                     {training.title}
@@ -525,9 +524,9 @@ export default function TrainingCatalog({ searchQuery }) {
                       background:
                         training.type === "Internal"
                           ? C.primaryLight
-                          : "#ECFEFF",
+                          : "#EEF2FF",
                       color:
-                        training.type === "Internal" ? C.primary : "#06B6D4",
+                        training.type === "Internal" ? C.primary : "#6366F1",
                     }}
                   >
                     {training.type}
@@ -572,7 +571,7 @@ export default function TrainingCatalog({ searchQuery }) {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => setAssignTarget(training)}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold"
+                      className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold"
                       style={{
                         background: C.primaryLight,
                         color: C.primary,
@@ -638,7 +637,7 @@ export default function TrainingCatalog({ searchQuery }) {
                   <motion.button
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     onClick={() => setShowCreate(false)}
-                    className="w-8 h-8 rounded-xl flex items-center justify-center"
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
                       background: "rgba(255,255,255,0.15)",
                       border: "none",
@@ -765,7 +764,7 @@ export default function TrainingCatalog({ searchQuery }) {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     onClick={() => setShowCreate(false)}
-                    className="flex-1 py-3 rounded-xl font-semibold text-sm"
+                    className="flex-1 py-3 rounded-full font-semibold text-sm"
                     style={{
                       background: C.surfaceAlt,
                       color: C.textSecondary,
@@ -780,7 +779,7 @@ export default function TrainingCatalog({ searchQuery }) {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCreate}
                     disabled={saving}
-                    className="flex-1 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 text-white"
+                    className="flex-1 py-3 rounded-full font-semibold text-sm flex items-center justify-center gap-2 text-white"
                     style={{
                       background: C.primary,
                       cursor: saving ? "not-allowed" : "pointer",

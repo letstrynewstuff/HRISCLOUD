@@ -3,6 +3,7 @@
 // API-connected — no mock data
 
 import { useState, useEffect } from "react";
+import C from "../../styles/colors";
 import { useNavigate } from "react-router-dom";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -48,29 +49,6 @@ import { gradeApi } from "../../api/service/gradeApi";
 import { listJobRoles } from "../../api/service/jobRoleApi";
 
 /* ─── Palette ─── */
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceHover: "#F7F8FC",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const ADMIN = {
   name: "Ngozi Adeleke",
@@ -558,7 +536,6 @@ export default function AddEmployee() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -578,7 +555,7 @@ export default function AddEmployee() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -602,7 +579,7 @@ export default function AddEmployee() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate("/admin/employeemanagement")}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -614,7 +591,7 @@ export default function AddEmployee() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#4F46E5,#06B6D4)",
+                  background: "linear-gradient(135deg,#4F46E5,#6366F1)",
                 }}
               >
                 {ADMIN.initials}
@@ -633,10 +610,9 @@ export default function AddEmployee() {
                 custom={0}
               >
                 <h1
-                  className="text-xl font-bold"
+                  className="text-xl "
                   style={{
                     color: C.textPrimary,
-                    fontFamily: "Sora,sans-serif",
                   }}
                 >
                   Add New Employee
@@ -1578,7 +1554,7 @@ export default function AddEmployee() {
                           className="p-5 rounded-xl"
                           style={{
                             background:
-                              "linear-gradient(135deg,#EEF2FF,#ECFEFF)",
+                              "linear-gradient(135deg,#EEF2FF,#C7D2FE)",
                           }}
                         >
                           <p
@@ -1591,7 +1567,6 @@ export default function AddEmployee() {
                             className="text-3xl font-bold"
                             style={{
                               color: C.textPrimary,
-                              fontFamily: "Sora,sans-serif",
                             }}
                           >
                             ₦{grossSalary.toLocaleString()}
@@ -1982,7 +1957,7 @@ export default function AddEmployee() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleBack}
                   disabled={currentStep === 1}
-                  className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold"
+                  className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-semibold"
                   style={{
                     background: C.surface,
                     color: currentStep === 1 ? C.textMuted : C.textSecondary,
@@ -2015,11 +1990,11 @@ export default function AddEmployee() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleNext}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold"
+                    className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold"
                     style={{
                       background: C.primary,
                       color: "#fff",
-                      boxShadow: `0 4px 14px ${C.primary}44`,
+                      boxShadow: C.shadow.card,
                       border: "none",
                       cursor: "pointer",
                     }}
@@ -2032,11 +2007,11 @@ export default function AddEmployee() {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSubmit}
                     disabled={submitting}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold"
+                    className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold"
                     style={{
                       background: C.success,
                       color: "#fff",
-                      boxShadow: `0 4px 14px ${C.success}44`,
+                      boxShadow: C.shadow.card,
                       border: "none",
                       cursor: submitting ? "not-allowed" : "pointer",
                       opacity: submitting ? 0.8 : 1,
@@ -2087,7 +2062,7 @@ export default function AddEmployee() {
                 <div
                   className="p-6 text-center"
                   style={{
-                    background: "linear-gradient(135deg,#D1FAE5,#ECFEFF)",
+                    background: "linear-gradient(135deg,#D1FAE5,#EEF2FF)",
                   }}
                 >
                   <motion.div
@@ -2100,13 +2075,12 @@ export default function AddEmployee() {
                     <CheckCircle2 size={32} color="#fff" />
                   </motion.div>
                   <h2
-                    className="text-xl font-bold mb-1"
+                    className="text-xl mb-1"
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
-                    Employee Created! 🎉
+                    Employee Created!
                   </h2>
                   <p className="text-sm" style={{ color: C.textSecondary }}>
                     {createdEmployee.name} has been added to the system.
@@ -2165,7 +2139,7 @@ export default function AddEmployee() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => handleCopy(value, key)}
-                          className="p-1.5 rounded-lg"
+                          className="p-1.5 rounded-full"
                           style={{
                             background:
                               copied === key ? C.successLight : C.surfaceAlt,
@@ -2187,7 +2161,7 @@ export default function AddEmployee() {
                         className="text-xs mt-2"
                         style={{ color: C.textSecondary }}
                       >
-                        ✓ Login invite email will be sent to the employee.
+ Login invite email will be sent to the employee.
                       </p>
                     )}
                   </div>
@@ -2234,11 +2208,11 @@ export default function AddEmployee() {
                           `/admin/employeemanagement/admin-viewemployeesprofile/${createdEmployee.id}`,
                         );
                       }}
-                      className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                      className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                       style={{
                         background: C.primary,
                         color: "#fff",
-                        boxShadow: `0 4px 12px ${C.primary}44`,
+                        boxShadow: C.shadow.card,
                         border: "none",
                         cursor: "pointer",
                       }}
@@ -2252,7 +2226,7 @@ export default function AddEmployee() {
                         setSuccessModal(false);
                         resetForm();
                       }}
-                      className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                      className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                       style={{
                         background: C.surfaceAlt,
                         color: C.textSecondary,

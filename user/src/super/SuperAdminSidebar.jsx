@@ -22,8 +22,8 @@ import {
 } from "lucide-react";
 
 const T = {
-  sidebar: "#0F0C29",
-  sidebarMid: "#1a1640",
+  sidebar: "#1E1B4B",
+  sidebarMid: "#1E1B4B",
   sidebarHover: "rgba(79,70,229,0.18)",
   sidebarActive: "rgba(79,70,229,0.30)",
   accent: "#4F46E5",
@@ -58,8 +58,8 @@ const NAV_ITEMS = [
 ];
 
 const ROLE_HIERARCHY = [
-  { label: "Super Admin (You)", icon: Crown, color: "#A78BFA" },
-  { label: "HR Manager", icon: Shield, color: "#60A5FA" },
+  { label: "Super Admin (You)", icon: Crown, color: "#818CF8" },
+  { label: "HR Manager", icon: Shield, color: "#818CF8" },
   { label: "Employees", icon: Users, color: T.textSub },
 ];
 
@@ -123,7 +123,7 @@ export default function SuperAdminSidebar({ sidebarOpen, admin, onLogout }) {
             width: collapsed ? 64 : 240,
             background: T.sidebar,
             borderRight: `1px solid ${T.border}`,
-            boxShadow: "4px 0 40px rgba(0,0,0,0.4)",
+            boxShadow: C.shadow.card,
             transition: "width 0.3s ease",
           }}
         >
@@ -136,7 +136,7 @@ export default function SuperAdminSidebar({ sidebarOpen, admin, onLogout }) {
               className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
               style={{
                 background: "linear-gradient(135deg,#6366F1,#4F46E5)",
-                boxShadow: `0 4px 12px ${T.accentGlow}`,
+                boxShadow: C.shadow.card,
               }}
             >
               <Crown size={18} color="#fff" />
@@ -158,7 +158,7 @@ export default function SuperAdminSidebar({ sidebarOpen, admin, onLogout }) {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setCollapsed((p) => !p)}
-              className="w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
+              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
               style={{
                 background: T.sidebarMid,
                 border: `1px solid ${T.border}`,
@@ -183,10 +183,10 @@ export default function SuperAdminSidebar({ sidebarOpen, admin, onLogout }) {
               }}
             >
               <div className="flex items-center gap-2 mb-1">
-                <Crown size={12} color="#A78BFA" />
+                <Crown size={12} color="#818CF8" />
                 <p
                   className="text-[10px] font-bold uppercase tracking-widest"
-                  style={{ color: "#A78BFA" }}
+                  style={{ color: "#818CF8" }}
                 >
                   Super Admin
                 </p>
@@ -251,7 +251,7 @@ export default function SuperAdminSidebar({ sidebarOpen, admin, onLogout }) {
               whileTap={{ scale: 0.97 }}
               onClick={handleLogout}
               disabled={loggingOut}
-              className={`w-full flex items-center ${collapsed ? "justify-center" : "gap-3"} px-3 py-2.5 rounded-xl text-sm`}
+              className={`w-full flex items-center ${collapsed ? "justify-center" : "gap-3"} px-3 py-2.5 rounded-full text-sm`}
               style={{ color: "#EF4444", opacity: loggingOut ? 0.7 : 1 }}
             >
               {loggingOut ? (
@@ -273,7 +273,7 @@ export default function SuperAdminSidebar({ sidebarOpen, admin, onLogout }) {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
                 style={{
-                  background: "linear-gradient(135deg,#6366F1,#06B6D4)",
+                  background: "linear-gradient(135deg,#6366F1,#4338CA)",
                 }}
               >
                 {initials}

@@ -91,7 +91,7 @@ const Skeleton = ({ w = "100%", h = 16 }) => (
       width: w,
       height: h,
       borderRadius: 8,
-      background: "linear-gradient(90deg,#E2E8F4 25%,#EFF6FF 50%,#E2E8F4 75%)",
+      background: "linear-gradient(90deg,#E4E7F0 25%,#EEF2FF 50%,#E4E7F0 75%)",
       backgroundSize: "200% 100%",
       animation: "mgr-shimmer 1.4s infinite linear",
     }}
@@ -126,7 +126,6 @@ const AvatarEl = ({ initials, avatar, size = 44 }) => {
         color: "#fff",
         fontWeight: 700,
         fontSize: size * 0.34,
-        fontFamily: "Sora,sans-serif",
         flexShrink: 0,
       }}
     >
@@ -167,7 +166,7 @@ const Chip = ({
 const Card = ({ children, style = {}, onClick }) => (
   <Motion.div
     whileHover={
-      onClick ? { y: -2, boxShadow: "0 10px 36px rgba(37,99,235,0.09)" } : {}
+      onClick ? { y: -2, boxShadow: C.shadow.lift } : {}
     }
     transition={{ duration: 0.18 }}
     onClick={onClick}
@@ -175,7 +174,7 @@ const Card = ({ children, style = {}, onClick }) => (
       background: C.surface,
       borderRadius: 16,
       border: `1px solid ${C.border}`,
-      boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+      boxShadow: C.shadow.card,
       overflow: "hidden",
       cursor: onClick ? "pointer" : "default",
       ...style,
@@ -192,7 +191,7 @@ const SectionCard = ({ children, style = {} }) => (
       borderRadius: 16,
       border: `1px solid ${C.border}`,
       overflow: "hidden",
-      boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+      boxShadow: C.shadow.card,
       ...style,
     }}
   >
@@ -416,9 +415,8 @@ function OverviewTab({ team, pendingApprovals, attendanceSummary }) {
                 <p
                   style={{
                     fontSize: 26,
-                    fontWeight: 800,
+                    fontWeight: 500,
                     color: C.textPrimary,
-                    fontFamily: "Sora,sans-serif",
                   }}
                 >
                   {s.value}
@@ -738,7 +736,7 @@ function TeamTab({ team, onViewProfile }) {
                         style={{
                           flex: 1,
                           padding: "7px",
-                          borderRadius: 8,
+                          borderRadius: C.radius.pill,
                           border: `1px solid ${C.border}`,
                           background: C.surfaceAlt,
                           fontSize: 11,
@@ -983,7 +981,7 @@ function ApprovalsTab({ approvals, onApprove }) {
                         style={{
                           flex: 1,
                           padding: "8px",
-                          borderRadius: 9,
+                          borderRadius: C.radius.pill,
                           border: "none",
                           background: C.successLight,
                           color: C.success,
@@ -1011,7 +1009,7 @@ function ApprovalsTab({ approvals, onApprove }) {
                         style={{
                           flex: 1,
                           padding: "8px",
-                          borderRadius: 9,
+                          borderRadius: C.radius.pill,
                           border: "none",
                           background: C.dangerLight,
                           color: C.danger,
@@ -1298,7 +1296,7 @@ function PerformanceTab({ team }) {
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: 11,
-                    fontWeight: 800,
+                    fontWeight: 500,
                     color: C.accent,
                     flexShrink: 0,
                   }}
@@ -1323,9 +1321,8 @@ function PerformanceTab({ team }) {
                   <p
                     style={{
                       fontSize: 16,
-                      fontWeight: 800,
+                      fontWeight: 500,
                       color: C.primary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {p.score ?? p.overallScore ?? "—"}
@@ -1445,7 +1442,7 @@ function PersonalSubTab({ emp }) {
                 padding: "6px 12px",
                 background: editing ? C.dangerLight : C.primaryLight,
                 border: "none",
-                borderRadius: 8,
+                borderRadius: C.radius.pill,
                 fontSize: 11,
                 fontWeight: 700,
                 color: editing ? C.danger : C.primary,
@@ -1532,7 +1529,7 @@ function PersonalSubTab({ emp }) {
               style={{
                 flex: 1,
                 padding: "9px",
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 border: `1px solid ${C.border}`,
                 background: C.surfaceAlt,
                 fontSize: 12,
@@ -1550,7 +1547,7 @@ function PersonalSubTab({ emp }) {
               style={{
                 flex: 2,
                 padding: "9px",
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 border: "none",
                 background: C.primary,
                 color: "#fff",
@@ -1867,9 +1864,8 @@ function LeaveSubTab() {
                   <p
                     style={{
                       fontSize: 18,
-                      fontWeight: 800,
+                      fontWeight: 500,
                       color: C.primary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {b.remaining_days ?? b.balance}
@@ -2078,7 +2074,7 @@ function SecuritySubTab() {
             style={{
               width: "100%",
               padding: "10px",
-              borderRadius: 10,
+              borderRadius: C.radius.pill,
               border: "none",
               background: C.primary,
               color: "#fff",
@@ -2218,11 +2214,11 @@ function MyProfileTab({ authEmployee }) {
                         position: "absolute",
                         bottom: -6,
                         right: -6,
-                        background: "#F59E0B",
+                        background: C.warning,
                         borderRadius: 6,
                         padding: "2px 7px",
                         fontSize: 8,
-                        fontWeight: 800,
+                        fontWeight: 500,
                         color: "#fff",
                         display: "flex",
                         alignItems: "center",
@@ -2244,16 +2240,15 @@ function MyProfileTab({ authEmployee }) {
                       <h2
                         style={{
                           fontSize: 20,
-                          fontWeight: 800,
+                          fontWeight: 500,
                           color: "#fff",
-                          fontFamily: "Sora,sans-serif",
                         }}
                       >
                         {emp.first_name} {emp.last_name}
                       </h2>
                       <Chip
                         label="Manager"
-                        color="#F59E0B"
+                        color={C.warning}
                         bg="rgba(245,158,11,0.18)"
                       />
                       <StatusBadge status={emp.employment_status} />
@@ -2353,7 +2348,7 @@ function MyProfileTab({ authEmployee }) {
                   alignItems: "center",
                   gap: 6,
                   padding: "7px 14px",
-                  borderRadius: 10,
+                  borderRadius: C.radius.pill,
                   border: "none",
                   cursor: "pointer",
                   fontSize: 12,
@@ -2434,7 +2429,7 @@ function EmployeeDrawer({ emp, onClose }) {
           width: "100%",
           maxWidth: 400,
           background: C.surface,
-          boxShadow: "-8px 0 40px rgba(15,23,42,0.14)",
+          boxShadow: C.shadow.card,
           zIndex: 50,
           display: "flex",
           flexDirection: "column",
@@ -2459,7 +2454,7 @@ function EmployeeDrawer({ emp, onClose }) {
               style={{
                 width: 32,
                 height: 32,
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 background: "rgba(255,255,255,0.15)",
                 border: "none",
                 cursor: "pointer",
@@ -2477,9 +2472,8 @@ function EmployeeDrawer({ emp, onClose }) {
               <h2
                 style={{
                   fontSize: 18,
-                  fontWeight: 800,
+                  fontWeight: 500,
                   color: "#fff",
-                  fontFamily: "Sora,sans-serif",
                 }}
               >
                 {p.first_name} {p.last_name}
@@ -2623,7 +2617,6 @@ export default function ManagerProfile() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <style>{`@keyframes mgr-shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}`}</style>
@@ -2643,7 +2636,7 @@ export default function ManagerProfile() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
@@ -2670,7 +2663,7 @@ export default function ManagerProfile() {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setActiveTab("approvals")}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold"
                   style={{
                     background: C.dangerLight,
                     border: `1px solid ${C.danger}33`,
@@ -2684,7 +2677,7 @@ export default function ManagerProfile() {
               <Motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={fetchAll}
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -2738,7 +2731,7 @@ export default function ManagerProfile() {
               className="relative rounded-2xl overflow-hidden"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 55%,#1E40AF 100%)",
+                  C.gradient.hero,
                 minHeight: 140,
               }}
             >
@@ -2750,15 +2743,14 @@ export default function ManagerProfile() {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h1
-                        className="text-white text-2xl font-bold"
-                        style={{ fontFamily: "Sora,sans-serif" }}
+                        className="text-white text-2xl "
                       >
                         Manager Dashboard
                       </h1>
                       {manager?.name && (
                         <span
                           className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                          style={{ background: "#FEF3C7", color: "#92400E" }}
+                          style={{ background: C.warningLight, color: C.warningInk }}
                         >
                           <Award size={9} className="inline mr-1" />
                           {manager.name}
@@ -2819,7 +2811,7 @@ export default function ManagerProfile() {
                       whileHover={{ scale: active ? 1 : 1.02 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setActiveTab(id)}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap shrink-0"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap shrink-0"
                       style={{
                         border: "none",
                         cursor: "pointer",
@@ -2840,7 +2832,7 @@ export default function ManagerProfile() {
                               : C.danger,
                             color: "#fff",
                             fontSize: 9,
-                            fontWeight: 800,
+                            fontWeight: 500,
                             width: 16,
                             height: 16,
                             borderRadius: "50%",

@@ -26,9 +26,9 @@ import { leaveApi } from "../../api/service/leaveApi";
 const LEAVE_TYPE_UI = {
   "Annual Leave": { color: "#4F46E5", light: "#EEF2FF" },
   "Sick Leave": { color: "#EF4444", light: "#FEE2E2" },
-  "Maternity Leave": { color: "#EC4899", light: "#FDF2F8" },
-  "Paternity Leave": { color: "#06B6D4", light: "#ECFEFF" },
-  Compassionate: { color: "#8B5CF6", light: "#EDE9FE" },
+  "Maternity Leave": { color: "#6366F1", light: "#EEF2FF" },
+  "Paternity Leave": { color: "#6366F1", light: "#EEF2FF" },
+  Compassionate: { color: "#6366F1", light: "#E0E7FF" },
   "Study Leave": { color: "#10B981", light: "#D1FAE5" },
   "Unpaid Leave": { color: "#F59E0B", light: "#FEF3C7" },
 };
@@ -134,7 +134,7 @@ function ActionModal({ request, action, onConfirm, onClose, loading }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -150,7 +150,7 @@ function ActionModal({ request, action, onConfirm, onClose, loading }) {
             )}
           </div>
           <div>
-            <h3 className="font-bold text-sm" style={{ color: C.textPrimary }}>
+            <h3 className="text-sm" style={{ color: C.textPrimary }}>
               {isApprove ? "Approve Leave Request" : "Reject Leave Request"}
             </h3>
             <p className="text-[11px]" style={{ color: C.textMuted }}>
@@ -159,7 +159,7 @@ function ActionModal({ request, action, onConfirm, onClose, loading }) {
           </div>
           <button
             onClick={onClose}
-            className="ml-auto w-7 h-7 rounded-xl flex items-center justify-center"
+            className="ml-auto w-7 h-7 rounded-full flex items-center justify-center"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -208,7 +208,7 @@ function ActionModal({ request, action, onConfirm, onClose, loading }) {
         <div className="flex gap-2 mt-4">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold"
+            className="flex-1 py-2.5 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -222,7 +222,7 @@ function ActionModal({ request, action, onConfirm, onClose, loading }) {
             whileTap={{ scale: 0.97 }}
             onClick={() => onConfirm(comment)}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-xs font-semibold text-white flex items-center justify-center gap-2"
             style={{
               background: isApprove ? C.success : C.danger,
               opacity: loading ? 0.7 : 1,
@@ -456,7 +456,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => setFilterOpen((p) => !p)}
-          className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold"
+          className="flex items-center gap-2 px-3 py-2.5 rounded-full text-xs font-semibold"
           style={{
             background: filterOpen ? C.primaryLight : C.surface,
             border: `1px solid ${filterOpen ? C.primary : C.border}`,
@@ -575,7 +575,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
                       dateTo: "",
                     })
                   }
-                  className="text-xs font-semibold px-3 py-1.5 rounded-xl"
+                  className="text-xs font-semibold px-3 py-1.5 rounded-full"
                   style={{ color: C.danger, background: C.dangerLight }}
                 >
                   Clear Filters
@@ -747,7 +747,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
                                 onClick={() =>
                                   setModal({ request: r, action: "approve" })
                                 }
-                                className="w-7 h-7 rounded-lg flex items-center justify-center"
+                                className="w-7 h-7 rounded-full flex items-center justify-center"
                                 style={{ background: C.successLight }}
                               >
                                 <Check size={12} color={C.success} />
@@ -758,7 +758,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
                                 onClick={() =>
                                   setModal({ request: r, action: "reject" })
                                 }
-                                className="w-7 h-7 rounded-lg flex items-center justify-center"
+                                className="w-7 h-7 rounded-full flex items-center justify-center"
                                 style={{ background: C.dangerLight }}
                               >
                                 <X size={12} color={C.danger} />
@@ -768,7 +768,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
                           <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center"
+                            className="w-7 h-7 rounded-full flex items-center justify-center"
                             style={{ background: C.primaryLight }}
                           >
                             <Eye size={12} color={C.primary} />
@@ -807,7 +807,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -825,7 +825,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setPage(p)}
-                  className="w-8 h-8 rounded-xl text-xs font-bold flex items-center justify-center"
+                  className="w-8 h-8 rounded-full text-xs font-bold flex items-center justify-center"
                   style={{
                     background: p === page ? C.primary : C.surface,
                     color: p === page ? "#fff" : C.textSecondary,
@@ -842,7 +842,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,

@@ -70,7 +70,6 @@ export default function SuperAdminLayout({
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       {/* Full-page loading overlay */}
@@ -112,7 +111,7 @@ export default function SuperAdminLayout({
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -165,7 +164,7 @@ export default function SuperAdminLayout({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={onRefresh}
-                  className="p-2 rounded-xl"
+                  className="p-2 rounded-full"
                   style={{
                     background: C.surface,
                     border: `1px solid ${C.border}`,
@@ -175,7 +174,7 @@ export default function SuperAdminLayout({
                 </motion.button>
               )}
               <button
-                className="relative p-2 rounded-xl"
+                className="relative p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -186,7 +185,7 @@ export default function SuperAdminLayout({
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#6366F1,#06B6D4)",
+                  background: "linear-gradient(135deg,#6366F1,#4338CA)",
                 }}
               >
                 {initials}
@@ -206,7 +205,7 @@ export default function SuperAdminLayout({
                 className="mx-6 mt-6 rounded-2xl p-6 text-white relative overflow-hidden"
                 style={{
                   background:
-                    "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                    C.gradient.hero,
                 }}
               >
                 <div className="flex flex-col md:flex-row md:items-center gap-6">
@@ -216,7 +215,7 @@ export default function SuperAdminLayout({
                     </div>
 
                     <div>
-                      <h1 className="text-2xl md:text-3xl font-bold">
+                      <h1 className="text-2xl md:text-3xl ">
                         {title}
                       </h1>
                       {subtitle && (
@@ -231,7 +230,7 @@ export default function SuperAdminLayout({
                     {onRefresh && (
                       <button
                         onClick={onRefresh}
-                        className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition"
+                        className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20 transition"
                       >
                         <RefreshCw size={14} />
                         <span className="text-xs font-medium">Refresh</span>

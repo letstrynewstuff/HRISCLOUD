@@ -69,7 +69,7 @@ function SectionCard({ title, icon: Icon, delay, children }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 12px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
       }}
     >
       <div
@@ -84,7 +84,7 @@ function SectionCard({ title, icon: Icon, delay, children }) {
         </div>
         <span
           className="font-semibold text-sm"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          style={{ color: C.textPrimary }}
         >
           {title}
         </span>
@@ -420,7 +420,7 @@ export default function SuperPlatformConfiguration() {
                 </div>
                 <button
                   onClick={() => setRevealKey((p) => !p)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold px-2 py-1 rounded-lg"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold px-2 py-1 rounded-full"
                   style={{ background: C.primaryLight, color: C.primary }}
                 >
                   {revealKey ? "HIDE" : "REVEAL"}
@@ -465,7 +465,7 @@ export default function SuperPlatformConfiguration() {
             whileTap={{ scale: 0.97 }}
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2.5 px-7 py-3 rounded-xl text-sm font-semibold text-white"
+            className="flex items-center gap-2.5 px-7 py-3 rounded-full text-sm font-semibold text-white"
             style={{
               background: saving
                 ? C.textMuted

@@ -15,14 +15,14 @@
 //   danger: "#EF4444",
 //   dangerLight: "#FEE2E2",
 //   textPrimary: "#0F172A",
-//   textSecondary: "#64748B",
+//   textSecondary: "#5F6D7E",
 //   textMuted: "#94A3B8",
 // };
 
 // export default function AuditLog() {
 //   return (
 //     <div>
-//       <h2 className="text-2xl font-bold mb-8">Audit Log</h2>
+//       <h2 className="text-2xl mb-8">Audit Log</h2>
 //       <div
 //         className="rounded-2xl border overflow-hidden"
 //         style={{ background: C.surface, borderColor: C.border }}
@@ -63,34 +63,18 @@
 
 // src/admin/settings/AuditLog.jsx
 import { useState, useEffect, useCallback } from "react";
+import C from "../../styles/colors";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle, RefreshCw, Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { settingsApi } from "../../api/service/settingsApi";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 const MODULE_COLORS = {
   employees:     { color: "#4F46E5", bg: "#EEF2FF" },
   payroll:       { color: "#10B981", bg: "#D1FAE5" },
   attendance:    { color: "#F59E0B", bg: "#FEF3C7" },
-  settings:      { color: "#8B5CF6", bg: "#EDE9FE" },
-  announcements: { color: "#06B6D4", bg: "#ECFEFF" },
+  settings:      { color: "#6366F1", bg: "#E0E7FF" },
+  announcements: { color: "#6366F1", bg: "#EEF2FF" },
   documents:     { color: "#EF4444", bg: "#FEE2E2" },
 };
 
@@ -126,7 +110,7 @@ export default function AuditLog() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>Audit Log</h2>
+        <h2 className="text-2xl " style={{ color: C.textPrimary }}>Audit Log</h2>
         <div className="flex items-center gap-2">
           <div className="relative">
             <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2" color={C.textMuted} />
@@ -136,7 +120,7 @@ export default function AuditLog() {
               style={{ background: C.surface, border: `1.5px solid ${C.border}`, color: C.textPrimary }} />
           </div>
           <motion.button whileHover={{ scale: 1.04 }} onClick={load}
-            className="p-2 rounded-xl" style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}>
+            className="p-2 rounded-full" style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}>
             <RefreshCw size={14} color={C.textSecondary} className={loading ? "animate-spin" : ""} />
           </motion.button>
         </div>
@@ -185,7 +169,7 @@ export default function AuditLog() {
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0"
-                            style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}>
+                            style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}>
                             {(log.user ?? log.userName ?? "?")[0].toUpperCase()}
                           </div>
                           <span className="text-sm font-medium" style={{ color: C.textPrimary }}>
@@ -216,13 +200,13 @@ export default function AuditLog() {
           {meta.totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 mt-5">
               <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}
-                className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold disabled:opacity-40"
+                className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-semibold disabled:opacity-40"
                 style={{ background: C.surface, border: `1px solid ${C.border}`, color: C.textSecondary }}>
                 <ChevronLeft size={12} /> Previous
               </button>
               <span className="text-xs" style={{ color: C.textMuted }}>{page} / {meta.totalPages}</span>
               <button disabled={page >= meta.totalPages} onClick={() => setPage((p) => p + 1)}
-                className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold disabled:opacity-40"
+                className="flex items-center gap-1 px-3 py-2 rounded-full text-xs font-semibold disabled:opacity-40"
                 style={{ background: C.surface, border: `1px solid ${C.border}`, color: C.textSecondary }}>
                 Next <ChevronRight size={12} />
               </button>

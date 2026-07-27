@@ -7,7 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "audit:brand": "node scripts/brand-audit.mjs",
+    "audit:brand:list": "node scripts/brand-audit.mjs --list",
+    "verify": "npm run lint:gate && npm run audit:brand && npm run build",
+    "lint:gate": "node scripts/lint-gate.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "verify:all": "npm run verify && npm run test:e2e"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -32,7 +39,9 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.62.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.3.4",

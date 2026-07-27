@@ -1,25 +1,9 @@
 import { useState } from "react";
+import C from "../../styles/colors";
 import { motion } from "framer-motion";
 import { Plus, Download } from "lucide-react";
 
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 const availableFields = [
   "Name",
@@ -63,18 +47,18 @@ export default function CustomReportBuilder() {
           className="w-80 rounded-2xl border p-6"
           style={{ background: C.surface, borderColor: C.border }}
         >
-          <h3 className="font-semibold mb-4">Select Fields</h3>
+          <h3 className="mb-4">Select Fields</h3>
           <div className="space-y-2 max-h-96 overflow-y-auto">
             {availableFields.map((field) => (
               <motion.button
                 key={field}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => toggleField(field)}
-                className={`w-full text-left px-4 py-3 rounded-xl text-sm flex justify-between items-center ${selectedFields.includes(field) ? "bg-primary text-white" : "hover:bg-slate-100"}`}
+                className={`w-full text-left px-4 py-3 rounded-full text-sm flex justify-between items-center ${selectedFields.includes(field) ? "bg-primary text-white" : "hover:bg-slate-100"}`}
               >
                 {field}
                 {selectedFields.includes(field) && (
-                  <span className="text-xs">✓</span>
+                  <span className="text-xs"></span>
                 )}
               </motion.button>
             ))}
@@ -87,10 +71,10 @@ export default function CustomReportBuilder() {
           style={{ background: C.surface, borderColor: C.border }}
         >
           <div className="flex justify-between mb-6">
-            <h3 className="font-semibold">Report Preview</h3>
+            <h3 className="">Report Preview</h3>
             <motion.button
               whileHover={{ scale: 1.02 }}
-              className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold"
+              className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold"
               style={{ background: C.primary, color: "#fff" }}
             >
               <Download size={16} /> Export Excel

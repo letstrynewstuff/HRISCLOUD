@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import C from "../../styles/colors";
 import { motion, AnimatePresence } from "framer-motion";
 // import AdminSideNavbar from "../AdminSideNavbar";
 import { GraduationCap, Search, Menu } from "lucide-react";
@@ -8,31 +9,6 @@ import TrainingAttendance from "./TrainingAttendance";
 import TrainingBudget from "./TrainingBudget";
 import CertificationTracker from "./CertificationTracker";
 
-const C = {
-  bg: "#F0F2F8",
-  bgMid: "#E8EBF4",
-  surface: "#FFFFFF",
-  surfaceHover: "#F7F8FC",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryGlow: "rgba(79,70,229,0.20)",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const ADMIN = {
   name: "Ngozi Adeleke",
@@ -64,7 +40,7 @@ export default function AdminTrainingPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex h-screen overflow-hidden">
         {/* <AdminSideNavbar
@@ -89,7 +65,7 @@ export default function AdminTrainingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
             >
               <Menu size={16} color={C.textSecondary} />
             </motion.button>
@@ -121,7 +97,7 @@ export default function AdminTrainingPage() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#4F46E5,#06B6D4)",
+                  background: "linear-gradient(135deg,#4F46E5,#6366F1)",
                 }}
               >
                 {ADMIN.initials}
@@ -137,7 +113,7 @@ export default function AdminTrainingPage() {
               className="rounded-2xl p-8 text-white"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="flex items-center gap-4">
@@ -146,8 +122,7 @@ export default function AdminTrainingPage() {
                 </div>
                 <div>
                   <h1
-                    className="text-3xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-3xl "
                   >
                     Training & Development
                   </h1>
@@ -186,7 +161,7 @@ export default function AdminTrainingPage() {
                     whileTap={{ scale: 0.97 }}
                     whileHover={{ scale: active ? 1 : 1.02 }}
                     onClick={() => setActiveTab(tab.id)}
-                    className="px-5 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex-shrink-0"
+                    className="px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0"
                     style={{
                       background: active ? C.primary : "transparent",
                       color: active ? "#ffffff" : C.textSecondary,

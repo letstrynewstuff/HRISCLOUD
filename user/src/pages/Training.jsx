@@ -39,18 +39,18 @@ function statusConfig(training) {
     return { label: "In Progress", bg: C.primaryLight, color: C.primary, icon: Clock };
   }
   if (trainingStatus === "upcoming") {
-    return { label: "Upcoming", bg: "#FEF3C7", color: "#F59E0B", icon: Timer };
+    return { label: "Upcoming", bg: C.warningLight, color: C.warning, icon: Timer };
   }
   if (trainingStatus === "cancelled") {
-    return { label: "Cancelled", bg: "#FEE2E2", color: "#EF4444", icon: X };
+    return { label: "Cancelled", bg: C.dangerLight, color: C.danger, icon: X };
   }
   return { label: enrollment ?? trainingStatus ?? "Enrolled", bg: C.surfaceAlt, color: C.textMuted, icon: BookOpen };
 }
 
 function typeColor(type) {
   return type === "Internal"
-    ? { bg: "#EDE9FE", color: "#7C3AED" }
-    : { bg: "#ECFEFF",  color: "#0891B2" };
+    ? { bg: C.primaryTint, color: C.primary }
+    : { bg: C.primaryLight,  color: "#4338CA" };
 }
 
 function initials(name = "") {
@@ -72,7 +72,7 @@ function TrainingCard({ training, index, onOpen }) {
       variants={fadeUp}
       initial="hidden"
       animate="visible"
-      whileHover={{ y: -3, boxShadow: "0 12px 40px rgba(79,70,229,0.10)" }}
+      whileHover={{ y: -3, boxShadow: C.shadow.lift }}
       onClick={() => onOpen(training)}
       className="rounded-2xl p-5 cursor-pointer"
       style={{ background: C.surface, border: `1px solid ${C.border}` }}
@@ -89,7 +89,7 @@ function TrainingCard({ training, index, onOpen }) {
           {training.mandatory && (
             <span
               className="text-[10px] font-bold px-2.5 py-0.5 rounded-full"
-              style={{ background: "#FEE2E2", color: "#EF4444" }}
+              style={{ background: C.dangerLight, color: C.danger }}
             >
               Mandatory
             </span>
@@ -97,7 +97,7 @@ function TrainingCard({ training, index, onOpen }) {
           {hasCert && (
             <span
               className="text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1"
-              style={{ background: "#FEF3C7", color: "#D97706" }}
+              style={{ background: C.warningLight, color: "#92400E" }}
             >
               <Award size={9} /> Certified
             </span>
@@ -113,7 +113,7 @@ function TrainingCard({ training, index, onOpen }) {
       </div>
 
       {/* Title */}
-      <h3 className="font-semibold text-sm mb-1 line-clamp-2" style={{ color: C.textPrimary }}>
+      <h3 className="text-sm mb-1 line-clamp-2" style={{ color: C.textPrimary }}>
         {training.title}
       </h3>
       <p className="text-xs mb-3" style={{ color: C.textMuted }}>
@@ -128,14 +128,14 @@ function TrainingCard({ training, index, onOpen }) {
         </span>
         {training.location && (
           <span className="text-[11px] font-medium truncate max-w-[120px]" style={{ color: C.textMuted }}>
-            📍 {training.location}
+ {training.location}
           </span>
         )}
       </div>
 
       {/* Certificate link */}
       {hasCert && (
-        <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold" style={{ color: "#D97706" }}>
+        <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold" style={{ color: "#92400E" }}>
           <Award size={12} />
           Certificate issued {training.completed_at ? `· ${new Date(training.completed_at).toLocaleDateString("en-GB")}` : ""}
         </div>
@@ -212,7 +212,7 @@ export default function TrainingPage() {
   );
 
   return (
-    <div className="min-h-screen" style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}>
+    <div className="min-h-screen" style={{ background: C.bg }}>
       <div className="flex h-screen overflow-hidden">
         {/* <SideNavbar sidebarOpen={sidebarOpen} employee={employee} /> */}
 
@@ -225,7 +225,7 @@ export default function TrainingPage() {
             <Motion.button
               whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -251,7 +251,7 @@ export default function TrainingPage() {
             <div className="ml-auto flex items-center gap-3">
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                style={{ background: "linear-gradient(135deg,#4F46E5,#06B6D4)" }}
+                style={{ background: "linear-gradient(135deg,#4F46E5,#6366F1)" }}
               >
                 {empInitials(employee)}
               </div>
@@ -263,14 +263,14 @@ export default function TrainingPage() {
             <Motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl p-8 text-white"
-              style={{ background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)" }}
+              style={{ background: C.gradient.hero }}
             >
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-white/15">
                   <GraduationCap size={28} />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold" style={{ fontFamily: "Sora,sans-serif" }}>
+                  <h1 className="text-3xl ">
                     My Training Portal
                   </h1>
                   <p className="text-indigo-200">
@@ -307,7 +307,7 @@ export default function TrainingPage() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className="px-5 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap"
+                    className="px-5 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap"
                     style={{
                       background: active ? C.primary : "transparent",
                       color:      active ? "#fff"    : C.textSecondary,
@@ -329,7 +329,7 @@ export default function TrainingPage() {
                     <button
                       key={s}
                       onClick={() => setFilterStatus(s)}
-                      className="px-3 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all"
+                      className="px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all"
                       style={{
                         background: filterStatus === s ? C.primary : C.surfaceAlt,
                         color:      filterStatus === s ? "#fff"    : C.textSecondary,
@@ -366,7 +366,7 @@ export default function TrainingPage() {
                 style={{ background: C.surface, border: `1px solid ${C.border}` }}
               >
                 <div className="px-5 py-4 flex items-center gap-2" style={{ borderBottom: `1px solid ${C.border}` }}>
-                  <Award size={16} color="#D97706" />
+                  <Award size={16} color="#92400E" />
                   <p className="font-bold text-sm" style={{ color: C.textPrimary }}>
                     My Certificates ({withCerts.length})
                   </p>
@@ -387,8 +387,8 @@ export default function TrainingPage() {
                         transition={{ delay: i * 0.04 }}
                         className="px-5 py-4 flex items-center gap-4"
                       >
-                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#FEF3C7" }}>
-                          <Award size={18} color="#D97706" />
+                        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.warningLight }}>
+                          <Award size={18} color="#92400E" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-sm truncate" style={{ color: C.textPrimary }}>{t.title}</p>
@@ -399,7 +399,7 @@ export default function TrainingPage() {
                         </div>
                         <span
                           className="text-[10px] font-bold px-2.5 py-1 rounded-full"
-                          style={{ background: "#FEF3C7", color: "#D97706" }}
+                          style={{ background: C.warningLight, color: "#92400E" }}
                         >
                           Certified
                         </span>
@@ -421,8 +421,8 @@ export default function TrainingPage() {
                   {[
                     { label: "Total Trainings",  value: dashboard.totalTrainings,  color: C.primary,  light: C.primaryLight, icon: BookOpen    },
                     { label: "Employees Trained", value: dashboard.employeesTrained,color: C.success,  light: C.successLight, icon: TrendingUp  },
-                    { label: "Completion Rate",  value: `${dashboard.completionRate}%`, color: "#8B5CF6", light: "#EDE9FE",  icon: Target      },
-                    { label: "Upcoming",         value: dashboard.upcomingCount,   color: "#F59E0B",  light: "#FEF3C7",    icon: Timer       },
+                    { label: "Completion Rate",  value: `${dashboard.completionRate}%`, color: "#6366F1", light: C.primaryTint,  icon: Target      },
+                    { label: "Upcoming",         value: dashboard.upcomingCount,   color: C.warning,  light: C.warningLight,    icon: Timer       },
                   ].map((s, i) => {
                     const Icon = s.icon;
                     return (
@@ -460,7 +460,7 @@ export default function TrainingPage() {
                               {t.start_date ? new Date(t.start_date).toLocaleDateString("en-GB") : "TBD"} · {t.enrolled_count ?? 0}/{t.max_attendees ?? "∞"} enrolled
                             </p>
                           </div>
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: "#FEF3C7", color: "#F59E0B" }}>
+                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: C.warningLight, color: C.warning }}>
                             {t.type}
                           </span>
                         </div>
@@ -488,16 +488,16 @@ export default function TrainingPage() {
               {/* Modal header */}
               <div
                 className="px-6 py-5"
-                style={{ background: "linear-gradient(135deg,#1E1B4B,#312E81)", color: "#fff" }}
+                style={{ background: C.gradient.hero, color: "#fff" }}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0 pr-4">
-                    <p className="font-bold text-lg leading-snug" style={{ fontFamily: "Sora,sans-serif" }}>
+                    <p className="font-bold text-lg leading-snug">
                       {selected.title}
                     </p>
                     <p className="text-indigo-200 text-sm mt-1">{selected.provider ?? "—"}</p>
                   </div>
-                  <button onClick={() => setSelected(null)} className="p-2 rounded-xl bg-white/15 shrink-0">
+                  <button onClick={() => setSelected(null)} className="p-2 rounded-full bg-white/15 shrink-0">
                     <X size={15} color="#fff" />
                   </button>
                 </div>
@@ -520,7 +520,7 @@ export default function TrainingPage() {
                     {selected.type}
                   </span>
                   {selected.mandatory && (
-                    <span className="text-xs font-bold px-3 py-1 rounded-full" style={{ background: "#FEE2E2", color: "#EF4444" }}>
+                    <span className="text-xs font-bold px-3 py-1 rounded-full" style={{ background: C.dangerLight, color: C.danger }}>
                       Mandatory
                     </span>
                   )}
@@ -550,12 +550,12 @@ export default function TrainingPage() {
                 {(selected.certificate_issued ?? selected.certificateIssued) && (
                   <div
                     className="rounded-xl p-4 flex items-center gap-3"
-                    style={{ background: "#FEF3C7", border: "1px solid #FCD34D" }}
+                    style={{ background: C.warningLight, border: "1px solid #F59E0B" }}
                   >
-                    <Award size={20} color="#D97706" />
+                    <Award size={20} color="#92400E" />
                     <div>
-                      <p className="font-bold text-sm" style={{ color: "#92400E" }}>Certificate Issued</p>
-                      <p className="text-xs" style={{ color: "#B45309" }}>
+                      <p className="font-bold text-sm" style={{ color: C.warningInk }}>Certificate Issued</p>
+                      <p className="text-xs" style={{ color: "#92400E" }}>
                         {selected.completed_at ? new Date(selected.completed_at).toLocaleDateString("en-GB", { dateStyle: "long" }) : ""}
                       </p>
                     </div>
@@ -577,7 +577,7 @@ export default function TrainingPage() {
 
                 <button
                   onClick={() => setSelected(null)}
-                  className="w-full py-3 rounded-xl text-sm font-semibold"
+                  className="w-full py-3 rounded-full text-sm font-semibold"
                   style={{ background: C.surfaceAlt, color: C.textSecondary }}
                 >
                   Close

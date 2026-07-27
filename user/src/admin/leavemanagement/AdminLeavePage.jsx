@@ -112,7 +112,6 @@ export default function AdminLeavePage() {
       className="min-h-screen"
       style={{
         background: C.bg,
-        fontFamily: "'DM Sans','Sora',sans-serif",
         color: C.textPrimary,
       }}
     >
@@ -140,7 +139,7 @@ export default function AdminLeavePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -182,7 +181,7 @@ export default function AdminLeavePage() {
                 whileTap={{ scale: 0.95 }}
                 onClick={loadMeta}
                 title="Refresh"
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -194,7 +193,7 @@ export default function AdminLeavePage() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative p-2 rounded-xl"
+                className="relative p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -214,7 +213,7 @@ export default function AdminLeavePage() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#6366F1,#06B6D4)",
+                  background: "linear-gradient(135deg,#6366F1,#4338CA)",
                 }}
               >
                 {adminInitials}
@@ -233,7 +232,7 @@ export default function AdminLeavePage() {
                 className="relative rounded-2xl overflow-hidden p-6 md:p-8 text-white mb-5"
                 style={{
                   background:
-                    "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                    C.gradient.hero,
                   minHeight: 130,
                 }}
               >
@@ -247,7 +246,7 @@ export default function AdminLeavePage() {
                   <div
                     className="absolute -bottom-8 left-1/3 w-40 h-40 rounded-full opacity-10"
                     style={{
-                      background: "radial-gradient(circle,#06B6D4,transparent)",
+                      background: "radial-gradient(circle,#6366F1,transparent)",
                     }}
                   />
                 </div>
@@ -261,8 +260,7 @@ export default function AdminLeavePage() {
                     </div>
                     <div>
                       <h1
-                        className="text-2xl md:text-3xl font-bold"
-                        style={{ fontFamily: "Sora,sans-serif" }}
+                        className="text-2xl md:text-3xl "
                       >
                         Leave Management
                       </h1>
@@ -276,7 +274,7 @@ export default function AdminLeavePage() {
                       {
                         label: "Pending",
                         value: pendingCount,
-                        color: "#FDE68A",
+                        color: "#FEF3C7",
                       },
                     ].map(({ label, value, color }) => (
                       <div
@@ -286,7 +284,7 @@ export default function AdminLeavePage() {
                       >
                         <p
                           className="text-xl font-bold"
-                          style={{ color, fontFamily: "Sora,sans-serif" }}
+                          style={{ color }}
                         >
                           {value}
                         </p>
@@ -318,7 +316,7 @@ export default function AdminLeavePage() {
                         setActiveTab(id); // ← This is ALL that happens
                         setSearchQuery(""); // ← Reset search on tab switch
                       }}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all"
                       style={{
                         background: active ? C.primary : "transparent",
                         color: active ? "#fff" : C.textSecondary,

@@ -15,7 +15,7 @@
 //   danger: "#EF4444",
 //   dangerLight: "#FEE2E2",
 //   textPrimary: "#0F172A",
-//   textSecondary: "#64748B",
+//   textSecondary: "#5F6D7E",
 //   textMuted: "#94A3B8",
 // };
 
@@ -24,7 +24,7 @@
 
 //   return (
 //     <div className="max-w-lg">
-//       <h2 className="text-2xl font-bold mb-8">Billing & Subscription</h2>
+//       <h2 className="text-2xl mb-8">Billing & Subscription</h2>
 
 //       <div
 //         className="rounded-2xl border p-8"
@@ -56,7 +56,7 @@
 //         </div>
 
 //         <motion.button
-//           className="mt-12 w-full py-4 rounded-2xl text-white font-semibold"
+//           className="mt-12 w-full py-4 rounded-full text-white font-semibold"
 //           style={{ background: C.primary }}
 //         >
 //           Upgrade Plan
@@ -69,27 +69,11 @@
 
 // src/admin/settings/BillingSubscription.jsx
 import { useState, useEffect } from "react";
+import C from "../../styles/colors";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle, CreditCard, Users, Calendar, CheckCircle2 } from "lucide-react";
 import { settingsApi } from "../../api/service/settingsApi";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 const fmtDate = (d) =>
   d ? new Date(d).toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" }) : "—";
@@ -129,17 +113,17 @@ export default function BillingSubscription() {
 
   return (
     <div className="max-w-xl">
-      <h2 className="text-2xl font-bold mb-8" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+      <h2 className="text-2xl mb-8" style={{ color: C.textPrimary }}>
         Billing & Subscription
       </h2>
 
       {/* Plan card */}
       <div className="rounded-2xl p-6 mb-5"
-        style={{ background: "linear-gradient(135deg,#1E1B4B,#312E81,#1E40AF)", color: "#fff" }}>
+        style={{ background: "linear-gradient(135deg,#1E1B4B,#312E81,#3730A3)", color: "#fff" }}>
         <div className="flex items-start justify-between mb-6">
           <div>
             <p className="text-sm text-indigo-300 mb-1">Current Plan</p>
-            <p className="text-3xl font-bold" style={{ fontFamily: "Sora,sans-serif" }}>
+            <p className="text-3xl font-bold">
               {billing?.plan ?? "—"}
             </p>
           </div>
@@ -203,7 +187,7 @@ export default function BillingSubscription() {
       )}
 
       <motion.button whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
-        className="w-full py-3.5 rounded-2xl text-sm font-semibold text-white"
+        className="w-full py-3.5 rounded-full text-sm font-semibold text-white"
         style={{ background: C.primary }}>
         Upgrade Plan
       </motion.button>

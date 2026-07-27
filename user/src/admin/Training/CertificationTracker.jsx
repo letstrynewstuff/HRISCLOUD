@@ -36,9 +36,9 @@ export default function CertificationTracker() {
       {expiringCount > 0 && (
         <div
           className="flex items-center gap-3 bg-amber-50 p-4 rounded-2xl"
-          style={{ border: "1px solid #FDE68A" }}
+          style={{ border: "1px solid #FEF3C7" }}
         >
-          <AlertTriangle size={20} color="#D97706" />
+          <AlertTriangle size={20} color="#92400E" />
           <p className="text-sm text-amber-700">
             <strong>{expiringCount}</strong> certification
             {expiringCount !== 1 ? "s" : ""} expiring in the next 60 days
@@ -49,7 +49,7 @@ export default function CertificationTracker() {
       <div className="flex justify-end">
         <button
           onClick={fetch}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
           style={{
             background: C.surface,
             border: `1px solid ${C.border}`,
@@ -75,7 +75,7 @@ export default function CertificationTracker() {
           </p>
           <button
             onClick={fetch}
-            className="text-xs font-bold px-3 py-1 rounded-lg"
+            className="text-xs font-bold px-3 py-1 rounded-full"
             style={{
               background: C.danger,
               color: "#fff",

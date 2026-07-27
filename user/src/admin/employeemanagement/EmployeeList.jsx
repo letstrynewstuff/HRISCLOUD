@@ -264,7 +264,6 @@ export default function EmployeeList({ ADMIN }) {
       className="flex h-screen overflow-hidden"
       style={{
         background: C.bg,
-        fontFamily: "'DM Sans','Sora',sans-serif",
         color: C.textPrimary,
       }}
     >
@@ -285,12 +284,12 @@ export default function EmployeeList({ ADMIN }) {
           style={{
             background: C.surface,
             borderBottom: `1px solid ${C.border}`,
-            boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+            boxShadow: C.shadow.card,
           }}
         >
           <button
             onClick={() => setSidebarOpen((p) => !p)}
-            className="p-2 rounded-xl"
+            className="p-2 rounded-full"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -330,7 +329,7 @@ export default function EmployeeList({ ADMIN }) {
           {/* Filter toggle */}
           <button
             onClick={() => setFilterOpen((p) => !p)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold relative"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold relative"
             style={{
               background: filterOpen ? C.primaryLight : C.surfaceAlt,
               color: filterOpen ? C.primary : C.textSecondary,
@@ -352,7 +351,7 @@ export default function EmployeeList({ ADMIN }) {
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={fetchEmployees}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{
                 background: C.surfaceAlt,
                 border: `1px solid ${C.border}`,
@@ -362,7 +361,7 @@ export default function EmployeeList({ ADMIN }) {
               <RefreshCw size={14} color={C.textMuted} />
             </button>
             <button
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{
                 background: C.surfaceAlt,
                 border: `1px solid ${C.border}`,
@@ -375,17 +374,17 @@ export default function EmployeeList({ ADMIN }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate("/admin/employees/new")}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold text-white"
               style={{
                 background: C.primary,
-                boxShadow: `0 4px 12px ${C.primary}44`,
+                boxShadow: C.shadow.card,
               }}
             >
               <UserPlus size={13} />
               Add Employee
             </motion.button>
             <button
-              className="relative p-2 rounded-xl"
+              className="relative p-2 rounded-full"
               style={{
                 background: C.surfaceAlt,
                 border: `1px solid ${C.border}`,
@@ -469,7 +468,7 @@ export default function EmployeeList({ ADMIN }) {
                       setFilters({ status: "", type: "", department: "" });
                       setPage(1);
                     }}
-                    className="text-xs font-semibold px-2.5 py-1.5 rounded-lg"
+                    className="text-xs font-semibold px-2.5 py-1.5 rounded-full"
                     style={{ background: C.dangerLight, color: C.danger }}
                   >
                     Clear all
@@ -491,8 +490,8 @@ export default function EmployeeList({ ADMIN }) {
           >
             <div>
               <h1
-                className="text-xl font-bold"
-                style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+                className="text-xl "
+                style={{ color: C.textPrimary }}
               >
                 Employees
               </h1>
@@ -551,7 +550,7 @@ export default function EmployeeList({ ADMIN }) {
             style={{
               background: C.surface,
               border: `1px solid ${C.border}`,
-              boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
+              boxShadow: C.shadow.card,
             }}
           >
             <div className="overflow-x-auto">
@@ -644,7 +643,7 @@ export default function EmployeeList({ ADMIN }) {
                                 className="text-sm font-semibold truncate"
                                 style={{ color: C.textPrimary }}
                               >
-                                {/* ✅ Correct field names from backend */}
+                                {/* Correct field names from backend */}
                                 {emp.first_name} {emp.last_name}
                               </p>
                               <p
@@ -712,7 +711,7 @@ export default function EmployeeList({ ADMIN }) {
                               onClick={() =>
                                 navigate(`/admin/employees/${emp.id}`)
                               }
-                              className="w-7 h-7 rounded-lg flex items-center justify-center"
+                              className="w-7 h-7 rounded-full flex items-center justify-center"
                               style={{ background: C.primaryLight }}
                               title="View profile"
                             >
@@ -724,7 +723,7 @@ export default function EmployeeList({ ADMIN }) {
                               onClick={() =>
                                 navigate(`/admin/employees/${emp.id}/edit`)
                               }
-                              className="w-7 h-7 rounded-lg flex items-center justify-center"
+                              className="w-7 h-7 rounded-full flex items-center justify-center"
                               style={{
                                 background: C.surfaceAlt,
                                 border: `1px solid ${C.border}`,
@@ -761,7 +760,7 @@ export default function EmployeeList({ ADMIN }) {
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={meta.page === 1}
-                    className="w-8 h-8 rounded-xl flex items-center justify-center"
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
                       background: C.surfaceAlt,
                       border: `1px solid ${C.border}`,
@@ -785,7 +784,7 @@ export default function EmployeeList({ ADMIN }) {
                         <button
                           key={p}
                           onClick={() => setPage(p)}
-                          className="w-8 h-8 rounded-xl text-xs font-bold"
+                          className="w-8 h-8 rounded-full text-xs font-bold"
                           style={{
                             background: p === meta.page ? C.primary : C.surface,
                             color: p === meta.page ? "#fff" : C.textSecondary,
@@ -806,7 +805,7 @@ export default function EmployeeList({ ADMIN }) {
                       setPage((p) => Math.min(meta.totalPages, p + 1))
                     }
                     disabled={meta.page === meta.totalPages}
-                    className="w-8 h-8 rounded-xl flex items-center justify-center"
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
                       background: C.surfaceAlt,
                       border: `1px solid ${C.border}`,

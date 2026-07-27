@@ -243,7 +243,7 @@ export default function AttendanceCorrections() {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => openCorrection(r)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl"
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full"
                           style={{
                             background: C.primaryLight,
                             color: C.primary,
@@ -275,7 +275,7 @@ export default function AttendanceCorrections() {
               {/* Modal content remains exactly the same as you provided */}
               <div className="flex items-center justify-between">
                 <h3
-                  className="font-bold text-lg"
+                  className="text-lg"
                   style={{ color: C.textPrimary }}
                 >
                   Correct Attendance
@@ -394,7 +394,7 @@ export default function AttendanceCorrections() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setSelected(null)}
-                  className="flex-1 py-3 rounded-xl font-semibold text-sm"
+                  className="flex-1 py-3 rounded-full font-semibold text-sm"
                   style={{ background: C.surfaceAlt, color: C.textSecondary }}
                 >
                   Cancel
@@ -404,7 +404,7 @@ export default function AttendanceCorrections() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-1 py-3 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
+                  className="flex-1 py-3 rounded-full font-semibold text-sm text-white flex items-center justify-center gap-2"
                   style={{ background: C.success, opacity: saving ? 0.8 : 1 }}
                 >
                   {saving ? (

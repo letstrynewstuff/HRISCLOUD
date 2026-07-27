@@ -11,6 +11,7 @@
 //  • Colors defined inline (no missing ../styles/colors import)
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import C from "../styles/colors";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 // import SideNavbar from "../components/SideNavbar";
@@ -37,27 +38,6 @@ import {
 } from "lucide-react";
 
 // ── Color tokens ──────────────────────────────────────────────────────────────
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryDark: "#3730A3",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fmt = (d) => {
@@ -73,13 +53,13 @@ const isImage = (mime) => mime?.startsWith("image/");
 const colorFor = (str = "") => {
   const cols = [
     "#4F46E5",
-    "#06B6D4",
+    "#6366F1",
     "#10B981",
     "#F59E0B",
-    "#EC4899",
-    "#8B5CF6",
+    "#6366F1",
+    "#6366F1",
     "#EF4444",
-    "#F97316",
+    "#F59E0B",
   ];
   let h = 0;
   for (const c of str) h = c.charCodeAt(0) + ((h << 5) - h);
@@ -259,7 +239,7 @@ function CreateChannelModal({ allEmployees, onSave, onClose, saving }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 20px 60px rgba(0,0,0,0.15)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -284,7 +264,7 @@ function CreateChannelModal({ allEmployees, onSave, onClose, saving }) {
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-xl flex items-center justify-center"
+            className="w-7 h-7 rounded-full flex items-center justify-center"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -381,7 +361,7 @@ function CreateChannelModal({ allEmployees, onSave, onClose, saving }) {
                     <button
                       key={id}
                       onClick={() => toggle(id)}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-left transition-all"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-full text-sm text-left transition-all"
                       style={{
                         background: sel ? C.primaryLight : C.surfaceAlt,
                         border: `1px solid ${sel ? C.primary : C.border}`,
@@ -418,7 +398,7 @@ function CreateChannelModal({ allEmployees, onSave, onClose, saving }) {
         >
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold"
+            className="flex-1 py-2.5 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -434,7 +414,7 @@ function CreateChannelModal({ allEmployees, onSave, onClose, saving }) {
               onSave({ name, description: desc, memberIds: members })
             }
             disabled={!name.trim() || saving}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-xs font-semibold text-white flex items-center justify-center gap-2"
             style={{
               background: C.primary,
               opacity: !name.trim() || saving ? 0.6 : 1,
@@ -816,7 +796,6 @@ export default function ChatPage() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -850,7 +829,7 @@ export default function ChatPage() {
           >
             <button
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -899,10 +878,9 @@ export default function ChatPage() {
             >
               <div className="flex items-center justify-between mb-3">
                 <h1
-                  className="text-base font-bold"
+                  className="text-base "
                   style={{
                     color: C.textPrimary,
-                    fontFamily: "Sora,sans-serif",
                   }}
                 >
                   Messages
@@ -943,7 +921,7 @@ export default function ChatPage() {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => setShowCreateModal(true)}
-                      className="w-5 h-5 rounded-lg flex items-center justify-center"
+                      className="w-5 h-5 rounded-full flex items-center justify-center"
                       style={{ background: C.primaryLight }}
                       title="Create channel"
                     >
@@ -970,7 +948,7 @@ export default function ChatPage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setShowCreateModal(true)}
-                        className="mt-2 text-xs font-semibold px-3 py-1.5 rounded-xl"
+                        className="mt-2 text-xs font-semibold px-3 py-1.5 rounded-full"
                         style={{ background: C.primaryLight, color: C.primary }}
                       >
                         + New Channel
@@ -987,7 +965,7 @@ export default function ChatPage() {
                         key={chId}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => openChannel(ch)}
-                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-left transition-all"
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-full text-sm text-left transition-all"
                         style={{
                           background: isAct ? C.primaryLight : "transparent",
                         }}
@@ -1113,7 +1091,7 @@ export default function ChatPage() {
                           key={empId}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => openDm(emp)}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm text-left transition-all"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-full text-sm text-left transition-all"
                           style={{
                             background: isAct ? C.primaryLight : "transparent",
                           }}
@@ -1171,7 +1149,6 @@ export default function ChatPage() {
                     className="font-bold text-lg"
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     Start a conversation
@@ -1185,7 +1162,7 @@ export default function ChatPage() {
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setShowCreateModal(true)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold"
                     style={{ background: C.primary, color: "#fff" }}
                   >
                     <Plus size={15} /> Create Team Channel
@@ -1359,7 +1336,7 @@ export default function ChatPage() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => fileRef.current?.click()}
-                    className="p-2.5 rounded-xl shrink-0 self-end"
+                    className="p-2.5 rounded-full shrink-0 self-end"
                     style={{
                       background: C.surfaceAlt,
                       border: `1px solid ${C.border}`,
@@ -1412,7 +1389,7 @@ export default function ChatPage() {
                     whileTap={{ scale: 0.93 }}
                     onClick={handleSend}
                     disabled={(!inputText.trim() && !pendingFile) || sending}
-                    className="p-2.5 rounded-xl shrink-0 self-end"
+                    className="p-2.5 rounded-full shrink-0 self-end"
                     style={{
                       background:
                         (inputText.trim() || pendingFile) && !sending

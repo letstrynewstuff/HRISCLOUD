@@ -67,7 +67,7 @@
 //           backdropFilter: "blur(20px)",
 //           WebkitBackdropFilter: "blur(20px)",
 //           borderTop: `1.5px solid ${C.border}`,
-//           boxShadow: "0 -6px 28px rgba(0,0,0,0.08)",
+//           boxShadow: C.shadow.lift,
 //         }}
 //       >
 //         {tabs.map((tab, i) => {
@@ -111,7 +111,7 @@
 
 //               {/* Icon wrapper — active gets a soft tinted background pill */}
 //               <div
-//                 className="flex items-center justify-center rounded-2xl transition-all duration-200"
+//                 className="flex items-center justify-center rounded-full transition-all duration-200"
 //                 style={{
 //                   width: 42,
 //                   height: 30,
@@ -121,7 +121,7 @@
 //                 <Icon
 //                   size={20}
 //                   strokeWidth={isActive ? 2.5 : 1.8}
-//                   color={isActive ? C.primary : "#94A3B8"}
+//                   color={isActive ? C.primary : C.textMuted}
 //                 />
 //               </div>
 
@@ -131,9 +131,8 @@
 //                   fontSize: 10,
 //                   fontWeight: isActive ? 700 : 500,
 //                   lineHeight: 1,
-//                   color: isActive ? C.primary : "#94A3B8",
-//                   fontFamily: "'DM Sans', sans-serif",
-//                   letterSpacing: "-0.01em",
+//                   color: isActive ? C.primary : C.textMuted,
+//   //                   letterSpacing: "-0.01em",
 //                 }}
 //               >
 //                 {tab.label}
@@ -177,8 +176,8 @@ export default function AdminMobileBottomNav({ setSidebarOpen }) {
         background: "rgba(255,255,255,0.97)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        borderTop: `1.5px solid ${C.border}`,
-        boxShadow: "0 -6px 28px rgba(0,0,0,0.08)",
+        borderTop: `1px solid ${C.border}`,
+        boxShadow: C.shadow.lift,
       }}
     >
       {tabs.map((tab, i) => {
@@ -229,7 +228,7 @@ export default function AdminMobileBottomNav({ setSidebarOpen }) {
               <Icon
                 size={20}
                 strokeWidth={isActive ? 2.5 : 1.8}
-                color={isActive ? C.primary : "#94A3B8"}
+                color={isActive ? C.primary : C.textMuted}
               />
             </div>
 
@@ -238,8 +237,7 @@ export default function AdminMobileBottomNav({ setSidebarOpen }) {
                 fontSize: 10,
                 fontWeight: isActive ? 700 : 500,
                 lineHeight: 1,
-                color: isActive ? C.primary : "#94A3B8",
-                fontFamily: "'DM Sans', sans-serif",
+                color: isActive ? C.primary : C.textMuted,
                 letterSpacing: "-0.01em",
               }}
             >

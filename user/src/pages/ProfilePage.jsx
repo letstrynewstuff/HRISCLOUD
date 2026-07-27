@@ -78,7 +78,7 @@ const Skeleton = ({ w = "100%", h = 16 }) => (
       width: w,
       height: h,
       borderRadius: 8,
-      background: "linear-gradient(90deg,#E2E8F4 25%,#EFF6FF 50%,#E2E8F4 75%)",
+      background: "linear-gradient(90deg,#E4E7F0 25%,#EEF2FF 50%,#E4E7F0 75%)",
       backgroundSize: "200% 100%",
       animation: "prof-shimmer 1.4s infinite linear",
     }}
@@ -113,7 +113,6 @@ const AvatarEl = ({ initials, avatar, size = 48 }) => {
         color: "#fff",
         fontWeight: 700,
         fontSize: size * 0.32,
-        fontFamily: "Sora,sans-serif",
         flexShrink: 0,
       }}
     >
@@ -232,7 +231,7 @@ const SectionCard = ({ children, style = {} }) => (
       borderRadius: 16,
       border: `1px solid ${C.border}`,
       overflow: "hidden",
-      boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+      boxShadow: C.shadow.card,
       ...style,
     }}
   >
@@ -392,7 +391,7 @@ function PersonalTab({ emp, onRequestChange }) {
                 padding: "6px 12px",
                 background: editing ? C.dangerLight : C.primaryLight,
                 border: "none",
-                borderRadius: 8,
+                borderRadius: C.radius.pill,
                 fontSize: 11,
                 fontWeight: 700,
                 color: editing ? C.danger : C.primary,
@@ -483,7 +482,7 @@ function PersonalTab({ emp, onRequestChange }) {
               style={{
                 flex: 1,
                 padding: "9px",
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 border: `1px solid ${C.border}`,
                 background: C.surfaceAlt,
                 fontSize: 12,
@@ -502,7 +501,7 @@ function PersonalTab({ emp, onRequestChange }) {
               style={{
                 flex: 2,
                 padding: "9px",
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 border: "none",
                 background: C.primary,
                 color: "#fff",
@@ -833,9 +832,8 @@ function LeaveTab({ empId }) {
                   <p
                     style={{
                       fontSize: 18,
-                      fontWeight: 800,
+                      fontWeight: 500,
                       color: C.primary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {b.remaining_days ?? b.balance}
@@ -1049,7 +1047,7 @@ function SecurityTab({ isSelf }) {
               style={{
                 width: "100%",
                 padding: "10px",
-                borderRadius: 10,
+                borderRadius: C.radius.pill,
                 border: "none",
                 background: C.primary,
                 color: "#fff",
@@ -1153,7 +1151,6 @@ export default function ProfilePage() {
       style={{
         minHeight: "100vh",
         background: C.bg,
-        fontFamily: "'DM Sans','Sora',sans-serif",
         color: C.textPrimary,
       }}
     >
@@ -1183,7 +1180,7 @@ export default function ProfilePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
@@ -1229,7 +1226,7 @@ export default function ProfilePage() {
                     padding: "6px 12px",
                     background: C.primaryLight,
                     border: `1px solid ${C.primary}33`,
-                    borderRadius: 8,
+                    borderRadius: C.radius.pill,
                     fontSize: 11,
                     fontWeight: 700,
                     color: C.primary,
@@ -1245,7 +1242,7 @@ export default function ProfilePage() {
                 style={{
                   width: 32,
                   height: 32,
-                  borderRadius: 8,
+                  borderRadius: C.radius.pill,
                   background: C.surface,
                   border: `1px solid ${C.border}`,
                   display: "flex",
@@ -1334,11 +1331,11 @@ export default function ProfilePage() {
                                 position: "absolute",
                                 bottom: -6,
                                 right: -6,
-                                background: "#F59E0B",
+                                background: C.warning,
                                 borderRadius: 6,
                                 padding: "2px 7px",
                                 fontSize: 8,
-                                fontWeight: 800,
+                                fontWeight: 500,
                                 color: "#fff",
                                 display: "flex",
                                 alignItems: "center",
@@ -1361,9 +1358,8 @@ export default function ProfilePage() {
                             <h1
                               style={{
                                 fontSize: 20,
-                                fontWeight: 800,
+                                fontWeight: 500,
                                 color: "#fff",
-                                fontFamily: "Sora,sans-serif",
                               }}
                             >
                               {name}
@@ -1371,7 +1367,7 @@ export default function ProfilePage() {
                             {isManager && (
                               <Chip
                                 label="Manager"
-                                color="#F59E0B"
+                                color={C.warning}
                                 bg="rgba(245,158,11,0.18)"
                               />
                             )}
@@ -1490,7 +1486,7 @@ export default function ProfilePage() {
                         alignItems: "center",
                         gap: 6,
                         padding: "7px 14px",
-                        borderRadius: 10,
+                        borderRadius: C.radius.pill,
                         border: "none",
                         cursor: "pointer",
                         fontSize: 12,

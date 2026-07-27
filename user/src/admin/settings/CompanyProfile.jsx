@@ -17,7 +17,7 @@
 //   danger: "#EF4444",
 //   dangerLight: "#FEE2E2",
 //   textPrimary: "#0F172A",
-//   textSecondary: "#64748B",
+//   textSecondary: "#5F6D7E",
 //   textMuted: "#94A3B8",
 // };
 
@@ -45,7 +45,7 @@
 
 //   return (
 //     <div className="max-w-3xl">
-//       <h2 className="text-2xl font-bold mb-8" style={{ color: C.textPrimary }}>
+//       <h2 className="text-2xl mb-8" style={{ color: C.textPrimary }}>
 //         Company Profile
 //       </h2>
 
@@ -184,7 +184,7 @@
 //           whileHover={{ scale: 1.02 }}
 //           onClick={handleSave}
 //           disabled={saving}
-//           className="w-full py-4 rounded-2xl text-lg font-semibold text-white flex items-center justify-center gap-2"
+//           className="w-full py-4 rounded-full text-lg font-semibold text-white flex items-center justify-center gap-2"
 //           style={{ background: C.primary }}
 //         >
 //           {saving ? "Saving..." : "Save Company Profile"}
@@ -197,27 +197,11 @@
 
 // src/admin/settings/CompanyProfile.jsx
 import { useState, useEffect } from "react";
+import C from "../../styles/colors";
 import { motion } from "framer-motion";
 import { Upload, Save, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { settingsApi } from "../../api/service/settingsApi";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 const SIZES = [
   "1–50 employees",
@@ -302,7 +286,7 @@ export default function CompanyProfile() {
 
   return (
     <div className="max-w-3xl">
-      <h2 className="text-2xl font-bold mb-8" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+      <h2 className="text-2xl mb-8" style={{ color: C.textPrimary }}>
         Company Profile
       </h2>
 
@@ -340,7 +324,7 @@ export default function CompanyProfile() {
                 {logoFile ? "Change Logo" : "Upload Logo"}
               </label>
               {logoFile && (
-                <p className="text-xs mt-2 font-medium" style={{ color: C.success }}>✓ {logoFile.name}</p>
+                <p className="text-xs mt-2 font-medium" style={{ color: C.success }}> {logoFile.name}</p>
               )}
               <p className="text-xs mt-1.5" style={{ color: C.textMuted }}>PNG or JPG · Max 2 MB</p>
             </div>
@@ -398,7 +382,7 @@ export default function CompanyProfile() {
         <motion.button
           whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
           onClick={handleSave} disabled={saving}
-          className="w-full py-3.5 rounded-2xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+          className="w-full py-3.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
           style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}>
           {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
           {saving ? "Saving..." : "Save Company Profile"}

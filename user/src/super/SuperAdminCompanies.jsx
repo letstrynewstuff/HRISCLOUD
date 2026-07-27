@@ -51,14 +51,14 @@ const STATUS_CFG = {
   active: {
     label: "Active",
     bg: "#D1FAE5",
-    color: "#059669",
+    color: "#047857",
     icon: CheckCircle2,
   },
-  pending: { label: "Pending", bg: "#FEF3C7", color: "#D97706", icon: Clock },
+  pending: { label: "Pending", bg: "#FEF3C7", color: "#92400E", icon: Clock },
   suspended: {
     label: "Suspended",
     bg: "#FEE2E2",
-    color: "#DC2626",
+    color: "#B91C1C",
     icon: XCircle,
   },
 };
@@ -66,10 +66,10 @@ const statusCfg = (s) => STATUS_CFG[s?.toLowerCase()] ?? STATUS_CFG.pending;
 
 /* ─── Plan badge ─── */
 const PLAN_CFG = {
-  free: { label: "Free", bg: "#F1F5F9", color: "#64748B" },
+  free: { label: "Free", bg: "#F0F2F8", color: "#5F6D7E" },
   starter: { label: "Starter", bg: "#EEF2FF", color: "#4F46E5" },
-  growth: { label: "Growth", bg: "#ECFEFF", color: "#0891B2" },
-  enterprise: { label: "Enterprise", bg: "#FEF3C7", color: "#D97706" },
+  growth: { label: "Growth", bg: "#EEF2FF", color: "#4338CA" },
+  enterprise: { label: "Enterprise", bg: "#FEF3C7", color: "#92400E" },
 };
 const planCfg = (p) => PLAN_CFG[p?.toLowerCase()] ?? PLAN_CFG.free;
 
@@ -94,7 +94,7 @@ function StatCard({ label, value, icon, color, light, index }) {
       <div>
         <p
           className="text-2xl font-bold"
-          style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+          style={{ color: C.textPrimary }}
         >
           {value ?? "—"}
         </p>
@@ -129,7 +129,7 @@ function ConfirmModal({
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
+          boxShadow: C.shadow.lift,
         }}
       >
         <div className="flex items-center gap-3">
@@ -151,7 +151,7 @@ function ConfirmModal({
         <div className="flex gap-3 pt-1">
           <button
             onClick={onCancel}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -165,7 +165,7 @@ function ConfirmModal({
             whileTap={{ scale: 0.97 }}
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{
               background: danger ? C.danger : C.warning,
               opacity: loading ? 0.7 : 1,
@@ -268,7 +268,7 @@ function CreateCompanyModal({ onClose, onCreate }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.25)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -276,7 +276,7 @@ function CreateCompanyModal({ onClose, onCreate }) {
         <div
           className="px-6 py-5 flex items-center justify-between shrink-0"
           style={{
-            background: "linear-gradient(135deg,#0F0C29,#302B63)",
+            background: C.gradient.hero,
             color: "#fff",
           }}
         >
@@ -287,7 +287,6 @@ function CreateCompanyModal({ onClose, onCreate }) {
             <div>
               <p
                 className="font-bold text-base"
-                style={{ fontFamily: "Sora,sans-serif" }}
               >
                 Create Company
               </p>
@@ -296,7 +295,7 @@ function CreateCompanyModal({ onClose, onCreate }) {
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl bg-white/15">
+          <button onClick={onClose} className="p-2 rounded-full bg-white/15">
             <X size={14} color="#fff" />
           </button>
         </div>
@@ -371,7 +370,7 @@ function CreateCompanyModal({ onClose, onCreate }) {
                     key={p}
                     type="button"
                     onClick={() => set("plan", p)}
-                    className="py-2 rounded-xl text-[10px] font-bold capitalize"
+                    className="py-2 rounded-full text-[10px] font-bold capitalize"
                     style={{
                       background: form.plan === p ? cfg.color : C.surfaceAlt,
                       color: form.plan === p ? "#fff" : C.textSecondary,
@@ -437,7 +436,7 @@ function CreateCompanyModal({ onClose, onCreate }) {
         >
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -451,7 +450,7 @@ function CreateCompanyModal({ onClose, onCreate }) {
             whileTap={{ scale: 0.97 }}
             onClick={handleCreate}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{
               background: "linear-gradient(135deg,#4F46E5,#6366F1)",
               opacity: saving ? 0.7 : 1,
@@ -492,14 +491,14 @@ function CompanyDrawer({ company, onClose }) {
         className="relative w-full max-w-md h-full overflow-y-auto flex flex-col"
         style={{
           background: C.surface,
-          boxShadow: "-8px 0 40px rgba(0,0,0,0.15)",
+          boxShadow: C.shadow.card,
         }}
       >
         {/* Header */}
         <div
           className="px-6 py-5 flex items-center justify-between sticky top-0 z-10"
           style={{
-            background: "linear-gradient(135deg,#0F0C29,#302B63)",
+            background: C.gradient.hero,
             color: "#fff",
           }}
         >
@@ -510,14 +509,13 @@ function CompanyDrawer({ company, onClose }) {
             <div>
               <p
                 className="font-bold"
-                style={{ fontFamily: "Sora,sans-serif" }}
               >
                 {company.name}
               </p>
               <p className="text-[11px] text-indigo-200">{company.slug}</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl bg-white/15">
+          <button onClick={onClose} className="p-2 rounded-full bg-white/15">
             <X size={14} color="#fff" />
           </button>
         </div>
@@ -775,7 +773,7 @@ export default function SuperAdminCompanies() {
               label: "Pending Approval",
               value: pending,
               icon: Clock,
-              color: "#D97706",
+              color: "#92400E",
               light: "#FEF3C7",
             },
             {
@@ -807,7 +805,7 @@ export default function SuperAdminCompanies() {
               <button
                 key={f}
                 onClick={() => setFilter(f)}
-                className="px-4 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all"
+                className="px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition-all"
                 style={{
                   background: filter === f ? C.primary : "transparent",
                   color: filter === f ? "#fff" : C.textSecondary,
@@ -826,10 +824,10 @@ export default function SuperAdminCompanies() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white"
               style={{
                 background: `linear-gradient(135deg,${C.primary},#6366F1)`,
-                boxShadow: `0 4px 14px rgba(79,70,229,0.3)`,
+                boxShadow: C.shadow.card,
               }}
             >
               <Plus size={14} /> Add Company
@@ -1026,7 +1024,7 @@ export default function SuperAdminCompanies() {
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
                               onClick={() => setViewCompany(company)}
-                              className="w-8 h-8 rounded-xl flex items-center justify-center"
+                              className="w-8 h-8 rounded-full flex items-center justify-center"
                               style={{ background: C.primaryLight }}
                               title="View Details"
                             >
@@ -1041,7 +1039,7 @@ export default function SuperAdminCompanies() {
                                 onClick={() =>
                                   setConfirm({ type: "approve", company })
                                 }
-                                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                                className="w-8 h-8 rounded-full flex items-center justify-center"
                                 style={{ background: C.successLight }}
                                 title="Approve"
                               >
@@ -1057,11 +1055,11 @@ export default function SuperAdminCompanies() {
                                 onClick={() =>
                                   setConfirm({ type: "suspend", company })
                                 }
-                                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                                className="w-8 h-8 rounded-full flex items-center justify-center"
                                 style={{ background: "#FEF3C7" }}
                                 title="Suspend"
                               >
-                                <ShieldOff size={14} color="#D97706" />
+                                <ShieldOff size={14} color="#92400E" />
                               </Motion.button>
                             )}
 
@@ -1072,7 +1070,7 @@ export default function SuperAdminCompanies() {
                               onClick={() =>
                                 setConfirm({ type: "delete", company })
                               }
-                              className="w-8 h-8 rounded-xl flex items-center justify-center"
+                              className="w-8 h-8 rounded-full flex items-center justify-center"
                               style={{ background: C.dangerLight }}
                               title="Delete"
                             >

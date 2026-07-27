@@ -103,7 +103,7 @@ function Card({ children, className = "", style = {} }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
         ...style,
       }}
     >
@@ -242,7 +242,7 @@ function Toggle({ on, onToggle, label, sub }) {
             background: "#fff",
             position: "absolute",
             top: 3,
-            boxShadow: "0 1px 4px rgba(0,0,0,0.2)",
+            boxShadow: C.shadow.card,
           }}
         />
       </Motion.button>
@@ -911,7 +911,7 @@ export default function EditEmployee() {
                   className="w-8 h-8 rounded-xl flex items-center justify-center"
                   style={{ background: "#FEF3C7" }}
                 >
-                  <Award size={15} color="#D97706" />
+                  <Award size={15} color="#92400E" />
                 </div>
                 <div>
                   <p
@@ -1001,7 +1001,6 @@ export default function EditEmployee() {
       className="min-h-screen"
       style={{
         background: C.bg,
-        fontFamily: "'DM Sans','Sora',sans-serif",
         color: C.textPrimary,
       }}
     >
@@ -1028,7 +1027,7 @@ export default function EditEmployee() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
@@ -1069,7 +1068,7 @@ export default function EditEmployee() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setShowAudit((p) => !p)}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -1093,10 +1092,10 @@ export default function EditEmployee() {
                 whileTap={{ scale: 0.97 }}
                 onClick={handleSave}
                 disabled={saving || !isDirty}
-                className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white"
+                className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold text-white"
                 style={{
                   background: isDirty
-                    ? `linear-gradient(135deg,${C.primary},#8B5CF6)`
+                    ? `linear-gradient(135deg,${C.primary},#6366F1)`
                     : C.border,
                   border: "none",
                   cursor: isDirty ? "pointer" : "not-allowed",
@@ -1128,7 +1127,7 @@ export default function EditEmployee() {
                 </p>
                 <button
                   onClick={load}
-                  className="text-xs font-bold px-3 py-1 rounded-lg"
+                  className="text-xs font-bold px-3 py-1 rounded-full"
                   style={{
                     background: C.danger,
                     color: "#fff",
@@ -1160,7 +1159,7 @@ export default function EditEmployee() {
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+                        className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all"
                         style={{
                           background: isActive ? C.primary : C.surface,
                           color: isActive ? "#fff" : C.textSecondary,
@@ -1186,7 +1185,7 @@ export default function EditEmployee() {
                         style={{
                           height: h,
                           borderRadius: 16,
-                          background: "#E2E8F4",
+                          background: "#E4E7F0",
                           animation: "shimmer 1.4s infinite linear",
                           backgroundSize: "200%",
                         }}
@@ -1242,7 +1241,7 @@ export default function EditEmployee() {
                         whileTap={{ scale: 0.97 }}
                         onClick={() => setForm(originalForm)}
                         disabled={!isDirty}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
                         style={{
                           background: C.surfaceAlt,
                           border: `1px solid ${C.border}`,
@@ -1257,10 +1256,10 @@ export default function EditEmployee() {
                         whileTap={{ scale: 0.97 }}
                         onClick={handleSave}
                         disabled={saving || !isDirty}
-                        className="flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold text-white"
+                        className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-bold text-white"
                         style={{
                           background: isDirty
-                            ? `linear-gradient(135deg,${C.primary},#8B5CF6)`
+                            ? `linear-gradient(135deg,${C.primary},#6366F1)`
                             : C.border,
                           border: "none",
                           cursor: isDirty ? "pointer" : "not-allowed",
@@ -1410,7 +1409,7 @@ export default function EditEmployee() {
                 }}
               >
                 <h3
-                  className="text-base font-bold mb-2"
+                  className="text-base mb-2"
                   style={{ color: C.textPrimary }}
                 >
                   Confirm Changes
@@ -1429,8 +1428,8 @@ export default function EditEmployee() {
                       style={{ color: C.primary }}
                     >
                       {form.isManager
-                        ? `✓ ${name} will be assigned Manager role`
-                        : `✓ ${name}'s Manager role will be removed`}
+                        ? ` ${name} will be assigned Manager role`
+                        : ` ${name}'s Manager role will be removed`}
                     </p>
                   </div>
                 )}
@@ -1443,7 +1442,7 @@ export default function EditEmployee() {
                       className="text-xs font-bold"
                       style={{ color: C.warning }}
                     >
-                      ✓ Department transfer will be logged
+ Department transfer will be logged
                     </p>
                   </div>
                 )}
@@ -1452,7 +1451,7 @@ export default function EditEmployee() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setShowConfirm(false)}
-                    className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                    className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                     style={{
                       background: C.surfaceAlt,
                       color: C.textSecondary,
@@ -1466,9 +1465,9 @@ export default function EditEmployee() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={confirmSave}
-                    className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2"
                     style={{
-                      background: `linear-gradient(135deg,${C.primary},#8B5CF6)`,
+                      background: `linear-gradient(135deg,${C.primary},#6366F1)`,
                       border: "none",
                       cursor: "pointer",
                     }}
@@ -1493,7 +1492,7 @@ export default function EditEmployee() {
             style={{
               background: toast.type === "error" ? C.danger : C.navy,
               color: "#fff",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+              boxShadow: C.shadow.lift,
               minWidth: 300,
             }}
           >

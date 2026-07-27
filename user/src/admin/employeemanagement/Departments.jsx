@@ -87,7 +87,7 @@ const empInitials = (emp) => {
 const Card = ({ children, className = "", style = {}, onClick }) => (
   <motion.div
     whileHover={
-      onClick ? { y: -3, boxShadow: "0 12px 40px rgba(79,70,229,0.10)" } : {}
+      onClick ? { y: -3, boxShadow: C.shadow.lift } : {}
     }
     transition={{ duration: 0.18 }}
     onClick={onClick}
@@ -317,7 +317,7 @@ function EmployeeSearchDropdown({
                     >
                       <div
                         className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                        style={{ background: isSel ? C.primary : "#64748B" }}
+                        style={{ background: isSel ? C.primary : "#5F6D7E" }}
                       >
                         {empInitials(emp)}
                       </div>
@@ -434,7 +434,7 @@ function DeptForm({
                   whileHover={{ scale: 1.15 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setPaletteIdx(i)}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center"
+                  className="w-7 h-7 rounded-full flex items-center justify-center"
                   style={{
                     background: p.color,
                     boxShadow:
@@ -527,7 +527,7 @@ function DeptForm({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+              className="flex-1 py-2.5 rounded-full text-sm font-semibold"
               style={{
                 background: C.surfaceAlt,
                 color: C.textSecondary,
@@ -541,10 +541,10 @@ function DeptForm({
               whileTap={{ scale: 0.98 }}
               onClick={onSave}
               disabled={saving}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 text-white"
+              className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 text-white"
               style={{
                 background: C.primary,
-                boxShadow: `0 4px 12px ${C.primary}44`,
+                boxShadow: C.shadow.card,
                 opacity: saving ? 0.8 : 1,
               }}
             >
@@ -652,7 +652,7 @@ function AssignEmployeesModal({
           background: C.surface,
           border: `1px solid ${C.border}`,
           maxHeight: "88vh",
-          boxShadow: "0 32px 80px rgba(15,23,42,0.3)",
+          boxShadow: C.shadow.lift,
         }}
       >
         {/* Header */}
@@ -671,7 +671,7 @@ function AssignEmployeesModal({
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/20 hover:bg-white/30 transition-colors"
+            className="w-8 h-8 rounded-full flex items-center justify-center bg-white/20 hover:bg-white/30 transition-colors"
           >
             <X size={15} color="#fff" />
           </button>
@@ -705,7 +705,7 @@ function AssignEmployeesModal({
             {available.length > 0 && (
               <button
                 onClick={toggleAll}
-                className="px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap"
+                className="px-3 py-2 rounded-full text-xs font-bold whitespace-nowrap"
                 style={{
                   background:
                     selected.length === available.length
@@ -792,7 +792,7 @@ function AssignEmployeesModal({
                   >
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
-                      style={{ background: isSel ? "#4F46E5" : "#64748B" }}
+                      style={{ background: isSel ? "#4F46E5" : "#5F6D7E" }}
                     >
                       {empInitials(emp)}
                     </div>
@@ -834,7 +834,7 @@ function AssignEmployeesModal({
         >
           <button
             onClick={onClose}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -846,7 +846,7 @@ function AssignEmployeesModal({
           <button
             onClick={handleAssign}
             disabled={saving || selected.length === 0}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold"
             style={{
               background:
                 saving || selected.length === 0 ? "#C7D2FE" : "#4F46E5",
@@ -902,7 +902,7 @@ function DeptCard({
       initial="hidden"
       animate="visible"
       custom={index}
-      whileHover={{ y: -4, boxShadow: "0 16px 48px rgba(79,70,229,0.12)" }}
+      whileHover={{ y: -4, boxShadow: C.shadow.lift }}
       className="rounded-2xl bg-white overflow-hidden"
       style={{ border: `1px solid ${C.border}` }}
     >
@@ -921,7 +921,7 @@ function DeptCard({
             <Building2 size={20} color={pal.color} />
           </div>
           <div className="relative group">
-            <button className="p-1.5 rounded-lg hover:bg-slate-100 transition-all">
+            <button className="p-1.5 rounded-full hover:bg-slate-100 transition-all">
               <MoreHorizontal size={15} color={C.textMuted} />
             </button>
             <div
@@ -959,7 +959,7 @@ function DeptCard({
         </div>
 
         <h3
-          className="font-bold text-base mb-1"
+          className="text-base mb-1"
           style={{ color: C.textPrimary }}
         >
           {dept.name}
@@ -1064,7 +1064,7 @@ function DeptCard({
           <div className="flex items-center gap-2 mb-3">
             <button
               onClick={onAssign}
-              className="flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-all"
+              className="flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full transition-all"
               style={{ background: pal.bg, color: pal.color }}
             >
               <UserPlus size={11} /> Add members
@@ -1319,7 +1319,6 @@ export default function DepartmentsPage() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -1337,7 +1336,7 @@ export default function DepartmentsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -1369,7 +1368,7 @@ export default function DepartmentsPage() {
             <div className="flex items-center gap-2 ml-auto">
               <button
                 onClick={fetchEmployees}
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -1386,11 +1385,11 @@ export default function DepartmentsPage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={openCreate}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
                 style={{
                   background: C.primary,
                   color: "#fff",
-                  boxShadow: `0 4px 12px ${C.primary}44`,
+                  boxShadow: C.shadow.card,
                 }}
               >
                 <Plus size={13} /> New Department
@@ -1406,7 +1405,7 @@ export default function DepartmentsPage() {
               className="rounded-2xl p-6 text-white relative overflow-hidden"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="flex flex-col md:flex-row md:items-center gap-6">
@@ -1416,8 +1415,7 @@ export default function DepartmentsPage() {
                   </div>
                   <div>
                     <h1
-                      className="text-2xl font-bold"
-                      style={{ fontFamily: "Sora,sans-serif" }}
+                      className="text-2xl "
                     >
                       Departments
                     </h1>
@@ -1449,7 +1447,7 @@ export default function DepartmentsPage() {
                     >
                       <span
                         className="text-lg font-bold"
-                        style={{ color: "#fff", fontFamily: "Sora,sans-serif" }}
+                        style={{ color: "#fff" }}
                       >
                         {s.value}
                       </span>
@@ -1487,17 +1485,24 @@ export default function DepartmentsPage() {
                 </p>
                 <div
                   className="flex rounded-lg overflow-hidden"
-                  style={{ border: `1px solid ${C.border}` }}
+                  style={{
+                    border: `1px solid ${C.border}`,
+                    borderRadius: C.radius.pill,
+                    overflow: "hidden",
+                  }}
                 >
                   {[
-                    { id: "grid", icon: Grid3X3 },
-                    { id: "list", icon: List },
-                  ].map(({ id, icon: Icon }) => (
+                    { id: "grid", icon: Grid3X3, label: "Grid view" },
+                    { id: "list", icon: List, label: "List view" },
+                  ].map(({ id, icon: Icon, label }) => (
                     <button
                       key={id}
                       onClick={() => setViewMode(id)}
                       className="p-2"
+                      aria-label={label}
+                      aria-pressed={viewMode === id}
                       style={{
+                        borderRadius: C.radius.pill,
                         background:
                           viewMode === id ? C.primaryLight : C.surface,
                         color: viewMode === id ? C.primary : C.textMuted,
@@ -1817,7 +1822,7 @@ export default function DepartmentsPage() {
                                           whileHover={{ scale: 1.1 }}
                                           whileTap={{ scale: 0.9 }}
                                           onClick={action}
-                                          className="w-7 h-7 rounded-lg flex items-center justify-center"
+                                          className="w-7 h-7 rounded-full flex items-center justify-center"
                                           style={{ background: bg }}
                                         >
                                           <Icon size={12} color={color} />
@@ -1882,7 +1887,7 @@ export default function DepartmentsPage() {
                   </div>
                   <button
                     onClick={closeModal}
-                    className="p-1.5 rounded-lg"
+                    className="p-1.5 rounded-full"
                     style={{ background: C.surfaceAlt }}
                   >
                     <X size={15} color={C.textSecondary} />
@@ -1964,7 +1969,7 @@ export default function DepartmentsPage() {
                           closeModal();
                           openAssign(activeDept);
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                         style={{ background: C.successLight, color: C.success }}
                       >
                         <UserPlus size={12} /> Assign
@@ -1973,14 +1978,14 @@ export default function DepartmentsPage() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => openEdit(activeDept)}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
                         style={{ background: C.primaryLight, color: C.primary }}
                       >
                         <Edit2 size={12} /> Edit
                       </motion.button>
                       <button
                         onClick={closeModal}
-                        className="p-1.5 rounded-lg"
+                        className="p-1.5 rounded-full"
                         style={{ background: C.surfaceAlt }}
                       >
                         <X size={15} color={C.textSecondary} />
@@ -2004,10 +2009,9 @@ export default function DepartmentsPage() {
                       </div>
                       <div>
                         <h2
-                          className="text-xl font-bold"
+                          className="text-xl "
                           style={{
                             color: C.textPrimary,
-                            fontFamily: "Sora,sans-serif",
                           }}
                         >
                           {activeDept.name}
@@ -2142,7 +2146,7 @@ export default function DepartmentsPage() {
                               closeModal();
                               openAssign(activeDept);
                             }}
-                            className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-lg"
+                            className="flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full"
                             style={{
                               background: C.primaryLight,
                               color: C.primary,
@@ -2180,7 +2184,7 @@ export default function DepartmentsPage() {
                               closeModal();
                               openAssign(activeDept);
                             }}
-                            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg"
+                            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
                             style={{
                               background: C.primaryLight,
                               color: C.primary,
@@ -2302,7 +2306,7 @@ export default function DepartmentsPage() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={closeModal}
-                    className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                    className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                     style={{
                       background: C.surfaceAlt,
                       color: C.textSecondary,
@@ -2316,7 +2320,7 @@ export default function DepartmentsPage() {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleDelete}
                     disabled={saving}
-                    className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2"
                     style={{
                       background: C.danger,
                       color: "#fff",

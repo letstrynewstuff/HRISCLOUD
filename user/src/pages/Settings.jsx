@@ -3,6 +3,7 @@
 // are live. Everything else shows "Coming Soon".
 
 import { useState, useEffect } from "react";
+import C from "../styles/colors";
 // import SideNavbar from "../components/SideNavbar";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import {
@@ -24,27 +25,6 @@ import {
 import { settingsApi } from "../api/service/settingsApi";
 import { useAuth } from "../components/useAuth";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryDark: "#3730A3",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const SECTIONS = [
   { id: "Security", icon: Shield, live: true },
@@ -211,7 +191,6 @@ export default function SettingsPage() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -231,7 +210,7 @@ export default function SettingsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -263,7 +242,7 @@ export default function SettingsPage() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#6366F1,#06B6D4)",
+                  background: "linear-gradient(135deg,#6366F1,#4338CA)",
                 }}
               >
                 {EMPLOYEE.initials}
@@ -279,7 +258,7 @@ export default function SettingsPage() {
               className="relative rounded-2xl overflow-hidden p-6 md:p-8 mb-8"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="flex items-center gap-4">
@@ -291,8 +270,7 @@ export default function SettingsPage() {
                 </div>
                 <div>
                   <h1
-                    className="text-white text-3xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-white text-3xl "
                   >
                     Settings
                   </h1>
@@ -316,7 +294,7 @@ export default function SettingsPage() {
                       key={id}
                       whileHover={{ x: 4 }}
                       onClick={() => setActiveSection(id)}
-                      className="w-full text-left px-4 py-3 rounded-xl flex items-center justify-between gap-3 text-sm font-medium transition-all"
+                      className="w-full text-left px-4 py-3 rounded-full flex items-center justify-between gap-3 text-sm font-medium transition-all"
                       style={{
                         background:
                           activeSection === id ? C.primaryLight : "transparent",
@@ -356,7 +334,7 @@ export default function SettingsPage() {
                         key={id}
                         whileHover={{ x: 4 }}
                         onClick={() => setActiveSection(id)}
-                        className="w-full text-left px-4 py-3 rounded-xl flex items-center justify-between gap-3 text-sm font-medium transition-all"
+                        className="w-full text-left px-4 py-3 rounded-full flex items-center justify-between gap-3 text-sm font-medium transition-all"
                         style={{
                           background:
                             activeSection === id
@@ -398,8 +376,7 @@ export default function SettingsPage() {
                   style={{ borderColor: C.border }}
                 >
                   <h2
-                    className="text-2xl font-bold mb-8"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-2xl mb-8"
                   >
                     {activeSection}
                   </h2>
@@ -411,7 +388,7 @@ export default function SettingsPage() {
                         <div className="flex items-center gap-2 mb-5">
                           <Lock size={16} color={C.primary} />
                           <h3
-                            className="font-semibold"
+                            className=""
                             style={{ color: C.textPrimary }}
                           >
                             Change Password
@@ -547,7 +524,7 @@ export default function SettingsPage() {
                           whileTap={{ scale: 0.98 }}
                           onClick={handleChangePassword}
                           disabled={pwLoading}
-                          className="mt-6 w-full py-3 rounded-2xl font-semibold text-white flex items-center justify-center gap-2"
+                          className="mt-6 w-full py-3 rounded-full font-semibold text-white flex items-center justify-center gap-2"
                           style={{
                             background: C.primary,
                             opacity: pwLoading ? 0.7 : 1,
@@ -660,7 +637,7 @@ export default function SettingsPage() {
                             whileTap={{ scale: 0.98 }}
                             onClick={handleSavePrefs}
                             disabled={prefsSaving}
-                            className="mt-7 flex items-center gap-2 px-7 py-3 rounded-2xl font-semibold text-white"
+                            className="mt-7 flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-white"
                             style={{
                               background: C.primary,
                               opacity: prefsSaving ? 0.7 : 1,

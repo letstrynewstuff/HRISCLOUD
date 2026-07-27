@@ -34,7 +34,7 @@ const STATUSES = ["", "submitted", "hr_scored", "completed", "rejected"];
 
 const STATUS_CFG = {
   submitted: { label: "Submitted",  bg: C.warningLight, color: C.warning  },
-  hr_scored: { label: "HR Scored",  bg: "#F3E8FF",      color: "#7C3AED"  },
+  hr_scored: { label: "HR Scored",  bg: "#E0E7FF",      color: "#4F46E5"  },
   completed: { label: "Completed",  bg: C.successLight, color: C.success  },
   rejected:  { label: "Returned",   bg: C.dangerLight,  color: C.danger   },
 };
@@ -49,11 +49,11 @@ const CRITERIA_DEFAULTS = [
 ];
 
 const RATING_LABEL = (score) => {
-  if (score >= 90) return { label: "Outstanding",        color: "#059669" };
-  if (score >= 75) return { label: "High Performer",     color: "#2563EB" };
+  if (score >= 90) return { label: "Outstanding",        color: "#047857" };
+  if (score >= 75) return { label: "High Performer",     color: "#4F46E5" };
   if (score >= 60) return { label: "Meets Expectations", color: C.warning };
   if (score >= 40) return { label: "Needs Improvement",  color: C.danger  };
-  return                   { label: "Underperforming",   color: "#7C3AED" };
+  return                   { label: "Underperforming",   color: "#4F46E5" };
 };
 
 const fadeUp = {
@@ -231,14 +231,14 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
       <motion.div
         initial={{ scale: 0.95, y: 20 }} animate={{ scale: 1, y: 0 }}
         className="relative w-full max-w-2xl rounded-2xl overflow-hidden max-h-[92vh] flex flex-col"
-        style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: "0 24px 64px rgba(0,0,0,0.25)" }}>
+        style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: C.shadow.lift }}>
 
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 shrink-0"
           style={{ borderBottom: `1px solid ${C.border}` }}>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "#F3E8FF" }}>
-              <Shield size={14} color="#7C3AED" />
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: "#E0E7FF" }}>
+              <Shield size={14} color="#4F46E5" />
             </div>
             <div>
               <p className="font-bold text-sm" style={{ color: C.textPrimary }}>
@@ -251,7 +251,7 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
               </p>
             </div>
           </div>
-          <button onClick={onClose} className="w-7 h-7 rounded-xl flex items-center justify-center"
+          <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center"
             style={{ background: C.surfaceAlt }}>
             <X size={13} color={C.textMuted} />
           </button>
@@ -271,11 +271,11 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
             <div className="grid grid-cols-3 gap-3">
               {[
                 { label: "Manager Score", value: Math.round(managerOverall), color: C.primary,         bg: C.primaryLight  },
-                { label: "HR Score",      value: Math.round(hrOverall),      color: "#7C3AED",          bg: "#F3E8FF"       },
+                { label: "HR Score",      value: Math.round(hrOverall),      color: "#4F46E5",          bg: "#E0E7FF"       },
                 { label: "Blended Score", value: blended,                    color: ratingInfo.color,   bg: C.successLight  },
               ].map((s) => (
                 <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: s.bg }}>
-                  <p className="text-2xl font-black" style={{ color: s.color, fontFamily: "Sora,sans-serif" }}>{s.value}</p>
+                  <p className="text-2xl font-black" style={{ color: s.color }}>{s.value}</p>
                   <p className="text-[10px] font-semibold mt-0.5" style={{ color: s.color }}>{s.label}</p>
                 </div>
               ))}
@@ -299,7 +299,7 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
                   <label className="text-xs font-semibold" style={{ color: C.textPrimary }}>
                     HR Score Weight
                   </label>
-                  <span className="text-xs font-bold" style={{ color: "#7C3AED" }}>{hrScoreWeight}%</span>
+                  <span className="text-xs font-bold" style={{ color: "#4F46E5" }}>{hrScoreWeight}%</span>
                 </div>
                 <input type="range" min={0} max={50} step={5}
                   value={hrScoreWeight}
@@ -359,16 +359,16 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
                     color:      skipHrRating ? C.success      : C.textSecondary,
                     border:     `1px solid ${skipHrRating ? C.success : C.border}`,
                   }}>
-                  {skipHrRating ? "✓ Trusting manager ratings" : "Skip — trust manager ratings"}
+                  {skipHrRating ? " Trusting manager ratings" : "Skip — trust manager ratings"}
                 </button>
               </div>
 
               {!skipHrRating && (
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 p-2.5 rounded-xl"
-                    style={{ background: "#F3E8FF", border: "1px solid #7C3AED22" }}>
-                    <Info size={12} color="#7C3AED" className="shrink-0" />
-                    <p className="text-[10px]" style={{ color: "#7C3AED" }}>
+                    style={{ background: "#E0E7FF", border: "1px solid #4F46E522" }}>
+                    <Info size={12} color="#4F46E5" className="shrink-0" />
+                    <p className="text-[10px]" style={{ color: "#4F46E5" }}>
                       Your ratings carry <strong>{hrScoreWeight}%</strong> of the final score.
                       Leave stars empty to exclude a criterion.
                     </p>
@@ -415,7 +415,7 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
                     <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>{r.label}</p>
                     <div className="flex items-center gap-2">
                       <StarDisplay score={r.score} max={r.maxScore ?? 5} />
-                      <span className="text-xs font-bold" style={{ color: "#7C3AED" }}>
+                      <span className="text-xs font-bold" style={{ color: "#4F46E5" }}>
                         {r.score}/{r.maxScore ?? 5}
                       </span>
                     </div>
@@ -472,13 +472,13 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
           ) : rejectMode ? (
             <div className="flex gap-3">
               <button onClick={() => setRejectMode(false)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                 style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
                 Cancel
               </button>
               <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 onClick={handleReject} disabled={saving}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+                className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
                 style={{ background: C.danger, opacity: saving ? 0.8 : 1 }}>
                 {saving ? <Loader2 size={13} className="animate-spin" /> : <ThumbsDown size={13} />}
                 Return to Manager
@@ -487,7 +487,7 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
           ) : (
             <div className="flex gap-2 flex-wrap">
               <button onClick={onClose}
-                className="py-2.5 px-4 rounded-xl text-sm font-semibold"
+                className="py-2.5 px-4 rounded-full text-sm font-semibold"
                 style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
                 Cancel
               </button>
@@ -496,7 +496,7 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
               {appraisal.status === "submitted" && (
                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={() => setRejectMode(true)}
-                  className="py-2.5 px-4 rounded-xl text-sm font-semibold flex items-center gap-2"
+                  className="py-2.5 px-4 rounded-full text-sm font-semibold flex items-center gap-2"
                   style={{ background: C.dangerLight, color: C.danger, border: `1px solid ${C.danger}33` }}>
                   <ThumbsDown size={13} /> Return to Manager
                 </motion.button>
@@ -506,7 +506,7 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
               {appraisal.status === "submitted" && (
                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={() => handleSaveReview(false)} disabled={saving}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2"
                   style={{ background: C.primaryLight, color: C.primary, border: `1px solid ${C.primary}33`, opacity: saving ? 0.8 : 1 }}>
                   {saving ? <Loader2 size={13} className="animate-spin" /> : null}
                   Save HR Review
@@ -517,7 +517,7 @@ function HRReviewModal({ appraisal, onClose, onSaved }) {
               <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 onClick={isHrScored ? handleFinalize : () => handleSaveReview(true)}
                 disabled={saving}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+                className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
                 style={{ background: C.success, opacity: saving ? 0.8 : 1 }}>
                 {saving ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
                 {isHrScored ? "Finalise & Lock" : "Review & Finalise"}
@@ -580,7 +580,7 @@ export default function AppraisalReview() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
-          <h2 className="font-bold text-lg" style={{ color: C.textPrimary }}>Appraisal Reviews</h2>
+          <h2 className="text-lg" style={{ color: C.textPrimary }}>Appraisal Reviews</h2>
           <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>
             Review, score and finalise manager-submitted appraisals.
           </p>
@@ -598,7 +598,7 @@ export default function AppraisalReview() {
             </button>
           ))}
           <motion.button whileHover={{ scale: 1.04 }} onClick={load}
-            className="w-8 h-8 flex items-center justify-center rounded-xl"
+            className="w-8 h-8 flex items-center justify-center rounded-full"
             style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}>
             <RefreshCw size={13} color={C.textSecondary} />
           </motion.button>
@@ -608,9 +608,9 @@ export default function AppraisalReview() {
       {/* Pending banner */}
       {!statusFilter && pendingCount > 0 && (
         <div className="rounded-2xl p-4 flex items-center gap-3"
-          style={{ background: "#F3E8FF", border: "1px solid #7C3AED33" }}>
+          style={{ background: "#E0E7FF", border: "1px solid #4F46E533" }}>
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: "#7C3AED" }}>
+            style={{ background: "#4F46E5" }}>
             <Shield size={15} color="#fff" />
           </div>
           <div className="flex-1">
@@ -693,7 +693,7 @@ export default function AppraisalReview() {
                         </span>
                       </td>
                       <td className="px-4 py-3.5">
-                        <span className="font-bold text-sm" style={{ color: app.hrOverall != null ? "#7C3AED" : C.textMuted }}>
+                        <span className="font-bold text-sm" style={{ color: app.hrOverall != null ? "#4F46E5" : C.textMuted }}>
                           {app.hrOverall != null ? Math.round(app.hrOverall) : "—"}
                         </span>
                       </td>
@@ -710,8 +710,8 @@ export default function AppraisalReview() {
                         {isActionable ? (
                           <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
                             onClick={() => setSelected(app)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl text-white"
-                            style={{ background: app.status === "hr_scored" ? C.success : "#7C3AED" }}>
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-full text-white"
+                            style={{ background: app.status === "hr_scored" ? C.success : "#4F46E5" }}>
                             <Shield size={12} />
                             {app.status === "hr_scored" ? "Finalise" : "HR Review"}
                           </motion.button>
@@ -723,7 +723,7 @@ export default function AppraisalReview() {
                         ) : (
                           <motion.button whileHover={{ scale: 1.04 }}
                             onClick={() => setSelected(app)}
-                            className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl"
+                            className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-full"
                             style={{ background: C.primaryLight, color: C.primary }}>
                             View
                           </motion.button>
@@ -755,7 +755,7 @@ export default function AppraisalReview() {
             animate={{ opacity: 1, y: 0,  x: "-50%" }}
             exit={{    opacity: 0, y: 40, x: "-50%" }}
             className="fixed bottom-6 left-1/2 flex items-center gap-3 px-5 py-3 rounded-2xl z-50"
-            style={{ background: "#1E1B4B", color: "#fff", boxShadow: "0 8px 32px rgba(0,0,0,0.3)", minWidth: 260 }}>
+            style={{ background: "#1E1B4B", color: "#fff", boxShadow: C.shadow.lift, minWidth: 260 }}>
             {toast.type === "error"
               ? <AlertCircle size={14} color={C.danger} />
               : <CheckCircle2 size={14} color={C.success} />}

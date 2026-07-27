@@ -8,21 +8,25 @@ import { useState, useRef, useEffect } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import BantaHRLogo from "../styles/BantaHRLogo";
 import {
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  BarChart3,
+  Bell,
+  CheckCircle2,
+  ChevronRight,
   Eye,
   EyeOff,
-  Mail,
+  KeyRound,
   Lock,
-  ArrowRight,
-  ArrowLeft,
-  CheckCircle2,
-  AlertCircle,
+  Mail,
+  Network,
   RefreshCw,
   Shield,
   Smartphone,
-  KeyRound,
   Sparkles,
-  ChevronRight,
   X,
+  Zap,
 } from "lucide-react";
 import { authApi } from "../api/service/authApi";
 import C from "../styles/colors";
@@ -101,7 +105,7 @@ function Field({
       <div className="relative">
         {Icon && (
           <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
-            <Icon size={15} color={value ? C.primary : C.textMuted} />
+            <Icon size={15} color={value ? C.primary : C.textSecondary} />
           </div>
         )}
         <input
@@ -196,7 +200,6 @@ function OtpInput({ value, onChange }) {
             border: `2px solid ${d ? C.primary : C.border}`,
             color: C.primary,
             boxShadow: d ? `0 0 0 3px ${C.primaryLight}` : "none",
-            fontFamily: "Sora, sans-serif",
           }}
         />
       ))}
@@ -219,7 +222,7 @@ const ROLE_CONFIG = {
   },
   hr: {
     label: "HR",
-    bg: "#8B5CF6",
+    bg: "#6366F1",
     desc: "Redirecting to HR Dashboard...",
   },
   employee: {
@@ -235,7 +238,7 @@ const LeftPanel = () => (
     style={{
       width: 440,
       minWidth: 440,
-      background: `linear-gradient(160deg, ${C.navy} 0%, ${C.navyMid} 60%, ${C.navyLight} 100%)`,
+      background: C.gradient.hero,
     }}
   >
     <Particles />
@@ -277,7 +280,6 @@ const LeftPanel = () => (
       >
         <p
           className="text-4xl font-bold leading-tight mb-4 text-white"
-          style={{ fontFamily: "Sora, sans-serif" }}
         >
           Your People,
           <br />
@@ -300,10 +302,10 @@ const LeftPanel = () => (
         className="mt-8 space-y-3"
       >
         {[
-          { icon: "⚡", label: "Real-time Payroll Processing" },
-          { icon: "📊", label: "Advanced HR Analytics" },
-          { icon: "🔔", label: "Smart Announcements Engine" },
-          { icon: "🌳", label: "Interactive Org Chart" },
+          { icon: Zap, label: "Real-time Payroll Processing" },
+          { icon: BarChart3, label: "Advanced HR Analytics" },
+          { icon: Bell, label: "Smart Announcements Engine" },
+          { icon: Network, label: "Interactive Org Chart" },
         ].map((f, i) => (
           <Motion.div
             key={f.label}
@@ -316,7 +318,9 @@ const LeftPanel = () => (
               border: "1px solid rgba(255,255,255,0.08)",
             }}
           >
-            <span className="text-base">{f.icon}</span>
+            <span style={{ color: "#C7D2FE", display: "flex" }}>
+              <f.icon size={16} />
+            </span>
             <span
               className="text-sm font-medium"
               style={{ color: "rgba(255,255,255,0.75)" }}
@@ -495,7 +499,6 @@ export default function LoginPage() {
         className="min-h-screen flex items-center justify-center"
         style={{
           background: `linear-gradient(135deg, ${C.navy}, ${C.navyLight})`,
-          fontFamily: "Sora, sans-serif",
         }}
       >
         <Particles />
@@ -518,7 +521,7 @@ export default function LoginPage() {
             className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-5 text-3xl font-bold text-white"
             style={{
               background: `linear-gradient(135deg, ${rc.bg}, ${rc.bg}bb)`,
-              boxShadow: `0 8px 32px ${rc.bg}66`,
+              boxShadow: C.shadow.lift,
             }}
           >
             {loggedIn.initials}
@@ -556,12 +559,12 @@ export default function LoginPage() {
     >
       <div className="mb-6">
         <h1
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Welcome back
         </h1>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Sign in to your BantaHR account
         </p>
       </div>
@@ -608,9 +611,9 @@ export default function LoginPage() {
         rightEl={
           <button onClick={() => setShowPw((p) => !p)} className="p-1">
             {showPw ? (
-              <EyeOff size={15} color={C.textMuted} />
+              <EyeOff size={15} color={C.textSecondary} />
             ) : (
-              <Eye size={15} color={C.textMuted} />
+              <Eye size={15} color={C.textSecondary} />
             )}
           </button>
         }
@@ -642,14 +645,14 @@ export default function LoginPage() {
       </div>
 
       <Motion.button
-        whileHover={{ scale: 1.01, boxShadow: `0 8px 24px ${C.primary}55` }}
+        whileHover={{ scale: 1.01, boxShadow: C.shadow.lift }}
         whileTap={{ scale: 0.98 }}
         onClick={handleLogin}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white transition-all"
+        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white transition-all"
         style={{
           background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-          boxShadow: `0 4px 16px ${C.primary}44`,
+          boxShadow: C.shadow.card,
           opacity: loading ? 0.8 : 1,
         }}
       >
@@ -667,7 +670,7 @@ export default function LoginPage() {
 
       <div className="flex items-center gap-3 my-1">
         <div className="flex-1 h-px" style={{ background: C.border }} />
-        <span className="text-xs" style={{ color: C.textMuted }}>
+        <span className="text-xs" style={{ color: C.textSecondary }}>
           or
         </span>
         <div className="flex-1 h-px" style={{ background: C.border }} />
@@ -699,7 +702,7 @@ export default function LoginPage() {
       <button
         onClick={() => setView("login")}
         className="flex items-center gap-1.5 text-xs font-semibold mb-4 hover:opacity-70 transition-opacity"
-        style={{ color: C.textMuted }}
+        style={{ color: C.textSecondary }}
       >
         <ArrowLeft size={13} />
         Back to login
@@ -712,12 +715,12 @@ export default function LoginPage() {
           <KeyRound size={22} color={C.primary} />
         </div>
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Forgot Password?
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Enter your work email and we'll send a 6-digit verification code.
         </p>
       </div>
@@ -738,10 +741,10 @@ export default function LoginPage() {
         whileTap={{ scale: 0.98 }}
         onClick={handleSendOtp}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white"
+        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white"
         style={{
           background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-          boxShadow: `0 4px 16px ${C.primary}44`,
+          boxShadow: C.shadow.card,
           opacity: loading ? 0.8 : 1,
         }}
       >
@@ -772,7 +775,7 @@ export default function LoginPage() {
       <button
         onClick={() => setView("forgot")}
         className="flex items-center gap-1.5 text-xs font-semibold mb-2 hover:opacity-70 transition-opacity"
-        style={{ color: C.textMuted }}
+        style={{ color: C.textSecondary }}
       >
         <ArrowLeft size={13} />
         Back
@@ -785,12 +788,12 @@ export default function LoginPage() {
           <Smartphone size={22} color={C.accent} />
         </div>
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Check Your Email
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           We sent a 6-digit code to{" "}
           <strong style={{ color: C.textPrimary }}>{forgotEmail}</strong>. Enter
           it below.
@@ -819,10 +822,10 @@ export default function LoginPage() {
         whileTap={{ scale: 0.98 }}
         onClick={handleVerifyOtp}
         disabled={loading || otp.length < 6}
-        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white"
+        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white"
         style={{
           background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-          boxShadow: `0 4px 16px ${C.primary}44`,
+          boxShadow: C.shadow.card,
           opacity: loading || otp.length < 6 ? 0.7 : 1,
         }}
       >
@@ -855,7 +858,7 @@ export default function LoginPage() {
         )}
       </div>
 
-      <p className="text-center text-xs" style={{ color: C.textMuted }}>
+      <p className="text-center text-xs" style={{ color: C.textSecondary }}>
         For demo, enter any 6 digits to continue.
       </p>
     </Motion.div>
@@ -879,12 +882,12 @@ export default function LoginPage() {
           <Lock size={22} color={C.success} />
         </div>
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Set New Password
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Choose a strong password for your account.
         </p>
       </div>
@@ -900,9 +903,9 @@ export default function LoginPage() {
         rightEl={
           <button onClick={() => setShowNewPw((p) => !p)} className="p-1">
             {showNewPw ? (
-              <EyeOff size={15} color={C.textMuted} />
+              <EyeOff size={15} color={C.textSecondary} />
             ) : (
-              <Eye size={15} color={C.textMuted} />
+              <Eye size={15} color={C.textSecondary} />
             )}
           </button>
         }
@@ -927,7 +930,7 @@ export default function LoginPage() {
             >
               {strengthLabel}
             </p>
-            <p className="text-[11px]" style={{ color: C.textMuted }}>
+            <p className="text-[11px]" style={{ color: C.textSecondary }}>
               Use uppercase, numbers & symbols
             </p>
           </div>
@@ -945,9 +948,9 @@ export default function LoginPage() {
         rightEl={
           <button onClick={() => setShowConfirmPw((p) => !p)} className="p-1">
             {showConfirmPw ? (
-              <EyeOff size={15} color={C.textMuted} />
+              <EyeOff size={15} color={C.textSecondary} />
             ) : (
-              <Eye size={15} color={C.textMuted} />
+              <Eye size={15} color={C.textSecondary} />
             )}
           </button>
         }
@@ -976,7 +979,7 @@ export default function LoginPage() {
             </div>
             <span
               className="text-[11px]"
-              style={{ color: r.pass ? C.success : C.textMuted }}
+              style={{ color: r.pass ? C.success : C.textSecondary }}
             >
               {r.rule}
             </span>
@@ -989,10 +992,10 @@ export default function LoginPage() {
         whileTap={{ scale: 0.98 }}
         onClick={handleResetPw}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white"
+        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white"
         style={{
           background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-          boxShadow: `0 4px 16px ${C.primary}44`,
+          boxShadow: C.shadow.card,
           opacity: loading ? 0.8 : 1,
         }}
       >
@@ -1024,18 +1027,18 @@ export default function LoginPage() {
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
         className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto"
-        style={{ background: "linear-gradient(135deg,#D1FAE5,#ECFEFF)" }}
+        style={{ background: "linear-gradient(135deg,#D1FAE5,#EEF2FF)" }}
       >
         <CheckCircle2 size={40} color={C.success} />
       </Motion.div>
       <div>
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Password Updated!
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Your password has been reset successfully. You can now sign in with
           your new password.
         </p>
@@ -1050,10 +1053,10 @@ export default function LoginPage() {
           setOtp("");
           setForgotEmail("");
         }}
-        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white"
+        className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white"
         style={{
           background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-          boxShadow: `0 4px 16px ${C.primary}44`,
+          boxShadow: C.shadow.card,
         }}
       >
         Back to Login <ArrowRight size={15} />
@@ -1085,7 +1088,6 @@ export default function LoginPage() {
   return (
     <div
       className="min-h-screen flex"
-      style={{ fontFamily: "Sora, sans-serif" }}
     >
       <LeftPanel />
 
@@ -1096,7 +1098,7 @@ export default function LoginPage() {
       >
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2.5 mb-8">
-          <BantaHRLogo variant="light" size="lg" />
+          <BantaHRLogo variant="dark" size="lg" />
         </div>
 
         <div className="w-full max-w-sm">
@@ -1114,7 +1116,7 @@ export default function LoginPage() {
                           : i === flowIdx
                             ? C.primary
                             : C.surfaceAlt,
-                      color: i <= flowIdx ? "#fff" : C.textMuted,
+                      color: i <= flowIdx ? "#fff" : C.textSecondary,
                       border: `2px solid ${i < flowIdx ? C.success : i === flowIdx ? C.primary : C.border}`,
                     }}
                   >

@@ -5,8 +5,18 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import {
-  ChevronLeft, ChevronRight, Plus, Send, Clock,
-  CheckCircle, AlertCircle, FileText, Menu, Search, RefreshCw,
+  AlertCircle,
+  CalendarRange,
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  FileText,
+  Menu,
+  Plus,
+  RefreshCw,
+  Search,
+  Send,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -60,7 +70,7 @@ function Skeleton({ h = 80, r = 12 }) {
   return (
     <div
       className="animate-pulse rounded-xl"
-      style={{ height: h, background: C.border ?? "#E5E7EB", borderRadius: r }}
+      style={{ height: h, background: C.border ?? "#E4E7F0", borderRadius: r }}
     />
   );
 }
@@ -82,28 +92,28 @@ function WeeklySummary({ summary, loading }) {
       value: `${summary.totalHours ?? 0}h`,
       icon: <Clock size={16} />,
       color: C.primary,
-      bg: "#EEF2FF",
+      bg: C.primaryLight,
     },
     {
       label: "Approved",
       value: `${summary.byStatus?.Approved ?? 0} entries`,
       icon: <CheckCircle size={16} />,
-      color: "#059669",
-      bg: "#D1FAE5",
+      color: "#047857",
+      bg: C.successLight,
     },
     {
       label: "Pending review",
       value: `${summary.byStatus?.Submitted ?? 0} entries`,
       icon: <Send size={16} />,
-      color: "#3B82F6",
-      bg: "#EFF6FF",
+      color: C.accent,
+      bg: C.primaryLight,
     },
     {
       label: "Drafts",
       value: `${summary.byStatus?.Draft ?? 0} entries`,
       icon: <FileText size={16} />,
-      color: "#6B7280",
-      bg: "#F3F4F6",
+      color: C.textSecondary,
+      bg: C.bgMid,
     },
   ];
 
@@ -359,7 +369,7 @@ export default function EmployeeTimesheetsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface, border: `1px solid ${C.border}`, cursor: "pointer" }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -385,7 +395,7 @@ export default function EmployeeTimesheetsPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => { fetchEntries(); fetchSummary(); }}
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{ background: C.surface, border: `1px solid ${C.border}`, cursor: "pointer" }}
                 title="Refresh"
               >
@@ -396,7 +406,7 @@ export default function EmployeeTimesheetsPage() {
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => { setEditEntry(null); setFormOpen(true); }}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-xl font-semibold text-sm text-white"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm text-white"
                 style={{ background: C.primary }}
               >
                 <Plus size={14} />
@@ -408,7 +418,7 @@ export default function EmployeeTimesheetsPage() {
               ) : (
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                  style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}
+                  style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}
                 >
                   {employee?.initials ?? "?"}
                 </div>
@@ -425,7 +435,7 @@ export default function EmployeeTimesheetsPage() {
               animate={{ opacity: 1, y: 0 }}
               className="relative rounded-2xl overflow-hidden"
               style={{
-                background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 55%,#1E40AF 100%)",
+                background: C.gradient.hero,
                 minHeight: 140,
               }}
             >
@@ -433,12 +443,11 @@ export default function EmployeeTimesheetsPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-1">
                     <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/15">
-                      <Clock size={20} color="white" />
+                      <CalendarRange size={20} color="white" />
                     </div>
                     <div>
                       <h1
-                        className="text-white text-2xl font-bold"
-                        style={{ fontFamily: "Sora,sans-serif" }}
+                        className="text-white text-2xl "
                       >
                         My Timesheets
                       </h1>
@@ -478,7 +487,7 @@ export default function EmployeeTimesheetsPage() {
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => { setEditEntry(null); setFormOpen(true); }}
-                  className="sm:hidden flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm bg-white/20 hover:bg-white/30 text-white self-start"
+                  className="sm:hidden flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm bg-white/20 hover:bg-white/30 text-white self-start"
                 >
                   <Plus size={16} />
                   Add Entry
@@ -499,8 +508,8 @@ export default function EmployeeTimesheetsPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setWeekStart((d) => addDays(d, -7))}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: C.surfaceAlt ?? "#F3F4F6", border: `1px solid ${C.border}` }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center"
+                  style={{ background: C.surfaceAlt ?? "#F0F2F8", border: `1px solid ${C.border}` }}
                 >
                   <ChevronLeft size={16} color={C.textSecondary} />
                 </Motion.button>
@@ -518,8 +527,8 @@ export default function EmployeeTimesheetsPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setWeekStart((d) => addDays(d, 7))}
-                  className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: C.surfaceAlt ?? "#F3F4F6", border: `1px solid ${C.border}` }}
+                  className="w-9 h-9 rounded-full flex items-center justify-center"
+                  style={{ background: C.surfaceAlt ?? "#F0F2F8", border: `1px solid ${C.border}` }}
                 >
                   <ChevronRight size={16} color={C.textSecondary} />
                 </Motion.button>
@@ -537,7 +546,7 @@ export default function EmployeeTimesheetsPage() {
                       key={iso}
                       whileTap={{ scale: 0.96 }}
                       onClick={() => setActiveDay(i)}
-                      className="flex flex-col items-center gap-1 py-2 px-1 rounded-xl text-xs"
+                      className="flex flex-col items-center gap-1 py-2 px-1 rounded-full text-xs"
                       style={{
                         background: active ? C.primary : today ? "#EEF2FF" : "transparent",
                         color: active ? "#fff" : today ? C.primary : C.textSecondary,
@@ -573,7 +582,7 @@ export default function EmployeeTimesheetsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   className="rounded-xl px-4 py-3 flex items-center justify-between gap-3"
-                  style={{ background: "#EEF2FF", border: `1.5px solid ${C.primary}44` }}
+                  style={{ background: C.primaryLight, border: `1.5px solid ${C.primary}44` }}
                 >
                   <span className="text-sm font-semibold" style={{ color: C.primary }}>
                     {selectedDrafts.length} draft{selectedDrafts.length !== 1 ? "s" : ""} selected
@@ -581,7 +590,7 @@ export default function EmployeeTimesheetsPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setSelected(new Set())}
-                      className="text-xs px-3 py-1.5 rounded-lg"
+                      className="text-xs px-3 py-1.5 rounded-full"
                       style={{ color: C.textSecondary, background: "white", border: `1px solid ${C.border}` }}
                     >
                       Clear
@@ -590,7 +599,7 @@ export default function EmployeeTimesheetsPage() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => openSubmit("selected")}
-                      className="flex items-center gap-2 text-sm font-semibold px-4 py-1.5 rounded-lg text-white"
+                      className="flex items-center gap-2 text-sm font-semibold px-4 py-1.5 rounded-full text-white"
                       style={{ background: C.primary }}
                     >
                       <Send size={13} />
@@ -609,8 +618,8 @@ export default function EmployeeTimesheetsPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2
-                    className="font-bold text-base"
-                    style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+                    className="text-base"
+                    style={{ color: C.textPrimary }}
                   >
                     {weekDates[activeDay].toLocaleDateString("en-GB", {
                       weekday: "long", day: "numeric", month: "long",
@@ -629,8 +638,8 @@ export default function EmployeeTimesheetsPage() {
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => openSubmit("week")}
-                      className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl"
-                      style={{ background: "#EEF2FF", color: C.primary, border: `1px solid ${C.primary}33` }}
+                      className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full"
+                      style={{ background: C.primaryLight, color: C.primary, border: `1px solid ${C.primary}33` }}
                     >
                       <Send size={12} />
                       Submit Week ({draftIds.length})
@@ -640,7 +649,7 @@ export default function EmployeeTimesheetsPage() {
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => { setEditEntry(null); setFormOpen(true); }}
-                    className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-xl text-white"
+                    className="flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full text-white"
                     style={{ background: C.primary }}
                   >
                     <Plus size={12} />
@@ -663,7 +672,7 @@ export default function EmployeeTimesheetsPage() {
                 >
                   <div
                     className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                    style={{ background: "#F3F4F6" }}
+                    style={{ background: C.bgMid }}
                   >
                     <FileText size={24} color={C.textMuted} />
                   </div>
@@ -679,8 +688,8 @@ export default function EmployeeTimesheetsPage() {
                         whileHover={{ scale: 1.04 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={() => { setEditEntry(null); setFormOpen(true); }}
-                        className="flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-xl text-white mt-1"
-                        style={{ background: C.primary, boxShadow: "0 2px 8px rgba(79,70,229,0.3)" }}
+                        className="flex items-center gap-2 text-sm font-semibold px-5 py-2.5 rounded-full text-white mt-1"
+                        style={{ background: C.primary, boxShadow: C.shadow.card }}
                       >
                         <Plus size={15} />
                         Add Entry

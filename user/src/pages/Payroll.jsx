@@ -39,10 +39,10 @@ const fmtShort = (n) => {
 };
 
 const STATUS_CFG = {
-  draft: { bg: "#F1F5F9", color: "#64748B", label: "Draft" },
-  processing: { bg: "#FEF3C7", color: "#F59E0B", label: "Processing" },
-  approved: { bg: "#DBEAFE", color: "#2563EB", label: "Approved" },
-  paid: { bg: "#D1FAE5", color: "#10B981", label: "Paid" },
+  draft: { bg: C.bgMid, color: C.textSecondary, label: "Draft" },
+  processing: { bg: C.warningLight, color: C.warning, label: "Processing" },
+  approved: { bg: C.primaryTint, color: C.primary, label: "Approved" },
+  paid: { bg: C.successLight, color: C.success, label: "Paid" },
 };
 
 const fadeUp = {
@@ -168,7 +168,7 @@ export default function Payroll() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex h-screen overflow-hidden">
         {/* <SideNavbar sidebarOpen={sidebarOpen} employee={employee} /> */}
@@ -187,7 +187,7 @@ export default function Payroll() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -197,7 +197,7 @@ export default function Payroll() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#4F46E5,#06B6D4)",
+                  background: "linear-gradient(135deg,#4F46E5,#6366F1)",
                 }}
               >
                 {initials(employee)}
@@ -213,7 +213,7 @@ export default function Payroll() {
               className="rounded-2xl p-8 text-white"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="flex items-center gap-4">
@@ -222,8 +222,7 @@ export default function Payroll() {
                 </div>
                 <div>
                   <h1
-                    className="text-3xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-3xl "
                   >
                     Payroll Overview
                   </h1>
@@ -280,7 +279,7 @@ export default function Payroll() {
                 value={latest ? fmtShort(latest.totalDeductions) : "—"}
                 sub="This pay period"
                 color={C.danger}
-                light="#FEE2E2"
+                light={C.dangerLight}
               />
               <StatCard
                 index={2}
@@ -301,8 +300,8 @@ export default function Payroll() {
                     ? `Updated ${new Date(latest.createdAt).toLocaleDateString("en-GB")}`
                     : ""
                 }
-                color="#8B5CF6"
-                light="#EDE9FE"
+                color="#6366F1"
+                light={C.primaryTint}
               />
             </div>
 

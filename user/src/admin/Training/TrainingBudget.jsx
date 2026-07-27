@@ -80,7 +80,7 @@ export default function TrainingBudget() {
             </p>
             <p
               className="text-4xl font-bold"
-              style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+              style={{ color: C.textPrimary }}
             >
               ₦{(summary.totalBudget / 1_000_000).toFixed(1)}M
             </p>
@@ -91,7 +91,7 @@ export default function TrainingBudget() {
             </p>
             <p
               className="text-4xl font-bold"
-              style={{ color: C.warning, fontFamily: "Sora,sans-serif" }}
+              style={{ color: C.warning }}
             >
               ₦{(summary.spent / 1_000_000).toFixed(1)}M
             </p>
@@ -100,7 +100,7 @@ export default function TrainingBudget() {
 
         <div
           className="h-3 rounded-full mt-6 overflow-hidden"
-          style={{ background: "#F1F5F9" }}
+          style={{ background: "#F0F2F8" }}
         >
           <motion.div
             initial={{ width: 0 }}
@@ -150,7 +150,7 @@ export default function TrainingBudget() {
                 </div>
                 <div
                   className="h-1.5 rounded-full mt-4 overflow-hidden"
-                  style={{ background: "#F1F5F9" }}
+                  style={{ background: "#F0F2F8" }}
                 >
                   <div
                     className="h-full rounded-full"

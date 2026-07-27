@@ -9,7 +9,7 @@ const Loader = () => {
       <div className="absolute w-full h-full border-4 border-transparent border-t-[#4F46E5] border-r-[#4F46E5] rounded-full animate-[spin_1.6s_linear_infinite]" />
 
       {/* Glowing center orb */}
-      <div className="absolute w-9 h-9 bg-gradient-to-br from-[#4F46E5] to-[#06B6D4] rounded-full shadow-[0_0_25px_#4F46E5,0_0_50px_#06B6D4] animate-[pulse_1.8s_ease-in-out_infinite]" />
+      <div className="absolute w-9 h-9 bg-gradient-to-br from-[#818CF8] to-[#3730A3] rounded-full shadow-[0_0_25px_#4F46E5,0_0_50px_#6366F1] animate-[pulse_1.8s_ease-in-out_infinite]" />
 
       {/* Orbiting dots */}
       {Array.from({ length: 6 }).map((_, i) => (
@@ -27,9 +27,7 @@ const Loader = () => {
       ))}
 
       {/* Optional: Loading text */}
-      <div className="absolute -bottom-10 text-sm font-medium text-slate-400 tracking-wider">
-        LOADING
-      </div>
+      <div className="label-mono absolute -bottom-10">LOADING</div>
     </div>
   );
 };

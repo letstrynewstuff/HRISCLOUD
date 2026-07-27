@@ -162,7 +162,7 @@ export default function AttendanceLog({ searchQuery }) {
               key={s}
               whileTap={{ scale: 0.95 }}
               onClick={() => { setFilterStatus(s); setPage(1); }}
-              className="px-3 py-1 text-xs rounded-lg font-medium capitalize"
+              className="px-3 py-1 text-xs rounded-full font-medium capitalize"
               style={{
                 background: filterStatus === s ? C.primary : C.surfaceAlt,
                 color:      filterStatus === s ? "#fff"    : C.textSecondary,
@@ -195,7 +195,7 @@ export default function AttendanceLog({ searchQuery }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={load}
-            className="p-2 rounded-xl"
+            className="p-2 rounded-full"
             style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}
             title="Refresh"
           >
@@ -206,7 +206,7 @@ export default function AttendanceLog({ searchQuery }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={exportCSV}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full"
             style={{ background: C.primary, color: "#fff" }}
           >
             <Download size={14} /> Export CSV
@@ -277,7 +277,7 @@ export default function AttendanceLog({ searchQuery }) {
                         <div className="flex items-center gap-2">
                           <div
                             className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0"
-                            style={{ background: "linear-gradient(135deg,#4F46E5,#06B6D4)" }}
+                            style={{ background: "linear-gradient(135deg,#4F46E5,#6366F1)" }}
                           >
                             {ini}
                           </div>
@@ -335,7 +335,7 @@ export default function AttendanceLog({ searchQuery }) {
                         {breakFmt ? (
                           <span
                             className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
-                            style={{ background: "#EDE9FE", color: "#8B5CF6" }}
+                            style={{ background: "#E0E7FF", color: "#6366F1" }}
                           >
                             <Coffee size={10} />
                             {breakFmt}
@@ -354,8 +354,8 @@ export default function AttendanceLog({ searchQuery }) {
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full whitespace-nowrap"
                             style={{
-                              background: "#ECFEFF",
-                              color: "#06B6D4",
+                              background: "#EEF2FF",
+                              color: "#6366F1",
                               textDecoration: "none",
                             }}
                             title={`${location.lat}, ${location.lng}`}
@@ -401,7 +401,7 @@ export default function AttendanceLog({ searchQuery }) {
               whileTap={{ scale: 0.95 }}
               disabled={page === 1}
               onClick={() => setPage((p) => p - 1)}
-              className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+              className="px-3 py-1.5 text-xs font-semibold rounded-full"
               style={{
                 background: page === 1 ? C.surfaceAlt : C.primary,
                 color:      page === 1 ? C.textMuted  : "#fff",
@@ -413,7 +413,7 @@ export default function AttendanceLog({ searchQuery }) {
               whileTap={{ scale: 0.95 }}
               disabled={page === totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+              className="px-3 py-1.5 text-xs font-semibold rounded-full"
               style={{
                 background: page === totalPages ? C.surfaceAlt : C.primary,
                 color:      page === totalPages ? C.textMuted  : "#fff",

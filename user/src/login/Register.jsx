@@ -45,7 +45,7 @@ import C from "../styles/colors";
 //   navyGlow: "rgba(79,70,229,0.35)",
 //   primary: "#4F46E5",
 //   primaryLight: "#EEF2FF",
-//   accent: "#06B6D4",
+//   accent: "#6366F1",
 //   accentGlow: "rgba(6,182,212,0.3)",
 //   surface: "#FFFFFF",
 //   surfaceAlt: "#F7F8FC",
@@ -57,9 +57,9 @@ import C from "../styles/colors";
 //   dangerLight: "#FEE2E2",
 //   warning: "#F59E0B",
 //   warningLight: "#FEF3C7",
-//   purple: "#8B5CF6",
+//   purple: "#6366F1",
 //   textPrimary: "#0F172A",
-//   textSecondary: "#64748B",
+//   textSecondary: "#5F6D7E",
 //   textMuted: "#94A3B8",
 // };
 
@@ -199,7 +199,7 @@ function Field({
         <div className="relative">
           {Icon && (
             <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
-              <Icon size={14} color={value ? C.primary : C.textMuted} />
+              <Icon size={14} color={value ? C.primary : C.textSecondary} />
             </div>
           )}
           <input
@@ -232,7 +232,7 @@ function Field({
         </div>
       )}
       {hint && !error && (
-        <p className="text-[11px] mt-1" style={{ color: C.textMuted }}>
+        <p className="text-[11px] mt-1" style={{ color: C.textSecondary }}>
           {hint}
         </p>
       )}
@@ -276,7 +276,7 @@ function SelectField({
       <div className="relative">
         {Icon && (
           <div className="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
-            <Icon size={14} color={value ? C.primary : C.textMuted} />
+            <Icon size={14} color={value ? C.primary : C.textSecondary} />
           </div>
         )}
         <select
@@ -290,7 +290,7 @@ function SelectField({
             paddingBottom: "0.7rem",
             background: C.surfaceAlt,
             border: `1.5px solid ${error ? C.danger : value ? C.primary + "55" : C.border}`,
-            color: value ? C.textPrimary : C.textMuted,
+            color: value ? C.textPrimary : C.textSecondary,
             boxShadow: value && !error ? `0 0 0 3px ${C.primaryLight}` : "none",
           }}
         >
@@ -300,7 +300,7 @@ function SelectField({
         <ChevronDown
           size={13}
           className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-          color={C.textMuted}
+          color={C.textSecondary}
         />
       </div>
       <AnimatePresence>
@@ -339,7 +339,7 @@ function LeftPanel() {
       style={{
         width: 420,
         minWidth: 420,
-        background: `linear-gradient(160deg, ${C.navy} 0%, ${C.navyMid} 60%, ${C.navyLight} 100%)`,
+        background: C.gradient.hero,
       }}
     >
       <Particles />
@@ -380,7 +380,6 @@ function LeftPanel() {
         >
           <p
             className="text-4xl font-bold leading-tight mb-3 text-white"
-            style={{ fontFamily: "Sora, sans-serif" }}
           >
             Join Your
             <br />
@@ -408,10 +407,10 @@ function LeftPanel() {
                 className="flex items-center gap-4"
               >
                 <div
-                  className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300"
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all duration-300"
                   style={{
                     background: "rgba(255,255,255,0.06)",
-                    boxShadow: "none",
+                    boxShadow: C.shadow.card,
                     border: `1px solid rgba(255,255,255,0.12)`,
                   }}
                 >
@@ -618,7 +617,6 @@ export default function Register() {
     return (
       <div
         className="min-h-screen flex"
-        style={{ fontFamily: "Sora, sans-serif" }}
       >
         <LeftPanel />
         <div
@@ -636,18 +634,18 @@ export default function Register() {
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
               className="w-24 h-24 rounded-3xl flex items-center justify-center mx-auto"
-              style={{ background: "linear-gradient(135deg,#D1FAE5,#ECFEFF)" }}
+              style={{ background: "linear-gradient(135deg,#D1FAE5,#EEF2FF)" }}
             >
               <CheckCircle2 size={44} color={C.success} />
             </motion.div>
             <div>
               <h2
-                className="text-2xl font-bold mb-1"
-                style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+                className="text-2xl mb-1"
+                style={{ color: C.textPrimary }}
               >
-                Request Submitted! 🎉
+                Request Submitted!
               </h2>
-              <p className="text-sm" style={{ color: C.textMuted }}>
+              <p className="text-sm" style={{ color: C.textSecondary }}>
                 Your access request has been sent to HR. You'll receive your
                 login credentials at{" "}
                 <strong style={{ color: C.textPrimary }}>{form.email}</strong>{" "}
@@ -664,7 +662,7 @@ export default function Register() {
             >
               <p
                 className="text-xs font-bold uppercase tracking-wide mb-2"
-                style={{ color: C.textMuted }}
+                style={{ color: C.textSecondary }}
               >
                 What happens next
               </p>
@@ -693,7 +691,7 @@ export default function Register() {
               className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white"
               style={{
                 background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-                boxShadow: `0 4px 16px ${C.primary}44`,
+                boxShadow: C.shadow.card,
                 display: "flex",
               }}
             >
@@ -718,12 +716,12 @@ export default function Register() {
     >
       <div className="mb-5">
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Personal Information
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Tell us a bit about yourself
         </p>
       </div>
@@ -751,14 +749,14 @@ export default function Register() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <User size={24} color={C.textMuted} />
+              <User size={24} color={C.textSecondary} />
             )}
           </div>
           <label
             className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer"
             style={{
               background: C.primary,
-              boxShadow: `0 2px 8px ${C.primary}55`,
+              boxShadow: C.shadow.card,
             }}
           >
             <Upload size={11} color="#fff" />
@@ -774,7 +772,7 @@ export default function Register() {
           <p className="text-xs font-semibold" style={{ color: C.textPrimary }}>
             Profile Photo
           </p>
-          <p className="text-[11px]" style={{ color: C.textMuted }}>
+          <p className="text-[11px]" style={{ color: C.textSecondary }}>
             Optional · JPG, PNG up to 2MB
           </p>
         </div>
@@ -941,12 +939,12 @@ export default function Register() {
     >
       <div className="mb-5">
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Employment Details
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Tell us about your role at the company
         </p>
       </div>
@@ -1111,12 +1109,12 @@ export default function Register() {
     >
       <div className="mb-5">
         <h2
-          className="text-2xl font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-2xl mb-1"
+          style={{ color: C.textPrimary }}
         >
           Secure Your Account
         </h2>
-        <p className="text-sm" style={{ color: C.textMuted }}>
+        <p className="text-sm" style={{ color: C.textSecondary }}>
           Set a strong password to protect your account
         </p>
       </div>
@@ -1139,9 +1137,9 @@ export default function Register() {
           rightEl={
             <button onClick={() => setShowPw((p) => !p)} className="p-1">
               {showPw ? (
-                <EyeOff size={14} color={C.textMuted} />
+                <EyeOff size={14} color={C.textSecondary} />
               ) : (
-                <Eye size={14} color={C.textMuted} />
+                <Eye size={14} color={C.textSecondary} />
               )}
             </button>
           }
@@ -1164,7 +1162,7 @@ export default function Register() {
             <span className="font-semibold" style={{ color: strColor }}>
               {strLabel}
             </span>
-            <span style={{ color: C.textMuted }}>
+            <span style={{ color: C.textSecondary }}>
               Use uppercase, number & symbol
             </span>
           </div>
@@ -1189,9 +1187,9 @@ export default function Register() {
           rightEl={
             <button onClick={() => setShowCPw((p) => !p)} className="p-1">
               {showCPw ? (
-                <EyeOff size={14} color={C.textMuted} />
+                <EyeOff size={14} color={C.textSecondary} />
               ) : (
-                <Eye size={14} color={C.textMuted} />
+                <Eye size={14} color={C.textSecondary} />
               )}
             </button>
           }
@@ -1232,7 +1230,7 @@ export default function Register() {
             </div>
             <span
               className="text-[11px]"
-              style={{ color: r.pass ? C.success : C.textMuted }}
+              style={{ color: r.pass ? C.success : C.textSecondary }}
             >
               {r.rule}
             </span>
@@ -1313,7 +1311,6 @@ export default function Register() {
   return (
     <div
       className="min-h-screen flex"
-      style={{ fontFamily: "Sora, sans-serif" }}
     >
       {/* <LeftPanel /> */}
 
@@ -1326,8 +1323,8 @@ export default function Register() {
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-2.5 mb-6">
             <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg,#6366F1,#4F46E5)" }}
+              className="w-8 h-8 rounded-full flex items-center justify-center"
+              style={{ background: C.gradient.accent }}
             >
               <Shield size={15} color="#fff" />
             </div>
@@ -1353,7 +1350,7 @@ export default function Register() {
                           : step === s.id
                             ? C.primary
                             : C.surfaceAlt,
-                      color: step >= s.id ? "#fff" : C.textMuted,
+                      color: step >= s.id ? "#fff" : C.textSecondary,
                       border: `2px solid ${step > s.id ? C.success : step === s.id ? C.primary : C.border}`,
                     }}
                   >
@@ -1367,7 +1364,7 @@ export default function Register() {
                           ? C.primary
                           : step > s.id
                             ? C.success
-                            : C.textMuted,
+                            : C.textSecondary,
                     }}
                   >
                     {s.label}
@@ -1394,7 +1391,7 @@ export default function Register() {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={goBack}
-                  className="flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-semibold"
+                  className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-semibold"
                   style={{
                     background: C.surfaceAlt,
                     color: C.textSecondary,
@@ -1408,15 +1405,15 @@ export default function Register() {
               <Motion.button
                 whileHover={{
                   scale: 1.01,
-                  boxShadow: `0 8px 24px ${C.primary}55`,
+                  boxShadow: C.shadow.lift,
                 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={step < 3 ? goNext : handleSubmit}
                 disabled={loading}
-                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white transition-all"
+                className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full text-sm font-bold text-white transition-all"
                 style={{
                   background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-                  boxShadow: `0 4px 16px ${C.primary}44`,
+                  boxShadow: C.shadow.card,
                   opacity: loading ? 0.8 : 1,
                 }}
               >

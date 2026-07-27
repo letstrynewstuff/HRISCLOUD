@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import NavbarNew from "./NavbarNew";
 import MobileBottomNav from "./MobileBottomNav";
+import C from "../styles/colors";
 
 export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -12,8 +13,8 @@ export default function MainLayout() {
 
   return (
     <div
-      className="flex w-full bg-slate-50 overflow-hidden relative"
-      style={{ height: "100dvh" }}
+      className="flex w-full overflow-hidden relative"
+      style={{ height: "100dvh", background: C.bg }}
     >
       <NavbarNew
         sidebarOpen={sidebarOpen}

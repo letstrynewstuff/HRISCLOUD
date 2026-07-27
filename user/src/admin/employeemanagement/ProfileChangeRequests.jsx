@@ -76,7 +76,7 @@ function Card({ children, className = "", style = {} }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
         ...style,
       }}
     >
@@ -201,7 +201,7 @@ function DetailModal({ req, onApprove, onReject, onClose }) {
         style={{
           background: C.surface,
           borderLeft: `1px solid ${C.border}`,
-          boxShadow: "-8px 0 40px rgba(15,23,42,0.14)",
+          boxShadow: C.shadow.card,
         }}
       >
         {/* Header */}
@@ -216,8 +216,7 @@ function DetailModal({ req, onApprove, onReject, onClose }) {
               Profile Change Request
             </p>
             <h3
-              className="text-white font-bold mt-0.5"
-              style={{ fontFamily: "Sora,sans-serif" }}
+              className="text-white mt-0.5"
             >
               {req.employee_name ?? "Employee"}
             </h3>
@@ -228,7 +227,7 @@ function DetailModal({ req, onApprove, onReject, onClose }) {
           <Motion.button
             whileHover={{ scale: 1.1, rotate: 90 }}
             onClick={onClose}
-            className="w-8 h-8 rounded-xl flex items-center justify-center"
+            className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{
               background: "rgba(255,255,255,0.15)",
               border: "none",
@@ -395,7 +394,7 @@ function DetailModal({ req, onApprove, onReject, onClose }) {
                   color: req.status === "approved" ? C.success : C.danger,
                 }}
               >
-                {req.status === "approved" ? "✓ Approved" : "✗ Rejected"} by{" "}
+                {req.status === "approved" ? " Approved" : " Rejected"} by{" "}
                 {req.reviewed_by_name ?? "HR"} on {fmtDate(req.reviewed_at)}
               </p>
               {req.rejection_reason && (
@@ -418,7 +417,7 @@ function DetailModal({ req, onApprove, onReject, onClose }) {
               whileTap={{ scale: 0.98 }}
               onClick={handleReject}
               disabled={loading === "reject"}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2"
               style={{
                 background: C.dangerLight,
                 color: C.danger,
@@ -438,7 +437,7 @@ function DetailModal({ req, onApprove, onReject, onClose }) {
               whileTap={{ scale: 0.98 }}
               onClick={handleApprove}
               disabled={loading === "approve"}
-              className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2"
               style={{
                 background: C.success,
                 border: "none",
@@ -528,7 +527,6 @@ export default function ProfileChangeRequests() {
       className="min-h-screen"
       style={{
         background: C.bg,
-        fontFamily: "'DM Sans','Sora',sans-serif",
         color: C.textPrimary,
       }}
     >
@@ -555,7 +553,7 @@ export default function ProfileChangeRequests() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               // onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
@@ -586,7 +584,7 @@ export default function ProfileChangeRequests() {
               <Motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={fetchRequests}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -608,7 +606,7 @@ export default function ProfileChangeRequests() {
               className="rounded-2xl p-8"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="flex items-center gap-4">
@@ -620,8 +618,7 @@ export default function ProfileChangeRequests() {
                 </div>
                 <div>
                   <h1
-                    className="text-3xl font-bold text-white"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-3xl text-white"
                   >
                     Profile Change Requests
                   </h1>
@@ -646,7 +643,7 @@ export default function ProfileChangeRequests() {
                 </p>
                 <button
                   onClick={fetchRequests}
-                  className="text-xs font-bold px-3 py-1 rounded-lg"
+                  className="text-xs font-bold px-3 py-1 rounded-full"
                   style={{
                     background: C.danger,
                     color: "#fff",
@@ -671,7 +668,7 @@ export default function ProfileChangeRequests() {
                     key={s}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setFilterStatus(s)}
-                    className="px-4 py-2 rounded-xl text-sm font-medium capitalize"
+                    className="px-4 py-2 rounded-full text-sm font-medium capitalize"
                     style={{
                       background: active ? C.primary : "transparent",
                       color: active ? "#fff" : C.textSecondary,
@@ -832,7 +829,7 @@ export default function ProfileChangeRequests() {
             style={{
               background: toast.type === "error" ? C.danger : C.navy,
               color: "#fff",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+              boxShadow: C.shadow.lift,
               minWidth: 300,
             }}
           >

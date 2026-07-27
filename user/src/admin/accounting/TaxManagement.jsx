@@ -66,8 +66,8 @@ function Toast({ msg, type, onDismiss }) {
 // ── Status badge ──────────────────────────────────────────────
 function StatusBadge({ status }) {
   const cfg = TAX_STATUS_COLORS?.[status] ?? {
-    bg: C?.surfaceAlt ?? "#F1F5F9",
-    color: C?.textMuted ?? "#64748B",
+    bg: C?.surfaceAlt ?? "#F0F2F8",
+    color: C?.textMuted ?? "#5F6D7E",
   };
   return (
     <span
@@ -84,22 +84,22 @@ function SummaryCard({ label, value, sub, color }) {
   return (
     <div
       className="rounded-2xl p-4"
-      style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E2E8F0"}` }}
+      style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E4E7F0"}` }}
     >
       <p
         className="text-xs font-semibold uppercase tracking-wide mb-2"
-        style={{ color: C?.textMuted ?? "#64748B" }}
+        style={{ color: C?.textMuted ?? "#5F6D7E" }}
       >
         {label}
       </p>
       <p
         className="text-xl font-bold"
-        style={{ color: color ?? C?.primary ?? "#4F46E5", fontFamily: "Sora,sans-serif" }}
+        style={{ color: color ?? C?.primary ?? "#4F46E5" }}
       >
         {value}
       </p>
       {sub && (
-        <p className="text-xs mt-1" style={{ color: C?.textMuted ?? "#64748B" }}>
+        <p className="text-xs mt-1" style={{ color: C?.textMuted ?? "#5F6D7E" }}>
           {sub}
         </p>
       )}
@@ -127,9 +127,9 @@ function PeriodSelect({ value, onChange }) {
       onChange={(e) => onChange(e.target.value)}
       className="px-3 py-2 text-sm rounded-xl outline-none appearance-none"
       style={{
-        background: C?.surfaceAlt ?? "#F1F5F9",
-        border: `1px solid ${C?.border ?? "#E2E8F0"}`,
-        color: C?.textPrimary ?? "#1E293B",
+        background: C?.surfaceAlt ?? "#F0F2F8",
+        border: `1px solid ${C?.border ?? "#E4E7F0"}`,
+        color: C?.textPrimary ?? "#334155",
       }}
     >
       {options.map((o) => (
@@ -156,13 +156,13 @@ function RemittanceModal({ title, period, onClose, onSubmit, saving }) {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         className="w-full max-w-md rounded-2xl p-6 space-y-4"
-        style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E2E8F0"}` }}
+        style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E4E7F0"}` }}
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-base" style={{ color: C?.textPrimary ?? "#1E293B" }}>
+          <h3 className="text-base" style={{ color: C?.textPrimary ?? "#334155" }}>
             {title}
           </h3>
-          <button onClick={onClose}><X size={16} color={C?.textMuted ?? "#64748B"} /></button>
+          <button onClick={onClose}><X size={16} color={C?.textMuted ?? "#5F6D7E"} /></button>
         </div>
 
         <div className="space-y-3">
@@ -173,7 +173,7 @@ function RemittanceModal({ title, period, onClose, onSubmit, saving }) {
             { label: "Remitted To", key: "remittedTo", type: "text", placeholder: "e.g. FIRS, PFA Name" },
           ].map((f) => (
             <div key={f.key}>
-              <label className="block text-xs font-semibold mb-1" style={{ color: C?.textPrimary ?? "#1E293B" }}>
+              <label className="block text-xs font-semibold mb-1" style={{ color: C?.textPrimary ?? "#334155" }}>
                 {f.label}
               </label>
               <input
@@ -184,9 +184,9 @@ function RemittanceModal({ title, period, onClose, onSubmit, saving }) {
                 onChange={(e) => !f.readOnly && set(f.key, e.target.value)}
                 className="w-full p-2.5 rounded-xl text-sm outline-none"
                 style={{
-                  background: C?.surfaceAlt ?? "#F1F5F9",
-                  border: `1.5px solid ${C?.border ?? "#E2E8F0"}`,
-                  color: f.readOnly ? (C?.textMuted ?? "#64748B") : (C?.textPrimary ?? "#1E293B"),
+                  background: C?.surfaceAlt ?? "#F0F2F8",
+                  border: `1.5px solid ${C?.border ?? "#E4E7F0"}`,
+                  color: f.readOnly ? (C?.textMuted ?? "#5F6D7E") : (C?.textPrimary ?? "#334155"),
                 }}
               />
             </div>
@@ -196,8 +196,8 @@ function RemittanceModal({ title, period, onClose, onSubmit, saving }) {
         <div className="flex gap-3 pt-1">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl font-semibold text-sm"
-            style={{ background: C?.surfaceAlt ?? "#F1F5F9", color: C?.textSecondary ?? "#475569" }}
+            className="flex-1 py-3 rounded-full font-semibold text-sm"
+            style={{ background: C?.surfaceAlt ?? "#F0F2F8", color: C?.textSecondary ?? "#334155" }}
           >
             Cancel
           </button>
@@ -206,7 +206,7 @@ function RemittanceModal({ title, period, onClose, onSubmit, saving }) {
             whileTap={{ scale: 0.98 }}
             onClick={() => onSubmit(form)}
             disabled={saving || !form.remittanceDate}
-            className="flex-1 py-3 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-full font-semibold text-sm text-white flex items-center justify-center gap-2"
             style={{ background: C?.primary ?? "#4F46E5", opacity: saving || !form.remittanceDate ? 0.7 : 1 }}
           >
             {saving ? <><RefreshCw size={14} className="animate-spin" /> Submitting…</> : <><Send size={14} /> Submit</>}
@@ -234,13 +234,13 @@ function VatPayModal({ period, amount, onClose, onSubmit, saving }) {
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
         className="w-full max-w-md rounded-2xl p-6 space-y-4"
-        style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E2E8F0"}` }}
+        style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E4E7F0"}` }}
       >
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-base" style={{ color: C?.textPrimary ?? "#1E293B" }}>
+          <h3 className="text-base" style={{ color: C?.textPrimary ?? "#334155" }}>
             Record VAT Payment
           </h3>
-          <button onClick={onClose}><X size={16} color={C?.textMuted ?? "#64748B"} /></button>
+          <button onClick={onClose}><X size={16} color={C?.textMuted ?? "#5F6D7E"} /></button>
         </div>
 
         <div className="space-y-3">
@@ -251,7 +251,7 @@ function VatPayModal({ period, amount, onClose, onSubmit, saving }) {
             { label: "FIRS Reference", key: "paymentReference", type: "text", placeholder: "Reference number" },
           ].map((f) => (
             <div key={f.key}>
-              <label className="block text-xs font-semibold mb-1" style={{ color: C?.textPrimary ?? "#1E293B" }}>
+              <label className="block text-xs font-semibold mb-1" style={{ color: C?.textPrimary ?? "#334155" }}>
                 {f.label}
               </label>
               <input
@@ -262,9 +262,9 @@ function VatPayModal({ period, amount, onClose, onSubmit, saving }) {
                 onChange={(e) => !f.readOnly && set(f.key, e.target.value)}
                 className="w-full p-2.5 rounded-xl text-sm outline-none"
                 style={{
-                  background: C?.surfaceAlt ?? "#F1F5F9",
-                  border: `1.5px solid ${C?.border ?? "#E2E8F0"}`,
-                  color: f.readOnly ? (C?.textMuted ?? "#64748B") : (C?.textPrimary ?? "#1E293B"),
+                  background: C?.surfaceAlt ?? "#F0F2F8",
+                  border: `1.5px solid ${C?.border ?? "#E4E7F0"}`,
+                  color: f.readOnly ? (C?.textMuted ?? "#5F6D7E") : (C?.textPrimary ?? "#334155"),
                 }}
               />
             </div>
@@ -274,8 +274,8 @@ function VatPayModal({ period, amount, onClose, onSubmit, saving }) {
         <div className="flex gap-3 pt-1">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl font-semibold text-sm"
-            style={{ background: C?.surfaceAlt ?? "#F1F5F9", color: C?.textSecondary ?? "#475569" }}
+            className="flex-1 py-3 rounded-full font-semibold text-sm"
+            style={{ background: C?.surfaceAlt ?? "#F0F2F8", color: C?.textSecondary ?? "#334155" }}
           >
             Cancel
           </button>
@@ -284,7 +284,7 @@ function VatPayModal({ period, amount, onClose, onSubmit, saving }) {
             whileTap={{ scale: 0.98 }}
             onClick={() => onSubmit({ ...form, amountPaid: nairaToKobo(form.amountPaid) })}
             disabled={saving || !form.paymentDate}
-            className="flex-1 py-3 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-full font-semibold text-sm text-white flex items-center justify-center gap-2"
             style={{ background: C?.primary ?? "#4F46E5", opacity: saving || !form.paymentDate ? 0.7 : 1 }}
           >
             {saving ? <><RefreshCw size={14} className="animate-spin" /> Recording…</> : <><Send size={14} /> Record</>}
@@ -300,18 +300,18 @@ function HistoryTable({ rows, columns, loading }) {
   if (loading) return <div className="flex justify-center py-8"><Loader /></div>;
   if (!rows?.length)
     return (
-      <div className="flex flex-col items-center py-10 gap-2" style={{ color: C?.textMuted ?? "#64748B" }}>
+      <div className="flex flex-col items-center py-10 gap-2" style={{ color: C?.textMuted ?? "#5F6D7E" }}>
         <FileText size={24} />
         <p className="text-sm">No history yet</p>
       </div>
     );
   return (
-    <div className="overflow-x-auto rounded-2xl" style={{ border: `1px solid ${C?.border ?? "#E2E8F0"}` }}>
+    <div className="overflow-x-auto rounded-2xl" style={{ border: `1px solid ${C?.border ?? "#E4E7F0"}` }}>
       <table className="w-full">
         <thead>
-          <tr style={{ background: C?.surfaceAlt ?? "#F1F5F9", borderBottom: `1px solid ${C?.border ?? "#E2E8F0"}` }}>
+          <tr style={{ background: C?.surfaceAlt ?? "#F0F2F8", borderBottom: `1px solid ${C?.border ?? "#E4E7F0"}` }}>
             {columns.map((c) => (
-              <th key={c.key} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide" style={{ color: C?.textMuted ?? "#64748B" }}>
+              <th key={c.key} className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide" style={{ color: C?.textMuted ?? "#5F6D7E" }}>
                 {c.label}
               </th>
             ))}
@@ -325,12 +325,12 @@ function HistoryTable({ rows, columns, loading }) {
               animate={{ opacity: 1 }}
               transition={{ delay: i * 0.02 }}
               className="border-b"
-              style={{ borderColor: C?.border ?? "#E2E8F0" }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = C?.surfaceAlt ?? "#F1F5F9")}
+              style={{ borderColor: C?.border ?? "#E4E7F0" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = C?.surfaceAlt ?? "#F0F2F8")}
               onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
             >
               {columns.map((c) => (
-                <td key={c.key} className="px-4 py-3 text-sm" style={{ color: C?.textSecondary ?? "#475569" }}>
+                <td key={c.key} className="px-4 py-3 text-sm" style={{ color: C?.textSecondary ?? "#334155" }}>
                   {c.render ? c.render(row[c.key], row) : (row[c.key] ?? "—")}
                 </td>
               ))}
@@ -347,7 +347,7 @@ function TaxCalendar({ items, loading }) {
   if (loading) return <div className="flex justify-center py-6"><Loader /></div>;
   if (!items?.length)
     return (
-      <div className="flex flex-col items-center py-8 gap-2" style={{ color: C?.textMuted ?? "#64748B" }}>
+      <div className="flex flex-col items-center py-8 gap-2" style={{ color: C?.textMuted ?? "#5F6D7E" }}>
         <Calendar size={24} />
         <p className="text-sm">No upcoming obligations</p>
       </div>
@@ -358,7 +358,7 @@ function TaxCalendar({ items, loading }) {
         const overdue = item.isOverdue;
         const dueSoon = !overdue && item.daysUntil <= 7;
         const badgeBg  = overdue ? "#FEE2E2" : dueSoon ? "#FEF3C7" : "#D1FAE5";
-        const badgeClr = overdue ? "#DC2626" : dueSoon ? "#D97706" : "#065F46";
+        const badgeClr = overdue ? "#B91C1C" : dueSoon ? "#92400E" : "#047857";
         const badgeTxt = overdue ? "Overdue" : dueSoon ? "Due Soon" : "Upcoming";
         return (
           <Motion.div
@@ -369,26 +369,26 @@ function TaxCalendar({ items, loading }) {
             className="flex items-center gap-4 p-4 rounded-2xl"
             style={{
               background: C?.surface ?? "#fff",
-              border: `1px solid ${overdue ? "#FCA5A5" : (C?.border ?? "#E2E8F0")}`,
+              border: `1px solid ${overdue ? "#EF4444" : (C?.border ?? "#E4E7F0")}`,
             }}
           >
             <div
               className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
               style={{ background: overdue ? "#FEE2E2" : "#EEF2FF" }}
             >
-              <Calendar size={18} color={overdue ? "#DC2626" : (C?.primary ?? "#4F46E5")} />
+              <Calendar size={18} color={overdue ? "#B91C1C" : (C?.primary ?? "#4F46E5")} />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <p className="text-sm font-bold" style={{ color: C?.textPrimary ?? "#1E293B" }}>{item.taxType}</p>
+                <p className="text-sm font-bold" style={{ color: C?.textPrimary ?? "#334155" }}>{item.taxType}</p>
                 {overdue && <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />}
               </div>
-              <p className="text-xs" style={{ color: C?.textMuted ?? "#64748B" }}>
+              <p className="text-xs" style={{ color: C?.textMuted ?? "#5F6D7E" }}>
                 {item.label} · Period: {item.period}
               </p>
             </div>
             <div className="text-right shrink-0">
-              <p className="text-xs font-bold mb-1" style={{ color: C?.textPrimary ?? "#1E293B" }}>
+              <p className="text-xs font-bold mb-1" style={{ color: C?.textPrimary ?? "#334155" }}>
                 {item.dueDate ? new Date(item.dueDate).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" }) : "—"}
               </p>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: badgeBg, color: badgeClr }}>
@@ -476,12 +476,12 @@ function VatTab({ period, showToast }) {
       ) : summary ? (
         <>
           <div className="grid grid-cols-3 gap-4">
-            <SummaryCard label="Output VAT (Collected)"  value={formatNaira(summary.total_vat_collected ?? summary.totalVatCollected)}  color="#1D4ED8" />
-            <SummaryCard label="Input VAT (Recoverable)" value={formatNaira(summary.total_vat_recoverable ?? summary.totalVatRecoverable)} color="#065F46" />
+            <SummaryCard label="Output VAT (Collected)"  value={formatNaira(summary.total_vat_collected ?? summary.totalVatCollected)}  color="#4338CA" />
+            <SummaryCard label="Input VAT (Recoverable)" value={formatNaira(summary.total_vat_recoverable ?? summary.totalVatRecoverable)} color="#047857" />
             <SummaryCard
               label="Net VAT Payable"
               value={formatNaira(summary.net_vat_payable ?? summary.netVatPayable)}
-              color={(summary.net_vat_payable ?? summary.netVatPayable) > 0 ? "#B91C1C" : "#065F46"}
+              color={(summary.net_vat_payable ?? summary.netVatPayable) > 0 ? "#B91C1C" : "#047857"}
               sub={`Status: ${summary.status}`}
             />
           </div>
@@ -490,8 +490,8 @@ function VatTab({ period, showToast }) {
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               onClick={handleFile}
               disabled={saving || summary.status !== "Open"}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl text-white"
-              style={{ background: summary.status === "Open" ? (C?.primary ?? "#4F46E5") : (C?.border ?? "#E2E8F0"), opacity: saving ? 0.7 : 1 }}
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-full text-white"
+              style={{ background: summary.status === "Open" ? (C?.primary ?? "#4F46E5") : (C?.border ?? "#E4E7F0"), opacity: saving ? 0.7 : 1 }}
             >
               <FileText size={14} /> File VAT Return
             </Motion.button>
@@ -499,19 +499,19 @@ function VatTab({ period, showToast }) {
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
               onClick={() => setShowPayModal(true)}
               disabled={summary.status === "Paid"}
-              className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl"
-              style={{ background: C?.surfaceAlt ?? "#F1F5F9", color: C?.textSecondary ?? "#475569", border: `1px solid ${C?.border ?? "#E2E8F0"}` }}
+              className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-full"
+              style={{ background: C?.surfaceAlt ?? "#F0F2F8", color: C?.textSecondary ?? "#334155", border: `1px solid ${C?.border ?? "#E4E7F0"}` }}
             >
               <DollarSign size={14} /> Record Payment
             </Motion.button>
           </div>
         </>
       ) : (
-        <div className="py-8 text-center text-sm" style={{ color: C?.textMuted ?? "#64748B" }}>No VAT data for this period</div>
+        <div className="py-8 text-center text-sm" style={{ color: C?.textMuted ?? "#5F6D7E" }}>No VAT data for this period</div>
       )}
 
       <div>
-        <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: C?.textMuted ?? "#64748B" }}>History</p>
+        <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: C?.textMuted ?? "#5F6D7E" }}>History</p>
         <HistoryTable
           loading={histLoading}
           rows={history}
@@ -602,26 +602,26 @@ function PayeTab({ period, showToast }) {
       ) : summary ? (
         <>
           <div className="grid grid-cols-3 gap-4">
-            <SummaryCard label="Total Gross Pay"      value={formatNaira(summary.total_gross_pay ?? summary.totalGrossPay)} color="#1D4ED8" />
+            <SummaryCard label="Total Gross Pay"      value={formatNaira(summary.total_gross_pay ?? summary.totalGrossPay)} color="#4338CA" />
             <SummaryCard label="Total PAYE Deducted"  value={formatNaira(summary.total_paye ?? summary.totalPaye)}          color="#B91C1C" />
-            <SummaryCard label="Status" value={summary.status} color={summary.status === "Remitted" ? "#065F46" : "#B45309"} />
+            <SummaryCard label="Status" value={summary.status} color={summary.status === "Remitted" ? "#047857" : "#92400E"} />
           </div>
           <Motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={() => setShowModal(true)}
             disabled={summary.status === "Remitted"}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl text-white"
-            style={{ background: summary.status === "Remitted" ? (C?.border ?? "#E2E8F0") : (C?.primary ?? "#4F46E5") }}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-full text-white"
+            style={{ background: summary.status === "Remitted" ? (C?.border ?? "#E4E7F0") : (C?.primary ?? "#4F46E5") }}
           >
             <Send size={14} /> Record Remittance
           </Motion.button>
         </>
       ) : (
-        <div className="py-8 text-center text-sm" style={{ color: C?.textMuted ?? "#64748B" }}>No PAYE data for this period</div>
+        <div className="py-8 text-center text-sm" style={{ color: C?.textMuted ?? "#5F6D7E" }}>No PAYE data for this period</div>
       )}
 
       <div>
-        <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: C?.textMuted ?? "#64748B" }}>History</p>
+        <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: C?.textMuted ?? "#5F6D7E" }}>History</p>
         <HistoryTable
           loading={histLoading}
           rows={history}
@@ -702,14 +702,14 @@ function WhtTab({ period, showToast }) {
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-3 gap-4">
-        <SummaryCard label="Total WHT Deducted" value={formatNaira(totalWht)}              color="#1D4ED8" />
-        <SummaryCard label="Total Remitted"      value={formatNaira(totalRemitted)}         color="#065F46" />
+        <SummaryCard label="Total WHT Deducted" value={formatNaira(totalWht)}              color="#4338CA" />
+        <SummaryCard label="Total Remitted"      value={formatNaira(totalRemitted)}         color="#047857" />
         <SummaryCard label="Outstanding"         value={formatNaira(totalWht - totalRemitted)} color="#B91C1C" />
       </div>
       <Motion.button
         whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
         onClick={() => setShowModal(true)}
-        className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl text-white"
+        className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-full text-white"
         style={{ background: C?.primary ?? "#4F46E5" }}
       >
         <Send size={14} /> Record Remittance
@@ -792,8 +792,8 @@ function StatutoryTab({ type, period, showToast }) {
       ) : summary ? (
         <>
           <div className="grid grid-cols-3 gap-4">
-            <SummaryCard label="Employee Share" value={formatNaira(summary.total_employee_share ?? summary.totalEmployeeShare)} color="#1D4ED8" />
-            <SummaryCard label="Employer Share" value={formatNaira(summary.total_employer_share ?? summary.totalEmployerShare)} color="#065F46" />
+            <SummaryCard label="Employee Share" value={formatNaira(summary.total_employee_share ?? summary.totalEmployeeShare)} color="#4338CA" />
+            <SummaryCard label="Employer Share" value={formatNaira(summary.total_employer_share ?? summary.totalEmployerShare)} color="#047857" />
             <SummaryCard
               label="Total Amount"
               value={formatNaira(summary.total_amount ?? summary.totalAmount ?? (Number(summary.total_employee_share ?? 0) + Number(summary.total_employer_share ?? 0)))}
@@ -805,18 +805,18 @@ function StatutoryTab({ type, period, showToast }) {
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={() => setShowModal(true)}
             disabled={summary.status === "Remitted"}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-xl text-white"
-            style={{ background: summary.status === "Remitted" ? (C?.border ?? "#E2E8F0") : (C?.primary ?? "#4F46E5") }}
+            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-full text-white"
+            style={{ background: summary.status === "Remitted" ? (C?.border ?? "#E4E7F0") : (C?.primary ?? "#4F46E5") }}
           >
             <Send size={14} /> Record Remittance
           </Motion.button>
         </>
       ) : (
-        <div className="py-8 text-center text-sm" style={{ color: C?.textMuted ?? "#64748B" }}>No {type} data for this period</div>
+        <div className="py-8 text-center text-sm" style={{ color: C?.textMuted ?? "#5F6D7E" }}>No {type} data for this period</div>
       )}
 
       <div>
-        <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: C?.textMuted ?? "#64748B" }}>History</p>
+        <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: C?.textMuted ?? "#5F6D7E" }}>History</p>
         <HistoryTable
           loading={histLoading}
           rows={history}
@@ -896,15 +896,15 @@ function TaxSettingsDrawer({ onClose, showToast }) {
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="relative h-full w-full max-w-md flex flex-col"
-        style={{ background: C?.surface ?? "#fff", boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+        style={{ background: C?.surface ?? "#fff", boxShadow: C.shadow.card }}
       >
         <div
           className="flex items-center justify-between px-6 py-4 shrink-0"
-          style={{ borderBottom: `1px solid ${C?.border ?? "#E2E8F0"}` }}
+          style={{ borderBottom: `1px solid ${C?.border ?? "#E4E7F0"}` }}
         >
-          <h2 className="font-bold text-sm" style={{ color: C?.textPrimary ?? "#1E293B" }}>Tax Settings</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100">
-            <X size={15} color={C?.textMuted ?? "#64748B"} />
+          <h2 className="text-sm" style={{ color: C?.textPrimary ?? "#334155" }}>Tax Settings</h2>
+          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100">
+            <X size={15} color={C?.textMuted ?? "#5F6D7E"} />
           </button>
         </div>
 
@@ -912,7 +912,7 @@ function TaxSettingsDrawer({ onClose, showToast }) {
           {loading ? (
             <div className="flex justify-center py-10"><Loader /></div>
           ) : configs.length === 0 ? (
-            <div className="text-center py-8 text-sm" style={{ color: C?.textMuted ?? "#64748B" }}>
+            <div className="text-center py-8 text-sm" style={{ color: C?.textMuted ?? "#5F6D7E" }}>
               No tax configurations yet
             </div>
           ) : (
@@ -923,23 +923,23 @@ function TaxSettingsDrawer({ onClose, showToast }) {
                   <div
                     key={cfg.id}
                     className="flex items-center gap-4 p-4 rounded-2xl"
-                    style={{ background: C?.bg ?? "#F8FAFC", border: `1px solid ${C?.border ?? "#E2E8F0"}` }}
+                    style={{ background: C?.bg ?? "#F7F8FC", border: `1px solid ${C?.border ?? "#E4E7F0"}` }}
                   >
                     <div className="flex-1">
-                      <p className="text-sm font-bold" style={{ color: C?.textPrimary ?? "#1E293B" }}>
+                      <p className="text-sm font-bold" style={{ color: C?.textPrimary ?? "#334155" }}>
                         {cfg.tax_type ?? cfg.taxType}
                       </p>
-                      <p className="text-xs" style={{ color: C?.textMuted ?? "#64748B" }}>
+                      <p className="text-xs" style={{ color: C?.textMuted ?? "#5F6D7E" }}>
                         Rate: {cfg.rate}% · Effective: {cfg.effective_date ?? cfg.effectiveDate ?? "—"}
                       </p>
                       {cfg.notes && (
-                        <p className="text-xs mt-0.5" style={{ color: C?.textMuted ?? "#64748B" }}>{cfg.notes}</p>
+                        <p className="text-xs mt-0.5" style={{ color: C?.textMuted ?? "#5F6D7E" }}>{cfg.notes}</p>
                       )}
                     </div>
                     <div
                       onClick={() => handleToggle(cfg)}
                       className="w-9 h-5 rounded-full cursor-pointer transition-all relative shrink-0"
-                      style={{ background: isActive ? (C?.primary ?? "#4F46E5") : (C?.border ?? "#E2E8F0") }}
+                      style={{ background: isActive ? (C?.primary ?? "#4F46E5") : (C?.border ?? "#E4E7F0") }}
                     >
                       {saving === cfg.id ? (
                         <div className="absolute inset-0 flex items-center justify-center">
@@ -1007,11 +1007,11 @@ export default function TaxManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wide" style={{ color: C?.textMuted ?? "#64748B" }}>
+          <p className="text-xs font-bold uppercase tracking-wide" style={{ color: C?.textMuted ?? "#5F6D7E" }}>
             Tax Management
           </p>
           {overdueCount > 0 && (
-            <p className="text-xs mt-0.5 flex items-center gap-1.5" style={{ color: "#DC2626" }}>
+            <p className="text-xs mt-0.5 flex items-center gap-1.5" style={{ color: "#B91C1C" }}>
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
               {overdueCount} overdue obligation{overdueCount > 1 ? "s" : ""}
             </p>
@@ -1022,26 +1022,26 @@ export default function TaxManagement() {
           <Motion.button
             whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             onClick={() => setShowSettings(true)}
-            className="p-2.5 rounded-xl"
-            style={{ background: C?.surfaceAlt ?? "#F1F5F9", border: `1px solid ${C?.border ?? "#E2E8F0"}` }}
+            className="p-2.5 rounded-full"
+            style={{ background: C?.surfaceAlt ?? "#F0F2F8", border: `1px solid ${C?.border ?? "#E4E7F0"}` }}
           >
-            <Settings size={15} color={C?.textSecondary ?? "#475569"} />
+            <Settings size={15} color={C?.textSecondary ?? "#334155"} />
           </Motion.button>
         </div>
       </div>
 
       {/* Tax Calendar */}
-      <div className="rounded-2xl p-5" style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E2E8F0"}` }}>
+      <div className="rounded-2xl p-5" style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E4E7F0"}` }}>
         <div className="flex items-center gap-2 mb-4">
           <Calendar size={16} color={C?.primary ?? "#4F46E5"} />
-          <p className="text-sm font-bold" style={{ color: C?.textPrimary ?? "#1E293B" }}>Upcoming Obligations</p>
+          <p className="text-sm font-bold" style={{ color: C?.textPrimary ?? "#334155" }}>Upcoming Obligations</p>
         </div>
         <TaxCalendar items={calendar} loading={calLoading} />
       </div>
 
       {/* Tax type tabs */}
-      <div className="rounded-2xl overflow-hidden" style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E2E8F0"}` }}>
-        <div className="flex gap-1 p-2 overflow-x-auto" style={{ borderBottom: `1px solid ${C?.border ?? "#E2E8F0"}`, scrollbarWidth: "none" }}>
+      <div className="rounded-2xl overflow-hidden" style={{ background: C?.surface ?? "#fff", border: `1px solid ${C?.border ?? "#E4E7F0"}` }}>
+        <div className="flex gap-1 p-2 overflow-x-auto" style={{ borderBottom: `1px solid ${C?.border ?? "#E4E7F0"}`, scrollbarWidth: "none" }}>
           {TAX_TABS.map((tab) => {
             const active = activeTab === tab.id;
             return (
@@ -1049,10 +1049,10 @@ export default function TaxManagement() {
                 key={tab.id}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setActiveTab(tab.id)}
-                className="px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex-shrink-0"
+                className="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0"
                 style={{
                   background: active ? (C?.primary ?? "#4F46E5") : "transparent",
-                  color: active ? "#fff" : (C?.textSecondary ?? "#475569"),
+                  color: active ? "#fff" : (C?.textSecondary ?? "#334155"),
                   boxShadow: active ? "0 2px 8px rgba(79,70,229,0.25)" : "none",
                 }}
               >

@@ -1,25 +1,9 @@
 import { motion } from "framer-motion";
+import C from "../../styles/colors";
 import { Users, DollarSign, TrendingUp, Clock, Award } from "lucide-react";
 import { REPORTS_MOCK } from "./ReportsMockData";
 
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -105,7 +89,6 @@ export default function ReportsDashboard() {
                     className="text-3xl font-bold"
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {stat.value}
@@ -132,7 +115,7 @@ export default function ReportsDashboard() {
           className="rounded-2xl p-6 border"
           style={{ background: C.surface, borderColor: C.border }}
         >
-          <h3 className="font-semibold mb-4">Quick Links</h3>
+          <h3 className="mb-4">Quick Links</h3>
           <div className="grid grid-cols-2 gap-3">
             {[
               "Headcount Report",
@@ -159,18 +142,18 @@ export default function ReportsDashboard() {
           className="rounded-2xl p-6 border"
           style={{ background: C.surface, borderColor: C.border }}
         >
-          <h3 className="font-semibold mb-4">Key Insights</h3>
+          <h3 className="mb-4">Key Insights</h3>
           <ul className="space-y-4 text-sm">
             <li className="flex gap-3">
               <span className="text-emerald-600">↑</span> Engineering department
               grew by 12 new hires this quarter
             </li>
             <li className="flex gap-3">
-              <span className="text-amber-600">⚠️</span> Sales turnover rate
+              <span className="text-amber-600"></span> Sales turnover rate
               increased to 13.7%
             </li>
             <li className="flex gap-3">
-              <span className="text-emerald-600">✓</span> Payroll processed
+              <span className="text-emerald-600"></span> Payroll processed
               successfully for March 2026
             </li>
           </ul>

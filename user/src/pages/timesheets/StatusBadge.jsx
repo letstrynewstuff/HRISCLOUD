@@ -1,10 +1,12 @@
 // src/components/timesheets/StatusBadge.jsx
+import C from "../../styles/colors";
+
 export default function StatusBadge({ status, size = "sm" }) {
   const config = {
-    Draft: { bg: "#F3F4F6", color: "#6B7280", label: "Draft" },
-    Submitted: { bg: "#EFF6FF", color: "#3B82F6", label: "Submitted" },
-    Approved: { bg: "#D1FAE5", color: "#059669", label: "Approved" },
-    Rejected: { bg: "#FEE2E2", color: "#DC2626", label: "Rejected" },
+    Draft: { bg: C.bgMid, color: C.textSecondary, label: "Draft" },
+    Submitted: { bg: C.primaryLight, color: C.accent, label: "Submitted" },
+    Approved: { bg: C.successLight, color: "#047857", label: "Approved" },
+    Rejected: { bg: C.dangerLight, color: "#B91C1C", label: "Rejected" },
   };
 
   const c = config[status] ?? config.Draft;

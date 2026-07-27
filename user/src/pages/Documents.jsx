@@ -51,16 +51,16 @@ const fmtDate = (ds) =>
     : "—";
 
 const getFileIcon = (mimeType) => {
-  if (!mimeType) return { icon: File, color: "#64748B", bg: "#F1F5F9" };
+  if (!mimeType) return { icon: File, color: C.textSecondary, bg: C.bgMid };
   if (mimeType.includes("pdf"))
-    return { icon: FileType2, color: "#DC2626", bg: "#FEF2F2" };
+    return { icon: FileType2, color: "#B91C1C", bg: "#FEE2E2" };
   if (mimeType.includes("word") || mimeType.includes("docx"))
     return { icon: FileText, color: C.primary, bg: C.primaryLight };
   if (mimeType.includes("sheet") || mimeType.includes("excel"))
-    return { icon: FileSpreadsheet, color: "#16A34A", bg: "#F0FDF4" };
+    return { icon: FileSpreadsheet, color: "#10B981", bg: "#D1FAE5" };
   if (mimeType.includes("image"))
-    return { icon: FileImage, color: "#0891B2", bg: "#ECFEFF" };
-  return { icon: File, color: "#64748B", bg: "#F1F5F9" };
+    return { icon: FileImage, color: "#4338CA", bg: C.primaryLight };
+  return { icon: File, color: C.textSecondary, bg: C.bgMid };
 };
 
 // ── animations ────────────────────────────────────────────────
@@ -96,7 +96,7 @@ function Toast({ msg, type, onDone }) {
     return () => clearTimeout(t);
   }, [onDone]);
   const Icon = type === "success" ? CheckCircle2 : XCircle;
-  const color = type === "success" ? "#22C55E" : "#EF4444";
+  const color = type === "success" ? "#10B981" : C.danger;
   return (
     <Motion.div
       initial={{ opacity: 0, y: 40, x: "-50%" }}
@@ -104,8 +104,8 @@ function Toast({ msg, type, onDone }) {
       exit={{ opacity: 0, y: 40, x: "-50%" }}
       className="fixed bottom-8 left-1/2 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
       style={{
-        background: "#0F172A",
-        boxShadow: "0 12px 40px rgba(15,23,42,0.35)",
+        background: C.textPrimary,
+        boxShadow: C.shadow.lift,
         minWidth: 260,
       }}
     >
@@ -119,11 +119,11 @@ function Toast({ msg, type, onDone }) {
 function StatusBadge({ status }) {
   const cfg =
     {
-      pending: { bg: "#FFF7ED", color: "#C2410C", icon: Clock,        label: "Pending"  },
-      sent:    { bg: "#EFF6FF", color: "#1D4ED8", icon: Shield,       label: "Awaiting Signature" },
-      signed:  { bg: "#F0FDF4", color: "#15803D", icon: CheckCircle2, label: "Signed"   },
+      pending: { bg: C.warningLight, color: C.warningInk, icon: Clock,        label: "Pending"  },
+      sent:    { bg: C.primaryLight, color: "#4338CA", icon: Shield,       label: "Awaiting Signature" },
+      signed:  { bg: "#D1FAE5", color: "#047857", icon: CheckCircle2, label: "Signed"   },
     }[status?.toLowerCase()] ?? {
-      bg: "#F1F5F9", color: "#64748B", icon: File, label: status ?? "—",
+      bg: C.bgMid, color: C.textSecondary, icon: File, label: status ?? "—",
     };
   const Icon = cfg.icon;
   return (
@@ -180,7 +180,7 @@ function SignModal({ doc, onClose, onSigned }) {
         exit={{ scale: 0.93, y: 20 }}
         transition={{ type: "spring", stiffness: 280, damping: 26 }}
         className="w-full max-w-md rounded-2xl overflow-hidden"
-        style={{ background: C.surface, boxShadow: "0 24px 64px rgba(15,23,42,0.2)" }}
+        style={{ background: C.surface, boxShadow: C.shadow.lift }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -206,7 +206,7 @@ function SignModal({ doc, onClose, onSigned }) {
           </div>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-xl flex items-center justify-center"
+            className="w-7 h-7 rounded-full flex items-center justify-center"
             style={{ background: C.surfaceAlt }}
           >
             <X size={13} color={C.textMuted} />
@@ -302,10 +302,10 @@ function SignModal({ doc, onClose, onSigned }) {
           {/* Legal notice */}
           <div
             className="flex items-start gap-2 p-3 rounded-xl"
-            style={{ background: "#FFFBEB", border: "1px solid #FCD34D44" }}
+            style={{ background: "#FEF3C7", border: "1px solid #F59E0B44" }}
           >
-            <Info size={13} color="#D97706" className="mt-0.5 flex-shrink-0" />
-            <p className="text-[11px]" style={{ color: "#92400E" }}>
+            <Info size={13} color="#92400E" className="mt-0.5 flex-shrink-0" />
+            <p className="text-[11px]" style={{ color: C.warningInk }}>
               Your electronic signature is legally binding. By signing you confirm
               you have read and understood this document.
             </p>
@@ -333,7 +333,7 @@ function SignModal({ doc, onClose, onSigned }) {
         >
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -347,12 +347,12 @@ function SignModal({ doc, onClose, onSigned }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleSign}
             disabled={!agreed || signing}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{
               background: "linear-gradient(135deg,#4F46E5,#6366F1)",
               opacity: !agreed || signing ? 0.55 : 1,
               cursor: !agreed || signing ? "not-allowed" : "pointer",
-              boxShadow: "0 4px 14px rgba(79,70,229,0.35)",
+              boxShadow: C.shadow.card,
             }}
           >
             {signing
@@ -391,7 +391,7 @@ function PreviewDrawer({ doc, onClose, onSign }) {
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="relative w-full max-w-md h-full overflow-y-auto flex flex-col"
-        style={{ background: C.surface, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+        style={{ background: C.surface, boxShadow: C.shadow.card }}
       >
         {/* Sticky header */}
         <div
@@ -414,7 +414,7 @@ function PreviewDrawer({ doc, onClose, onSign }) {
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-xl flex items-center justify-center"
+            className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{ background: C.surfaceAlt }}
           >
             <X size={14} color={C.textSecondary} />
@@ -518,14 +518,14 @@ function PreviewDrawer({ doc, onClose, onSign }) {
           {isSigned && (
             <div
               className="rounded-xl p-4 flex items-center gap-3"
-              style={{ background: "#F0FDF4", border: "1px solid #BBF7D0" }}
+              style={{ background: "#D1FAE5", border: "1px solid #D1FAE5" }}
             >
-              <CheckCircle2 size={18} color="#16A34A" />
+              <CheckCircle2 size={18} color="#10B981" />
               <div>
-                <p className="font-bold text-sm" style={{ color: "#15803D" }}>
+                <p className="font-bold text-sm" style={{ color: "#047857" }}>
                   You signed this document
                 </p>
-                <p className="text-xs" style={{ color: "#16A34A" }}>
+                <p className="text-xs" style={{ color: "#10B981" }}>
                   {fmtDate(doc.signed_at)} · Electronic signature recorded
                 </p>
               </div>
@@ -543,10 +543,10 @@ function PreviewDrawer({ doc, onClose, onSign }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => { onClose(); onSign(doc); }}
-              className="w-full py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2"
               style={{
                 background: "linear-gradient(135deg,#4F46E5,#6366F1)",
-                boxShadow: "0 4px 14px rgba(79,70,229,0.35)",
+                boxShadow: C.shadow.card,
               }}
             >
               <Pen size={14} />
@@ -643,7 +643,7 @@ export default function DocumentsPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, color: C.textPrimary, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg, color: C.textPrimary }}
     >
       <style>{`@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}`}</style>
 
@@ -661,7 +661,7 @@ export default function DocumentsPage() {
           >
             <button
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -690,7 +690,7 @@ export default function DocumentsPage() {
             <div className="flex items-center gap-2 ml-auto">
               <button
                 onClick={load}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{ background: C.surface, border: `1px solid ${C.border}` }}
               >
                 <RefreshCw size={14} color={C.textSecondary} />
@@ -698,7 +698,7 @@ export default function DocumentsPage() {
               {/* Notification bell — badge when docs need signing */}
               <div className="relative">
                 <button
-                  className="p-2 rounded-xl"
+                  className="p-2 rounded-full"
                   style={{ background: C.surface, border: `1px solid ${C.border}` }}
                 >
                   <Bell size={16} color={C.textSecondary} />
@@ -715,7 +715,7 @@ export default function DocumentsPage() {
               {employee && (
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                  style={{ background: "linear-gradient(135deg,#4F46E5,#06B6D4)" }}
+                  style={{ background: "linear-gradient(135deg,#4F46E5,#6366F1)" }}
                 >
                   {employee.initials}
                 </div>
@@ -731,14 +731,14 @@ export default function DocumentsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl p-6 text-white"
-              style={{ background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 55%,#1E40AF 100%)" }}
+              style={{ background: C.gradient.hero }}
             >
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-white/15 shrink-0">
                   <FileText size={28} />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold" style={{ fontFamily: "Sora,sans-serif" }}>
+                  <h1 className="text-2xl ">
                     My Documents
                   </h1>
                   <p className="text-indigo-200 text-sm mt-0.5">
@@ -751,7 +751,7 @@ export default function DocumentsPage() {
                             {needSign.length} need{needSign.length === 1 ? "s" : ""} your signature
                           </span>
                         ) : (
-                          "All up to date ✓"
+                          "All up to date"
                         )}
                       </>
                     )}
@@ -786,12 +786,12 @@ export default function DocumentsPage() {
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="rounded-2xl p-4 flex items-center gap-3 cursor-pointer"
-                style={{ background: "#FFF7ED", border: "1px solid #FCD34D55" }}
+                style={{ background: C.warningLight, border: "1px solid #F59E0B55" }}
                 onClick={() => setActiveTab("pending")}
               >
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: "#F59E0B" }}
+                  style={{ background: C.warning }}
                 >
                   <Pen size={15} color="#fff" />
                 </div>
@@ -803,7 +803,7 @@ export default function DocumentsPage() {
                     Click here to review and sign
                   </p>
                 </div>
-                <ChevronRight size={16} color="#F59E0B" />
+                <ChevronRight size={16} color={C.warning} />
               </Motion.div>
             )}
 
@@ -819,7 +819,7 @@ export default function DocumentsPage() {
                     key={t.id}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setActiveTab(t.id)}
-                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-medium"
+                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-sm font-medium"
                     style={{
                       background: active ? C.primary : "transparent",
                       color: active ? "#fff" : C.textSecondary,
@@ -950,7 +950,7 @@ export default function DocumentsPage() {
                               className="text-xs mt-1 truncate max-w-[300px]"
                               style={{ color: C.primary }}
                             >
-                              💬 {doc.message}
+ {doc.message}
                             </p>
                           )}
                         </div>
@@ -962,7 +962,7 @@ export default function DocumentsPage() {
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={() => setPreviewTarget(doc)}
-                            className="w-8 h-8 rounded-xl flex items-center justify-center"
+                            className="w-8 h-8 rounded-full flex items-center justify-center"
                             style={{ background: C.primaryLight }}
                             title="Preview"
                           >
@@ -989,10 +989,10 @@ export default function DocumentsPage() {
                               whileHover={{ scale: 1.04 }}
                               whileTap={{ scale: 0.97 }}
                               onClick={() => setSignTarget(doc)}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white"
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-white"
                               style={{
                                 background: "linear-gradient(135deg,#4F46E5,#6366F1)",
-                                boxShadow: "0 3px 10px rgba(79,70,229,0.3)",
+                                boxShadow: C.shadow.card,
                               }}
                             >
                               <Pen size={11} /> Sign
@@ -1003,10 +1003,10 @@ export default function DocumentsPage() {
                           {isSigned && (
                             <div
                               className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl"
-                              style={{ background: "#F0FDF4" }}
+                              style={{ background: "#D1FAE5" }}
                             >
-                              <Lock size={11} color="#16A34A" />
-                              <span className="text-[10px] font-bold" style={{ color: "#15803D" }}>
+                              <Lock size={11} color="#10B981" />
+                              <span className="text-[10px] font-bold" style={{ color: "#047857" }}>
                                 Signed
                               </span>
                             </div>

@@ -35,21 +35,21 @@ export default function ConfirmSubmitModal({
             <div className="flex items-start justify-between mb-4">
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                style={{ background: "#EEF2FF" }}
+                style={{ background: C.primaryLight }}
               >
                 <Send size={22} color={C.primary} />
               </div>
               <button
                 onClick={onClose}
-                className="p-1 rounded-lg hover:bg-gray-100"
+                className="p-1 rounded-full hover:bg-gray-100"
               >
                 <X size={16} color={C.textMuted} />
               </button>
             </div>
 
             <h3
-              className="font-bold text-lg mb-1"
-              style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+              className="text-lg mb-1"
+              style={{ color: C.textPrimary }}
             >
               Submit {count} {count === 1 ? "entry" : "entries"}?
             </h3>
@@ -66,9 +66,9 @@ export default function ConfirmSubmitModal({
             <div className="flex gap-3">
               <button
                 onClick={onClose}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                 style={{
-                  background: "#F3F4F6",
+                  background: C.bgMid,
                   color: C.textSecondary,
                   border: `1px solid ${C.border}`,
                 }}
@@ -78,7 +78,7 @@ export default function ConfirmSubmitModal({
               <button
                 onClick={onConfirm}
                 disabled={loading}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2"
                 style={{
                   background: loading ? "#C7D2FE" : C.primary,
                   color: "#fff",

@@ -34,7 +34,6 @@ const FIELD = {
   border: `1.5px solid ${C.border}`,
   color: C.textPrimary,
   borderRadius: 12,
-  fontFamily: "DM Sans, sans-serif",
   fontSize: 14,
   outline: "none",
   width: "100%",
@@ -117,10 +116,9 @@ export default function EntryFormModal({
             >
               <div>
                 <h2
-                  className="font-bold text-lg"
+                  className="text-lg"
                   style={{
                     color: C.textPrimary,
-                    fontFamily: "Sora,sans-serif",
                   }}
                 >
                   {entry ? "Edit Entry" : "Log Work"}
@@ -133,8 +131,8 @@ export default function EntryFormModal({
               </div>
               <button
                 onClick={onClose}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
-                style={{ background: C.surfaceAlt ?? "#F3F4F6" }}
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: C.surfaceAlt ?? "#F0F2F8" }}
               >
                 <X size={15} color={C.textSecondary} />
               </button>
@@ -191,7 +189,7 @@ export default function EntryFormModal({
               <div
                 className="rounded-xl px-4 py-2.5 flex items-center gap-2"
                 style={{
-                  background: duration ? "#EEF2FF" : "#F9FAFB",
+                  background: duration ? "#EEF2FF" : C.surfaceAlt,
                   border: `1px solid ${duration ? "#C7D2FE" : C.border}`,
                 }}
               >
@@ -214,7 +212,7 @@ export default function EntryFormModal({
                 >
                   <FileText size={11} className="inline mr-1" />
                   What did you work on?{" "}
-                  <span style={{ color: "#DC2626" }}>*</span>
+                  <span style={{ color: "#B91C1C" }}>*</span>
                 </label>
                 <textarea
                   rows={4}
@@ -232,7 +230,7 @@ export default function EntryFormModal({
                 <div className="flex justify-between mt-1">
                   {form.description.trim().length < 3 &&
                     form.description.length > 0 && (
-                      <span className="text-xs" style={{ color: "#DC2626" }}>
+                      <span className="text-xs" style={{ color: "#B91C1C" }}>
                         At least 3 characters required
                       </span>
                     )}
@@ -273,12 +271,12 @@ export default function EntryFormModal({
               <button
                 onClick={() => onSave(form, "draft")}
                 disabled={!canSave || loading}
-                className="flex-1 py-3 rounded-xl text-sm font-semibold"
+                className="flex-1 py-3 rounded-full text-sm font-semibold"
                 style={{
                   background:
                     canSave && !loading
                       ? (C.surfaceAlt ?? "#EEF2FF")
-                      : "#F3F4F6",
+                      : C.bgMid,
                   color: canSave && !loading ? C.primary : C.textMuted,
                   border: `1.5px solid ${canSave && !loading ? C.primary : C.border}`,
                   cursor: canSave && !loading ? "pointer" : "not-allowed",
@@ -290,9 +288,9 @@ export default function EntryFormModal({
               <button
                 onClick={() => onSave(form, "submit")}
                 disabled={!canSave || loading}
-                className="flex-1 py-3 rounded-xl text-sm font-semibold"
+                className="flex-1 py-3 rounded-full text-sm font-semibold"
                 style={{
-                  background: canSave && !loading ? C.primary : "#F3F4F6",
+                  background: canSave && !loading ? C.primary : C.bgMid,
                   color: canSave && !loading ? "#fff" : C.textMuted,
                   cursor: canSave && !loading ? "pointer" : "not-allowed",
                   boxShadow:

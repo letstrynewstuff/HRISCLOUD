@@ -88,7 +88,7 @@ function StepBar({ step }) {
                   : done
                     ? "#D1FAE5"
                     : C.surfaceAlt,
-                color: active ? "#fff" : done ? "#065F46" : C.textMuted,
+                color: active ? "#fff" : done ? "#047857" : C.textMuted,
               }}
             >
               {done ? <CheckCircle2 size={12} /> : <Circle size={12} />}
@@ -124,7 +124,7 @@ function TypePicker({ onSelect }) {
       className="space-y-4"
     >
       <div>
-        <h3 className="font-bold text-base" style={{ color: C.textPrimary }}>
+        <h3 className="text-base" style={{ color: C.textPrimary }}>
           Select an Account Type
         </h3>
         <p className="text-sm mt-1" style={{ color: C.textMuted }}>
@@ -142,10 +142,10 @@ function TypePicker({ onSelect }) {
           return (
             <Motion.button
               key={type}
-              whileHover={{ y: -3, boxShadow: "0 8px 24px rgba(0,0,0,0.06)" }}
+              whileHover={{ y: -3, boxShadow: C.shadow.lift }}
               whileTap={{ scale: 0.98 }}
               onClick={() => onSelect(type)}
-              className="rounded-2xl p-5 text-left flex flex-col gap-3"
+              className="rounded-full p-5 text-left flex flex-col gap-3"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <div
@@ -227,7 +227,7 @@ function AccountPicker({ type, onSelect, onBack, showToast }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            className="w-9 h-9 rounded-full flex items-center justify-center"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -237,7 +237,7 @@ function AccountPicker({ type, onSelect, onBack, showToast }) {
           </button>
           <div>
             <h3
-              className="font-bold text-base"
+              className="text-base"
               style={{ color: C.textPrimary }}
             >
               Select {type} Account
@@ -590,7 +590,7 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            className="w-9 h-9 rounded-full flex items-center justify-center"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -600,7 +600,7 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
           </button>
           <div>
             <h3
-              className="font-bold text-base flex items-center gap-2"
+              className="text-base flex items-center gap-2"
               style={{ color: C.textPrimary }}
             >
               {accName}
@@ -620,7 +620,7 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={load}
-          className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-xl"
+          className="flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-full"
           style={{
             background: C.surfaceAlt,
             color: C.textSecondary,
@@ -683,7 +683,7 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
                 className={
                   s.isMoney ? "text-lg font-bold" : "text-2xl font-bold"
                 }
-                style={{ color: s.color, fontFamily: "Sora,sans-serif" }}
+                style={{ color: s.color }}
               >
                 {s.value}
               </p>
@@ -749,7 +749,7 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
             <button
               key={f.id}
               onClick={() => setFilterStatus(f.id)}
-              className="px-3 py-1.5 text-xs font-semibold rounded-lg"
+              className="px-3 py-1.5 text-xs font-semibold rounded-full"
               style={{
                 background: filterStatus === f.id ? C.primary : C.surfaceAlt,
                 color: filterStatus === f.id ? "#fff" : C.textSecondary,
@@ -863,8 +863,8 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
                   borderBottom: `1px solid ${C.border}`,
                   background: isPending
                     ? isChecked
-                      ? "#ECFDF5"
-                      : "#FEF2F2"
+                      ? "#D1FAE5"
+                      : "#FEE2E2"
                     : "transparent",
                 }}
                 onMouseEnter={(e) => {
@@ -912,13 +912,13 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
                 </div>
                 <p
                   className="text-sm font-mono font-bold w-28 text-right"
-                  style={{ color: debit > 0 ? "#1D4ED8" : C.textMuted }}
+                  style={{ color: debit > 0 ? "#4338CA" : C.textMuted }}
                 >
                   {debit > 0 ? formatNaira(debit) : "—"}
                 </p>
                 <p
                   className="text-sm font-mono font-bold w-28 text-right"
-                  style={{ color: credit > 0 ? "#059669" : C.textMuted }}
+                  style={{ color: credit > 0 ? "#047857" : C.textMuted }}
                 >
                   {credit > 0 ? formatNaira(credit) : "—"}
                 </p>
@@ -926,14 +926,14 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
                   {wasReconciled ? (
                     <span
                       className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: "#D1FAE5", color: "#065F46" }}
+                      style={{ background: "#D1FAE5", color: "#047857" }}
                     >
                       Done
                     </span>
                   ) : (
                     <span
                       className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{ background: "#FEF3C7", color: "#B45309" }}
+                      style={{ background: "#FEF3C7", color: "#92400E" }}
                     >
                       Pending
                     </span>
@@ -985,7 +985,7 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
                 });
                 setChecked(reset);
               }}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl"
+              className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-full"
               style={{
                 background: C.surfaceAlt,
                 color: C.textSecondary,
@@ -999,7 +999,7 @@ function ConfirmTransactions({ account, type, onBack, showToast }) {
               whileTap={{ scale: 0.98 }}
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-bold rounded-xl text-white"
+              className="flex items-center gap-2 px-5 py-2 text-sm font-bold rounded-full text-white"
               style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}
             >
               {saving ? (

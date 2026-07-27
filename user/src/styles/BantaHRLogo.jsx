@@ -1,4 +1,5 @@
 // src/styles/BantaHRLogo.jsx
+import C from "./colors";
 
 
 const SIZES = { sm: 32, md: 42, lg: 56 };
@@ -11,8 +12,10 @@ export default function BantaHRLogo({
 }) {
   const h = SIZES[size] ?? 42;
   const iconSize = h;
-  const markColor = variant === "dark" ? "#0F1629" : "#FFFFFF";
-  const hrColor = variant === "dark" ? "#4F46E5" : "#06B6D4";
+  const markColor = variant === "dark" ? C.textPrimary : "#FFFFFF";
+  // D1 — was cyan #6366F1 on light grounds. Now indigo 300, which still
+  // separates from the white wordmark without introducing a second hue.
+  const hrColor = variant === "dark" ? C.primary : C.indigo[300];
 
   return (
     <div
@@ -95,10 +98,10 @@ export default function BantaHRLogo({
         />
 
         {/* Cyan accent dot — bottom right corner */}
-        <circle cx="44" cy="44" r="5" fill="#06B6D4" />
+        <circle cx="44" cy="44" r="5" fill={C.indigo[200]} />
         <path
           d="M41.5 44l1.8 1.8 3.2-3.2"
-          stroke="#fff"
+          stroke={C.indigo[800]}
           strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -114,9 +117,9 @@ export default function BantaHRLogo({
             y2="56"
             gradientUnits="userSpaceOnUse"
           >
-            <stop offset="0%" stopColor="#3730A3" />
-            <stop offset="55%" stopColor="#4F46E5" />
-            <stop offset="100%" stopColor="#1E1B4B" />
+            <stop offset="0%" stopColor={C.indigo[500]} />
+            <stop offset="55%" stopColor={C.indigo[600]} />
+            <stop offset="100%" stopColor={C.indigo[950]} />
           </linearGradient>
         </defs>
       </svg>
@@ -133,8 +136,8 @@ export default function BantaHRLogo({
         >
           <span
             style={{
-              fontFamily: "'Sora', 'DM Sans', sans-serif",
-              fontWeight: 800,
+              fontFamily: C.font.display,
+              fontWeight: 500, // D3 — display type never goes bold
               fontSize: h * 0.45,
               letterSpacing: "-0.03em",
               color: markColor,
@@ -146,15 +149,15 @@ export default function BantaHRLogo({
           </span>
           <span
             style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontWeight: 500,
+              fontFamily: C.font.mono,
+              fontWeight: 400,
               fontSize: h * 0.22,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
               color:
                 variant === "dark"
-                  ? "rgba(15,22,41,0.45)"
-                  : "rgba(255,255,255,0.5)",
+                  ? C.textSecondary // textMuted reads 2.56:1 on a light ground
+                  : "rgba(255,255,255,0.62)",
               marginTop: 1,
             }}
           >

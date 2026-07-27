@@ -46,7 +46,7 @@ export default function Header({
         <header
           className="shrink-0 h-[60px] flex items-center px-5 gap-4 z-10"
           style={{
-            background: "rgba(240,242,248,0.9)",
+            background: "rgba(247,248,252,0.86)",
             backdropFilter: "blur(12px)",
             borderBottom: `1px solid ${C.border}`,
           }}
@@ -55,7 +55,7 @@ export default function Header({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setSidebarOpen((p) => !p)}
-            className="p-2 rounded-xl"
+            className="p-2 rounded-full"
             style={{ background: C.surface, border: `1px solid ${C.border}` }}
           >
             <Menu size={16} color={C.textSecondary} />
@@ -87,7 +87,7 @@ export default function Header({
               onFocus={() => setSearchFocused(true)}
               onBlur={() => setSearchFocused(false)}
               placeholder={`Search ${title.toLowerCase()}...`}
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-xl outline-none"
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-full outline-none"
               style={{
                 background: C.surface,
                 border: `1.5px solid ${searchFocused ? C.primary : C.border}`,
@@ -99,15 +99,15 @@ export default function Header({
           <div className="flex items-center gap-3 ml-auto">
             {pendingCount > 0 && (
               <div
-                className="px-2.5 py-1 rounded-lg text-[10px] font-bold"
-                style={{ background: C.warningLight, color: C.warning }}
+                className="chip-pill"
+                style={{ background: C.warningLight, color: C.warningInk }}
               >
                 {pendingCount} PENDING
               </div>
             )}
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-              style={{ background: "linear-gradient(135deg,#4F46E5,#06B6D4)" }}
+              style={{ background: C.gradient.accent }}
             >
               {admin.initials}
             </div>
@@ -120,10 +120,7 @@ export default function Header({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="rounded-2xl p-8 text-white relative overflow-hidden"
-            style={{
-              background:
-                "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
-            }}
+            style={{ background: C.gradient.hero }}
           >
             <div className="relative flex flex-col md:flex-row md:items-center gap-6">
               <div className="flex items-center gap-4">
@@ -131,13 +128,10 @@ export default function Header({
                   {HeroIcon && <HeroIcon size={28} color="#fff" />}
                 </div>
                 <div>
-                  <h1
-                    className="text-3xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
-                  >
-                    {title}
-                  </h1>
-                  <p className="text-indigo-200 mt-0.5">{subtitle}</p>
+                  <h1 className="display text-3xl">{title}</h1>
+                  <p className="mt-0.5" style={{ color: C.indigo[200] }}>
+                    {subtitle}
+                  </p>
                 </div>
               </div>
 
@@ -154,7 +148,10 @@ export default function Header({
                     >
                       {stat.value}
                     </span>
-                    <span className="text-[10px] uppercase tracking-wider font-medium text-white/60">
+                    <span
+                      className="label-mono"
+                      style={{ color: "rgba(255,255,255,0.6)", fontSize: 10 }}
+                    >
                       {stat.label}
                     </span>
                   </div>
@@ -166,7 +163,7 @@ export default function Header({
           {/* ── TAB STRIP ── */}
           {tabs.length > 0 && (
             <motion.div
-              className="flex gap-1 p-1 mt-6 rounded-2xl overflow-x-auto no-scrollbar"
+              className="flex gap-1 p-1 mt-6 rounded-full overflow-x-auto no-scrollbar"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               {tabs.map((tab) => {
@@ -177,9 +174,9 @@ export default function Header({
                     key={tab.path}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => navigate(tab.path)}
-                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all"
+                    className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all"
                     style={{
-                      background: active ? C.primary : "transparent",
+                      background: active ? C.gradient.accent : "transparent",
                       color: active ? "#ffffff" : C.textSecondary,
                     }}
                   >

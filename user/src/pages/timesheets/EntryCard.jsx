@@ -27,7 +27,7 @@ export default function EntryCard({
   onSelect,
   onEdit,
   onDelete,
-  onSubmit,   // ✅ NEW: inline submit handler for single Draft entry
+  onSubmit,   // NEW: inline submit handler for single Draft entry
 }) {
   const isDraft    = entry.status === "Draft";
   const isRejected = entry.status === "Rejected";
@@ -45,7 +45,7 @@ export default function EntryCard({
         background: C.surface,
         border: `1.5px solid ${
           selected        ? C.primary  :
-          isRejected      ? "#FECACA"  :
+          isRejected      ? "#FEE2E2"  :
           C.border
         }`,
         boxShadow: selected
@@ -58,7 +58,7 @@ export default function EntryCard({
       {isRejected && entry.rejectionReason && (
         <div
           className="flex items-start gap-2 mb-3 px-3 py-2 rounded-lg text-xs"
-          style={{ background: "#FEE2E2", color: "#DC2626" }}
+          style={{ background: C.dangerLight, color: "#B91C1C" }}
         >
           <AlertCircle size={13} className="shrink-0 mt-0.5" />
           <span>
@@ -87,7 +87,7 @@ export default function EntryCard({
             </span>
             <span
               className="text-xs px-2 py-0.5 rounded-full font-medium"
-              style={{ background: "#F3F4F6", color: C.textSecondary }}
+              style={{ background: C.bgMid, color: C.textSecondary }}
             >
               {fmtDuration(entry.durationMinutes)}
             </span>
@@ -104,7 +104,7 @@ export default function EntryCard({
             {entry.projectTag && (
               <span
                 className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full"
-                style={{ background: "#EEF2FF", color: C.primary }}
+                style={{ background: C.primaryLight, color: C.primary }}
               >
                 <Tag size={10} />
                 {entry.projectTag}
@@ -120,7 +120,7 @@ export default function EntryCard({
             <div
               title={`${entry.status} — cannot be edited`}
               className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: "#F9FAFB", cursor: "not-allowed" }}
+              style={{ background: C.surfaceAlt, cursor: "not-allowed" }}
             >
               <Lock size={13} color={C.textMuted} />
             </div>
@@ -129,13 +129,13 @@ export default function EntryCard({
           {/* Draft actions: submit inline, edit, delete */}
           {isDraft && (
             <>
-              {/* ✅ NEW: Inline submit button — makes it obvious entries need submitting */}
+              {/* NEW: Inline submit button — makes it obvious entries need submitting */}
               <Motion.button
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onSubmit(entry.id)}
-                className="w-7 h-7 rounded-lg flex items-center justify-center"
-                style={{ background: "#EEF2FF" }}
+                className="w-7 h-7 rounded-full flex items-center justify-center"
+                style={{ background: C.primaryLight }}
                 title="Submit for approval"
               >
                 <Send size={13} color={C.primary} />
@@ -145,8 +145,8 @@ export default function EntryCard({
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onEdit(entry)}
-                className="w-7 h-7 rounded-lg flex items-center justify-center"
-                style={{ background: "#F3F4F6" }}
+                className="w-7 h-7 rounded-full flex items-center justify-center"
+                style={{ background: C.bgMid }}
                 title="Edit entry"
               >
                 <Edit2 size={13} color={C.textSecondary} />
@@ -156,11 +156,11 @@ export default function EntryCard({
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onDelete(entry.id)}
-                className="w-7 h-7 rounded-lg flex items-center justify-center"
-                style={{ background: "#FEE2E2" }}
+                className="w-7 h-7 rounded-full flex items-center justify-center"
+                style={{ background: C.dangerLight }}
                 title="Delete entry"
               >
-                <Trash2 size={13} color="#DC2626" />
+                <Trash2 size={13} color="#B91C1C" />
               </Motion.button>
             </>
           )}
@@ -171,8 +171,8 @@ export default function EntryCard({
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => onEdit(entry)}
-              className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: "#EEF2FF" }}
+              className="w-7 h-7 rounded-full flex items-center justify-center"
+              style={{ background: C.primaryLight }}
               title="Edit and resubmit"
             >
               <Edit2 size={13} color={C.primary} />

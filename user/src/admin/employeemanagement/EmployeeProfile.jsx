@@ -101,7 +101,7 @@ function Card({ children, className = "", style = {} }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
         ...style,
       }}
     >
@@ -168,13 +168,13 @@ function AvatarEl({ name, avatar, dept, size = 56 }) {
     );
   const colors = [
     "#6366F1",
-    "#06B6D4",
+    "#6366F1",
     "#10B981",
     "#F59E0B",
-    "#EC4899",
-    "#8B5CF6",
+    "#6366F1",
+    "#6366F1",
     "#EF4444",
-    "#F97316",
+    "#F59E0B",
   ];
   const bg = colors[ini.charCodeAt(0) % colors.length];
   return (
@@ -190,7 +190,6 @@ function AvatarEl({ name, avatar, dept, size = 56 }) {
         color: "#fff",
         fontWeight: 700,
         fontSize: size * 0.3,
-        fontFamily: "Sora,sans-serif",
         flexShrink: 0,
       }}
     >
@@ -495,7 +494,7 @@ function LeaveTab({ empId }) {
             <Card key={b.id} className="p-4 text-center">
               <p
                 className="text-2xl font-bold"
-                style={{ color: C.primary, fontFamily: "Sora,sans-serif" }}
+                style={{ color: C.primary }}
               >
                 {b.remaining_days ?? b.balance ?? 0}
               </p>
@@ -644,7 +643,7 @@ function AttendanceTab({ empId }) {
           <Card key={s.label} className="p-4 text-center">
             <p
               className="text-2xl font-bold"
-              style={{ color: s.color, fontFamily: "Sora,sans-serif" }}
+              style={{ color: s.color }}
             >
               {s.value}
             </p>
@@ -894,7 +893,7 @@ function ActionModal({ action, emp, onConfirm, onClose, loading }) {
             <Icon size={22} color={c.color} />
           </div>
           <h3
-            className="text-base font-bold text-center mb-2"
+            className="text-base text-center mb-2"
             style={{ color: C.textPrimary }}
           >
             {c.title}
@@ -910,7 +909,7 @@ function ActionModal({ action, emp, onConfirm, onClose, loading }) {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onClose}
-              className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+              className="flex-1 py-2.5 rounded-full text-sm font-semibold"
               style={{
                 background: C.surfaceAlt,
                 color: C.textSecondary,
@@ -925,7 +924,7 @@ function ActionModal({ action, emp, onConfirm, onClose, loading }) {
               whileTap={{ scale: 0.98 }}
               onClick={onConfirm}
               disabled={loading}
-              className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+              className="flex-1 py-2.5 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2"
               style={{
                 background: c.color,
                 border: "none",
@@ -1027,7 +1026,6 @@ export default function EmployeeProfile() {
       className="min-h-screen"
       style={{
         background: C.bg,
-        fontFamily: "'DM Sans','Sora',sans-serif",
         color: C.textPrimary,
       }}
     >
@@ -1054,7 +1052,7 @@ export default function EmployeeProfile() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
@@ -1098,12 +1096,12 @@ export default function EmployeeProfile() {
                         `/admin/employeemanagement/admin-editemployee/${employeeId}`,
                       )
                     }
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white"
                     style={{
-                      background: `linear-gradient(135deg,${C.primary},#8B5CF6)`,
+                      background: `linear-gradient(135deg,${C.primary},#6366F1)`,
                       border: "none",
                       cursor: "pointer",
-                      boxShadow: `0 3px 12px ${C.primary}44`,
+                      boxShadow: C.shadow.card,
                     }}
                   >
                     <Edit3 size={12} /> Edit Profile
@@ -1112,7 +1110,7 @@ export default function EmployeeProfile() {
                     <Motion.button
                       whileHover={{ scale: 1.05 }}
                       onClick={() => setMoreMenu((p) => !p)}
-                      className="w-8 h-8 rounded-xl flex items-center justify-center"
+                      className="w-8 h-8 rounded-full flex items-center justify-center"
                       style={{
                         background: C.surface,
                         border: `1px solid ${C.border}`,
@@ -1131,7 +1129,7 @@ export default function EmployeeProfile() {
                           style={{
                             background: C.surface,
                             border: `1px solid ${C.border}`,
-                            boxShadow: "0 12px 40px rgba(15,23,42,0.14)",
+                            boxShadow: C.shadow.lift,
                             minWidth: 180,
                           }}
                         >
@@ -1187,7 +1185,7 @@ export default function EmployeeProfile() {
               <Motion.button
                 whileHover={{ scale: 1.05 }}
                 onClick={fetch}
-                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                className="w-8 h-8 rounded-full flex items-center justify-center"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -1214,7 +1212,7 @@ export default function EmployeeProfile() {
                 </p>
                 <button
                   onClick={fetch}
-                  className="text-xs font-bold px-3 py-1 rounded-lg"
+                  className="text-xs font-bold px-3 py-1 rounded-full"
                   style={{
                     background: C.danger,
                     color: "#fff",
@@ -1236,7 +1234,7 @@ export default function EmployeeProfile() {
                       height: h,
                       borderRadius: 16,
                       background:
-                        "linear-gradient(90deg,#E2E8F4 25%,#EFF6FF 50%,#E2E8F4 75%)",
+                        "linear-gradient(90deg,#E4E7F0 25%,#EEF2FF 50%,#E4E7F0 75%)",
                       backgroundSize: "200%",
                       animation: "shimmer 1.4s infinite",
                     }}
@@ -1265,8 +1263,7 @@ export default function EmployeeProfile() {
                           <div className="flex-1 pb-2">
                             <div className="flex items-center gap-2 flex-wrap mb-1">
                               <h1
-                                className="text-xl font-bold text-white"
-                                style={{ fontFamily: "Sora,sans-serif" }}
+                                className="text-xl text-white"
                               >
                                 {name}
                               </h1>
@@ -1337,7 +1334,6 @@ export default function EmployeeProfile() {
                                   className="text-base font-bold"
                                   style={{
                                     color: s.color,
-                                    fontFamily: "Sora,sans-serif",
                                   }}
                                 >
                                   {s.value}
@@ -1360,7 +1356,7 @@ export default function EmployeeProfile() {
                             <button
                               key={tab.id}
                               onClick={() => setActiveTab(tab.id)}
-                              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all"
+                              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all"
                               style={{
                                 background: isActive ? C.primary : C.surface,
                                 color: isActive ? "#fff" : C.textSecondary,
@@ -1436,7 +1432,7 @@ export default function EmployeeProfile() {
             style={{
               background: C.navy,
               color: "#fff",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+              boxShadow: C.shadow.lift,
               minWidth: 300,
             }}
           >

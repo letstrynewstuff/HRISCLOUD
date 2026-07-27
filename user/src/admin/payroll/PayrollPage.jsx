@@ -71,7 +71,7 @@ function PayslipLookup() {
             whileTap={{ scale: 0.98 }}
             onClick={() => setSubmitted(true)}
             disabled={!employeeId.trim()}
-            className="px-5 py-2.5 rounded-xl text-sm font-bold text-white"
+            className="px-5 py-2.5 rounded-full text-sm font-bold text-white"
             style={{
               background: C.primary,
               border: "none",
@@ -101,7 +101,7 @@ function PayrollInner() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex h-screen overflow-hidden">
         {/* <AdminSideNavbar
@@ -124,7 +124,7 @@ function PayrollInner() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
@@ -171,7 +171,7 @@ function PayrollInner() {
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                   style={{
-                    background: "linear-gradient(135deg,#4F46E5,#06B6D4)",
+                    background: "linear-gradient(135deg,#4F46E5,#6366F1)",
                   }}
                 >
                   {employee?.initials ?? "AD"}
@@ -188,7 +188,7 @@ function PayrollInner() {
               className="rounded-2xl p-8 text-white"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="flex items-center gap-4">
@@ -200,8 +200,7 @@ function PayrollInner() {
                 </div>
                 <div>
                   <h1
-                    className="text-3xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-3xl "
                   >
                     Payroll Management
                   </h1>
@@ -231,7 +230,7 @@ function PayrollInner() {
                     key={tab.id}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setActiveTab(tab.id)}
-                    className="px-5 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex-shrink-0 transition-colors"
+                    className="px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0 transition-colors"
                     style={{
                       background: active ? C.primary : "transparent",
                       color: active ? "#fff" : C.textSecondary,

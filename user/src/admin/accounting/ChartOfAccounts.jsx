@@ -26,7 +26,7 @@ const TYPE_COLORS = {
   Asset:     { bg: "#EEF2FF", color: "#4F46E5" },
   Liability: { bg: "#FEE2E2", color: "#EF4444" },
   Equity:    { bg: "#D1FAE5", color: "#10B981" },
-  Income:    { bg: "#ECFEFF", color: "#06B6D4" },
+  Income:    { bg: "#EEF2FF", color: "#6366F1" },
   Expense:   { bg: "#FEF3C7", color: "#F59E0B" },
 };
 
@@ -174,7 +174,7 @@ export default function ChartOfAccounts({ searchQuery }) {
               key={t}
               whileTap={{ scale: 0.95 }}
               onClick={() => setFilterType(t)}
-              className="px-3 py-1 text-xs rounded-lg font-medium"
+              className="px-3 py-1 text-xs rounded-full font-medium"
               style={{
                 background: filterType === t ? C.primary : C.surfaceAlt,
                 color: filterType === t ? "#fff" : C.textSecondary,
@@ -188,7 +188,7 @@ export default function ChartOfAccounts({ searchQuery }) {
           <Motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={openCreate}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full"
             style={{ background: C.primary, color: "#fff" }}
           >
             <Plus size={15} /> Add Account
@@ -295,7 +295,7 @@ export default function ChartOfAccounts({ searchQuery }) {
                                   <Motion.button
                                     whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                                     onClick={() => openEdit(acc)}
-                                    className="p-1.5 rounded-lg"
+                                    className="p-1.5 rounded-full"
                                     style={{ background: C.primaryLight, color: C.primary }}
                                     title="Edit"
                                   >
@@ -305,7 +305,7 @@ export default function ChartOfAccounts({ searchQuery }) {
                                     <Motion.button
                                       whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
                                       onClick={() => handleToggle(acc)}
-                                      className="px-2.5 py-1 text-xs font-semibold rounded-lg"
+                                      className="px-2.5 py-1 text-xs font-semibold rounded-full"
                                       style={{
                                         background: isActive ? "#FEE2E2" : "#D1FAE5",
                                         color:      isActive ? "#EF4444" : "#10B981",
@@ -347,7 +347,7 @@ export default function ChartOfAccounts({ searchQuery }) {
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-lg" style={{ color: C.textPrimary }}>
+                <h3 className="text-lg" style={{ color: C.textPrimary }}>
                   {editing ? "Edit Account" : "New Account"}
                 </h3>
                 <button onClick={() => setShowModal(false)}><X size={18} color={C.textMuted} /></button>
@@ -424,7 +424,7 @@ export default function ChartOfAccounts({ searchQuery }) {
               <div className="flex gap-3 pt-1">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="flex-1 py-3 rounded-xl font-semibold text-sm"
+                  className="flex-1 py-3 rounded-full font-semibold text-sm"
                   style={{ background: C.surfaceAlt, color: C.textSecondary }}
                 >
                   Cancel
@@ -433,7 +433,7 @@ export default function ChartOfAccounts({ searchQuery }) {
                   whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-1 py-3 rounded-xl font-semibold text-sm text-white flex items-center justify-center gap-2"
+                  className="flex-1 py-3 rounded-full font-semibold text-sm text-white flex items-center justify-center gap-2"
                   style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}
                 >
                   {saving ? <><RefreshCw size={14} className="animate-spin" /> Saving…</> : editing ? "Update Account" : "Create Account"}

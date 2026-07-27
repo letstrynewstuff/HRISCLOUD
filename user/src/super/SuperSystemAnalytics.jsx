@@ -90,7 +90,7 @@ function StatCard({ icon: Icon, label, value, sub, subUp, color, delay }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 12px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
       }}
     >
       <div className="flex items-center justify-between">
@@ -116,7 +116,7 @@ function StatCard({ icon: Icon, label, value, sub, subUp, color, delay }) {
       <div>
         <div
           className="text-2xl font-bold"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          style={{ color: C.textPrimary }}
         >
           {value}
         </div>
@@ -136,12 +136,12 @@ function ChartCard({ title, delay, children }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 12px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
       }}
     >
       <div
         className="text-sm font-semibold mb-4"
-        style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+        style={{ color: C.textPrimary }}
       >
         {title}
       </div>
@@ -414,13 +414,13 @@ export default function SuperSystemAnalytics() {
             style={{
               background: C.surface,
               border: `1px solid ${C.border}`,
-              boxShadow: "0 2px 12px rgba(15,23,42,0.04)",
+              boxShadow: C.shadow.card,
             }}
           >
             <div className="flex items-center justify-between mb-4">
               <div
                 className="text-sm font-semibold"
-                style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+                style={{ color: C.textPrimary }}
               >
                 Top Companies by Usage
               </div>
@@ -485,7 +485,7 @@ export default function SuperSystemAnalytics() {
                         c.plan === "Enterprise"
                           ? C.primaryLight
                           : c.plan === "Growth"
-                            ? "#EDE9FE"
+                            ? "#E0E7FF"
                             : C.surfaceAlt,
                       color:
                         c.plan === "Enterprise"

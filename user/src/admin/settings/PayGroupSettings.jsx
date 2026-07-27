@@ -1,24 +1,8 @@
 import { useState } from "react";
+import C from "../../styles/colors";
 import { motion } from "framer-motion";
 import { SETTINGS_MOCK } from "./SettingsMockData";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 export default function PayGroupSettings() {
   const [payGroup, setPayGroup] = useState(SETTINGS_MOCK.payGroup);
@@ -29,7 +13,7 @@ export default function PayGroupSettings() {
 
   return (
     <div className="max-w-2xl">
-      <h2 className="text-2xl font-bold mb-8">Pay Group Settings</h2>
+      <h2 className="text-2xl mb-8">Pay Group Settings</h2>
 
       <div className="space-y-8">
         <div>
@@ -41,7 +25,7 @@ export default function PayGroupSettings() {
               <button
                 key={freq}
                 onClick={() => setPayGroup({ ...payGroup, frequency: freq })}
-                className={`flex-1 py-3 rounded-2xl text-sm font-medium ${payGroup.frequency === freq ? "bg-primary text-white" : "border"}`}
+                className={`flex-1 py-3 rounded-full text-sm font-medium ${payGroup.frequency === freq ? "bg-primary text-white" : "border"}`}
                 style={{ borderColor: C.border }}
               >
                 {freq}
@@ -93,7 +77,7 @@ export default function PayGroupSettings() {
 
         <motion.button
           onClick={handleSave}
-          className="w-full py-4 rounded-2xl text-white font-semibold"
+          className="w-full py-4 rounded-full text-white font-semibold"
           style={{ background: C.primary }}
         >
           Save Pay Group Settings

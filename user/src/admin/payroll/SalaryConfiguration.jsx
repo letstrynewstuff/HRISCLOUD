@@ -154,7 +154,7 @@ export default function SalaryConfiguration() {
       <div className="flex items-center justify-between">
         <div>
           <h2
-            className="font-semibold text-lg"
+            className="text-lg"
             style={{ color: C.textPrimary }}
           >
             Salary Structures
@@ -166,7 +166,7 @@ export default function SalaryConfiguration() {
         <div className="flex gap-2">
           <button
             onClick={fetchData}
-            className="px-3 py-2 rounded-xl"
+            className="px-3 py-2 rounded-full"
             style={{
               background: C.surface,
               border: `1px solid ${C.border}`,
@@ -178,7 +178,7 @@ export default function SalaryConfiguration() {
           <Motion.button
             whileHover={{ scale: 1.02 }}
             onClick={openCreate}
-            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white"
+            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full text-white"
             style={{ background: C.primary, border: "none", cursor: "pointer" }}
           >
             <Plus size={14} /> New Structure
@@ -242,7 +242,7 @@ export default function SalaryConfiguration() {
                 style={{
                   background: C.surface,
                   borderColor: C.border,
-                  boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+                  boxShadow: C.shadow.card,
                 }}
               >
                 <div className="flex items-start justify-between mb-3">
@@ -268,7 +268,7 @@ export default function SalaryConfiguration() {
                   <Motion.button
                     whileHover={{ scale: 1.1 }}
                     onClick={() => openEdit(s)}
-                    className="w-7 h-7 rounded-lg flex items-center justify-center"
+                    className="w-7 h-7 rounded-full flex items-center justify-center"
                     style={{
                       background: C.primaryLight,
                       border: "none",
@@ -344,7 +344,7 @@ export default function SalaryConfiguration() {
               style={{
                 background: C.surface,
                 borderLeft: `1px solid ${C.border}`,
-                boxShadow: "-8px 0 40px rgba(15,23,42,0.14)",
+                boxShadow: C.shadow.card,
               }}
             >
               <div
@@ -358,8 +358,7 @@ export default function SalaryConfiguration() {
                     {editTarget ? "Edit Structure" : "New Structure"}
                   </p>
                   <h3
-                    className="text-white font-bold mt-0.5"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-white mt-0.5"
                   >
                     {editTarget ? editTarget.name : "Create Salary Structure"}
                   </h3>
@@ -367,7 +366,7 @@ export default function SalaryConfiguration() {
                 <Motion.button
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   onClick={() => setShowModal(false)}
-                  className="w-8 h-8 rounded-xl flex items-center justify-center"
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
                   style={{
                     background: "rgba(255,255,255,0.15)",
                     border: "none",
@@ -515,7 +514,7 @@ export default function SalaryConfiguration() {
                 <Motion.button
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setShowModal(false)}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                  className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                   style={{
                     background: C.surfaceAlt,
                     color: C.textSecondary,
@@ -530,7 +529,7 @@ export default function SalaryConfiguration() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2"
                   style={{
                     background: C.primary,
                     border: "none",

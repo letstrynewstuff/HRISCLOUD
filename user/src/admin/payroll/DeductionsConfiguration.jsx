@@ -152,7 +152,7 @@ export default function DeductionsConfiguration() {
       {/* Statutory — fixed, informational */}
       <div>
         <h2
-          className="font-semibold text-lg mb-4"
+          className="text-lg mb-4"
           style={{ color: C.textPrimary }}
         >
           Statutory Deductions (Nigeria)
@@ -218,7 +218,7 @@ export default function DeductionsConfiguration() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2
-            className="font-semibold text-lg"
+            className="text-lg"
             style={{ color: C.textPrimary }}
           >
             Custom Deductions
@@ -226,7 +226,7 @@ export default function DeductionsConfiguration() {
           <div className="flex gap-2">
             <button
               onClick={fetchDeductions}
-              className="flex items-center gap-1 px-3 py-2 rounded-xl text-xs"
+              className="flex items-center gap-1 px-3 py-2 rounded-full text-xs"
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
@@ -240,7 +240,7 @@ export default function DeductionsConfiguration() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={openCreate}
-              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl text-white"
+              className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full text-white"
               style={{
                 background: C.primary,
                 border: "none",
@@ -361,7 +361,7 @@ export default function DeductionsConfiguration() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           onClick={() => openEdit(ded)}
-                          className="w-7 h-7 rounded-lg flex items-center justify-center"
+                          className="w-7 h-7 rounded-full flex items-center justify-center"
                           style={{
                             background: C.primaryLight,
                             border: "none",
@@ -373,7 +373,7 @@ export default function DeductionsConfiguration() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           onClick={() => handleDelete(ded)}
-                          className="w-7 h-7 rounded-lg flex items-center justify-center"
+                          className="w-7 h-7 rounded-full flex items-center justify-center"
                           style={{
                             background: C.dangerLight,
                             border: "none",
@@ -423,15 +423,14 @@ export default function DeductionsConfiguration() {
                   }}
                 >
                   <h3
-                    className="text-white font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-white "
                   >
                     {editTarget ? "Edit Deduction" : "Add Custom Deduction"}
                   </h3>
                   <motion.button
                     whileHover={{ scale: 1.1, rotate: 90 }}
                     onClick={() => setShowModal(false)}
-                    className="w-8 h-8 rounded-xl flex items-center justify-center"
+                    className="w-8 h-8 rounded-full flex items-center justify-center"
                     style={{
                       background: "rgba(255,255,255,0.15)",
                       border: "none",
@@ -494,7 +493,7 @@ export default function DeductionsConfiguration() {
                         <button
                           key={val}
                           onClick={() => setForm((f) => ({ ...f, type: val }))}
-                          className="flex-1 py-3 rounded-xl text-sm font-medium"
+                          className="flex-1 py-3 rounded-full text-sm font-medium"
                           style={{
                             background:
                               form.type === val ? C.primary : C.surfaceAlt,
@@ -570,7 +569,7 @@ export default function DeductionsConfiguration() {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     onClick={() => setShowModal(false)}
-                    className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                    className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                     style={{
                       background: C.surfaceAlt,
                       color: C.textSecondary,
@@ -585,7 +584,7 @@ export default function DeductionsConfiguration() {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+                    className="flex-1 py-2.5 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2"
                     style={{
                       background: C.primary,
                       border: "none",

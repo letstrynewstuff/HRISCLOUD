@@ -130,7 +130,7 @@ export default function StatutoryReports() {
             style={{ background: C.surface, borderColor: C.border }}
           >
             <h3
-              className="font-semibold text-base mb-2"
+              className="text-base mb-2"
               style={{ color: C.textPrimary }}
             >
               {r.title}
@@ -143,7 +143,7 @@ export default function StatutoryReports() {
               whileTap={{ scale: 0.98 }}
               onClick={() => handleGenerate(r.key)}
               disabled={loading[r.key]}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold text-white"
+              className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-semibold text-white"
               style={{
                 background: C.primary,
                 border: "none",

@@ -81,8 +81,8 @@
 //       className="min-h-screen flex items-center justify-center p-6"
 //       style={{
 //         background:
-//           "linear-gradient(135deg, #0F0C29 0%, #302B63 50%, #24243E 100%)",
-//         fontFamily: "Sora, sans-serif",
+//           C.gradient.hero,
+//
 //       }}
 //     >
 //       {/* Decorative Background Elements */}
@@ -104,7 +104,7 @@
 //               <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner ring-1 ring-indigo-100">
 //                 <ShieldCheck size={32} color={C.primary} />
 //               </div>
-//               <h1 className="text-2xl font-black text-slate-900 tracking-tight mb-2">
+//               <h1 className="text-2xl text-slate-900 tracking-tight mb-2">
 //                 System Master
 //               </h1>
 //               <p className="text-slate-500 text-sm font-medium">
@@ -186,7 +186,7 @@
 //               <button
 //                 type="submit"
 //                 disabled={loading}
-//                 className="w-full mt-4 group relative overflow-hidden py-4 rounded-2xl bg-indigo-600 text-white text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-200 transition-all hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none"
+//                 className="w-full mt-4 group relative overflow-hidden py-4 rounded-full bg-indigo-600 text-white text-xs font-black uppercase tracking-[0.2em] shadow-xl shadow-indigo-200 transition-all hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-70 disabled:pointer-events-none"
 //               >
 //                 <div className="relative z-10 flex items-center justify-center gap-2">
 //                   {loading ? (
@@ -266,8 +266,8 @@ export default function SuperAdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("🚀 LOGIN ATTEMPT STARTED");
-    console.log("📦 Payload being sent:", formData);
+    console.log(" LOGIN ATTEMPT STARTED");
+    console.log(" Payload being sent:", formData);
 
     setLoading(true);
     setError("");
@@ -275,26 +275,26 @@ export default function SuperAdminLogin() {
     try {
       const response = await superAdminLoginApi(formData);
 
-      console.log("✅ RESPONSE RECEIVED:", response);
-      console.log("🔑 RESPONSE DATA:", response?.data);
+      console.log(" RESPONSE RECEIVED:", response);
+      console.log(" RESPONSE DATA:", response?.data);
 
       if (response.data?.accessToken) {
         localStorage.setItem("superAdminToken", response.data.accessToken);
         localStorage.setItem("refreshToken", response.data.refreshToken);
         localStorage.setItem("userRole", "super_admin");
 
-        console.log("🎉 LOGIN SUCCESS - Redirecting...");
+        console.log(" LOGIN SUCCESS - Redirecting...");
 
         navigate("/super-admin/dashboard");
       } else {
-        console.warn("⚠️ No accessToken returned:", response.data);
+        console.warn(" No accessToken returned:", response.data);
         setError("Login succeeded but no access token returned.");
       }
     } catch (err) {
-      console.error("❌ LOGIN ERROR FULL OBJECT:", err);
-      console.error("📡 Response Data:", err?.response?.data);
-      console.error("📡 Status:", err?.response?.status);
-      console.error("📡 Headers:", err?.response?.headers);
+      console.error(" LOGIN ERROR FULL OBJECT:", err);
+      console.error(" Response Data:", err?.response?.data);
+      console.error(" Status:", err?.response?.status);
+      console.error(" Headers:", err?.response?.headers);
 
       setError(
         err?.response?.data?.message ||
@@ -302,7 +302,7 @@ export default function SuperAdminLogin() {
       );
     } finally {
       setLoading(false);
-      console.log("🏁 LOGIN PROCESS FINISHED");
+      console.log(" LOGIN PROCESS FINISHED");
     }
   };
 
@@ -311,8 +311,7 @@ export default function SuperAdminLogin() {
       className="min-h-screen flex items-center justify-center p-6"
       style={{
         background:
-          "linear-gradient(135deg, #0F0C29 0%, #302B63 50%, #24243E 100%)",
-        fontFamily: "Sora, sans-serif",
+          C.gradient.hero,
       }}
     >
       <motion.div
@@ -324,14 +323,14 @@ export default function SuperAdminLogin() {
           <div className="p-8">
             <div className="text-center mb-10">
               <ShieldCheck size={32} color={C.primary} />
-              <h1 className="text-2xl font-black mt-4">System Master</h1>
+              <h1 className="text-2xl mt-4">System Master</h1>
               <p className="text-slate-500 text-sm">
                 Enter your administrative credentials
               </p>
             </div>
 
             {error && (
-              <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl">
+              <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-full">
                 {error}
               </div>
             )}
@@ -348,7 +347,7 @@ export default function SuperAdminLogin() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="admin@email.com"
-                    className="w-full pl-10 p-3 bg-gray-100 rounded-xl"
+                    className="w-full pl-10 p-3 bg-gray-100 rounded-full"
                     required
                   />
                 </div>
@@ -366,7 +365,7 @@ export default function SuperAdminLogin() {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 p-3 bg-gray-100 rounded-xl"
+                    className="w-full pl-10 pr-10 p-3 bg-gray-100 rounded-full"
                     required
                   />
 
@@ -384,7 +383,7 @@ export default function SuperAdminLogin() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                className="w-full bg-indigo-600 text-white py-3 rounded-full font-bold flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <Loader2 className="animate-spin" />

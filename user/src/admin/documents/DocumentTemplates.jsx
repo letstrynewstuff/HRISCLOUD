@@ -33,9 +33,9 @@ const fmtDate = (ds) =>
 function StatusBadge({ status }) {
   const s = status?.toLowerCase();
   const cfg =
-    s==="signed"  ?{bg:"#F0FDF4",color:"#15803D",icon:CheckCircle2,label:"Signed"}:
-    s==="sent"    ?{bg:"#EFF6FF",color:"#1D4ED8",icon:PenLine,     label:"Awaiting Signature"}:
-    s==="pending" ?{bg:"#FFF7ED",color:"#C2410C",icon:Clock,       label:"Pending"}:
+    s==="signed"  ?{bg:"#D1FAE5",color:"#047857",icon:CheckCircle2,label:"Signed"}:
+    s==="sent"    ?{bg:"#EEF2FF",color:"#4338CA",icon:PenLine,     label:"Awaiting Signature"}:
+    s==="pending" ?{bg:"#FEF3C7",color:"#92400E",icon:Clock,       label:"Pending"}:
     s==="rejected"?{bg:C.dangerLight,color:C.danger,icon:XCircle,  label:"Rejected"}:
                    {bg:C.surfaceAlt,color:C.textMuted,icon:AlertCircle,label:status??"—"};
   const Icon=cfg.icon;
@@ -72,7 +72,7 @@ function StepIndicator({ current }) {
             </div>
             {i<STEPS.length-1&&(
               <div className="flex-1 h-[2px] mx-2 mb-5 rounded-full transition-all"
-                style={{background:done?"#22C55E":C.border}}/>
+                style={{background:done?"#10B981":C.border}}/>
             )}
           </div>
         );
@@ -179,7 +179,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
         exit={{opacity:0,scale:0.94,y:24}} transition={{type:"spring",stiffness:280,damping:26}}
         className="w-full max-w-xl rounded-3xl overflow-hidden flex flex-col"
         style={{background:C.surface,border:`1px solid ${C.border}`,maxHeight:"92vh",
-                boxShadow:"0 32px 80px rgba(15,23,42,0.3)"}}>
+                boxShadow: C.shadow.lift}}>
 
         {/* Modal header */}
         <div className="px-7 py-5 flex items-center justify-between"
@@ -191,7 +191,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
             </p>
           </div>
           <button onClick={onClose}
-            className="w-8 h-8 rounded-xl flex items-center justify-center bg-white/20 hover:bg-white/30 transition-colors">
+            className="w-8 h-8 rounded-full flex items-center justify-center bg-white/20 hover:bg-white/30 transition-colors">
             <X size={15} color="#fff"/>
           </button>
         </div>
@@ -222,7 +222,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
                 {file?(
                   <>
                     {file.type==="application/pdf"
-                      ?<FileType2 size={40} color="#DC2626"/>
+                      ?<FileType2 size={40} color="#B91C1C"/>
                       :<FileText size={40} color="#4F46E5"/>}
                     <div className="text-center">
                       <p className="font-bold text-sm" style={{color:C.textPrimary}}>{file.name}</p>
@@ -231,7 +231,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
                       </p>
                     </div>
                     <button onClick={e=>{e.stopPropagation();setFile(null);setDocName("");}}
-                      className="text-xs px-4 py-1.5 rounded-xl font-semibold"
+                      className="text-xs px-4 py-1.5 rounded-full font-semibold"
                       style={{background:C.dangerLight,color:C.danger}}>
                       Remove & choose another
                     </button>
@@ -275,7 +275,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
                 <div className="flex flex-wrap gap-2">
                   {CATEGORIES.map(c=>(
                     <button key={c} onClick={()=>setCategory(c)}
-                      className="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+                      className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
                       style={{background:category===c?"#4F46E5":C.surfaceAlt,
                               color:category===c?"#fff":C.textSecondary,
                               border:`1.5px solid ${category===c?"#4F46E5":C.border}`}}>
@@ -318,7 +318,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
                 </div>
                 {filteredEmps.length>0&&!empLoading&&(
                   <button onClick={toggleAll}
-                    className="px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap"
+                    className="px-3 py-2 rounded-full text-xs font-bold whitespace-nowrap"
                     style={{background:selected.length===filteredEmps.length?"#4F46E5":C.surfaceAlt,
                             color:selected.length===filteredEmps.length?"#fff":C.textSecondary,
                             border:`1px solid ${selected.length===filteredEmps.length?"#4F46E5":C.border}`}}>
@@ -368,8 +368,8 @@ function SendDocumentModal({ onClose, onSuccess }) {
                       onMouseLeave={e=>!isSel&&(e.currentTarget.style.background="transparent")}>
                       {/* Avatar */}
                       <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                        style={{background:isSel?"#C7D2FE":"#E2E8F0",
-                                color:isSel?"#4F46E5":"#475569"}}>
+                        style={{background:isSel?"#C7D2FE":"#E4E7F0",
+                                color:isSel?"#4F46E5":"#334155"}}>
                         {(emp.first_name?.[0]??"?").toUpperCase()}{(emp.last_name?.[0]??"").toUpperCase()}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -405,7 +405,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
             <>
               {/* Summary card */}
               <div className="rounded-2xl p-4 space-y-3"
-                style={{background:"linear-gradient(135deg,#EEF2FF,#F5F3FF)",border:"1px solid #C7D2FE"}}>
+                style={{background:"linear-gradient(135deg,#EEF2FF,#C7D2FE)",border:"1px solid #C7D2FE"}}>
                 <p className="text-xs font-bold uppercase tracking-wide" style={{color:"#6366F1"}}>
                   Ready to Send
                 </p>
@@ -434,7 +434,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
                     ))}
                   {selected.length>6&&(
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                      style={{background:"#E2E8F0",color:C.textMuted}}>
+                      style={{background:"#E4E7F0",color:C.textMuted}}>
                       +{selected.length-6} more
                     </span>
                   )}
@@ -458,8 +458,8 @@ function SendDocumentModal({ onClose, onSuccess }) {
 
               {/* What happens next info */}
               <div className="rounded-xl p-4 space-y-2"
-                style={{background:"#F0FDF4",border:"1px solid #BBF7D0"}}>
-                <p className="text-xs font-bold" style={{color:"#15803D"}}>What happens when you click Send?</p>
+                style={{background:"#D1FAE5",border:"1px solid #D1FAE5"}}>
+                <p className="text-xs font-bold" style={{color:"#047857"}}>What happens when you click Send?</p>
                 {[
                   "Each employee receives an in-app notification",
                   "The document appears in their Documents page",
@@ -467,8 +467,8 @@ function SendDocumentModal({ onClose, onSuccess }) {
                   "You'll see the status update to Signed here instantly",
                 ].map((t,i)=>(
                   <div key={i} className="flex items-start gap-2">
-                    <CheckCircle2 size={12} color="#16A34A" className="mt-0.5 flex-shrink-0"/>
-                    <p className="text-xs" style={{color:"#166534"}}>{t}</p>
+                    <CheckCircle2 size={12} color="#10B981" className="mt-0.5 flex-shrink-0"/>
+                    <p className="text-xs" style={{color:"#047857"}}>{t}</p>
                   </div>
                 ))}
               </div>
@@ -488,7 +488,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
           style={{borderTop:`1px solid ${C.border}`}}>
           <button
             onClick={()=>step>1?setStep(step-1):onClose()}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all"
             style={{background:C.surfaceAlt,border:`1px solid ${C.border}`,color:C.textSecondary}}>
             <ChevronLeft size={14}/>
             {step===1?"Cancel":"Back"}
@@ -496,7 +496,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
 
           {step===1&&(
             <button onClick={handleUpload} disabled={uploading||!file}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all"
               style={{background:uploading||!file?"#C7D2FE":"#4F46E5",
                       color:uploading||!file?"#818CF8":"#fff",
                       cursor:uploading||!file?"not-allowed":"pointer",
@@ -513,7 +513,7 @@ function SendDocumentModal({ onClose, onSuccess }) {
                 if(selected.length===0){setErr2("Please select at least one employee.");return;}
                 setErr2("");setStep(3);
               }}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all"
               style={{background:selected.length===0?"#C7D2FE":"#4F46E5",
                       color:selected.length===0?"#818CF8":"#fff",
                       cursor:selected.length===0?"not-allowed":"pointer",
@@ -524,9 +524,9 @@ function SendDocumentModal({ onClose, onSuccess }) {
 
           {step===3&&(
             <button onClick={handleSend} disabled={sending}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all"
-              style={{background:sending?"#C7D2FE":"#16A34A",
-                      color:sending?"#4B5563":"#fff",
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold transition-all"
+              style={{background:sending?"#C7D2FE":"#10B981",
+                      color:sending?"#5F6D7E":"#fff",
                       cursor:sending?"not-allowed":"pointer",
                       boxShadow:sending?"none":"0 4px 14px rgba(22,163,74,0.35)"}}>
               {sending
@@ -549,7 +549,7 @@ function SuccessToast({ count, onDone }) {
     <motion.div initial={{opacity:0,y:40,scale:0.95}} animate={{opacity:1,y:0,scale:1}}
       exit={{opacity:0,y:40,scale:0.95}}
       className="fixed bottom-6 right-6 z-50 flex items-center gap-4 px-6 py-4 rounded-2xl shadow-2xl"
-      style={{background:"#16A34A",color:"#fff",minWidth:300}}>
+      style={{background:"#10B981",color:"#fff",minWidth:300}}>
       <CheckCircle2 size={22}/>
       <div>
         <p className="font-bold text-sm">Document sent for signature!</p>
@@ -615,10 +615,10 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
           {
             label: "Awaiting Sign",
             value: pending,
-            color: "#D97706",
-            bg: "#FFF7ED",
+            color: "#92400E",
+            bg: "#FEF3C7",
           },
-          { label: "Signed ✓", value: signed, color: "#15803D", bg: "#F0FDF4" },
+          { label: "Signed", value: signed, color: "#047857", bg: "#D1FAE5" },
         ].map((s) => (
           <div
             key={s.label}
@@ -652,7 +652,7 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
         <div className="flex gap-2 flex-wrap">
           {["all","sent","signed","pending","rejected"].map(s=>(
             <button key={s} onClick={()=>setStatusFilter(s)}
-              className="px-3 py-2 rounded-xl text-xs font-bold capitalize"
+              className="px-3 py-2 rounded-full text-xs font-bold capitalize"
               style={{background:statusFilter===s?"#4F46E5":C.surface,
                       color:statusFilter===s?"#fff":C.textSecondary,
                       border:`1px solid ${statusFilter===s?"#4F46E5":C.border}`}}>
@@ -662,7 +662,7 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
         </div>
 
         <button onClick={load}
-          className="w-10 h-10 rounded-xl flex items-center justify-center"
+          className="w-10 h-10 rounded-full flex items-center justify-center"
           style={{background:C.surface,border:`1px solid ${C.border}`}} title="Refresh">
           <RefreshCw size={15} color={C.textSecondary}/>
         </button>
@@ -693,7 +693,7 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className="px-3 py-2 rounded-xl text-xs font-bold capitalize"
+              className="px-3 py-2 rounded-full text-xs font-bold capitalize"
               style={{
                 background: statusFilter === s ? "#4F46E5" : C.surface,
                 color: statusFilter === s ? "#fff" : C.textSecondary,
@@ -708,11 +708,11 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
         {/* ── NEW: Send Document button always visible ── */}
         <button
           onClick={onNewDoc}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold transition-all"
           style={{
             background: "#4F46E5",
             color: "#fff",
-            boxShadow: "0 4px 14px rgba(79,70,229,0.3)",
+            boxShadow: C.shadow.card,
             whiteSpace: "nowrap",
           }}
         >
@@ -722,7 +722,7 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
 
         <button
           onClick={load}
-          className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
           style={{ background: C.surface, border: `1px solid ${C.border}` }}
           title="Refresh"
         >
@@ -855,11 +855,11 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
             {docs.length === 0 && (
               <button
                 onClick={onNewDoc}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold mt-2"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold mt-2"
                 style={{
                   background: "#4F46E5",
                   color: "#fff",
-                  boxShadow: "0 4px 14px rgba(79,70,229,0.3)",
+                  boxShadow: C.shadow.card,
                 }}
               >
                 <Plus size={15} />
@@ -966,7 +966,7 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
                     {isSigned && doc.signed_at && (
                       <p
                         className="text-[9px] font-semibold"
-                        style={{ color: "#16A34A" }}
+                        style={{ color: "#10B981" }}
                       >
                         Signed {fmtDate(doc.signed_at)}
                       </p>
@@ -974,7 +974,7 @@ function SentDocumentsTable({ refreshTrigger, onNewDoc }) {
                     {isAwaiting && (
                       <p
                         className="text-[9px] font-semibold"
-                        style={{ color: "#D97706" }}
+                        style={{ color: "#92400E" }}
                       >
                         Waiting for employee…
                       </p>
@@ -1006,7 +1006,7 @@ export default function DocumentTemplates() {
   };
 
   return (
-    <div className="min-h-screen" style={{background:C.bg,fontFamily:"'DM Sans','Sora',sans-serif"}}>
+    <div className="min-h-screen" style={{background:C.bg}}>
       <div className="flex h-screen overflow-hidden">
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
@@ -1022,9 +1022,9 @@ export default function DocumentTemplates() {
             actions={
               <button
                 onClick={()=>setShowModal(true)}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all"
                 style={{background:"#4F46E5",color:"#fff",
-                        boxShadow:"0 4px 14px rgba(79,70,229,0.35)"}}>
+                        boxShadow: C.shadow.card}}>
                 <PenLine size={15}/>
                 Send Document for Signature
               </button>

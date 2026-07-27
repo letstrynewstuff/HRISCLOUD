@@ -54,7 +54,6 @@ export default function AccountingPage() {
       className="min-h-screen"
       style={{
         background: C.bg ?? "#F0F2F8",
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -72,7 +71,7 @@ export default function AccountingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -112,7 +111,7 @@ export default function AccountingPage() {
               className="rounded-2xl p-8 text-white"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="flex items-center gap-4 mb-6">
@@ -121,8 +120,7 @@ export default function AccountingPage() {
                 </div>
                 <div>
                   <h1
-                    className="text-3xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-3xl "
                   >
                     Accounting
                   </h1>
@@ -151,7 +149,6 @@ export default function AccountingPage() {
                   >
                     <p
                       className="text-xl font-bold"
-                      style={{ fontFamily: "Sora,sans-serif" }}
                     >
                       {s.value}
                     </p>
@@ -181,7 +178,7 @@ export default function AccountingPage() {
                     key={tab.id}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setActiveTab(tab.id)}
-                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex-shrink-0"
+                    className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0"
                     style={{
                       background: active ? C.primary : "transparent",
                       color: active ? "#ffffff" : C.textSecondary,

@@ -25,6 +25,7 @@
 //      calendar date the session technically started on.
 
 import { useState, useEffect, useCallback } from "react";
+import C from "../styles/colors";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 // import SideNavbar from "../components/SideNavbar";
 import { useAuth } from "../components/useAuth";
@@ -57,27 +58,6 @@ import {
 } from "lucide-react";
 
 /* ─── Palette ─── */
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 /* ─── Helpers ─── */
 const fmtHours = (h) => {
@@ -110,7 +90,7 @@ const fadeUp = {
 const Card = ({ children, className = "", style = {}, onClick }) => (
   <Motion.div
     whileHover={
-      onClick ? { y: -2, boxShadow: "0 12px 40px rgba(79,70,229,0.10)" } : {}
+      onClick ? { y: -2, boxShadow: C.shadow.lift } : {}
     }
     onClick={onClick}
     className={`rounded-2xl bg-white border shadow-sm overflow-hidden ${onClick ? "cursor-pointer" : ""} ${className}`}
@@ -148,7 +128,7 @@ const StatusBadge = ({ status }) => {
     },
     weekend: {
       label: "Weekend",
-      bg: "#F1F5F9",
+      bg: C.bgMid,
       color: C.textMuted,
       icon: Minus,
     },
@@ -601,7 +581,7 @@ export default function AttendancePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
@@ -635,7 +615,7 @@ export default function AttendancePage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={fetchAttendance}
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -655,7 +635,7 @@ export default function AttendancePage() {
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                   style={{
-                    background: "linear-gradient(135deg,#6366F1,#06B6D4)",
+                    background: "linear-gradient(135deg,#6366F1,#4338CA)",
                   }}
                 >
                   {employee?.initials ?? "?"}
@@ -702,7 +682,7 @@ export default function AttendancePage() {
               className="relative rounded-2xl overflow-hidden"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
                 minHeight: 220,
               }}
             >
@@ -739,7 +719,7 @@ export default function AttendancePage() {
                       {clockStatusLabel}
                     </span>
                   </div>
-                  <h1 className="text-white text-2xl md:text-3xl font-bold mb-1">
+                  <h1 className="text-white text-2xl md:text-3xl mb-1">
                     {now.toDateString()}
                   </h1>
                   <p className="text-indigo-300 text-sm">
@@ -787,7 +767,7 @@ export default function AttendancePage() {
                         }}
                       >
                         <Timer size={13} color={C.success} />
-                        <span className="text-xs text-[#6EE7B7]">
+                        <span className="text-xs text-[#10B981]">
                           <LiveTimer
                             startTime={clockInTime}
                             pausedAt={breakStartTime}
@@ -807,7 +787,7 @@ export default function AttendancePage() {
                         <Coffee size={13} color={C.warning} />
                         <span
                           className="text-xs font-semibold"
-                          style={{ color: "#FCD34D" }}
+                          style={{ color: "#F59E0B" }}
                         >
                           On break — <LiveBreakTimer startTime={breakStartTime} />
                         </span>
@@ -826,7 +806,7 @@ export default function AttendancePage() {
                           border: "1px solid rgba(139,92,246,0.3)",
                         }}
                       >
-                        <Coffee size={13} color="#C4B5FD" />
+                        <Coffee size={13} color="#A5B4FC" />
                         <span className="text-white/80 text-xs">
                           Break:{" "}
                           <strong className="text-white">
@@ -850,14 +830,14 @@ export default function AttendancePage() {
                     whileTap={{ scale: todayStatus === "done" ? 1 : 0.96 }}
                     onClick={clockedIn ? handleClockOut : handleClockIn}
                     disabled={todayStatus === "done" || actionLoading}
-                    className="flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm w-full justify-center"
+                    className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm w-full justify-center"
                     style={{
                       background:
                         todayStatus === "done"
                           ? "rgba(255,255,255,0.12)"
                           : clockedIn
-                          ? `linear-gradient(135deg,${C.danger},#DC2626)`
-                          : `linear-gradient(135deg,${C.success},#059669)`,
+                          ? `linear-gradient(135deg,${C.danger},#B91C1C)`
+                          : `linear-gradient(135deg,${C.success},#047857)`,
                       color: "#fff",
                       opacity:
                         todayStatus === "done" || actionLoading ? 0.6 : 1,
@@ -893,7 +873,7 @@ export default function AttendancePage() {
                       whileTap={{ scale: 0.96 }}
                       onClick={onBreak ? handleBreakEnd : handleBreakStart}
                       disabled={actionLoading}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-semibold text-sm w-full justify-center"
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm w-full justify-center"
                       style={{
                         background: onBreak
                           ? "rgba(16,185,129,0.25)"
@@ -901,7 +881,7 @@ export default function AttendancePage() {
                         border: onBreak
                           ? "1.5px solid rgba(16,185,129,0.5)"
                           : "1.5px solid rgba(245,158,11,0.5)",
-                        color: onBreak ? "#6EE7B7" : "#FCD34D",
+                        color: onBreak ? "#10B981" : "#F59E0B",
                         cursor: actionLoading ? "not-allowed" : "pointer",
                         opacity: actionLoading ? 0.6 : 1,
                       }}
@@ -1063,7 +1043,7 @@ export default function AttendancePage() {
               <Card className="p-5">
                 <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
                   <h3
-                    className="font-semibold text-sm"
+                    className="text-sm"
                     style={{ color: C.textPrimary }}
                   >
                     Attendance History
@@ -1093,7 +1073,7 @@ export default function AttendancePage() {
                       <div
                         key={i}
                         className="h-12 rounded-xl animate-pulse"
-                        style={{ background: "#E2E8F0" }}
+                        style={{ background: C.border }}
                       />
                     ))}
                   </div>
@@ -1235,7 +1215,7 @@ export default function AttendancePage() {
             >
               <div className="flex items-center justify-between mb-4">
                 <h3
-                  className="font-bold text-base"
+                  className="text-base"
                   style={{ color: C.textPrimary }}
                 >
                   {detailEntry.dateStr}
@@ -1331,7 +1311,7 @@ export default function AttendancePage() {
               </div>
               <button
                 onClick={() => setDetailEntry(null)}
-                className="w-full mt-5 py-2.5 rounded-xl font-bold text-sm text-white"
+                className="w-full mt-5 py-2.5 rounded-full font-bold text-sm text-white"
                 style={{
                   background: C.primary,
                   border: "none",

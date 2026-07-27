@@ -169,7 +169,7 @@ function ServiceCard({ name, icon: Icon, status, uptime, latency, delay }) {
       style={{
         background: C.surface,
         border: `1.5px solid ${status === "online" ? `${C.success}30` : status === "degraded" ? `${C.warning}40` : C.dangerLight}`,
-        boxShadow: "0 2px 12px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
       }}
     >
       <div className="flex items-start justify-between mb-4">
@@ -189,7 +189,7 @@ function ServiceCard({ name, icon: Icon, status, uptime, latency, delay }) {
       </div>
       <div
         className="text-sm font-semibold mb-3"
-        style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+        style={{ color: C.textPrimary }}
       >
         {name}
       </div>
@@ -232,13 +232,13 @@ function GaugeMetric({ label, value, unit, color, history, delay }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 12px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
       }}
     >
       <div className="flex items-center justify-between mb-4">
         <span
           className="text-sm font-semibold"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          style={{ color: C.textPrimary }}
         >
           {label}
         </span>
@@ -466,7 +466,7 @@ export default function SuperSystemMonitoring() {
           style={{
             background: C.surface,
             border: `1px solid ${C.border}`,
-            boxShadow: "0 2px 12px rgba(15,23,42,0.04)",
+            boxShadow: C.shadow.card,
           }}
         >
           <div className="flex items-center justify-between mb-4">
@@ -474,7 +474,7 @@ export default function SuperSystemMonitoring() {
               <Activity size={15} color={C.primary} />
               <span
                 className="text-sm font-semibold"
-                style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+                style={{ color: C.textPrimary }}
               >
                 Recent Logs (Last 24h)
               </span>
@@ -492,7 +492,7 @@ export default function SuperSystemMonitoring() {
                 <button
                   key={tab}
                   onClick={() => setActiveLog(tab)}
-                  className="px-4 py-1.5 rounded-lg text-xs font-semibold capitalize transition-all"
+                  className="px-4 py-1.5 rounded-full text-xs font-semibold capitalize transition-all"
                   style={{
                     background:
                       activeLog === tab

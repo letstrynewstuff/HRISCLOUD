@@ -195,7 +195,7 @@ export default function OvertimeManagement() {
                             whileTap={{ scale: 0.95 }}
                             onClick={() => handleApprove(r)}
                             disabled={actioning === r.id}
-                            className="flex items-center gap-1.5 p-2 rounded-lg"
+                            className="flex items-center gap-1.5 p-2 rounded-full"
                             style={{ background: "#D1FAE5", color: "#10B981" }}
                           >
                             {actioning === r.id ? (

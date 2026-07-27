@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useRef, useCallback } from "react";
+import C from "../../styles/colors";
 import { motion, AnimatePresence } from "framer-motion";
 // import AdminSideNavbar from "../AdminSideNavbar";
 import {
@@ -36,31 +37,6 @@ import {
 } from "lucide-react";
 
 /* ─── Design tokens ─── */
-const C = {
-  bg: "#F0F2F8",
-  bgMid: "#E8EBF4",
-  surface: "#FFFFFF",
-  surfaceHover: "#F7F8FC",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryDark: "#3730A3",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const ADMIN = {
   name: "Ngozi Adeleke",
@@ -442,7 +418,7 @@ export default function BulkImport() {
         <div className="flex-1">
           <p
             className="text-sm font-bold"
-            style={{ color: C.primary, fontFamily: "Sora, sans-serif" }}
+            style={{ color: C.primary }}
           >
             Download Import Template
           </p>
@@ -456,10 +432,10 @@ export default function BulkImport() {
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={downloadTemplate}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white shrink-0"
+          className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white shrink-0"
           style={{
             background: C.primary,
-            boxShadow: `0 4px 12px ${C.primary}44`,
+            boxShadow: C.shadow.card,
           }}
         >
           <Download size={14} />
@@ -504,7 +480,7 @@ export default function BulkImport() {
         </motion.div>
         <p
           className="text-base font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          style={{ color: C.textPrimary }}
         >
           {dragOver ? "Release to upload" : "Drag & drop your file here"}
         </p>
@@ -531,7 +507,7 @@ export default function BulkImport() {
           <Table size={14} color={C.textMuted} />
           <p
             className="text-sm font-bold"
-            style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+            style={{ color: C.textPrimary }}
           >
             Required Column Reference
           </p>
@@ -647,7 +623,7 @@ export default function BulkImport() {
             onClick={() =>
               setFilterStatus(filterStatus === s.status ? "all" : s.status)
             }
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-full text-sm font-semibold transition-all"
             style={{
               background: filterStatus === s.status ? s.bg : C.surface,
               border: `1.5px solid ${filterStatus === s.status ? s.color : C.border}`,
@@ -1060,7 +1036,7 @@ export default function BulkImport() {
             setFile(null);
             setRows([]);
           }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-semibold"
           style={{
             background: C.surface,
             color: C.textSecondary,
@@ -1082,10 +1058,10 @@ export default function BulkImport() {
             whileTap={{ scale: 0.98 }}
             onClick={handleImport}
             disabled={importableRows.length === 0}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold text-white"
             style={{
               background: C.primary,
-              boxShadow: `0 4px 12px ${C.primary}44`,
+              boxShadow: C.shadow.card,
               opacity: importableRows.length === 0 ? 0.5 : 1,
             }}
           >
@@ -1116,8 +1092,8 @@ export default function BulkImport() {
         </motion.div>
       </div>
       <h3
-        className="text-lg font-bold mb-2"
-        style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+        className="text-lg mb-2"
+        style={{ color: C.textPrimary }}
       >
         Importing {importableRows.length} employees...
       </h3>
@@ -1194,15 +1170,15 @@ export default function BulkImport() {
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
         className="w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-6"
-        style={{ background: "linear-gradient(135deg,#D1FAE5,#ECFEFF)" }}
+        style={{ background: "linear-gradient(135deg,#D1FAE5,#EEF2FF)" }}
       >
         <CheckCircle2 size={40} color={C.success} />
       </motion.div>
       <h3
-        className="text-xl font-bold mb-2"
-        style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+        className="text-xl mb-2"
+        style={{ color: C.textPrimary }}
       >
-        Import Complete! 🎉
+        Import Complete!
       </h3>
       <p className="text-sm mb-8" style={{ color: C.textSecondary }}>
         Employees have been added to the system and welcome emails sent.
@@ -1236,7 +1212,7 @@ export default function BulkImport() {
           >
             <p
               className="text-2xl font-bold"
-              style={{ color: s.color, fontFamily: "Sora, sans-serif" }}
+              style={{ color: s.color }}
             >
               {s.value}
             </p>
@@ -1261,7 +1237,7 @@ export default function BulkImport() {
             setImportProgress(0);
             setImportResults(null);
           }}
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+          className="flex-1 py-2.5 rounded-full text-sm font-semibold"
           style={{
             background: C.surfaceAlt,
             color: C.textSecondary,
@@ -1273,10 +1249,10 @@ export default function BulkImport() {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white"
+          className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white"
           style={{
             background: C.primary,
-            boxShadow: `0 4px 12px ${C.primary}44`,
+            boxShadow: C.shadow.card,
           }}
         >
           View Employees
@@ -1288,7 +1264,7 @@ export default function BulkImport() {
   return (
     <div
       className="flex h-screen overflow-hidden"
-      style={{ background: C.bg, fontFamily: "Sora, sans-serif" }}
+      style={{ background: C.bg }}
     >
       {/* <AdminSideNavbar
         sidebarOpen={sidebarOpen}
@@ -1304,12 +1280,12 @@ export default function BulkImport() {
           style={{
             background: C.surface,
             borderBottom: `1px solid ${C.border}`,
-            boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+            boxShadow: C.shadow.card,
           }}
         >
           <button
             onClick={() => setSidebarOpen((p) => !p)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors md:hidden"
+            className="p-1.5 rounded-full hover:bg-gray-100 transition-colors md:hidden"
           >
             <Menu size={18} color={C.textSecondary} />
           </button>
@@ -1324,7 +1300,7 @@ export default function BulkImport() {
             </span>
           </div>
           <div className="ml-auto flex items-center gap-2">
-            <button className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors">
+            <button className="relative p-2 rounded-full hover:bg-gray-100 transition-colors">
               <Bell size={16} color={C.textSecondary} />
               <span
                 className="absolute top-1 right-1 w-2 h-2 rounded-full"
@@ -1333,7 +1309,7 @@ export default function BulkImport() {
             </button>
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-              style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}
+              style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}
             >
               {ADMIN.initials}
             </div>
@@ -1353,18 +1329,17 @@ export default function BulkImport() {
                 <div
                   className="w-9 h-9 rounded-xl flex items-center justify-center"
                   style={{
-                    background: "linear-gradient(135deg,#4F46E5,#06B6D4)",
-                    boxShadow: `0 4px 12px ${C.primary}44`,
+                    background: "linear-gradient(135deg,#4F46E5,#6366F1)",
+                    boxShadow: C.shadow.card,
                   }}
                 >
                   <Upload size={17} color="#fff" />
                 </div>
                 <div>
                   <h1
-                    className="text-xl font-bold leading-tight"
+                    className="text-xl leading-tight"
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora, sans-serif",
                     }}
                   >
                     Bulk Employee Import

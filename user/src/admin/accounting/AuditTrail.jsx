@@ -15,7 +15,7 @@
 // // };
 
 // // const ACTION_CFG = {
-// //   CREATE: { bg: "#ECFEFF", color: "#06B6D4", label: "Create" },
+// //   CREATE: { bg: "#EEF2FF", color: "#6366F1", label: "Create" },
 // //   UPDATE: { bg: "#EEF2FF", color: "#4F46E5", label: "Update" },
 // //   POST: { bg: "#D1FAE5", color: "#10B981", label: "Post" },
 // //   VOID: { bg: "#FEF3C7", color: "#F59E0B", label: "Void" },
@@ -69,7 +69,7 @@
 // //         exit={{ x: "100%" }}
 // //         transition={{ type: "spring", stiffness: 300, damping: 30 }}
 // //         className="relative h-full w-full max-w-xl flex flex-col"
-// //         style={{ background: C.bg, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+// //         style={{ background: C.bg, boxShadow: C.shadow.card }}
 // //       >
 // //         {/* Header */}
 // //         <div
@@ -81,8 +81,8 @@
 // //         >
 // //           <div>
 // //             <h2
-// //               className="font-bold text-sm"
-// //               style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+// //               className="text-sm"
+// //               style={{ color: C.textPrimary }}
 // //             >
 // //               Audit Detail
 // //             </h2>
@@ -92,7 +92,7 @@
 // //           </div>
 // //           <button
 // //             onClick={onClose}
-// //             className="p-1.5 rounded-lg hover:bg-gray-100"
+// //             className="p-1.5 rounded-full hover:bg-gray-100"
 // //           >
 // //             <X size={15} color={C.textMuted} />
 // //           </button>
@@ -178,7 +178,7 @@
 // //                     className="grid grid-cols-2 text-xs"
 // //                     style={{
 // //                       borderBottom: `1px solid ${C.border}`,
-// //                       background: changed ? "#FFFBEB" : "transparent",
+// //                       background: changed ? "#FEF3C7" : "transparent",
 // //                     }}
 // //                   >
 // //                     <div
@@ -410,7 +410,7 @@
 // //             whileHover={{ scale: 1.02 }}
 // //             whileTap={{ scale: 0.98 }}
 // //             onClick={load}
-// //             className="p-2 rounded-xl"
+// //             className="p-2 rounded-full"
 // //             style={{
 // //               background: C.surfaceAlt,
 // //               border: `1px solid ${C.border}`,
@@ -422,7 +422,7 @@
 // //             whileHover={{ scale: 1.02 }}
 // //             whileTap={{ scale: 0.98 }}
 // //             onClick={exportCSV}
-// //             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl"
+// //             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full"
 // //             style={{ background: C.primary, color: "#fff" }}
 // //           >
 // //             <Download size={14} /> Export CSV
@@ -568,7 +568,7 @@
 // //               whileTap={{ scale: 0.95 }}
 // //               disabled={page === 1}
 // //               onClick={() => setPage((p) => p - 1)}
-// //               className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+// //               className="px-3 py-1.5 text-xs font-semibold rounded-full"
 // //               style={{
 // //                 background: page === 1 ? C.surfaceAlt : C.primary,
 // //                 color: page === 1 ? C.textMuted : "#fff",
@@ -580,7 +580,7 @@
 // //               whileTap={{ scale: 0.95 }}
 // //               disabled={page === totalPages}
 // //               onClick={() => setPage((p) => p + 1)}
-// //               className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+// //               className="px-3 py-1.5 text-xs font-semibold rounded-full"
 // //               style={{
 // //                 background: page === totalPages ? C.surfaceAlt : C.primary,
 // //                 color: page === totalPages ? C.textMuted : "#fff",
@@ -618,15 +618,15 @@
 // };
 
 // const ACTION_CFG = {
-//   CREATE:  { bg: "#ECFEFF", color: "#06B6D4", label: "Create" },
+//   CREATE:  { bg: "#EEF2FF", color: "#6366F1", label: "Create" },
 //   UPDATE:  { bg: "#EEF2FF", color: "#4F46E5", label: "Update" },
 //   POST:    { bg: "#D1FAE5", color: "#10B981", label: "Post" },
 //   VOID:    { bg: "#FEF3C7", color: "#F59E0B", label: "Void" },
 //   DELETE:  { bg: "#FEE2E2", color: "#EF4444", label: "Delete" },
-//   FILE:    { bg: "#F3E8FF", color: "#7C3AED", label: "File Tax" },
-//   REMIT:   { bg: "#E0F2FE", color: "#0369A1", label: "Remit" },
-//   MATCH:   { bg: "#D1FAE5", color: "#065F46", label: "Reconcile" },
-//   UNMATCH: { bg: "#FFF1F2", color: "#9F1239", label: "Unreconcile" },
+//   FILE:    { bg: "#E0E7FF", color: "#4F46E5", label: "File Tax" },
+//   REMIT:   { bg: "#E0E7FF", color: "#3730A3", label: "Remit" },
+//   MATCH:   { bg: "#D1FAE5", color: "#047857", label: "Reconcile" },
+//   UNMATCH: { bg: "#FEE2E2", color: "#B91C1C", label: "Unreconcile" },
 // };
 
 // const today = () => new Date().toISOString().split("T")[0];
@@ -673,7 +673,7 @@
 //         exit={{ x: "100%" }}
 //         transition={{ type: "spring", stiffness: 300, damping: 30 }}
 //         className="relative h-full w-full max-w-xl flex flex-col"
-//         style={{ background: C.bg, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+//         style={{ background: C.bg, boxShadow: C.shadow.card }}
 //       >
 //         {/* Header */}
 //         <div
@@ -681,14 +681,14 @@
 //           style={{ background: C.surface, borderBottom: `1px solid ${C.border}` }}
 //         >
 //           <div>
-//             <h2 className="font-bold text-sm" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+//             <h2 className="text-sm" style={{ color: C.textPrimary }}>
 //               Audit Detail
 //             </h2>
 //             <p className="text-xs mt-0.5" style={{ color: C.textMuted }}>
 //               {log.action} · {log.module} · {log.recordId ?? log.record_id}
 //             </p>
 //           </div>
-//           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100">
+//           <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100">
 //             <X size={15} color={C.textMuted} />
 //           </button>
 //         </div>
@@ -735,7 +735,7 @@
 //                   <div
 //                     key={key}
 //                     className="grid grid-cols-2 text-xs"
-//                     style={{ borderBottom: `1px solid ${C.border}`, background: changed ? "#FFFBEB" : "transparent" }}
+//                     style={{ borderBottom: `1px solid ${C.border}`, background: changed ? "#FEF3C7" : "transparent" }}
 //                   >
 //                     <div className="px-4 py-2.5 space-y-0.5" style={{ borderRight: `1px solid ${C.border}` }}>
 //                       <p className="font-semibold" style={{ color: C.textMuted }}>{key}</p>
@@ -909,7 +909,7 @@
 //             whileHover={{ scale: 1.02 }}
 //             whileTap={{ scale: 0.98 }}
 //             onClick={load}
-//             className="p-2 rounded-xl"
+//             className="p-2 rounded-full"
 //             style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}
 //           >
 //             <RefreshCw size={14} color={C.textSecondary} />
@@ -918,7 +918,7 @@
 //             whileHover={{ scale: 1.02 }}
 //             whileTap={{ scale: 0.98 }}
 //             onClick={exportCSV}
-//             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl"
+//             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full"
 //             style={{ background: C.primary, color: "#fff" }}
 //           >
 //             <Download size={14} /> Export CSV
@@ -1014,7 +1014,7 @@
 //               whileTap={{ scale: 0.95 }}
 //               disabled={page === 1}
 //               onClick={() => setPage((p) => p - 1)}
-//               className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+//               className="px-3 py-1.5 text-xs font-semibold rounded-full"
 //               style={{ background: page === 1 ? C.surfaceAlt : C.primary, color: page === 1 ? C.textMuted : "#fff" }}
 //             >
 //               Prev
@@ -1023,7 +1023,7 @@
 //               whileTap={{ scale: 0.95 }}
 //               disabled={page === totalPages}
 //               onClick={() => setPage((p) => p + 1)}
-//               className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+//               className="px-3 py-1.5 text-xs font-semibold rounded-full"
 //               style={{ background: page === totalPages ? C.surfaceAlt : C.primary, color: page === totalPages ? C.textMuted : "#fff" }}
 //             >
 //               Next
@@ -1073,16 +1073,16 @@ const MODULE_LABELS = {
 const MODULES = ["all", ...Object.keys(MODULE_LABELS)];
 
 const ACTION_CFG = {
-  CREATE:  { bg: "#ECFEFF", color: "#06B6D4", label: "Create"  },
+  CREATE:  { bg: "#EEF2FF", color: "#6366F1", label: "Create"  },
   UPDATE:  { bg: "#EEF2FF", color: "#4F46E5", label: "Update"  },
   POST:    { bg: "#D1FAE5", color: "#10B981", label: "Post"    },
   VOID:    { bg: "#FEF3C7", color: "#F59E0B", label: "Void"    },
   DELETE:  { bg: "#FEE2E2", color: "#EF4444", label: "Delete"  },
-  REMIT:   { bg: "#F3E8FF", color: "#7C3AED", label: "Remit"   },
-  FILE:    { bg: "#DBEAFE", color: "#2563EB", label: "File"    },
-  CONFIRM: { bg: "#D1FAE5", color: "#059669", label: "Confirm" },
-  IMPORT:  { bg: "#FEF3C7", color: "#D97706", label: "Import"  },
-  MATCH:   { bg: "#ECFEFF", color: "#0891B2", label: "Match"   },
+  REMIT:   { bg: "#E0E7FF", color: "#4F46E5", label: "Remit"   },
+  FILE:    { bg: "#E0E7FF", color: "#4F46E5", label: "File"    },
+  CONFIRM: { bg: "#D1FAE5", color: "#047857", label: "Confirm" },
+  IMPORT:  { bg: "#FEF3C7", color: "#92400E", label: "Import"  },
+  MATCH:   { bg: "#EEF2FF", color: "#4338CA", label: "Match"   },
 };
 
 const ACTIONS = ["all", ...Object.keys(ACTION_CFG)];
@@ -1130,7 +1130,7 @@ function DiffDrawer({ log, onClose }) {
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="relative h-full w-full max-w-xl flex flex-col"
-        style={{ background: C.bg, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+        style={{ background: C.bg, boxShadow: C.shadow.card }}
       >
         {/* Header */}
         <div
@@ -1139,8 +1139,8 @@ function DiffDrawer({ log, onClose }) {
         >
           <div>
             <h2
-              className="font-bold text-sm"
-              style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+              className="text-sm"
+              style={{ color: C.textPrimary }}
             >
               Audit Detail
             </h2>
@@ -1149,7 +1149,7 @@ function DiffDrawer({ log, onClose }) {
               {(log.recordId ?? log.record_id ?? "—").slice(0, 16)}…
             </p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-gray-100">
+          <button onClick={onClose} className="p-1.5 rounded-full hover:bg-gray-100">
             <X size={15} color={C.textMuted} />
           </button>
         </div>
@@ -1221,7 +1221,7 @@ function DiffDrawer({ log, onClose }) {
                     className="grid grid-cols-2 text-xs"
                     style={{
                       borderBottom: `1px solid ${C.border}`,
-                      background: changed ? "#FFFBEB" : "transparent",
+                      background: changed ? "#FEF3C7" : "transparent",
                     }}
                   >
                     <div className="px-4 py-2.5 space-y-0.5" style={{ borderRight: `1px solid ${C.border}` }}>
@@ -1394,7 +1394,7 @@ export default function AuditTrail({ searchQuery }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={load}
-            className="p-2 rounded-xl"
+            className="p-2 rounded-full"
             style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}
           >
             <RefreshCw size={14} color={C.textSecondary} />
@@ -1403,7 +1403,7 @@ export default function AuditTrail({ searchQuery }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={exportCSV}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full"
             style={{ background: C.primary, color: "#fff" }}
           >
             <Download size={14} /> Export CSV
@@ -1537,7 +1537,7 @@ export default function AuditTrail({ searchQuery }) {
               whileTap={{ scale: 0.95 }}
               disabled={page === 1}
               onClick={() => setPage((p) => p - 1)}
-              className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+              className="px-3 py-1.5 text-xs font-semibold rounded-full"
               style={{ background: page === 1 ? C.surfaceAlt : C.primary, color: page === 1 ? C.textMuted : "#fff" }}
             >
               Prev
@@ -1546,7 +1546,7 @@ export default function AuditTrail({ searchQuery }) {
               whileTap={{ scale: 0.95 }}
               disabled={page === totalPages}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1.5 text-xs font-semibold rounded-xl"
+              className="px-3 py-1.5 text-xs font-semibold rounded-full"
               style={{ background: page === totalPages ? C.surfaceAlt : C.primary, color: page === totalPages ? C.textMuted : "#fff" }}
             >
               Next

@@ -107,7 +107,7 @@ function RoleCard({ role, onEdit, onDelete }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+        boxShadow: C.shadow.card,
       }}
     >
       <div className="flex items-start justify-between gap-2">
@@ -134,7 +134,7 @@ function RoleCard({ role, onEdit, onDelete }) {
           <motion.button
             whileHover={{ scale: 1.1 }}
             onClick={() => onEdit(role)}
-            className="w-7 h-7 rounded-lg flex items-center justify-center border-none cursor-pointer"
+            className="w-7 h-7 rounded-full flex items-center justify-center border-none cursor-pointer"
             style={{ background: C.primaryLight }}
           >
             <Edit2 size={12} color={C.primary} />
@@ -142,7 +142,7 @@ function RoleCard({ role, onEdit, onDelete }) {
           <motion.button
             whileHover={{ scale: 1.1 }}
             onClick={() => onDelete(role)}
-            className="w-7 h-7 rounded-lg flex items-center justify-center border-none cursor-pointer"
+            className="w-7 h-7 rounded-full flex items-center justify-center border-none cursor-pointer"
             style={{ background: C.dangerLight }}
           >
             <Trash2 size={12} color={C.danger} />
@@ -254,7 +254,7 @@ function GradeModal({ onSave, onClose }) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full mt-6 py-2.5 rounded-xl text-white font-bold text-xs border-none cursor-pointer"
+          className="w-full mt-6 py-2.5 rounded-full text-white font-bold text-xs border-none cursor-pointer"
           style={{ background: C.primary }}
         >
           {saving ? "Creating..." : "Create Grade"}
@@ -320,7 +320,7 @@ function RoleModal({
             background: `linear-gradient(135deg,${C.navy},${C.primary})`,
           }}
         >
-          <h3 className="font-bold">
+          <h3 className="">
             {mode === "edit" ? "Edit Role" : "New Role"}
           </h3>
           <X size={16} onClick={onClose} className="cursor-pointer" />
@@ -367,7 +367,7 @@ function RoleModal({
             </div>
             <button
               onClick={onNewGrade}
-              className="h-10 w-10 rounded-xl flex items-center justify-center border-none cursor-pointer"
+              className="h-10 w-10 rounded-full flex items-center justify-center border-none cursor-pointer"
               style={{ background: C.primaryLight }}
             >
               <Plus size={16} color={C.primary} />
@@ -389,14 +389,14 @@ function RoleModal({
         <div className="p-6 border-t flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl font-bold bg-gray-100 border-none cursor-pointer"
+            className="flex-1 py-3 rounded-full font-bold bg-gray-100 border-none cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex-1 py-3 rounded-xl font-bold text-white border-none cursor-pointer"
+            className="flex-1 py-3 rounded-full font-bold text-white border-none cursor-pointer"
             style={{ background: C.primary }}
           >
             {saving ? "Saving..." : "Save Role"}
@@ -464,7 +464,7 @@ export default function JobRoles() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, fontFamily: "'DM Sans',sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex h-screen overflow-hidden">
        
@@ -491,13 +491,13 @@ export default function JobRoles() {
             <div className="ml-auto flex items-center gap-3">
               <button
                 onClick={() => setGradeModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold border hover:bg-gray-50 cursor-pointer bg-white"
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold border hover:bg-gray-50 cursor-pointer bg-white"
               >
                 <Settings size={13} /> Custom Grades
               </button>
               <button
                 onClick={() => setRoleModal({ mode: "create" })}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg border-none cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-white shadow-lg border-none cursor-pointer"
                 style={{ background: C.primary }}
               >
                 <Plus size={13} /> New Role
@@ -517,11 +517,11 @@ export default function JobRoles() {
               animate={{ opacity: 1, y: 0 }}
               className="rounded-3xl p-8 text-white flex justify-between items-center"
               style={{
-                background: `linear-gradient(135deg, ${C.navy}, ${C.primary})`,
+                background: C.gradient.hero,
               }}
             >
               <div>
-                <h1 className="text-3xl font-bold tracking-tight">Job Roles</h1>
+                <h1 className="text-3xl tracking-tight">Job Roles</h1>
                 <p className="opacity-70 text-sm mt-1">
                   {user.firstName} • {user.role}
                 </p>

@@ -6,22 +6,26 @@
 // Layout: matches AttendancePage — full-screen flex shell, sticky top nav, scrollable main.
 
 import { useState, useEffect, useCallback } from "react";
+import C from "../styles/colors";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Megaphone,
-  Bell,
-  Search,
-  X,
-  Eye,
-  Globe,
-  Building2,
-  Clock,
-  Pin,
-  RefreshCw,
   AlertCircle,
+  AlertTriangle,
+  Bell,
+  Building2,
   ChevronLeft,
   ChevronRight,
+  ClipboardList,
+  Clock,
+  Eye,
+  Globe,
+  Megaphone,
   Menu,
+  PartyPopper,
+  Pin,
+  RefreshCw,
+  Search,
+  X,
 } from "lucide-react";
 import {
   getAnnouncementFeed,
@@ -30,35 +34,13 @@ import {
 import { useAuth } from "../components/useAuth";
 
 /* ─── Design tokens ─── */
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const TYPE_CONFIG = {
-  general: { label: "General", color: C.primary,  bg: C.primaryLight,  icon: "📢" },
-  urgent:  { label: "Urgent",  color: C.danger,   bg: C.dangerLight,   icon: "⚠️" },
-  policy:  { label: "Policy",  color: C.purple,   bg: C.purpleLight,   icon: "📋" },
-  event:   { label: "Event",   color: C.warning,  bg: C.warningLight,  icon: "🎉" },
-  reminder:{ label: "Reminder",color: C.accent,   bg: C.accentLight,   icon: "🔔" },
+  general: { label: "General", color: C.primary,  bg: C.primaryLight,  icon: Megaphone },
+  urgent:  { label: "Urgent",  color: C.danger,   bg: C.dangerLight,   icon: AlertTriangle },
+  policy:  { label: "Policy",  color: C.purple,   bg: C.purpleLight,   icon: ClipboardList },
+  event:   { label: "Event",   color: C.warning,  bg: C.warningLight,  icon: PartyPopper },
+  reminder:{ label: "Reminder",color: C.accent,   bg: C.accentLight,   icon: Bell },
 };
 
 const fadeUp = {
@@ -100,14 +82,14 @@ function AnnouncementDetail({ ann, onClose }) {
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         className="relative h-full w-full max-w-xl flex flex-col"
-        style={{ background: C.bg, boxShadow: "-8px 0 40px rgba(0,0,0,0.15)" }}
+        style={{ background: C.bg, boxShadow: C.shadow.card }}
       >
         {/* Banner */}
         <div
           className="px-6 py-4 flex items-center gap-3 shrink-0"
           style={{ background: `linear-gradient(135deg, ${tc.color}, ${tc.color}cc)` }}
         >
-          <span className="text-xl">{tc.icon}</span>
+          <tc.icon size={20} />
           <span className="text-sm font-bold text-white uppercase tracking-wide">
             {tc.label}
           </span>
@@ -118,7 +100,7 @@ function AnnouncementDetail({ ann, onClose }) {
           )}
           <button
             onClick={onClose}
-            className="ml-auto p-1.5 rounded-lg"
+            className="ml-auto p-1.5 rounded-full"
             style={{ background: "rgba(255,255,255,0.15)" }}
           >
             <X size={14} color="#fff" />
@@ -131,13 +113,13 @@ function AnnouncementDetail({ ann, onClose }) {
             style={{
               background: C.surface,
               border: `1px solid ${C.border}`,
-              boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
+              boxShadow: C.shadow.card,
             }}
           >
             <div className="p-6">
               <h2
-                className="text-xl font-bold mb-3 leading-snug"
-                style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+                className="text-xl mb-3 leading-snug"
+                style={{ color: C.textPrimary }}
               >
                 {ann.title}
               </h2>
@@ -213,7 +195,7 @@ function AnnCard({ ann, index, onOpen, viewed }) {
           className="text-[11px] font-bold px-2 py-0.5 rounded-full"
           style={{ background: tc.bg, color: tc.color }}
         >
-          {tc.icon} {tc.label}
+          <tc.icon size={14} /> {tc.label}
         </span>
         {ann.isPinned && (
           <span className="flex items-center gap-1 text-[10px] font-bold" style={{ color: C.warning }}>
@@ -233,8 +215,8 @@ function AnnCard({ ann, index, onOpen, viewed }) {
       {/* Body */}
       <div className="p-5">
         <h3
-          className="text-sm font-bold leading-snug mb-2"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-sm leading-snug mb-2"
+          style={{ color: C.textPrimary }}
         >
           {ann.title}
         </h3>
@@ -367,7 +349,7 @@ export default function AnnouncementsFeed() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface, border: `1px solid ${C.border}`, cursor: "pointer" }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -395,13 +377,13 @@ export default function AnnouncementsFeed() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={fetchFeed}
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{ background: C.surface, border: `1px solid ${C.border}`, cursor: "pointer" }}
                 title="Refresh"
               >
                 <RefreshCw size={14} color={C.textMuted} className={loading ? "animate-spin" : ""} />
               </motion.button>
-              <button className="relative p-2 rounded-xl" style={{ background: C.surface, border: `1px solid ${C.border}` }}>
+              <button className="relative p-2 rounded-full" style={{ background: C.surface, border: `1px solid ${C.border}` }}>
                 <Bell size={15} color={C.textSecondary} />
               </button>
               {employee?.avatar ? (
@@ -409,7 +391,7 @@ export default function AnnouncementsFeed() {
               ) : (
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                  style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}
+                  style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}
                 >
                   {employee?.initials ?? "?"}
                 </div>
@@ -426,7 +408,7 @@ export default function AnnouncementsFeed() {
               animate={{ opacity: 1, y: 0 }}
               className="relative rounded-2xl overflow-hidden"
               style={{
-                background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 55%,#1E40AF 100%)",
+                background: C.gradient.hero,
                 minHeight: 130,
               }}
             >
@@ -436,7 +418,7 @@ export default function AnnouncementsFeed() {
                     <Megaphone size={22} color="white" />
                   </div>
                   <div>
-                    <h1 className="text-white text-2xl font-bold" style={{ fontFamily: "Sora,sans-serif" }}>
+                    <h1 className="text-white text-2xl ">
                       Announcements
                     </h1>
                     <p className="text-indigo-200 text-sm">
@@ -491,14 +473,14 @@ export default function AnnouncementsFeed() {
                   <button
                     key={t}
                     onClick={() => setFilterType(t)}
-                    className="px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all capitalize"
+                    className="px-3 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all capitalize"
                     style={{
                       background: filterType === t ? cfg?.color || C.primary : C.surface,
                       color: filterType === t ? "#fff" : C.textSecondary,
                       border: `1px solid ${filterType === t ? "transparent" : C.border}`,
                     }}
                   >
-                    {t === "all" ? "All" : `${cfg.icon} ${cfg.label}`}
+                    {t === "all" ? "All" : `${cfg.label}`}
                   </button>
                 );
               })}
@@ -570,7 +552,7 @@ export default function AnnouncementsFeed() {
                     <button
                       disabled={page === 1}
                       onClick={() => setPage((p) => p - 1)}
-                      className="flex items-center gap-1 px-4 py-2 rounded-xl text-xs font-semibold disabled:opacity-40 transition-all"
+                      className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-semibold disabled:opacity-40 transition-all"
                       style={{ background: C.surface, border: `1px solid ${C.border}`, color: C.textSecondary }}
                     >
                       <ChevronLeft size={13} /> Previous
@@ -581,7 +563,7 @@ export default function AnnouncementsFeed() {
                     <button
                       disabled={page >= meta.totalPages}
                       onClick={() => setPage((p) => p + 1)}
-                      className="flex items-center gap-1 px-4 py-2 rounded-xl text-xs font-semibold disabled:opacity-40 transition-all"
+                      className="flex items-center gap-1 px-4 py-2 rounded-full text-xs font-semibold disabled:opacity-40 transition-all"
                       style={{ background: C.surface, border: `1px solid ${C.border}`, color: C.textSecondary }}
                     >
                       Next <ChevronRight size={13} />

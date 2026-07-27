@@ -18,13 +18,13 @@ import { leaveApi } from "../../api/service/leaveApi";
 
 const DEPT_COLORS = [
   "#6366F1",
-  "#06B6D4",
+  "#6366F1",
   "#10B981",
   "#F59E0B",
-  "#EC4899",
-  "#8B5CF6",
+  "#6366F1",
+  "#6366F1",
   "#EF4444",
-  "#F97316",
+  "#F59E0B",
 ];
 const deptColor = (name, list) =>
   DEPT_COLORS[list.indexOf(name) % DEPT_COLORS.length] ?? C.primary;
@@ -194,7 +194,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
     "Annual Leave": C.primary,
     "Sick Leave": C.danger,
     "Study Leave": C.success,
-    "Maternity Leave": "#8B5CF6",
+    "Maternity Leave": "#6366F1",
     "Paternity Leave": C.accent,
   };
 
@@ -621,7 +621,7 @@ export default function LeaveBalances({ searchQuery = "", onTabChange }) {
                                     onClick={() =>
                                       navigate(`/admin/employees/${emp.id}`)
                                     }
-                                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold self-center"
+                                    className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold self-center"
                                     style={{
                                       background: C.primaryLight,
                                       color: C.primary,

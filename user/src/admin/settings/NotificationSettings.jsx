@@ -15,7 +15,7 @@
 //   danger: "#EF4444",
 //   dangerLight: "#FEE2E2",
 //   textPrimary: "#0F172A",
-//   textSecondary: "#64748B",
+//   textSecondary: "#5F6D7E",
 //   textMuted: "#94A3B8",
 // };
 
@@ -37,7 +37,7 @@
 
 //   return (
 //     <div>
-//       <h2 className="text-2xl font-bold mb-8">Notification Settings</h2>
+//       <h2 className="text-2xl mb-8">Notification Settings</h2>
 
 //       <div
 //         className="rounded-2xl border p-8"
@@ -89,27 +89,11 @@
 
 // src/admin/settings/NotificationSettings.jsx
 import { useState, useEffect } from "react";
+import C from "../../styles/colors";
 import { motion } from "framer-motion";
 import { Loader2, AlertCircle, CheckCircle2, Save } from "lucide-react";
 import { settingsApi } from "../../api/service/settingsApi";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 // Fallback list if API returns empty/no preferences
 const DEFAULT_PREFS = [
@@ -182,7 +166,7 @@ export default function NotificationSettings() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-6" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+      <h2 className="text-2xl mb-6" style={{ color: C.textPrimary }}>
         Notification Settings
       </h2>
 
@@ -232,7 +216,7 @@ export default function NotificationSettings() {
 
       <motion.button whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.99 }}
         onClick={handleSave} disabled={saving}
-        className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white"
+        className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-semibold text-white"
         style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}>
         {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
         {saving ? "Saving..." : "Save Preferences"}

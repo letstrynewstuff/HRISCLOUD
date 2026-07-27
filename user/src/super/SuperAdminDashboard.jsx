@@ -43,7 +43,7 @@
 // const Skeleton = ({ className = "" }) => (
 //   <div
 //     className={`rounded-xl animate-pulse ${className}`}
-//     style={{ background: "#E8EBF4" }}
+//     style={{ background: "#E4E7F0" }}
 //   />
 // );
 
@@ -51,7 +51,7 @@
 //   return (
 //     <motion.div
 //       whileHover={
-//         hover ? { y: -2, boxShadow: "0 12px 40px rgba(79,70,229,0.10)" } : {}
+//         hover ? { y: -2, boxShadow: C.shadow.lift } : {}
 //       }
 //       transition={{ duration: 0.2 }}
 //       className={`rounded-2xl bg-white border shadow-sm ${className}`}
@@ -84,7 +84,7 @@
 //       </div>
 //       <p
 //         className="text-2xl font-black mb-0.5"
-//         style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+//         style={{ color: C.textPrimary }}
 //       >
 //         {value}
 //       </p>
@@ -167,7 +167,7 @@
 //           className="relative rounded-2xl overflow-hidden p-7 text-white"
 //           style={{
 //             background:
-//               "linear-gradient(135deg,#0F0C29 0%,#302B63 50%,#24243E 100%)",
+//               "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E1B4B 100%)",
 //           }}
 //         >
 //           <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -191,8 +191,8 @@
 //                   Welcome back, Super Admin
 //                 </p>
 //                 <h1
-//                   className="text-2xl md:text-3xl font-bold"
-//                   style={{ fontFamily: "Sora,sans-serif" }}
+//                   className="text-2xl md:text-3xl "
+//
 //                 >
 //                   HRIS Cloud Platform
 //                 </h1>
@@ -212,14 +212,14 @@
 //                 {
 //                   label: "Total Users",
 //                   value: loading ? "—" : (d.totalUsers ?? 0),
-//                   color: "#A5F3FC",
+//                   color: "#C7D2FE",
 //                 },
 //                 {
 //                   label: "Revenue MRR",
 //                   value: loading
 //                     ? "—"
 //                     : `₦${((d.mrr ?? 0) / 1_000_000).toFixed(1)}M`,
-//                   color: "#BBF7D0",
+//                   color: "#D1FAE5",
 //                 },
 //               ].map(({ label, value, color }) => (
 //                 <div
@@ -229,7 +229,7 @@
 //                 >
 //                   <p
 //                     className="text-2xl font-bold"
-//                     style={{ color, fontFamily: "Sora,sans-serif" }}
+//                     style={{ color }}
 //                   >
 //                     {value}
 //                   </p>
@@ -460,9 +460,9 @@
 //                 <div className="flex items-center gap-2">
 //                   <div
 //                     className="w-8 h-8 rounded-xl flex items-center justify-center"
-//                     style={{ background: "#ECFEFF" }}
+//                     style={{ background: "#EEF2FF" }}
 //                   >
-//                     <Users size={15} color="#06B6D4" />
+//                     <Users size={15} color="#6366F1" />
 //                   </div>
 //                   <p
 //                     className="font-bold text-sm"
@@ -616,7 +616,7 @@
 //                     {
 //                       label: "Total Companies",
 //                       value: d.totalCompanies ?? 0,
-//                       color: "#06B6D4",
+//                       color: "#6366F1",
 //                     },
 //                     {
 //                       label: "Active Users",
@@ -649,7 +649,7 @@
 //               )}
 //               <Link to="/super-admin/analytics">
 //                 <button
-//                   className="mt-4 w-full py-2 rounded-xl text-xs font-semibold"
+//                   className="mt-4 w-full py-2 rounded-full text-xs font-semibold"
 //                   style={{ background: C.primaryLight, color: C.primary }}
 //                 >
 //                   Full Analytics →
@@ -669,9 +669,9 @@
 //               <div className="flex items-center gap-2 mb-4">
 //                 <div
 //                   className="w-8 h-8 rounded-xl flex items-center justify-center"
-//                   style={{ background: "#EDE9FE" }}
+//                   style={{ background: "#E0E7FF" }}
 //                 >
-//                   <Settings size={15} color="#8B5CF6" />
+//                   <Settings size={15} color="#6366F1" />
 //                 </div>
 //                 <p
 //                   className="font-bold text-sm"
@@ -717,8 +717,8 @@
 //               </div>
 //               <Link to="/super-admin/configuration">
 //                 <button
-//                   className="mt-4 w-full py-2 rounded-xl text-xs font-semibold"
-//                   style={{ background: "#EDE9FE", color: "#8B5CF6" }}
+//                   className="mt-4 w-full py-2 rounded-full text-xs font-semibold"
+//                   style={{ background: "#E0E7FF", color: "#6366F1" }}
 //                 >
 //                   Manage Config →
 //                 </button>
@@ -796,7 +796,7 @@
 //               )}
 //               <Link to="/super-admin/audit-logs">
 //                 <button
-//                   className="mt-4 w-full py-2 rounded-xl text-xs font-semibold"
+//                   className="mt-4 w-full py-2 rounded-full text-xs font-semibold"
 //                   style={{ background: C.successLight, color: C.success }}
 //                 >
 //                   View All Logs →
@@ -817,9 +817,9 @@
 //             <div className="flex items-center gap-2 mb-5">
 //               <div
 //                 className="w-8 h-8 rounded-xl flex items-center justify-center"
-//                 style={{ background: "#ECFEFF" }}
+//                 style={{ background: "#EEF2FF" }}
 //               >
-//                 <Activity size={15} color="#06B6D4" />
+//                 <Activity size={15} color="#6366F1" />
 //               </div>
 //               <p className="font-bold text-sm" style={{ color: C.textPrimary }}>
 //                 System Monitoring
@@ -981,7 +981,7 @@ const container = {
 const Skeleton = ({ className = "" }) => (
   <div
     className={`rounded-xl animate-pulse ${className}`}
-    style={{ background: "#E8EBF4" }}
+    style={{ background: "#E4E7F0" }}
   />
 );
 
@@ -989,7 +989,7 @@ function Card({ children, className = "", style = {}, hover = true }) {
   return (
     <motion.div
       whileHover={
-        hover ? { y: -3, boxShadow: "0 15px 45px rgba(15,12,41,0.08)" } : {}
+        hover ? { y: -3, boxShadow: C.shadow.lift } : {}
       }
       transition={{ duration: 0.25, ease: "easeOut" }}
       className={`rounded-2xl bg-white border shadow-sm ${className}`}
@@ -1030,7 +1030,7 @@ function StatCard({ label, value, sub, icon: Icon, color, bg, trend }) {
         </div>
         <p
           className="text-3xl font-black mb-1 tracking-tight"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          style={{ color: C.textPrimary }}
         >
           {value}
         </p>
@@ -1145,16 +1145,16 @@ export default function SuperAdminDashboard() {
     setLoading(true);
 
     try {
-      console.log("🚀 Loading dashboard step-by-step...");
+      console.log(" Loading dashboard step-by-step...");
 
       // 1. Analytics (core stats)
       const analyticsRes = await getAnalyticsApi();
-      console.log("📊 analytics:", analyticsRes.data);
+      console.log(" analytics:", analyticsRes.data);
       setStats(analyticsRes.data?.data || analyticsRes.data || {});
 
       // 2. Companies
       const companiesRes = await getAllCompaniesApi({ limit: 5 });
-      console.log("🏢 companies:", companiesRes.data);
+      console.log(" companies:", companiesRes.data);
       setCompanies(
         companiesRes.data?.companies ||
           companiesRes.data?.data?.companies ||
@@ -1163,7 +1163,7 @@ export default function SuperAdminDashboard() {
 
       // 3. Users
       const usersRes = await getAllUsersApi({ limit: 5 });
-      console.log("👤 users:", usersRes.data);
+      console.log(" users:", usersRes.data);
       setUsers(usersRes.data?.users || usersRes.data?.data?.users || []);
 
       // 4. Audit logs
@@ -1175,7 +1175,7 @@ export default function SuperAdminDashboard() {
         const healthRes = await getSystemHealthApi();
         setSystemHealth(healthRes.data?.data || healthRes.data || {});
       } catch (err) {
-        console.warn("⚠️ System health failed (non-blocking)");
+        console.warn(" System health failed (non-blocking)");
         setSystemHealth({});
       }
 
@@ -1195,11 +1195,11 @@ export default function SuperAdminDashboard() {
               ],
         );
       } catch (err) {
-        console.warn("⚠️ Settings failed (using defaults)");
+        console.warn(" Settings failed (using defaults)");
         setConfig([]);
       }
     } catch (err) {
-      console.error("❌ Dashboard load failed:", err);
+      console.error(" Dashboard load failed:", err);
     } finally {
       setLoading(false);
     }
@@ -1229,7 +1229,7 @@ export default function SuperAdminDashboard() {
           className="relative rounded-3xl overflow-hidden p-8 md:p-10 text-white shadow-2xl"
           style={{
             background:
-              "linear-gradient(135deg, #0F0C29 0%, #302B63 50%, #24243E 100%)",
+              "linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #1E1B4B 100%)",
           }}
         >
           {/* Animated Background Elements */}
@@ -1269,8 +1269,7 @@ export default function SuperAdminDashboard() {
                   </p>
                 </div>
                 <h1
-                  className="text-3xl md:text-4xl font-black tracking-tight"
-                  style={{ fontFamily: "Sora, sans-serif" }}
+                  className="text-3xl md:text-4xl tracking-tight"
                 >
                   BantaHR Management
                 </h1>
@@ -1295,13 +1294,13 @@ export default function SuperAdminDashboard() {
                   value: loading
                     ? "—"
                     : `₦${((stats.mrr ?? 0) / 1_000_000).toFixed(1)}M`,
-                  color: "#BBF7D0",
+                  color: "#D1FAE5",
                   icon: CreditCard,
                 },
                 {
                   label: "Health Index",
                   value: "99.9%",
-                  color: "#A5F3FC",
+                  color: "#C7D2FE",
                   icon: Activity,
                 },
               ].map(({ label, value, color, icon: Icon }) => (
@@ -1321,7 +1320,7 @@ export default function SuperAdminDashboard() {
                   </div>
                   <p
                     className="text-xl md:text-2xl font-bold"
-                    style={{ color, fontFamily: "Sora, sans-serif" }}
+                    style={{ color }}
                   >
                     {value}
                   </p>
@@ -1361,8 +1360,8 @@ export default function SuperAdminDashboard() {
                 label: "System Wide Users",
                 value: stats.totalUsers ?? 0,
                 icon: Users,
-                color: "#06B6D4",
-                bg: "#ECFEFF",
+                color: "#6366F1",
+                bg: "#EEF2FF",
                 sub: `${stats.activeUsers ?? 0} users online`,
                 trend: 14,
               },
@@ -1530,9 +1529,9 @@ export default function SuperAdminDashboard() {
                 <div className="flex items-center gap-3">
                   <div
                     className="w-10 h-10 rounded-2xl flex items-center justify-center"
-                    style={{ background: "#ECFEFF" }}
+                    style={{ background: "#EEF2FF" }}
                   >
-                    <Users size={20} color="#06B6D4" />
+                    <Users size={20} color="#6366F1" />
                   </div>
                   <div>
                     <p
@@ -1676,7 +1675,7 @@ export default function SuperAdminDashboard() {
                   {
                     label: "Global Load",
                     value: "Low",
-                    color: "#06B6D4",
+                    color: "#6366F1",
                     icon: Globe,
                   },
                 ].map((item) => (
@@ -1705,7 +1704,7 @@ export default function SuperAdminDashboard() {
 
               <Link to="/super-admin/analytics" className="mt-8">
                 <button
-                  className="w-full py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all hover:shadow-lg active:scale-95"
+                  className="w-full py-4 rounded-full text-xs font-black uppercase tracking-widest transition-all hover:shadow-lg active:scale-95"
                   style={{ background: C.primary, color: "#fff" }}
                 >
                   Detailed Reports
@@ -1721,9 +1720,9 @@ export default function SuperAdminDashboard() {
                 <div className="flex items-center gap-3">
                   <div
                     className="w-10 h-10 rounded-2xl flex items-center justify-center"
-                    style={{ background: "#EDE9FE" }}
+                    style={{ background: "#E0E7FF" }}
                   >
-                    <Settings size={20} color="#8B5CF6" />
+                    <Settings size={20} color="#6366F1" />
                   </div>
                   <p
                     className="font-black text-sm uppercase tracking-tight"
@@ -1765,8 +1764,8 @@ export default function SuperAdminDashboard() {
 
               <Link to="/super-admin/configuration" className="mt-8">
                 <button
-                  className="w-full py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all hover:bg-slate-800"
-                  style={{ background: "#2D3748", color: "#fff" }}
+                  className="w-full py-4 rounded-full text-xs font-black uppercase tracking-widest transition-all hover:bg-slate-800"
+                  style={{ background: "#334155", color: "#fff" }}
                 >
                   Edit System Configuration
                 </button>
@@ -1837,7 +1836,7 @@ export default function SuperAdminDashboard() {
 
               <Link to="/super-admin/audit-logs" className="mt-8">
                 <button
-                  className="w-full py-4 rounded-2xl text-xs font-black uppercase tracking-widest border-2 transition-all hover:bg-emerald-50"
+                  className="w-full py-4 rounded-full text-xs font-black uppercase tracking-widest border-2 transition-all hover:bg-emerald-50"
                   style={{ borderColor: C.success, color: C.success }}
                 >
                   View Complete Logs
@@ -1901,7 +1900,7 @@ export default function SuperAdminDashboard() {
                   label: "Storage Clusters",
                   status: systemHealth.storage ?? "Operational",
                   icon: Server,
-                  color: "#EC4899",
+                  color: "#6366F1",
                 },
               ].map(({ label, status, icon: Icon, color }) => (
                 <div
@@ -1975,7 +1974,7 @@ export default function SuperAdminDashboard() {
                 </p>
               </div>
               <Link to="/super-admin/system-monitoring">
-                <button className="flex items-center gap-2 px-6 py-3 bg-white text-slate-900 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] hover:bg-indigo-400 transition-colors">
+                <button className="flex items-center gap-2 px-6 py-3 bg-white text-slate-900 rounded-full text-[10px] font-black uppercase tracking-[0.15em] hover:bg-indigo-400 transition-colors">
                   Access Infrastructure <ArrowUpRight size={14} />
                 </button>
               </Link>

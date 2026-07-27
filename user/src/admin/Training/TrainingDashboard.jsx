@@ -77,8 +77,8 @@ export default function TrainingDashboard() {
       label: "Employees Trained",
       value: data.employeesTrained,
       icon: Users,
-      color: "#06B6D4",
-      bg: "#ECFEFF",
+      color: "#6366F1",
+      bg: "#EEF2FF",
     },
     {
       label: "Total Spend (YTD)",
@@ -121,7 +121,6 @@ export default function TrainingDashboard() {
                     className="text-3xl font-bold"
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {stat.value}
@@ -145,7 +144,7 @@ export default function TrainingDashboard() {
       >
         <div className="flex items-center justify-between mb-4">
           <h3
-            className="font-semibold text-lg"
+            className="text-lg"
             style={{ color: C.textPrimary }}
           >
             Upcoming Trainings
@@ -206,7 +205,7 @@ export default function TrainingDashboard() {
                   </div>
                   <span
                     className="text-xs px-3 py-1 rounded-full h-fit"
-                    style={{ background: "#ECFEFF", color: "#06B6D4" }}
+                    style={{ background: "#EEF2FF", color: "#6366F1" }}
                   >
                     {item.type}
                   </span>

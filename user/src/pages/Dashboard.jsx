@@ -76,14 +76,14 @@ const scaleIn = {
 const Skeleton = ({ className = "" }) => (
   <div
     className={`animate-pulse rounded-xl ${className}`}
-    style={{ background: "#E8EBF4" }}
+    style={{ background: C.border }}
   />
 );
 
 /* ─── Card ─── */
 const Card = ({ children, className = "", style = {}, onClick }) => (
   <motion.div
-    whileHover={{ y: -2, boxShadow: "0 12px 40px rgba(79,70,229,0.10)" }}
+    whileHover={{ y: -2, boxShadow: C.shadow.lift }}
     transition={{ duration: 0.2 }}
     onClick={onClick}
     className={`rounded-2xl bg-white border shadow-sm overflow-hidden ${onClick ? "cursor-pointer" : ""} ${className}`}
@@ -135,7 +135,7 @@ const LEAVE_ICON = {
 };
 const leaveIcon = (type) => LEAVE_ICON[type?.toLowerCase()] ?? Calendar;
 const leaveColor = (i) =>
-  [C.primary, C.success, C.accent, C.warning, C.danger, "#EC4899"][i % 6];
+  [C.primary, C.success, C.accent, C.warning, C.danger, "#6366F1"][i % 6];
 
 /* ════════════════════════ MAIN ════════════════════════ */
 export default function EmployeeDashboard() {
@@ -309,7 +309,9 @@ export default function EmployeeDashboard() {
     : "..";
   const displayName = authLoading
     ? "Loading…"
-    : `${profile?.firstName ?? ""} ${profile?.lastName ?? ""}`.trim();
+    : `${profile?.firstName ?? ""} ${profile?.lastName ?? ""}`.trim() ||
+      profile?.name ||
+      "there";
 
   /* ─────────────────────── RENDER ─────────────────────── */
   return (
@@ -318,7 +320,6 @@ export default function EmployeeDashboard() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -336,7 +337,7 @@ export default function EmployeeDashboard() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -375,7 +376,7 @@ export default function EmployeeDashboard() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={loadData}
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -387,7 +388,7 @@ export default function EmployeeDashboard() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative p-2 rounded-xl"
+                className="relative p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -404,7 +405,7 @@ export default function EmployeeDashboard() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#818CF8,#06B6D4)",
+                  background: "linear-gradient(135deg,#818CF8,#6366F1)",
                 }}
               >
                 {authLoading ? "…" : initials}
@@ -419,52 +420,57 @@ export default function EmployeeDashboard() {
               initial="hidden"
               animate="visible"
               custom={0}
-              className="relative rounded-2xl overflow-hidden p-6 md:p-8"
+              className="relative overflow-hidden p-6 md:p-8"
               style={{
-                background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                background: C.gradient.hero,
+                borderRadius: C.radius.card,
                 minHeight: 160,
               }}
             >
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div
-                  className="absolute -top-10 -right-10 w-64 h-64 rounded-full opacity-10"
-                  style={{
-                    background: "radial-gradient(circle,#818CF8,transparent)",
-                  }}
-                />
-                <div
-                  className="absolute -bottom-8 left-1/4 w-40 h-40 rounded-full opacity-10"
-                  style={{
-                    background: "radial-gradient(circle,#06B6D4,transparent)",
-                  }}
-                />
-              </div>
+              {/* Soft bloom, matching PageHero and the marketing hero */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute"
+                style={{
+                  left: "50%",
+                  top: "-80%",
+                  transform: "translateX(-50%)",
+                  width: "min(880px, 130%)",
+                  aspectRatio: "1.3",
+                  background:
+                    "radial-gradient(ellipse at center, rgba(255,255,255,0.20), transparent 66%)",
+                }}
+              />
               <div className="relative flex flex-col md:flex-row md:items-center gap-5">
-           
-                <div className="flex-1">
-                  <p className="text-indigo-200 text-sm font-medium mb-0.5">
-                    {greeting()},
+                <div className="flex-1 min-w-0">
+                  <p className="label-mono mb-1" style={{ color: C.indigo[200], fontSize: 11 }}>
+                    {greeting()}
                   </p>
-                  <h1
-                    className="text-white text-2xl md:text-3xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
-                  >
-                    {displayName} 👋
+                  <h1 className="display text-white text-2xl md:text-3xl truncate">
+                    {displayName}
                   </h1>
-              
-                  <p className="text-indigo-300 text-sm mt-1">
-                    {profile?.jobTitle ?? "—"} · {profile?.department ?? "—"}
+                  <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.78)" }}>
+                    {[profile?.jobTitle, profile?.department].filter(Boolean).join(" · ") || "Welcome to BantaHR"}
                   </p>
                 </div>
-                <div className="md:text-right">
-                  <p className="text-white text-2xl font-bold tabular-nums">
+
+                <div
+                  className="flex flex-col gap-0.5 px-4 py-2.5 md:text-right shrink-0"
+                  style={{
+                    background: "rgba(255,255,255,0.12)",
+                    border: "1px solid rgba(255,255,255,0.16)",
+                    borderRadius: C.radius.input,
+                  }}
+                >
+                  <span className="display tnum text-white text-2xl leading-none">
                     {fmtTime(now)}
-                  </p>
-                  <p className="text-indigo-200 text-xs mt-0.5">
+                  </span>
+                  <span
+                    className="label-mono"
+                    style={{ color: "rgba(255,255,255,0.66)", fontSize: 10 }}
+                  >
                     {fmtDate(now)}
-                  </p>
-                  {/* Streak removed — would need a streak API */}
+                  </span>
                 </div>
               </div>
             </motion.div>
@@ -536,10 +542,10 @@ export default function EmployeeDashboard() {
                       whileTap={{ scale: 0.97 }}
                       onClick={handleClock}
                       disabled={clockLoading}
-                      className="w-full py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+                      className="w-full py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
                       style={{
                         background: isClockedIn
-                          ? "linear-gradient(135deg,#EF4444,#DC2626)"
+                          ? "linear-gradient(135deg,#EF4444,#B91C1C)"
                           : "linear-gradient(135deg,#4F46E5,#6366F1)",
                         boxShadow: isClockedIn
                           ? "0 4px 16px rgba(239,68,68,0.3)"
@@ -578,7 +584,7 @@ export default function EmployeeDashboard() {
                     style={{
                       background: C.surface,
                       border: `1px solid ${C.border}`,
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.04)",
+                      boxShadow: C.shadow.card,
                     }}
                   >
                     <div className="flex items-center justify-between mb-4">
@@ -753,9 +759,9 @@ export default function EmployeeDashboard() {
                       <div className="flex items-center gap-2">
                         <div
                           className="w-8 h-8 rounded-xl flex items-center justify-center"
-                          style={{ background: C.warningLight }}
+                          style={{ background: C.gradient.soft }}
                         >
-                          <FileText size={15} color={C.warning} />
+                          <FileText size={15} color={C.primaryStrong} />
                         </div>
                         <span
                           className="font-semibold text-sm"
@@ -1011,7 +1017,6 @@ export default function EmployeeDashboard() {
                           className="text-3xl font-bold mb-1"
                           style={{
                             color: C.textPrimary,
-                            fontFamily: "Sora,sans-serif",
                           }}
                         >
                           ₦{Number(payslip.netSalary ?? 0).toLocaleString()}
@@ -1043,7 +1048,7 @@ export default function EmployeeDashboard() {
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                          className="w-10 h-10 rounded-xl flex items-center justify-center"
+                          className="w-10 h-10 rounded-full flex items-center justify-center"
                           style={{ background: C.primaryLight }}
                         >
                           <Download size={14} color={C.primary} />
@@ -1074,9 +1079,9 @@ export default function EmployeeDashboard() {
                       <div className="flex items-center gap-2">
                         <div
                           className="w-8 h-8 rounded-xl flex items-center justify-center"
-                          style={{ background: C.warningLight }}
+                          style={{ background: C.gradient.soft }}
                         >
-                          <Bell size={15} color={C.warning} />
+                          <Bell size={15} color={C.primaryStrong} />
                         </div>
                         <span
                           className="font-semibold text-sm"
@@ -1125,7 +1130,7 @@ export default function EmployeeDashboard() {
                                         color: C.danger,
                                       }}
                                     >
-                                      📌 Pinned
+ Pinned
                                     </span>
                                   )}
                                   <span
@@ -1298,7 +1303,6 @@ export default function EmployeeDashboard() {
                         className="text-2xl font-bold"
                         style={{
                           color: C.textPrimary,
-                          fontFamily: "Sora,sans-serif",
                         }}
                       >
                         {value}

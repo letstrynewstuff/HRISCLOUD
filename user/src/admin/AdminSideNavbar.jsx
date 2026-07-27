@@ -5,6 +5,7 @@ import { motion as Motion, AnimatePresence } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../components/useAuth";
 import BantaHRLogo from "../styles/BantaHRLogo";
+import C from "../styles/colors";
 import {
   LayoutDashboard,
   Users,
@@ -28,11 +29,12 @@ import {
   BookOpen,
 } from "lucide-react";
 
+// Rail-local values. Colours come from the token layer; these are the
+// translucent-on-gradient values that have no meaning outside this rail.
 const T = {
-  sidebar: "#1E1B4B",
-  sidebarActive: "rgba(79,70,229,0.28)",
-  border: "rgba(255,255,255,0.10)",
-  textMuted: "rgba(255,255,255,0.40)",
+  sidebarActive: "rgba(255,255,255,0.16)",
+  border: "rgba(255,255,255,0.12)",
+  textMuted: "rgba(255,255,255,0.72)",
 };
 
 const NAV_ITEMS = [
@@ -139,14 +141,22 @@ function SidebarContent({
   return (
     <div
       className="flex flex-col h-full"
-      style={{ background: T.sidebar, borderRight: `1px solid ${T.border}` }}
+      style={{
+        background: C.gradient.rail,
+        borderRight: `1px solid ${T.border}`,
+      }}
     >
       {/* Header */}
       <div className="px-4 pt-6 pb-5 flex items-center gap-3 shrink-0">
         {!collapsed && (
           <div>
             <BantaHRLogo variant="light" size="md" />
-            <p className="text-xs text-indigo-400">Admin Panel</p>
+            <p
+              className="label-mono mt-1"
+              style={{ color: "rgba(255,255,255,0.55)", fontSize: 10 }}
+            >
+              Admin Panel
+            </p>
           </div>
         )}
 
@@ -195,7 +205,7 @@ function SidebarContent({
 
         <button
           onClick={handleLogout}
-          className={`w-full flex items-center ${collapsed ? "justify-center" : "gap-3"} px-3 py-2 rounded-xl text-red-400`}
+          className={`w-full flex items-center ${collapsed ? "justify-center" : "gap-3"} px-3 py-2 rounded-full text-red-300 transition-colors hover:bg-white/10`}
         >
           {loggingOut ? (
             <Loader2 size={16} className="animate-spin" />
@@ -205,8 +215,14 @@ function SidebarContent({
           {!collapsed && (loggingOut ? "Logging out..." : "Logout")}
         </button>
 
-        <div className="mt-2 flex items-center gap-2 bg-[#2D2A6E] p-2 rounded-xl">
-          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+        <div
+          className="mt-2 flex items-center gap-2 p-2 rounded-xl"
+          style={{ background: "rgba(255,255,255,0.10)" }}
+        >
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-semibold shrink-0"
+            style={{ background: C.gradient.accent }}
+          >
             {initials.toUpperCase()}
           </div>
           {!collapsed && (
@@ -214,7 +230,12 @@ function SidebarContent({
               <p className="font-semibold truncate">
                 {loading ? "Loading..." : name}
               </p>
-              <p className="text-indigo-400 truncate capitalize">{role}</p>
+              <p
+                className="truncate capitalize"
+                style={{ color: "rgba(255,255,255,0.55)" }}
+              >
+                {role}
+              </p>
             </div>
           )}
         </div>

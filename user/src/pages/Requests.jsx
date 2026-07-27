@@ -26,7 +26,7 @@ const fadeUp = {
 
 /* ─── Skeleton ─── */
 const Skeleton = ({ className = "" }) => (
-  <div className={`animate-pulse rounded-xl ${className}`} style={{ background: "#E8EBF4" }} />
+  <div className={`animate-pulse rounded-xl ${className}`} style={{ background: C.border }} />
 );
 
 /* ─── Status badge ─── */
@@ -48,16 +48,16 @@ function StatusBadge({ status }) {
 
 /* ─── Leave icon ─── */
 const LEAVE_META = {
-  annual:        { icon: Plane,     color: "#4F46E5", bg: "#EEF2FF" },
-  sick:          { icon: Heart,     color: "#EF4444", bg: "#FEE2E2" },
-  casual:        { icon: Coffee,    color: "#10B981", bg: "#D1FAE5" },
-  compassionate: { icon: Users,     color: "#06B6D4", bg: "#ECFEFF" },
-  study:         { icon: Briefcase, color: "#F59E0B", bg: "#FEF3C7" },
-  maternity:     { icon: Users,     color: "#EC4899", bg: "#FDF2F8" },
-  paternity:     { icon: Users,     color: "#7C3AED", bg: "#EDE9FE" },
-  unpaid:        { icon: Umbrella,  color: "#94A3B8", bg: "#F7F8FC" },
+  annual:        { icon: Plane,     color: C.primary, bg: C.primaryLight },
+  sick:          { icon: Heart,     color: C.danger, bg: C.dangerLight },
+  casual:        { icon: Coffee,    color: C.success, bg: C.successLight },
+  compassionate: { icon: Users,     color: "#6366F1", bg: C.primaryLight },
+  study:         { icon: Briefcase, color: C.warning, bg: C.warningLight },
+  maternity:     { icon: Users,     color: C.accent, bg: C.primaryLight },
+  paternity:     { icon: Users,     color: C.primary, bg: C.primaryTint },
+  unpaid:        { icon: Umbrella,  color: C.textMuted, bg: C.surfaceAlt },
 };
-const getMeta = (lt) => LEAVE_META[lt?.toLowerCase()] ?? { icon: Calendar, color: "#4F46E5", bg: "#EEF2FF" };
+const getMeta = (lt) => LEAVE_META[lt?.toLowerCase()] ?? { icon: Calendar, color: C.primary, bg: C.primaryLight };
 
 /* ─── Detail modal ─── */
 function RequestDetailModal({ req, onClose }) {
@@ -77,13 +77,13 @@ function RequestDetailModal({ req, onClose }) {
                 <meta.icon size={18} color={meta.color} />
               </div>
               <div>
-                <p className="font-bold" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+                <p className="font-bold" style={{ color: C.textPrimary }}>
                   {req.policy_name ?? req.leave_type ?? "Leave Request"}
                 </p>
                 <p className="text-xs" style={{ color: C.textSecondary }}>{req.id?.slice(0,8).toUpperCase()}</p>
               </div>
             </div>
-            <button onClick={onClose} className="p-1.5 rounded-lg" style={{ background: "rgba(0,0,0,0.08)" }}>
+            <button onClick={onClose} className="p-1.5 rounded-full" style={{ background: "rgba(0,0,0,0.08)" }}>
               <X size={16} color={C.textSecondary} />
             </button>
           </div>
@@ -193,7 +193,7 @@ export default function RequestsPage() {
 
   /* ─────────────────────── RENDER ─────────────────────── */
   return (
-    <div className="min-h-screen" style={{ background: C.bg, color: C.textPrimary, fontFamily: "'DM Sans','Sora',sans-serif" }}>
+    <div className="min-h-screen" style={{ background: C.bg, color: C.textPrimary }}>
       <div className="flex h-screen overflow-hidden">
         {/* <SideNavbar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} COLORS={C}
           EMPLOYEE={{ name: authLoading ? "…" : `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim(),
@@ -206,7 +206,7 @@ export default function RequestsPage() {
             style={{ background: "rgba(240,242,248,0.85)", backdropFilter: "blur(12px)", borderBottom: `1px solid ${C.border}` }}>
             <Motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen(p => !p)}
-              className="p-2 rounded-xl hidden md:flex" style={{ background: C.surface }}>
+              className="p-2 rounded-full hidden md:flex" style={{ background: C.surface }}>
               <Menu size={16} color={C.textSecondary} />
             </Motion.button>
 
@@ -222,16 +222,16 @@ export default function RequestsPage() {
 
             <div className="flex items-center gap-2 ml-auto">
               <Motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                onClick={loadData} className="p-2 rounded-xl" style={{ background: C.surface, border: `1px solid ${C.border}` }} title="Refresh">
+                onClick={loadData} className="p-2 rounded-full" style={{ background: C.surface, border: `1px solid ${C.border}` }} title="Refresh">
                 <RefreshCw size={14} color={C.textSecondary} />
               </Motion.button>
               <Motion.a href="/leave" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-white"
-                style={{ background: C.primary, boxShadow: `0 4px 12px ${C.primary}44` }}>
+                style={{ background: C.primary, boxShadow: C.shadow.card }}>
                 <Plus size={13} />New Request
               </Motion.a>
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}>
+                style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}>
                 {authLoading ? "…" : initials}
               </div>
             </div>
@@ -242,7 +242,7 @@ export default function RequestsPage() {
             {/* ── HERO ── */}
             <Motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0}
               className="relative rounded-2xl overflow-hidden p-6 md:p-8"
-              style={{ background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)", minHeight: 140 }}>
+              style={{ background: C.gradient.hero, minHeight: 140 }}>
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <div className="absolute -top-10 -right-10 w-56 h-56 rounded-full opacity-10"
                   style={{ background: "radial-gradient(circle,#818CF8,transparent)" }} />
@@ -253,18 +253,18 @@ export default function RequestsPage() {
                     <FileText size={22} color="#fff" />
                   </div>
                   <div>
-                    <h1 className="text-white text-2xl md:text-3xl font-bold" style={{ fontFamily: "Sora,sans-serif" }}>My Requests</h1>
+                    <h1 className="text-white text-2xl md:text-3xl ">My Requests</h1>
                     <p className="text-indigo-300 text-sm mt-0.5">Track all your leave requests and their status</p>
                   </div>
                 </div>
                 <div className="flex gap-3 flex-wrap">
                   {[
-                    { label: "Total",    value: loading ? "—" : stats.total,    color: "#A5F3FC" },
-                    { label: "Pending",  value: loading ? "—" : stats.pending,  color: "#FDE68A" },
-                    { label: "Approved", value: loading ? "—" : stats.approved, color: "#BBF7D0" },
+                    { label: "Total",    value: loading ? "—" : stats.total,    color: "#C7D2FE" },
+                    { label: "Pending",  value: loading ? "—" : stats.pending,  color: "#FEF3C7" },
+                    { label: "Approved", value: loading ? "—" : stats.approved, color: "#D1FAE5" },
                   ].map(({ label, value, color }) => (
                     <div key={label} className="px-4 py-2.5 rounded-xl" style={{ background: "rgba(255,255,255,0.10)" }}>
-                      <p className="text-2xl font-bold" style={{ color, fontFamily: "Sora,sans-serif" }}>{value}</p>
+                      <p className="text-2xl font-bold" style={{ color }}>{value}</p>
                       <p className="text-[11px] text-white/60">{label}</p>
                     </div>
                   ))}
@@ -288,7 +288,7 @@ export default function RequestsPage() {
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center mx-auto mb-2" style={{ background: meta.bg }}>
                         <meta.icon size={14} color={meta.color} />
                       </div>
-                      <p className="text-xl font-bold" style={{ color: remaining === 0 ? C.danger : C.textPrimary, fontFamily: "Sora,sans-serif" }}>{remaining}</p>
+                      <p className="text-xl font-bold" style={{ color: remaining === 0 ? C.danger : C.textPrimary }}>{remaining}</p>
                       <p className="text-[10px] leading-tight mt-0.5" style={{ color: C.textMuted }}>
                         {bal.policy_name?.replace(" Leave", "") ?? bal.leave_type}
                       </p>
@@ -310,7 +310,7 @@ export default function RequestsPage() {
                 </div>
                 {["All", "Pending", "Approved", "Rejected", "Cancelled"].map(f => (
                   <Motion.button key={f} whileTap={{ scale: 0.95 }} onClick={() => setFilterStatus(f)}
-                    className="px-3 py-1 rounded-lg text-xs font-semibold"
+                    className="px-3 py-1 rounded-full text-xs font-semibold"
                     style={{ background: filterStatus === f ? C.primary : C.surfaceAlt, color: filterStatus === f ? "#fff" : C.textSecondary,
                       border: `1px solid ${filterStatus === f ? C.primary : C.border}` }}>
                     {f}
@@ -385,7 +385,7 @@ export default function RequestsPage() {
                       <Motion.div key={req.id}
                         variants={fadeUp} initial="hidden" animate="visible" custom={i}
                         exit={{ opacity: 0, x: -10 }}
-                        whileHover={{ y: -1, boxShadow: "0 6px 24px rgba(79,70,229,0.08)" }}
+                        whileHover={{ y: -1, boxShadow: C.shadow.lift }}
                         onClick={() => setSelectedReq(req)}
                         className="rounded-2xl border cursor-pointer group overflow-hidden"
                         style={{ background: C.surface, borderColor: C.border }}>
@@ -446,7 +446,7 @@ export default function RequestsPage() {
                             </p>
                             {req.approved_by_name && req.status === "approved" && (
                               <p className="text-[10px] mt-0.5" style={{ color: C.success }}>
-                                ✓ {req.approved_by_name}
+ {req.approved_by_name}
                               </p>
                             )}
                             <Eye size={14} color={C.textMuted} className="mt-2 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />

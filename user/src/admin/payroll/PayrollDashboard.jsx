@@ -17,11 +17,11 @@ const fadeUp = {
 };
 
 const STATUS_STYLE = {
-  paid:       { bg: "#D1FAE5", color: "#065F46", label: "Paid" },
-  approved:   { bg: "#EDE9FE", color: "#5B21B6", label: "Approved" },
+  paid:       { bg: "#D1FAE5", color: "#047857", label: "Paid" },
+  approved:   { bg: "#E0E7FF", color: "#3730A3", label: "Approved" },
   processing: { bg: "#FEF3C7", color: "#92400E", label: "Processing" },
-  draft:      { bg: "#F1F5F9", color: "#475569", label: "Draft" },
-  cancelled:  { bg: "#FEE2E2", color: "#991B1B", label: "Cancelled" },
+  draft:      { bg: "#F0F2F8", color: "#334155", label: "Draft" },
+  cancelled:  { bg: "#FEE2E2", color: "#B91C1C", label: "Cancelled" },
 };
 
 const N_ICON = {
@@ -49,7 +49,7 @@ export default function PayrollDashboard({ onRunPayroll }) {
       <div className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: C.dangerLight, border: `1px solid ${C.danger}33` }}>
         <AlertCircle size={16} color={C.danger} />
         <p className="text-sm font-semibold flex-1" style={{ color: C.danger }}>{error}</p>
-        <button onClick={fetchDashboard} className="flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-lg" style={{ background: C.danger, color: "#fff", border: "none", cursor: "pointer" }}>
+        <button onClick={fetchDashboard} className="flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full" style={{ background: C.danger, color: "#fff", border: "none", cursor: "pointer" }}>
           <RefreshCw size={11} /> Retry
         </button>
       </div>
@@ -61,7 +61,7 @@ export default function PayrollDashboard({ onRunPayroll }) {
     { label: "Total Gross Payroll", value: `₦${((d.totalGross ?? 0) / 1_000_000).toFixed(1)}M`, icon: DollarSign, color: C.primary, bg: C.primaryLight },
     { label: "Total Deductions",    value: `₦${((d.totalDeductions ?? 0) / 1_000_000).toFixed(1)}M`, icon: TrendingUp, color: C.danger, bg: C.dangerLight },
     { label: "Total Net Pay",       value: `₦${((d.totalNet ?? 0) / 1_000_000).toFixed(1)}M`, icon: DollarSign, color: C.success, bg: C.successLight },
-    { label: "Employees Paid",      value: d.employeeCount ?? 0, icon: Users, color: "#06B6D4", bg: "#ECFEFF" },
+    { label: "Employees Paid",      value: d.employeeCount ?? 0, icon: Users, color: "#6366F1", bg: "#EEF2FF" },
   ];
 
   const notifications = d.notifications ?? [];
@@ -79,7 +79,7 @@ export default function PayrollDashboard({ onRunPayroll }) {
                   <stat.icon size={22} color={stat.color} />
                 </div>
                 <div>
-                  <p className="text-3xl font-bold" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>{stat.value}</p>
+                  <p className="text-3xl font-bold" style={{ color: C.textPrimary }}>{stat.value}</p>
                   <p className="text-sm mt-1" style={{ color: C.textMuted }}>{stat.label}</p>
                 </div>
               </div>
@@ -92,7 +92,7 @@ export default function PayrollDashboard({ onRunPayroll }) {
         {/* Recent Runs */}
         <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={1} className="lg:col-span-2 rounded-2xl p-6 border" style={{ background: C.surface, borderColor: C.border }}>
           <div className="flex items-center justify-between mb-5">
-            <h3 className="font-semibold text-base" style={{ color: C.textPrimary }}>Recent Payroll Runs</h3>
+            <h3 className="text-base" style={{ color: C.textPrimary }}>Recent Payroll Runs</h3>
             <button onClick={fetchDashboard} className="flex items-center gap-1 text-xs" style={{ color: C.textMuted, background: "none", border: "none", cursor: "pointer" }}>
               <RefreshCw size={12} /> Refresh
             </button>
@@ -102,7 +102,7 @@ export default function PayrollDashboard({ onRunPayroll }) {
             <div className="py-10 text-center">
               <DollarSign size={32} color={C.textMuted} className="mx-auto mb-2" />
               <p className="text-sm" style={{ color: C.textMuted }}>No payroll runs yet.</p>
-              <motion.button whileHover={{ scale: 1.02 }} onClick={onRunPayroll} className="mt-4 flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl mx-auto" style={{ background: C.primary, border: "none", cursor: "pointer" }}>
+              <motion.button whileHover={{ scale: 1.02 }} onClick={onRunPayroll} className="mt-4 flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-full mx-auto" style={{ background: C.primary, border: "none", cursor: "pointer" }}>
                 <ArrowRight size={14} /> Run First Payroll
               </motion.button>
             </div>
@@ -146,7 +146,7 @@ export default function PayrollDashboard({ onRunPayroll }) {
               <p className="text-sm mb-1" style={{ color: C.textSecondary }}>
                 {d.pendingRun.period} payroll is in <strong>{d.pendingRun.status}</strong> state.
               </p>
-              <motion.button whileHover={{ scale: 1.02 }} onClick={onRunPayroll} className="mt-3 w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2" style={{ background: C.warning, border: "none", cursor: "pointer" }}>
+              <motion.button whileHover={{ scale: 1.02 }} onClick={onRunPayroll} className="mt-3 w-full py-2.5 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2" style={{ background: C.warning, border: "none", cursor: "pointer" }}>
                 Continue Run <ArrowRight size={13} />
               </motion.button>
             </div>
@@ -154,7 +154,7 @@ export default function PayrollDashboard({ onRunPayroll }) {
             <div className="rounded-2xl p-5 border" style={{ background: C.surface, borderColor: C.border }}>
               <p className="font-semibold text-sm mb-1" style={{ color: C.textPrimary }}>Current Cycle</p>
               <p className="text-xs mb-3" style={{ color: C.textMuted }}>No payroll run in progress.</p>
-              <motion.button whileHover={{ scale: 1.02 }} onClick={onRunPayroll} className="w-full py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2" style={{ background: C.primary, border: "none", cursor: "pointer" }}>
+              <motion.button whileHover={{ scale: 1.02 }} onClick={onRunPayroll} className="w-full py-2.5 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2" style={{ background: C.primary, border: "none", cursor: "pointer" }}>
                 <ArrowRight size={13} /> Start Payroll Run
               </motion.button>
             </div>

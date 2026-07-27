@@ -40,7 +40,6 @@ export default function AdminAttendancePage() {
       className="min-h-screen"
       style={{
         background: C.bg ?? "#F0F2F8",
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -65,7 +64,7 @@ export default function AdminAttendancePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -105,7 +104,7 @@ export default function AdminAttendancePage() {
               className="rounded-2xl p-8 text-white"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
               }}
             >
               <div className="flex items-center gap-4">
@@ -114,8 +113,7 @@ export default function AdminAttendancePage() {
                 </div>
                 <div>
                   <h1
-                    className="text-3xl font-bold"
-                    style={{ fontFamily: "Sora,sans-serif" }}
+                    className="text-3xl "
                   >
                     Attendance Management
                   </h1>
@@ -164,7 +162,7 @@ export default function AdminAttendancePage() {
                     key={tab.id}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => setActiveTab(tab.id)}
-                    className="px-5 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex-shrink-0"
+                    className="px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0"
                     style={{
                       background: active ? C.primary : "transparent",
                       color: active ? "#ffffff" : C.textSecondary,

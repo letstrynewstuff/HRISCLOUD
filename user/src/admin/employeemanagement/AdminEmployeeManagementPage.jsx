@@ -113,7 +113,7 @@ function StatPill({ label, value, color, loading }) {
       {loading ? (
         <div className="w-6 h-5 rounded animate-pulse bg-white/20" />
       ) : (
-        <span className="text-lg font-bold" style={{ fontFamily: "Sora,sans-serif", color }}>
+        <span className="text-lg font-bold" style={{ color }}>
           {value}
         </span>
       )}
@@ -151,7 +151,7 @@ export default function AdminEmployeeManagementPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, color: C.textPrimary, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg, color: C.textPrimary }}
     >
       <div className="flex h-screen overflow-hidden">
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -168,7 +168,7 @@ export default function AdminEmployeeManagementPage() {
             <motion.button
               whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen(p => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -216,12 +216,12 @@ export default function AdminEmployeeManagementPage() {
               <motion.button
                 whileHover={{ scale: 1.04, y: -1 }} whileTap={{ scale: 0.97 }}
                 onClick={() => navigate("/admin/employeemanagement/admin-addemployees")}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold text-white"
                 style={{
                   background: `linear-gradient(135deg,${C.primary},${C.purple})`,
                   border: "none",
                   cursor: "pointer",
-                  boxShadow: `0 3px 10px ${C.primaryGlow}`,
+                  boxShadow: C.shadow.card,
                 }}
               >
                 <UserPlus size={13} /> Add Employee
@@ -231,7 +231,7 @@ export default function AdminEmployeeManagementPage() {
                 <motion.button
                   whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
                   onClick={() => navigate("/admin/employeemanagement/admin-profilechangerequests")}
-                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold"
+                  className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-[11px] font-bold"
                   style={{ background: C.warningLight, color: C.warning, border: "none", cursor: "pointer" }}
                 >
                   <Bell size={11} /> {stats.pending} Pending
@@ -240,7 +240,7 @@ export default function AdminEmployeeManagementPage() {
 
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}
+                style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}
               >
                 {ADMIN.initials}
               </div>
@@ -255,13 +255,13 @@ export default function AdminEmployeeManagementPage() {
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
               className="rounded-2xl p-8 text-white relative overflow-hidden"
-              style={{ background: "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)" }}
+              style={{ background: C.gradient.hero }}
             >
               {/* Decorative blobs */}
               <div className="absolute -top-10 -right-10 w-52 h-52 rounded-full opacity-10 pointer-events-none"
                 style={{ background: "radial-gradient(circle,#818CF8,transparent)" }} />
               <div className="absolute bottom-0 left-1/3 w-36 h-36 rounded-full opacity-10 pointer-events-none"
-                style={{ background: "radial-gradient(circle,#06B6D4,transparent)" }} />
+                style={{ background: "radial-gradient(circle,#6366F1,transparent)" }} />
 
               <div className="relative flex flex-col md:flex-row md:items-center gap-6">
                 <div className="flex items-center gap-4">
@@ -269,7 +269,7 @@ export default function AdminEmployeeManagementPage() {
                     <Users size={28} color="#fff" />
                   </div>
                   <div>
-                    <h1 className="text-3xl font-bold" style={{ fontFamily: "Sora,sans-serif" }}>
+                    <h1 className="text-3xl ">
                       Employee Management
                     </h1>
                     <p className="text-indigo-200 mt-0.5">Hire • Manage • Develop • Offboard</p>
@@ -279,11 +279,11 @@ export default function AdminEmployeeManagementPage() {
                 {/* Live stats */}
                 <div className="md:ml-auto flex flex-wrap gap-3">
                   <StatPill label="Total"    value={stats.total}    color="#fff"     loading={statsLoading} />
-                  <StatPill label="Active"   value={stats.active}   color="#6EE7B7"  loading={statsLoading} />
-                  <StatPill label="On Leave" value={stats.onLeave}  color="#FCD34D"  loading={statsLoading} />
-                  <StatPill label="Inactive" value={stats.inactive} color="#FCA5A5"  loading={statsLoading} />
+                  <StatPill label="Active"   value={stats.active}   color="#10B981"  loading={statsLoading} />
+                  <StatPill label="On Leave" value={stats.onLeave}  color="#F59E0B"  loading={statsLoading} />
+                  <StatPill label="Inactive" value={stats.inactive} color="#EF4444"  loading={statsLoading} />
                   {stats.pending > 0 && (
-                    <StatPill label="Pending" value={stats.pending} color="#FCD34D"  loading={statsLoading} />
+                    <StatPill label="Pending" value={stats.pending} color="#F59E0B"  loading={statsLoading} />
                   )}
                 </div>
               </div>
@@ -310,7 +310,7 @@ export default function AdminEmployeeManagementPage() {
                     whileTap={{ scale: 0.97 }}
                     whileHover={{ scale: active ? 1 : 1.02 }}
                     onClick={() => handleTabClick(tab)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap flex-shrink-0"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap flex-shrink-0"
                     style={{
                       background: active ? C.primary : "transparent",
                       color: active ? "#ffffff" : C.textSecondary,
@@ -336,7 +336,7 @@ export default function AdminEmployeeManagementPage() {
               style={{
                 background: C.surface,
                 border: `1px solid ${C.border}`,
-                boxShadow: "0 2px 8px rgba(15,23,42,0.04)",
+                boxShadow: C.shadow.card,
               }}
             >
               <div className="flex items-center gap-3">
@@ -352,12 +352,12 @@ export default function AdminEmployeeManagementPage() {
               <motion.button
                 whileHover={{ scale: 1.03, x: 2 }} whileTap={{ scale: 0.97 }}
                 onClick={() => navigate(activeTab.path)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white shrink-0"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-white shrink-0"
                 style={{
                   background: `linear-gradient(135deg,${C.primary},${C.purple})`,
                   border: "none",
                   cursor: "pointer",
-                  boxShadow: `0 3px 10px ${C.primaryGlow}`,
+                  boxShadow: C.shadow.card,
                 }}
               >
                 Open {activeTab.label} <ArrowUpRight size={12} />
@@ -379,10 +379,10 @@ export default function AdminEmployeeManagementPage() {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.15 + i * 0.04, duration: 0.36 }}
-                      whileHover={{ y: -3, boxShadow: "0 10px 32px rgba(79,70,229,0.12)" }}
+                      whileHover={{ y: -3, boxShadow: C.shadow.lift }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => handleTabClick(tab)}
-                      className="flex flex-col items-start gap-3 p-4 rounded-2xl text-left"
+                      className="flex flex-col items-start gap-3 p-4 rounded-full text-left"
                       style={{
                         background: active ? C.primaryLight : C.surface,
                         border: `1.5px solid ${active ? C.primary : C.border}`,

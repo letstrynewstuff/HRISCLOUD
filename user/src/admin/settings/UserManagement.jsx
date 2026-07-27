@@ -17,7 +17,7 @@
 //   danger: "#EF4444",
 //   dangerLight: "#FEE2E2",
 //   textPrimary: "#0F172A",
-//   textSecondary: "#64748B",
+//   textSecondary: "#5F6D7E",
 //   textMuted: "#94A3B8",
 // };
 
@@ -40,10 +40,10 @@
 //   return (
 //     <div>
 //       <div className="flex justify-between mb-6">
-//         <h2 className="text-2xl font-bold">User Management</h2>
+//         <h2 className="text-2xl ">User Management</h2>
 //         <motion.button
 //           onClick={() => setShowInviteModal(true)}
-//           className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold"
+//           className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold"
 //           style={{ background: C.primary, color: "#fff" }}
 //         >
 //           <Plus size={16} /> Invite User
@@ -89,13 +89,13 @@
 //                 </td>
 //                 <td className="px-6 py-4 flex gap-2">
 //                   <motion.button
-//                     className="p-2 rounded-lg"
+//                     className="p-2 rounded-full"
 //                     style={{ background: C.accentLight, color: C.accent }}
 //                   >
 //                     <Edit2 size={14} />
 //                   </motion.button>
 //                   <motion.button
-//                     className="p-2 rounded-lg"
+//                     className="p-2 rounded-full"
 //                     style={{ background: C.dangerLight, color: C.danger }}
 //                   >
 //                     <Trash2 size={14} />
@@ -116,7 +116,7 @@
 //               animate={{ scale: 1 }}
 //               className="bg-white rounded-2xl p-8 w-full max-w-md"
 //             >
-//               <h3 className="font-bold text-xl mb-6">Invite New User</h3>
+//               <h3 className="text-xl mb-6">Invite New User</h3>
 //               <input
 //                 id="email"
 //                 placeholder="user@company.com"
@@ -135,7 +135,7 @@
 //               <div className="flex gap-3">
 //                 <button
 //                   onClick={() => setShowInviteModal(false)}
-//                   className="flex-1 py-3 rounded-xl"
+//                   className="flex-1 py-3 rounded-full"
 //                   style={{ background: C.surfaceAlt }}
 //                 >
 //                   Cancel
@@ -147,7 +147,7 @@
 //                       document.getElementById("role").value,
 //                     )
 //                   }
-//                   className="flex-1 py-3 rounded-xl text-white"
+//                   className="flex-1 py-3 rounded-full text-white"
 //                   style={{ background: C.primary }}
 //                 >
 //                   Send Invitation
@@ -165,27 +165,11 @@
 
 // src/admin/settings/UserManagement.jsx
 import { useState, useEffect } from "react";
+import C from "../../styles/colors";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Edit2, Trash2, Loader2, RefreshCw, AlertCircle, CheckCircle2, X, Mail } from "lucide-react";
 import { settingsApi } from "../../api/service/settingsApi";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 const ROLES = ["hr_admin", "manager", "finance", "employee", "super_admin"];
 
@@ -200,7 +184,7 @@ const ROLE_LABELS = {
 const STATUS_CFG = {
   active:  { label: "Active",  bg: C.successLight, color: C.success },
   invited: { label: "Invited", bg: C.warningLight,  color: C.warning },
-  inactive:{ label: "Inactive",bg: "#F1F5F9",       color: C.textMuted },
+  inactive:{ label: "Inactive",bg: "#F0F2F8",       color: C.textMuted },
 };
 
 export default function UserManagement() {
@@ -282,17 +266,17 @@ export default function UserManagement() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl font-bold" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+        <h2 className="text-2xl " style={{ color: C.textPrimary }}>
           User Management
         </h2>
         <div className="flex items-center gap-2">
           <motion.button whileHover={{ scale: 1.04 }} onClick={load}
-            className="p-2 rounded-xl" style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}>
+            className="p-2 rounded-full" style={{ background: C.surfaceAlt, border: `1px solid ${C.border}` }}>
             <RefreshCw size={14} color={C.textSecondary} className={loading ? "animate-spin" : ""} />
           </motion.button>
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
             onClick={() => setShowInvite(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white"
             style={{ background: C.primary }}>
             <Plus size={15} /> Invite User
           </motion.button>
@@ -337,7 +321,7 @@ export default function UserManagement() {
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                          style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}>
+                          style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}>
                           {(user.firstName?.[0] ?? user.name?.[0] ?? "U").toUpperCase()}
                         </div>
                         <span className="text-sm font-semibold" style={{ color: C.textPrimary }}>
@@ -360,12 +344,12 @@ export default function UserManagement() {
                       <div className="flex items-center gap-2">
                         <motion.button whileHover={{ scale: 1.08 }}
                           onClick={() => { setEditUser(user); setEditRole(user.role ?? "employee"); }}
-                          className="p-1.5 rounded-lg" style={{ background: C.primaryLight, color: C.primary }}>
+                          className="p-1.5 rounded-full" style={{ background: C.primaryLight, color: C.primary }}>
                           <Edit2 size={13} />
                         </motion.button>
                         <motion.button whileHover={{ scale: 1.08 }}
                           onClick={() => setDelUser(user)}
-                          className="p-1.5 rounded-lg" style={{ background: C.dangerLight, color: C.danger }}>
+                          className="p-1.5 rounded-full" style={{ background: C.dangerLight, color: C.danger }}>
                           <Trash2 size={13} />
                         </motion.button>
                       </div>
@@ -386,9 +370,9 @@ export default function UserManagement() {
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowInvite(false)} />
             <motion.div initial={{ scale: 0.95, y: 16 }} animate={{ scale: 1, y: 0 }}
               className="relative w-full max-w-md rounded-2xl p-6"
-              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: "0 24px 64px rgba(0,0,0,0.2)" }}>
+              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: C.shadow.lift }}>
               <div className="flex items-center justify-between mb-5">
-                <h3 className="font-bold text-base" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>Invite New User</h3>
+                <h3 className="text-base" style={{ color: C.textPrimary }}>Invite New User</h3>
                 <button onClick={() => setShowInvite(false)}><X size={15} color={C.textMuted} /></button>
               </div>
               <div className="space-y-4">
@@ -413,13 +397,13 @@ export default function UserManagement() {
               </div>
               <div className="flex gap-3 mt-6">
                 <button onClick={() => setShowInvite(false)}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                  className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                   style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
                   Cancel
                 </button>
                 <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                   onClick={handleInvite} disabled={inviting}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
                   style={{ background: C.primary, opacity: inviting ? 0.8 : 1 }}>
                   {inviting ? <Loader2 size={13} className="animate-spin" /> : null}
                   {inviting ? "Sending..." : "Send Invitation"}
@@ -438,9 +422,9 @@ export default function UserManagement() {
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setEditUser(null)} />
             <motion.div initial={{ scale: 0.95, y: 16 }} animate={{ scale: 1, y: 0 }}
               className="relative w-full max-w-sm rounded-2xl p-6"
-              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: "0 24px 64px rgba(0,0,0,0.2)" }}>
+              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: C.shadow.lift }}>
               <div className="flex items-center justify-between mb-5">
-                <h3 className="font-bold text-base" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>Change Role</h3>
+                <h3 className="text-base" style={{ color: C.textPrimary }}>Change Role</h3>
                 <button onClick={() => setEditUser(null)}><X size={15} color={C.textMuted} /></button>
               </div>
               <p className="text-xs mb-3" style={{ color: C.textMuted }}>
@@ -455,12 +439,12 @@ export default function UserManagement() {
               </select>
               <div className="flex gap-3">
                 <button onClick={() => setEditUser(null)}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                  className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                   style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
                   Cancel
                 </button>
                 <motion.button whileHover={{ scale: 1.02 }} onClick={handleUpdateRole}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white"
+                  className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white"
                   style={{ background: C.primary }}>
                   Save
                 </motion.button>
@@ -478,23 +462,23 @@ export default function UserManagement() {
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDelUser(null)} />
             <motion.div initial={{ scale: 0.95, y: 16 }} animate={{ scale: 1, y: 0 }}
               className="relative w-full max-w-sm rounded-2xl p-6 text-center"
-              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: "0 24px 64px rgba(0,0,0,0.2)" }}>
+              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: C.shadow.lift }}>
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4"
                 style={{ background: C.dangerLight }}>
                 <Trash2 size={22} color={C.danger} />
               </div>
-              <h3 className="font-bold text-base mb-1" style={{ color: C.textPrimary }}>Remove User?</h3>
+              <h3 className="text-base mb-1" style={{ color: C.textPrimary }}>Remove User?</h3>
               <p className="text-sm mb-5" style={{ color: C.textSecondary }}>
                 <strong>{delUser.firstName ? `${delUser.firstName} ${delUser.lastName}` : delUser.name}</strong> will lose access.
               </p>
               <div className="flex gap-3">
                 <button onClick={() => setDelUser(null)}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                  className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                   style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}` }}>
                   Cancel
                 </button>
                 <motion.button whileHover={{ scale: 1.02 }} onClick={handleDelete} disabled={deleting}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
                   style={{ background: C.danger, opacity: deleting ? 0.8 : 1 }}>
                   {deleting ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
                   {deleting ? "Removing..." : "Remove"}

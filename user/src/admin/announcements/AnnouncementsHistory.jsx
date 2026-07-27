@@ -5,60 +5,39 @@
 // ─────────────────────────────────────────────────────────────
 
 import { useState, useMemo, useEffect, useCallback } from "react";
+import C from "../../styles/colors";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Megaphone,
-  Bell,
-  Menu,
-  ChevronRight,
-  Search,
-  X,
-  Eye,
-  Edit3,
-  Trash2,
-  RefreshCw,
-  MoreVertical,
-  Calendar,
-  Building2,
-  Globe,
-  Clock,
-  FileText,
-  Zap,
-  Star,
-  CheckCircle2,
   AlertCircle,
-  Download,
-  Pin,
-  RotateCcw,
+  AlertTriangle,
+  Bell,
+  Building2,
+  Calendar,
+  CheckCircle2,
   ChevronDown,
+  ChevronRight,
+  ClipboardList,
+  Clock,
+  Download,
+  Edit3,
+  Eye,
+  FileText,
+  Globe,
+  Megaphone,
+  Menu,
+  MoreVertical,
+  PartyPopper,
+  Pin,
+  RefreshCw,
+  RotateCcw,
+  Search,
+  Star,
+  Trash2,
+  X,
+  Zap,
 } from "lucide-react";
 import { announcementApi } from "../../api/service/announcementApi";
 
-const C = {
-  bg: "#F0F2F8",
-  bgMid: "#E8EBF4",
-  surface: "#FFFFFF",
-  surfaceHover: "#F7F8FC",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryDark: "#3730A3",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
-};
 
 const ADMIN = {
   name: "Ngozi Adeleke",
@@ -71,16 +50,16 @@ const TYPE_CONFIG = {
     label: "General",
     color: C.primary,
     bg: C.primaryLight,
-    icon: "📢",
+    icon: Megaphone,
   },
-  urgent: { label: "Urgent", color: C.danger, bg: C.dangerLight, icon: "⚠️" },
-  policy: { label: "Policy", color: C.purple, bg: C.purpleLight, icon: "📋" },
-  event: { label: "Event", color: C.warning, bg: C.warningLight, icon: "🎉" },
+  urgent: { label: "Urgent", color: C.danger, bg: C.dangerLight, icon: AlertTriangle },
+  policy: { label: "Policy", color: C.purple, bg: C.purpleLight, icon: ClipboardList },
+  event: { label: "Event", color: C.warning, bg: C.warningLight, icon: PartyPopper },
   reminder: {
     label: "Reminder",
     color: C.accent,
     bg: C.accentLight,
-    icon: "🔔",
+    icon: Bell,
   },
 };
 
@@ -155,7 +134,7 @@ function DeleteModal({ ann, onConfirm, onCancel, loading }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
+          boxShadow: C.shadow.lift,
         }}
       >
         <div className="p-6 text-center">
@@ -166,8 +145,8 @@ function DeleteModal({ ann, onConfirm, onCancel, loading }) {
             <Trash2 size={24} color={C.danger} />
           </div>
           <h3
-            className="text-base font-bold mb-1"
-            style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+            className="text-base mb-1"
+            style={{ color: C.textPrimary }}
           >
             Delete Announcement?
           </h3>
@@ -181,10 +160,10 @@ function DeleteModal({ ann, onConfirm, onCancel, loading }) {
             whileTap={{ scale: 0.98 }}
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-semibold text-white"
             style={{
               background: C.danger,
-              boxShadow: `0 4px 12px ${C.danger}44`,
+              boxShadow: C.shadow.card,
               opacity: loading ? 0.7 : 1,
             }}
           >
@@ -197,7 +176,7 @@ function DeleteModal({ ann, onConfirm, onCancel, loading }) {
           </motion.button>
           <button
             onClick={onCancel}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -242,7 +221,7 @@ function ViewModal({ ann, onClose }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
+          boxShadow: C.shadow.lift,
           maxHeight: "88vh",
           display: "flex",
           flexDirection: "column",
@@ -254,7 +233,7 @@ function ViewModal({ ann, onClose }) {
             background: `linear-gradient(135deg, ${tc.color}, ${tc.color}cc)`,
           }}
         >
-          <span className="text-xl">{tc.icon}</span>
+          <tc.icon size={20} />
           <span className="text-sm font-bold text-white">{tc.label}</span>
           <span
             className="ml-auto text-[11px] font-bold text-white/70 px-2 py-0.5 rounded-full"
@@ -264,7 +243,7 @@ function ViewModal({ ann, onClose }) {
           </span>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg"
+            className="p-1 rounded-full"
             style={{ background: "rgba(255,255,255,0.15)" }}
           >
             <X size={14} color="#fff" />
@@ -272,8 +251,8 @@ function ViewModal({ ann, onClose }) {
         </div>
         <div className="flex-1 overflow-y-auto p-5">
           <h2
-            className="text-lg font-bold mb-2"
-            style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+            className="text-lg mb-2"
+            style={{ color: C.textPrimary }}
           >
             {ann.title}
           </h2>
@@ -323,7 +302,7 @@ function ViewModal({ ann, onClose }) {
               >
                 <p
                   className="text-xl font-bold"
-                  style={{ color: s.color, fontFamily: "Sora, sans-serif" }}
+                  style={{ color: s.color }}
                 >
                   {s.value}
                 </p>
@@ -353,7 +332,7 @@ function RowMenu({ ann, onView, onDelete, onClose }) {
       style={{
         background: C.surface,
         border: `1px solid ${C.border}`,
-        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+        boxShadow: C.shadow.lift,
       }}
     >
       {[
@@ -415,7 +394,7 @@ function AnnCard({ ann, index, onView, onDelete }) {
           className="text-[11px] font-bold px-2.5 py-0.5 rounded-full"
           style={{ background: tc.bg, color: tc.color }}
         >
-          {tc.icon} {tc.label}
+          <tc.icon size={14} /> {tc.label}
         </span>
         {ann.isPinned && (
           <span
@@ -434,7 +413,7 @@ function AnnCard({ ann, index, onView, onDelete }) {
         <div className="relative">
           <button
             onClick={() => setMenuOpen((p) => !p)}
-            className="p-1.5 rounded-lg hover:bg-white transition-colors"
+            className="p-1.5 rounded-full hover:bg-white transition-colors"
           >
             <MoreVertical size={14} color={C.textMuted} />
           </button>
@@ -454,8 +433,8 @@ function AnnCard({ ann, index, onView, onDelete }) {
       {/* Body */}
       <div className="px-5 py-4">
         <h3
-          className="text-sm font-bold leading-snug mb-1 truncate"
-          style={{ color: C.textPrimary, fontFamily: "Sora, sans-serif" }}
+          className="text-sm leading-snug mb-1 truncate"
+          style={{ color: C.textPrimary }}
         >
           {ann.title}
         </h3>
@@ -507,7 +486,7 @@ function AnnCard({ ann, index, onView, onDelete }) {
         </div>
         <button
           onClick={onView}
-          className="ml-auto flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-lg"
+          className="ml-auto flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full"
           style={{ background: C.primaryLight, color: C.primary }}
         >
           <Eye size={11} /> View
@@ -619,7 +598,7 @@ export default function AnnouncementsHistory() {
   return (
     <div
       className="flex h-screen overflow-hidden"
-      style={{ background: C.bg, fontFamily: "Sora, sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
@@ -628,7 +607,7 @@ export default function AnnouncementsHistory() {
           style={{
             background: C.surface,
             borderBottom: `1px solid ${C.border}`,
-            boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+            boxShadow: C.shadow.card,
           }}
         >
           <div
@@ -642,7 +621,7 @@ export default function AnnouncementsHistory() {
           <div className="ml-auto flex items-center gap-2">
             <button
               onClick={fetchAnnouncements}
-              className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
               title="Refresh"
             >
               <RefreshCw
@@ -653,7 +632,7 @@ export default function AnnouncementsHistory() {
             </button>
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-              style={{ background: "linear-gradient(135deg,#6366F1,#06B6D4)" }}
+              style={{ background: "linear-gradient(135deg,#6366F1,#4338CA)" }}
             >
               {ADMIN.initials}
             </div>
@@ -674,17 +653,16 @@ export default function AnnouncementsHistory() {
                   className="w-10 h-10 rounded-2xl flex items-center justify-center"
                   style={{
                     background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-                    boxShadow: `0 4px 16px ${C.primary}44`,
+                    boxShadow: C.shadow.card,
                   }}
                 >
                   <FileText size={18} color="#fff" />
                 </div>
                 <div>
                   <h1
-                    className="text-xl font-bold"
+                    className="text-xl "
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora, sans-serif",
                     }}
                   >
                     Announcements History
@@ -701,7 +679,7 @@ export default function AnnouncementsHistory() {
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
                 style={{
                   background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`,
-                  boxShadow: `0 4px 16px ${C.primary}44`,
+                  boxShadow: C.shadow.card,
                 }}
               >
                 <Megaphone size={14} /> New Announcement
@@ -785,7 +763,7 @@ export default function AnnouncementsHistory() {
                   <div>
                     <p
                       className="text-xl font-bold"
-                      style={{ color: s.color, fontFamily: "Sora, sans-serif" }}
+                      style={{ color: s.color }}
                     >
                       {s.value}
                     </p>
@@ -824,7 +802,7 @@ export default function AnnouncementsHistory() {
                     setFilterStatus(s);
                     setPage(1);
                   }}
-                  className="px-3 py-2 rounded-xl text-xs font-semibold capitalize transition-all"
+                  className="px-3 py-2 rounded-full text-xs font-semibold capitalize transition-all"
                   style={{
                     background: filterStatus === s ? C.primary : C.surface,
                     color: filterStatus === s ? "#fff" : C.textSecondary,
@@ -934,7 +912,7 @@ export default function AnnouncementsHistory() {
                     <button
                       disabled={page === 1}
                       onClick={() => setPage((p) => p - 1)}
-                      className="px-3 py-2 rounded-xl text-xs font-semibold disabled:opacity-40"
+                      className="px-3 py-2 rounded-full text-xs font-semibold disabled:opacity-40"
                       style={{
                         background: C.surface,
                         border: `1px solid ${C.border}`,
@@ -949,7 +927,7 @@ export default function AnnouncementsHistory() {
                     <button
                       disabled={page >= meta.totalPages}
                       onClick={() => setPage((p) => p + 1)}
-                      className="px-3 py-2 rounded-xl text-xs font-semibold disabled:opacity-40"
+                      className="px-3 py-2 rounded-full text-xs font-semibold disabled:opacity-40"
                       style={{
                         background: C.surface,
                         border: `1px solid ${C.border}`,
@@ -992,7 +970,7 @@ export default function AnnouncementsHistory() {
             style={{
               background: C.navy,
               color: "#fff",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+              boxShadow: C.shadow.lift,
               minWidth: 300,
             }}
           >

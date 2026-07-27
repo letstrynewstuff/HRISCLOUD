@@ -38,8 +38,8 @@ export default function MobileBottomNav({ setSidebarOpen }) {
         background: "rgba(255,255,255,0.97)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        borderTop: `1.5px solid ${C.border}`,
-        boxShadow: "0 -6px 28px rgba(0,0,0,0.08)",
+        borderTop: `1px solid ${C.border}`,
+        boxShadow: C.shadow.lift,
       }}
     >
       {tabs.map((tab, i) => {
@@ -83,7 +83,7 @@ export default function MobileBottomNav({ setSidebarOpen }) {
             </AnimatePresence>
 
             <div
-              className="flex items-center justify-center rounded-2xl transition-all duration-200"
+              className="flex items-center justify-center rounded-full transition-all duration-200"
               style={{
                 width: 42,
                 height: 30,
@@ -102,7 +102,7 @@ export default function MobileBottomNav({ setSidebarOpen }) {
                     ? isManager && tab.path === profilePath
                       ? "#F59E0B"
                       : C.primary
-                    : "#94A3B8"
+                    : C.textMuted
                 }
               />
             </div>
@@ -116,8 +116,7 @@ export default function MobileBottomNav({ setSidebarOpen }) {
                   ? isManager && tab.path === profilePath
                     ? "#F59E0B"
                     : C.primary
-                  : "#94A3B8",
-                fontFamily: "'DM Sans', sans-serif",
+                  : C.textMuted,
                 letterSpacing: "-0.01em",
               }}
             >

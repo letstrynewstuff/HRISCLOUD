@@ -3,28 +3,37 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Plus,
-  Edit3,
-  X,
-  ScrollText,
-  Info,
-  ChevronRight,
-  RefreshCw,
-  Loader2,
   AlertTriangle,
+  Baby,
+  CalendarDays,
+  ChevronRight,
+  Clock,
+  Edit3,
+  GraduationCap,
+  Heart,
+  Info,
+  Loader2,
+  Plus,
+  RefreshCw,
+  ScrollText,
+  Stethoscope,
+  Sun,
+  Users,
+  Wallet,
+  X,
 } from "lucide-react";
 import C from "../../styles/colors";
 import { leaveApi } from "../../api/service/leaveApi";
 
 // ── Leave type UI map ─────────────────────────────────────────
 const LEAVE_TYPES_UI = [
-  { name: "Annual Leave", color: "#4F46E5", light: "#EEF2FF", icon: "☀️" },
-  { name: "Sick Leave", color: "#EF4444", light: "#FEE2E2", icon: "🏥" },
-  { name: "Maternity Leave", color: "#EC4899", light: "#FDF2F8", icon: "🤱" },
-  { name: "Paternity Leave", color: "#06B6D4", light: "#ECFEFF", icon: "👨‍👩‍👧" },
-  { name: "Compassionate", color: "#8B5CF6", light: "#EDE9FE", icon: "🕊️" },
-  { name: "Study Leave", color: "#10B981", light: "#D1FAE5", icon: "📚" },
-  { name: "Unpaid Leave", color: "#F59E0B", light: "#FEF3C7", icon: "⏸️" },
+  { name: "Annual Leave", color: "#4F46E5", light: "#EEF2FF", icon: Sun },
+  { name: "Sick Leave", color: "#EF4444", light: "#FEE2E2", icon: Stethoscope },
+  { name: "Maternity Leave", color: "#6366F1", light: "#EEF2FF", icon: Baby },
+  { name: "Paternity Leave", color: "#6366F1", light: "#EEF2FF", icon: Users },
+  { name: "Compassionate", color: "#6366F1", light: "#E0E7FF", icon: Heart },
+  { name: "Study Leave", color: "#10B981", light: "#D1FAE5", icon: GraduationCap },
+  { name: "Unpaid Leave", color: "#F59E0B", light: "#FEF3C7", icon: "⏸" },
 ];
 const getUI = (lt) =>
   LEAVE_TYPES_UI.find((t) => t.name === lt) ?? LEAVE_TYPES_UI[0];
@@ -110,7 +119,7 @@ function PolicyModal({ policy, onSave, onClose, saving }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
+          boxShadow: C.shadow.lift,
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -126,7 +135,7 @@ function PolicyModal({ policy, onSave, onClose, saving }) {
             <ScrollText size={16} color={C.primary} />
           </div>
           <div>
-            <h3 className="font-bold text-sm" style={{ color: C.textPrimary }}>
+            <h3 className="text-sm" style={{ color: C.textPrimary }}>
               {isNew ? "Create New Policy" : "Edit Policy"}
             </h3>
             <p className="text-[11px]" style={{ color: C.textMuted }}>
@@ -135,7 +144,7 @@ function PolicyModal({ policy, onSave, onClose, saving }) {
           </div>
           <button
             onClick={onClose}
-            className="ml-auto w-7 h-7 rounded-xl flex items-center justify-center"
+            className="ml-auto w-7 h-7 rounded-full flex items-center justify-center"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -329,7 +338,7 @@ function PolicyModal({ policy, onSave, onClose, saving }) {
         >
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold"
+            className="flex-1 py-2.5 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -343,7 +352,7 @@ function PolicyModal({ policy, onSave, onClose, saving }) {
             whileTap={{ scale: 0.97 }}
             onClick={() => onSave(form)}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-xs font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-xs font-semibold text-white flex items-center justify-center gap-2"
             style={{
               background: `linear-gradient(135deg,${C.primary},#6366F1)`,
               opacity: saving ? 0.7 : 1,
@@ -445,7 +454,7 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
       {/* Toolbar */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="text-sm font-bold" style={{ color: C.textPrimary }}>
+          <h2 className="text-sm " style={{ color: C.textPrimary }}>
             Leave Policies
           </h2>
           <p className="text-xs" style={{ color: C.textMuted }}>
@@ -456,10 +465,10 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setModal("new")}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-white"
+          className="flex items-center gap-2 px-3 py-2 rounded-full text-xs font-semibold text-white"
           style={{
             background: `linear-gradient(135deg,${C.primary},#6366F1)`,
-            boxShadow: `0 4px 14px ${C.primary}44`,
+            boxShadow: C.shadow.card,
           }}
         >
           <Plus size={13} /> New Policy
@@ -481,7 +490,7 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setModal("new")}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white"
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold text-white"
               style={{ background: C.primary }}
             >
               <Plus size={13} /> Create First Policy
@@ -551,7 +560,7 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => setModal({ policy })}
-                          className="w-6 h-6 rounded-lg flex items-center justify-center"
+                          className="w-6 h-6 rounded-full flex items-center justify-center"
                           style={{
                             background: C.surfaceAlt,
                             border: `1px solid ${C.border}`,
@@ -568,17 +577,17 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
                         {
                           label: "Days",
                           value: policy.days_allowed,
-                          icon: "📅",
+                          icon: CalendarDays,
                         },
                         {
                           label: "Notice",
                           value: `${policy.notice_days ?? 0}d`,
-                          icon: "⏰",
+                          icon: Clock,
                         },
                         {
                           label: "Paid",
                           value: policy.is_paid ? "Yes" : "No",
-                          icon: "💰",
+                          icon: Wallet,
                         },
                         {
                           label: "Carry Over",
@@ -586,7 +595,7 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
                             (policy.carry_over_days ?? 0) > 0
                               ? `${policy.carry_over_days}d`
                               : "No",
-                          icon: "🔄",
+                          icon: RefreshCw,
                         },
                       ].map((s) => (
                         <div
@@ -597,7 +606,7 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
                             border: `1px solid ${C.border}`,
                           }}
                         >
-                          <span className="text-sm">{s.icon}</span>
+                          <span className="text-sm"><s.icon size={16} /></span>
                           <div>
                             <p
                               className="text-[10px]"

@@ -81,7 +81,7 @@ const fadeUp = {
 const Card = ({ children, className = "", style = {}, onClick }) => (
   <motion.div
     whileHover={
-      onClick ? { y: -2, boxShadow: "0 8px 30px rgba(79,70,229,0.10)" } : {}
+      onClick ? { y: -2, boxShadow: C.shadow.lift } : {}
     }
     transition={{ duration: 0.18 }}
     onClick={onClick}
@@ -487,7 +487,6 @@ export default function OffboardingPage() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -513,7 +512,7 @@ export default function OffboardingPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface, border: `1px solid ${C.border}` }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -543,18 +542,18 @@ export default function OffboardingPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setNewModal(true)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
                 style={{
                   background: C.danger,
                   color: "#fff",
-                  boxShadow: `0 4px 12px ${C.danger}44`,
+                  boxShadow: C.shadow.card,
                 }}
               >
                 <Plus size={13} /> Start Offboarding
               </motion.button>
 
               <button
-                className="relative p-2 rounded-xl"
+                className="relative p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -566,7 +565,7 @@ export default function OffboardingPage() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#4F46E5,#06B6D4)",
+                  background: "linear-gradient(135deg,#4F46E5,#6366F1)",
                 }}
               >
                 {ADMIN.initials}
@@ -586,10 +585,9 @@ export default function OffboardingPage() {
             >
               <div>
                 <h1
-                  className="text-xl font-bold"
+                  className="text-xl "
                   style={{
                     color: C.textPrimary,
-                    fontFamily: "Sora,sans-serif",
                   }}
                 >
                   Offboarding
@@ -604,7 +602,7 @@ export default function OffboardingPage() {
               </div>
               <button
                 onClick={fetchOffboardings}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl"
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full"
                 style={{
                   background: C.surfaceAlt,
                   border: `1px solid ${C.border}`,
@@ -659,7 +657,6 @@ export default function OffboardingPage() {
                         className="text-2xl font-bold"
                         style={{
                           color: C.textPrimary,
-                          fontFamily: "Sora,sans-serif",
                         }}
                       >
                         {value}
@@ -715,7 +712,7 @@ export default function OffboardingPage() {
                   <button
                     key={val}
                     onClick={() => setFilterStatus(val)}
-                    className="px-3 py-1 rounded-lg text-xs font-semibold transition-all"
+                    className="px-3 py-1 rounded-full text-xs font-semibold transition-all"
                     style={{
                       background:
                         filterStatus === val ? C.primary : C.surfaceAlt,
@@ -780,7 +777,7 @@ export default function OffboardingPage() {
                       custom={i}
                       whileHover={{
                         y: -2,
-                        boxShadow: "0 8px 30px rgba(79,70,229,0.10)",
+                        boxShadow: C.shadow.lift,
                       }}
                       className="rounded-2xl bg-white overflow-hidden"
                       style={{ border: `1px solid ${C.border}` }}
@@ -846,7 +843,6 @@ export default function OffboardingPage() {
                                 className="text-xl font-bold"
                                 style={{
                                   color: pct === 100 ? C.success : C.warning,
-                                  fontFamily: "Sora,sans-serif",
                                 }}
                               >
                                 {pct}%
@@ -883,7 +879,7 @@ export default function OffboardingPage() {
                               whileHover={{ scale: 1.03 }}
                               whileTap={{ scale: 0.97 }}
                               onClick={() => openDetail(emp)}
-                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold"
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold"
                               style={{
                                 background: C.primaryLight,
                                 color: C.primary,
@@ -965,7 +961,7 @@ export default function OffboardingPage() {
                     setSelected(null);
                     setTaskData(null);
                   }}
-                  className="p-1.5 rounded-lg"
+                  className="p-1.5 rounded-full"
                   style={{ background: C.surfaceAlt }}
                 >
                   <X size={15} color={C.textSecondary} />
@@ -1153,7 +1149,7 @@ export default function OffboardingPage() {
                     whileTap={{ scale: allTasksDone ? 0.98 : 1 }}
                     onClick={() => handleComplete(false)}
                     disabled={completing || !allTasksDone}
-                    className="w-full py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+                    className="w-full py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
                     style={{
                       background: allTasksDone ? C.success : C.border,
                       boxShadow: allTasksDone
@@ -1182,7 +1178,7 @@ export default function OffboardingPage() {
                     <button
                       onClick={() => handleComplete(true)}
                       disabled={completing}
-                      className="w-full py-2 rounded-xl text-xs font-semibold"
+                      className="w-full py-2 rounded-full text-xs font-semibold"
                       style={{
                         background: C.dangerLight,
                         color: C.danger,
@@ -1244,7 +1240,7 @@ export default function OffboardingPage() {
                   </div>
                   <button
                     onClick={() => !creating && setNewModal(false)}
-                    className="p-1.5 rounded-lg"
+                    className="p-1.5 rounded-full"
                     style={{ background: C.surfaceAlt }}
                   >
                     <X size={15} color={C.textSecondary} />
@@ -1472,7 +1468,7 @@ export default function OffboardingPage() {
                       <div className="flex gap-3 pt-1">
                         <button
                           onClick={() => setNewModal(false)}
-                          className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                          className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                           style={{
                             background: C.surfaceAlt,
                             color: C.textSecondary,
@@ -1491,7 +1487,7 @@ export default function OffboardingPage() {
                             !selectedEmployeeId ||
                             !newForm.terminationDate
                           }
-                          className="flex-1 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2"
+                          className="flex-1 py-2.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2"
                           style={{
                             background: C.danger,
                             color: "#fff",

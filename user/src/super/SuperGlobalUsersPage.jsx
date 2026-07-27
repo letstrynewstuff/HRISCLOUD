@@ -27,16 +27,16 @@ import C from "../styles/colors";
 // ─── Helpers ────────────────────────────────────────────────────────
 const ROLE_COLORS = {
   admin: { bg: "#EEF2FF", text: "#4F46E5", label: "Admin" },
-  manager: { bg: "#F0FDF4", text: "#16A34A", label: "Manager" },
-  user: { bg: "#F8FAFC", text: "#64748B", label: "User" },
-  super_admin: { bg: "#FFF7ED", text: "#EA580C", label: "Super Admin" },
+  manager: { bg: "#D1FAE5", text: "#10B981", label: "Manager" },
+  user: { bg: "#F7F8FC", text: "#5F6D7E", label: "User" },
+  super_admin: { bg: "#FEF3C7", text: "#92400E", label: "Super Admin" },
 };
 
 const STATUS_COLORS = {
-  active: { bg: "#F0FDF4", text: "#16A34A", dot: "#22C55E" },
-  inactive: { bg: "#F8FAFC", text: "#94A3B8", dot: "#CBD5E1" },
-  disabled: { bg: "#FEF2F2", text: "#EF4444", dot: "#F87171" },
-  pending: { bg: "#FFFBEB", text: "#D97706", dot: "#FBBF24" },
+  active: { bg: "#D1FAE5", text: "#10B981", dot: "#10B981" },
+  inactive: { bg: "#F7F8FC", text: "#94A3B8", dot: "#CBD5E1" },
+  disabled: { bg: "#FEE2E2", text: "#EF4444", dot: "#EF4444" },
+  pending: { bg: "#FEF3C7", text: "#92400E", dot: "#F59E0B" },
 };
 
 function getInitials(name = "") {
@@ -50,12 +50,12 @@ function getInitials(name = "") {
 
 function getAvatarGradient(name = "") {
   const gradients = [
-    "linear-gradient(135deg,#4F46E5,#7C3AED)",
-    "linear-gradient(135deg,#0891B2,#0EA5E9)",
-    "linear-gradient(135deg,#059669,#10B981)",
-    "linear-gradient(135deg,#D97706,#F59E0B)",
-    "linear-gradient(135deg,#DC2626,#EF4444)",
-    "linear-gradient(135deg,#7C3AED,#A855F7)",
+    "linear-gradient(135deg,#6366F1,#3730A3)",
+    "linear-gradient(135deg,#4338CA,#6366F1)",
+    "linear-gradient(135deg,#047857,#10B981)",
+    "linear-gradient(135deg,#92400E,#F59E0B)",
+    "linear-gradient(135deg,#B91C1C,#EF4444)",
+    "linear-gradient(135deg,#4F46E5,#6366F1)",
   ];
   const idx = name.charCodeAt(0) % gradients.length;
   return gradients[idx];
@@ -137,7 +137,7 @@ function ConfirmModal({ open, title, message, onConfirm, onCancel, danger }) {
       >
         <div
           className="w-10 h-10 rounded-full flex items-center justify-center mb-4"
-          style={{ background: danger ? "#FEF2F2" : "#EEF2FF" }}
+          style={{ background: danger ? "#FEE2E2" : "#EEF2FF" }}
         >
           {danger ? (
             <ShieldAlert size={20} color="#EF4444" />
@@ -146,8 +146,8 @@ function ConfirmModal({ open, title, message, onConfirm, onCancel, danger }) {
           )}
         </div>
         <h3
-          className="text-lg font-bold mb-1"
-          style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+          className="text-lg mb-1"
+          style={{ color: C.textPrimary }}
         >
           {title}
         </h3>
@@ -157,7 +157,7 @@ function ConfirmModal({ open, title, message, onConfirm, onCancel, danger }) {
         <div className="flex gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 py-2 rounded-xl text-sm font-medium"
+            className="flex-1 py-2 rounded-full text-sm font-medium"
             style={{
               background: C.surface,
               border: `1px solid ${C.border}`,
@@ -168,7 +168,7 @@ function ConfirmModal({ open, title, message, onConfirm, onCancel, danger }) {
           </button>
           <button
             onClick={onConfirm}
-            className="flex-1 py-2 rounded-xl text-sm font-semibold text-white"
+            className="flex-1 py-2 rounded-full text-sm font-semibold text-white"
             style={{ background: danger ? "#EF4444" : "#4F46E5" }}
           >
             Confirm
@@ -334,7 +334,7 @@ export default function SuperGlobalUsersPage() {
             exit={{ opacity: 0, y: -20 }}
             className="fixed top-4 right-4 z-[400] px-4 py-3 rounded-xl text-sm font-medium text-white shadow-xl"
             style={{
-              background: toast.type === "error" ? "#EF4444" : "#22C55E",
+              background: toast.type === "error" ? "#EF4444" : "#10B981",
             }}
           >
             {toast.msg}
@@ -363,7 +363,7 @@ export default function SuperGlobalUsersPage() {
           className="rounded-2xl p-8 text-white relative overflow-hidden mt-6"
           style={{
             background:
-              "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+              C.gradient.hero,
           }}
         >
           <div className="flex flex-col md:flex-row md:items-center gap-6">
@@ -373,8 +373,7 @@ export default function SuperGlobalUsersPage() {
               </div>
               <div>
                 <h1
-                  className="text-3xl font-bold"
-                  style={{ fontFamily: "Sora,sans-serif" }}
+                  className="text-3xl "
                 >
                   Global Users
                 </h1>
@@ -389,12 +388,12 @@ export default function SuperGlobalUsersPage() {
                 {
                   value: users.filter((u) => u.status === "active").length,
                   label: "Active",
-                  color: "#86EFAC",
+                  color: "#10B981",
                 },
                 {
                   value: users.filter((u) => u.status === "disabled").length,
                   label: "Disabled",
-                  color: "#FCA5A5",
+                  color: "#EF4444",
                 },
               ].map((s, i) => (
                 <div
@@ -471,8 +470,8 @@ export default function SuperGlobalUsersPage() {
                 setFilterStatus("");
                 setPage(1);
               }}
-              className="flex items-center gap-1 text-xs px-3 py-2 rounded-xl"
-              style={{ background: "#FEF2F2", color: "#EF4444" }}
+              className="flex items-center gap-1 text-xs px-3 py-2 rounded-full"
+              style={{ background: "#FEE2E2", color: "#EF4444" }}
             >
               <X size={12} /> Clear
             </button>
@@ -488,14 +487,14 @@ export default function SuperGlobalUsersPage() {
               </span>
               <button
                 onClick={handleBulkDisable}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-white"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold text-white"
                 style={{ background: "#EF4444" }}
               >
                 <Ban size={13} /> Disable All
               </button>
               <button
                 onClick={() => setSelected(new Set())}
-                className="text-xs px-3 py-2 rounded-xl"
+                className="text-xs px-3 py-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -512,7 +511,7 @@ export default function SuperGlobalUsersPage() {
         {error && (
           <div
             className="flex items-center gap-3 p-4 rounded-xl"
-            style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}
+            style={{ background: "#FEE2E2", border: "1px solid #FEE2E2" }}
           >
             <AlertCircle size={18} color="#EF4444" />
             <span className="text-sm" style={{ color: "#EF4444" }}>
@@ -537,7 +536,7 @@ export default function SuperGlobalUsersPage() {
           style={{
             background: "#fff",
             border: `1px solid ${C.border}`,
-            boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
+            boxShadow: C.shadow.card,
           }}
         >
           <div className="overflow-x-auto">
@@ -546,7 +545,7 @@ export default function SuperGlobalUsersPage() {
                 <tr
                   style={{
                     borderBottom: `1px solid ${C.border}`,
-                    background: "#F8FAFC",
+                    background: "#F7F8FC",
                   }}
                 >
                   <th className="px-4 py-3 text-left">
@@ -589,7 +588,7 @@ export default function SuperGlobalUsersPage() {
                           <div
                             className="h-4 rounded animate-pulse"
                             style={{
-                              background: "#F1F5F9",
+                              background: "#F0F2F8",
                               width: j === 0 ? 20 : "80%",
                             }}
                           />
@@ -629,7 +628,7 @@ export default function SuperGlobalUsersPage() {
                         className="group"
                         style={{
                           borderBottom: `1px solid ${C.border}`,
-                          background: isSelected ? "#F5F3FF" : "transparent",
+                          background: isSelected ? "#EEF2FF" : "transparent",
                           opacity: isDisabled ? 0.65 : 1,
                         }}
                       >
@@ -726,9 +725,9 @@ export default function SuperGlobalUsersPage() {
                               }
                               disabled={isDisabled || actionLoading === uid}
                               title="Disable user"
-                              className="p-2 rounded-lg transition-colors"
+                              className="p-2 rounded-full transition-colors"
                               style={{
-                                background: "#FEF2F2",
+                                background: "#FEE2E2",
                                 color: "#EF4444",
                                 opacity: isDisabled ? 0.4 : 1,
                               }}
@@ -747,7 +746,7 @@ export default function SuperGlobalUsersPage() {
                               }
                               disabled={actionLoading === uid}
                               title="Reset password"
-                              className="p-2 rounded-lg transition-colors"
+                              className="p-2 rounded-full transition-colors"
                               style={{
                                 background: "#EEF2FF",
                                 color: "#4F46E5",
@@ -771,7 +770,7 @@ export default function SuperGlobalUsersPage() {
               className="flex items-center justify-between px-5 py-3"
               style={{
                 borderTop: `1px solid ${C.border}`,
-                background: "#F8FAFC",
+                background: "#F7F8FC",
               }}
             >
               <span className="text-xs" style={{ color: C.textMuted }}>
@@ -785,7 +784,7 @@ export default function SuperGlobalUsersPage() {
                     <button
                       key={p}
                       onClick={() => setPage(p)}
-                      className="w-7 h-7 rounded-lg text-xs font-medium transition-all"
+                      className="w-7 h-7 rounded-full text-xs font-medium transition-all"
                       style={{
                         background: p === page ? "#4F46E5" : C.surface,
                         color: p === page ? "#fff" : C.textSecondary,

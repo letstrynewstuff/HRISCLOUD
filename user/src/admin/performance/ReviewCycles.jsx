@@ -27,9 +27,9 @@ const fadeUp = {
 
 function StatusPill({ status }) {
   const cfg = {
-    Active: { bg: "#D1FAE5", color: "#059669" },
-    Upcoming: { bg: "#FEF3C7", color: "#D97706" },
-    Completed: { bg: "#F1F5F9", color: "#64748B" },
+    Active: { bg: "#D1FAE5", color: "#047857" },
+    Upcoming: { bg: "#FEF3C7", color: "#92400E" },
+    Completed: { bg: "#F0F2F8", color: "#5F6D7E" },
   }[status] ?? { bg: C.surfaceAlt, color: C.textMuted };
   return (
     <span
@@ -86,7 +86,7 @@ function CreateCycleModal({ onClose, onCreated }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
+          boxShadow: C.shadow.lift,
         }}
       >
         <div
@@ -98,7 +98,7 @@ function CreateCycleModal({ onClose, onCreated }) {
           </p>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg"
+            className="p-1.5 rounded-full"
             style={{ background: C.surfaceAlt }}
           >
             <X size={14} color={C.textMuted} />
@@ -174,7 +174,7 @@ function CreateCycleModal({ onClose, onCreated }) {
         <div className="flex gap-3 px-5 pb-5">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -188,7 +188,7 @@ function CreateCycleModal({ onClose, onCreated }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}
           >
             {saving ? (
@@ -241,14 +241,14 @@ export default function ReviewCycles() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="font-semibold text-lg" style={{ color: C.textPrimary }}>
+        <h2 className="text-lg" style={{ color: C.textPrimary }}>
           Review Cycles
         </h2>
         <div className="flex gap-2">
           <motion.button
             whileHover={{ scale: 1.04 }}
             onClick={load}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -261,7 +261,7 @@ export default function ReviewCycles() {
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white"
+            className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-white"
             style={{ background: C.primary }}
           >
             <Plus size={16} /> New Cycle
@@ -364,7 +364,7 @@ export default function ReviewCycles() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => toggleStatus(cycle.id)}
-                          className="p-2 rounded-lg"
+                          className="p-2 rounded-full"
                           style={{
                             background: C.primaryLight,
                             color: C.primary,
@@ -379,7 +379,7 @@ export default function ReviewCycles() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
-                          className="p-2 rounded-lg"
+                          className="p-2 rounded-full"
                           style={{
                             background: C.surfaceAlt,
                             color: C.textSecondary,

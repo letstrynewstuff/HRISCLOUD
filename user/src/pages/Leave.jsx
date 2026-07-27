@@ -64,15 +64,15 @@ const LEAVE_META = {
   },
   maternity: {
     icon: Baby,
-    color: "#EC4899",
-    bg: "#FDF2F8",
+    color: C.accent,
+    bg: C.primaryLight,
     label: "Maternity Leave",
     desc: "Statutory maternity benefit",
   },
   paternity: {
     icon: Baby,
-    color: "#7C3AED",
-    bg: "#EDE9FE",
+    color: C.primary,
+    bg: C.primaryTint,
     label: "Paternity Leave",
     desc: "Statutory paternity benefit",
   },
@@ -151,14 +151,14 @@ const fadeUp = {
 const Skeleton = ({ className = "" }) => (
   <div
     className={`rounded-xl animate-pulse ${className}`}
-    style={{ background: C.bgMid ?? "#E8EBF4" }}
+    style={{ background: C.bgMid ?? "#E4E7F0" }}
   />
 );
 
 const Card = ({ children, className = "", style = {}, onClick }) => (
   <motion.div
     whileHover={
-      onClick ? { y: -2, boxShadow: "0 12px 40px rgba(79,70,229,0.10)" } : {}
+      onClick ? { y: -2, boxShadow: C.shadow.lift } : {}
     }
     transition={{ duration: 0.2 }}
     onClick={onClick}
@@ -496,7 +496,6 @@ export default function LeavePage() {
       style={{
         background: C.bg,
         color: C.textPrimary,
-        fontFamily: "'DM Sans','Sora',sans-serif",
       }}
     >
       <div className="flex h-screen overflow-hidden">
@@ -526,7 +525,7 @@ export default function LeavePage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl hidden md:flex"
+              className="p-2 rounded-full hidden md:flex"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -568,11 +567,11 @@ export default function LeavePage() {
                   setActiveTab("apply");
                   setApplyStep(1);
                 }}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
                 style={{
                   background: C.primary,
                   color: "#fff",
-                  boxShadow: "0 4px 12px rgba(79,70,229,0.3)",
+                  boxShadow: C.shadow.card,
                 }}
               >
                 <Plus size={13} /> Apply Leave
@@ -581,7 +580,7 @@ export default function LeavePage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={loadData}
-                className="p-2 rounded-xl"
+                className="p-2 rounded-full"
                 style={{
                   background: C.surface,
                   border: `1px solid ${C.border}`,
@@ -593,7 +592,7 @@ export default function LeavePage() {
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                 style={{
-                  background: "linear-gradient(135deg,#6366F1,#06B6D4)",
+                  background: "linear-gradient(135deg,#6366F1,#4338CA)",
                 }}
               >
                 {authLoading ? "…" : initials}
@@ -611,7 +610,7 @@ export default function LeavePage() {
               className="relative rounded-2xl overflow-hidden p-6 md:p-8"
               style={{
                 background:
-                  "linear-gradient(135deg,#1E1B4B 0%,#312E81 50%,#1E40AF 100%)",
+                  C.gradient.hero,
                 minHeight: 140,
               }}
             >
@@ -625,7 +624,7 @@ export default function LeavePage() {
                 <div
                   className="absolute -bottom-6 left-1/4 w-40 h-40 rounded-full opacity-10"
                   style={{
-                    background: "radial-gradient(circle,#06B6D4,transparent)",
+                    background: "radial-gradient(circle,#6366F1,transparent)",
                   }}
                 />
               </div>
@@ -639,8 +638,7 @@ export default function LeavePage() {
                   </div>
                   <div>
                     <h1
-                      className="text-white text-2xl md:text-3xl font-bold"
-                      style={{ fontFamily: "Sora,sans-serif" }}
+                      className="text-white text-2xl md:text-3xl "
                     >
                       My Leave
                     </h1>
@@ -656,17 +654,17 @@ export default function LeavePage() {
                     {
                       label: "Days Available",
                       value: dataLoading ? "—" : totalAvailable,
-                      color: "#A5F3FC",
+                      color: "#C7D2FE",
                     },
                     {
                       label: "Days Pending",
                       value: dataLoading ? "—" : totalPending,
-                      color: "#FDE68A",
+                      color: "#FEF3C7",
                     },
                     {
                       label: "Days Taken YTD",
                       value: dataLoading ? "—" : totalTakenYTD,
-                      color: "#BBF7D0",
+                      color: "#D1FAE5",
                     },
                   ].map(({ label, value, color }) => (
                     <div
@@ -676,7 +674,7 @@ export default function LeavePage() {
                     >
                       <p
                         className="text-2xl font-bold"
-                        style={{ color, fontFamily: "Sora,sans-serif" }}
+                        style={{ color }}
                       >
                         {value}
                       </p>
@@ -714,7 +712,7 @@ export default function LeavePage() {
                       setActiveTab(id);
                       if (id === "apply") setApplyStep(1);
                     }}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all"
                     style={{
                       background: activeTab === id ? C.primary : "transparent",
                       color: activeTab === id ? "#fff" : C.textSecondary,
@@ -952,7 +950,7 @@ export default function LeavePage() {
                                   setApplyStep(1);
                                 }}
                                 disabled={avail === 0}
-                                className="mt-3 w-full py-2 rounded-xl text-xs font-semibold"
+                                className="mt-3 w-full py-2 rounded-full text-xs font-semibold"
                                 style={{
                                   background: avail === 0 ? C.border : meta.bg,
                                   color: avail === 0 ? C.textMuted : meta.color,
@@ -1072,10 +1070,9 @@ export default function LeavePage() {
                         >
                           <div>
                             <h2
-                              className="text-lg font-bold mb-0.5"
+                              className="text-lg mb-0.5"
                               style={{
                                 color: C.textPrimary,
-                                fontFamily: "Sora,sans-serif",
                               }}
                             >
                               Apply for Leave
@@ -1327,7 +1324,7 @@ export default function LeavePage() {
                                 whileHover={{ scale: 1.01 }}
                                 whileTap={{ scale: 0.99 }}
                                 onClick={() => fileRef.current?.click()}
-                                className="w-full py-3 border-2 border-dashed rounded-xl text-sm flex items-center justify-center gap-2"
+                                className="w-full py-3 border-2 border-dashed rounded-full text-sm flex items-center justify-center gap-2"
                                 style={{
                                   borderColor: formErrors.file
                                     ? C.danger
@@ -1370,11 +1367,11 @@ export default function LeavePage() {
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             onClick={handleSubmit}
-                            className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+                            className="w-full py-3 rounded-full font-semibold text-sm flex items-center justify-center gap-2"
                             style={{
                               background: C.primary,
                               color: "#fff",
-                              boxShadow: "0 4px 14px rgba(79,70,229,0.35)",
+                              boxShadow: C.shadow.card,
                             }}
                           >
                             Review Application <ArrowRight size={16} />
@@ -1393,10 +1390,9 @@ export default function LeavePage() {
                         >
                           <div>
                             <h2
-                              className="text-lg font-bold mb-0.5"
+                              className="text-lg mb-0.5"
                               style={{
                                 color: C.textPrimary,
-                                fontFamily: "Sora,sans-serif",
                               }}
                             >
                               Confirm Application
@@ -1529,7 +1525,7 @@ export default function LeavePage() {
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                               onClick={() => setApplyStep(1)}
-                              className="flex-1 py-3 rounded-xl font-semibold text-sm"
+                              className="flex-1 py-3 rounded-full font-semibold text-sm"
                               style={{
                                 background: C.surfaceAlt,
                                 color: C.textSecondary,
@@ -1543,11 +1539,11 @@ export default function LeavePage() {
                               whileTap={{ scale: 0.98 }}
                               onClick={handleConfirm}
                               disabled={submitting}
-                              className="flex-1 py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2"
+                              className="flex-1 py-3 rounded-full font-semibold text-sm flex items-center justify-center gap-2"
                               style={{
                                 background: C.success,
                                 color: "#fff",
-                                boxShadow: "0 4px 14px rgba(16,185,129,0.35)",
+                                boxShadow: C.shadow.card,
                                 opacity: submitting ? 0.8 : 1,
                               }}
                             >
@@ -1590,13 +1586,12 @@ export default function LeavePage() {
                           </motion.div>
                           <div>
                             <h2
-                              className="text-xl font-bold mb-1"
+                              className="text-xl mb-1"
                               style={{
                                 color: C.textPrimary,
-                                fontFamily: "Sora,sans-serif",
                               }}
                             >
-                              Leave Applied! 🎉
+                              Leave Applied!
                             </h2>
                             <p
                               className="text-sm"
@@ -1630,7 +1625,7 @@ export default function LeavePage() {
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
                               onClick={handleReset}
-                              className="flex-1 py-3 rounded-xl font-semibold text-sm"
+                              className="flex-1 py-3 rounded-full font-semibold text-sm"
                               style={{ background: C.primary, color: "#fff" }}
                             >
                               View History
@@ -1648,7 +1643,7 @@ export default function LeavePage() {
                                   file: null,
                                 });
                               }}
-                              className="flex-1 py-3 rounded-xl font-semibold text-sm"
+                              className="flex-1 py-3 rounded-full font-semibold text-sm"
                               style={{
                                 background: C.surfaceAlt,
                                 color: C.textSecondary,
@@ -1713,7 +1708,7 @@ export default function LeavePage() {
                             key={f}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setFilterStatus(f)}
-                            className="px-3 py-1 rounded-lg text-xs font-semibold"
+                            className="px-3 py-1 rounded-full text-xs font-semibold"
                             style={{
                               background:
                                 filterStatus === f ? C.primary : C.surfaceAlt,
@@ -1870,7 +1865,6 @@ export default function LeavePage() {
                           className="font-semibold text-sm"
                           style={{
                             color: C.textPrimary,
-                            fontFamily: "Sora,sans-serif",
                           }}
                         >
                           {monthName}
@@ -1886,7 +1880,7 @@ export default function LeavePage() {
                               setCalYear((y) => y - 1);
                             } else setCalMonth((m) => m - 1);
                           }}
-                          className="w-8 h-8 rounded-xl flex items-center justify-center"
+                          className="w-8 h-8 rounded-full flex items-center justify-center"
                           style={{
                             background: C.surfaceAlt,
                             border: `1px solid ${C.border}`,
@@ -1901,7 +1895,7 @@ export default function LeavePage() {
                             setCalMonth(now.getMonth());
                             setCalYear(now.getFullYear());
                           }}
-                          className="px-3 py-1.5 rounded-xl text-xs font-semibold"
+                          className="px-3 py-1.5 rounded-full text-xs font-semibold"
                           style={{
                             background: C.primaryLight,
                             color: C.primary,
@@ -1918,7 +1912,7 @@ export default function LeavePage() {
                               setCalYear((y) => y + 1);
                             } else setCalMonth((m) => m + 1);
                           }}
-                          className="w-8 h-8 rounded-xl flex items-center justify-center"
+                          className="w-8 h-8 rounded-full flex items-center justify-center"
                           style={{
                             background: C.surfaceAlt,
                             border: `1px solid ${C.border}`,
@@ -1971,7 +1965,7 @@ export default function LeavePage() {
                                   : lv?.status === "pending"
                                     ? C.warningLight
                                     : isWeekend
-                                      ? "#F8FAFC"
+                                      ? "#F7F8FC"
                                       : "transparent",
                               color: isToday
                                 ? "#fff"
@@ -2088,7 +2082,6 @@ export default function LeavePage() {
                               className="font-bold"
                               style={{
                                 color: C.textPrimary,
-                                fontFamily: "Sora,sans-serif",
                               }}
                             >
                               {detailLeave.policy_name ?? meta.label}
@@ -2103,7 +2096,7 @@ export default function LeavePage() {
                         </div>
                         <button
                           onClick={() => setDetailLeave(null)}
-                          className="p-1.5 rounded-lg"
+                          className="p-1.5 rounded-full"
                           style={{ background: "rgba(0,0,0,0.08)" }}
                         >
                           <X size={16} color={C.textSecondary} />
@@ -2228,7 +2221,6 @@ export default function LeavePage() {
                     className="font-bold"
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     {new Date(selectedCalDay.ds).toLocaleDateString("en-NG", {
@@ -2239,7 +2231,7 @@ export default function LeavePage() {
                   </p>
                   <button
                     onClick={() => setSelectedCalDay(null)}
-                    className="p-1.5 rounded-lg"
+                    className="p-1.5 rounded-full"
                     style={{ background: C.surfaceAlt }}
                   >
                     <X size={15} color={C.textMuted} />

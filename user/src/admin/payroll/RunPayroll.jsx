@@ -123,7 +123,7 @@ function FormatPicker({ value, onChange }) {
             <button
               key={f.id}
               onClick={() => onChange(f.id)}
-              className="flex-1 py-3 px-4 rounded-xl border-2 text-left transition-all flex items-center gap-3"
+              className="flex-1 py-3 px-4 rounded-full border-2 text-left transition-all flex items-center gap-3"
               style={{
                 background:  active ? C.primaryLight : C.surface,
                 borderColor: active ? C.primary      : C.border,
@@ -466,8 +466,8 @@ export default function RunPayroll({ onComplete }) {
 
         <div>
           <h2
-            className="text-2xl font-bold mb-1"
-            style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}
+            className="text-2xl mb-1"
+            style={{ color: C.textPrimary }}
           >
             Payroll Finalised!
           </h2>
@@ -494,7 +494,7 @@ export default function RunPayroll({ onComplete }) {
               whileHover={{ scale: 1.02 }}
               onClick={handleDownload}
               disabled={downloadingCSV}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-full text-sm font-bold"
               style={{
                 background: C.primary,
                 color:      "#fff",
@@ -522,7 +522,7 @@ export default function RunPayroll({ onComplete }) {
             setShowSuccess(false);
             if (onComplete) onComplete();
           }}
-          className="mx-auto flex px-6 py-2.5 rounded-xl text-sm font-semibold"
+          className="mx-auto flex px-6 py-2.5 rounded-full text-sm font-semibold"
           style={{
             background: C.surfaceAlt,
             color:      C.textSecondary,
@@ -546,7 +546,7 @@ export default function RunPayroll({ onComplete }) {
             <div className="flex flex-col items-center flex-1">
               <div
                 className="w-full h-1.5 rounded-full"
-                style={{ background: i <= currentStep ? C.primary : "#E2E8F0" }}
+                style={{ background: i <= currentStep ? C.primary : "#E4E7F0" }}
               />
               <span
                 className="text-[10px] mt-1 font-semibold hidden sm:block"
@@ -575,7 +575,7 @@ export default function RunPayroll({ onComplete }) {
               onClick={() => setError(null)}
               style={{ background: "none", border: "none", cursor: "pointer", color: C.danger }}
             >
-              ✕
+
             </button>
           </motion.div>
         )}
@@ -593,7 +593,7 @@ export default function RunPayroll({ onComplete }) {
             className="space-y-6"
           >
             <div>
-              <h2 className="font-bold text-xl mb-1" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+              <h2 className="text-xl mb-1" style={{ color: C.textPrimary }}>
                 Select Payroll Mode
               </h2>
               <p className="text-sm" style={{ color: C.textMuted }}>
@@ -665,7 +665,7 @@ export default function RunPayroll({ onComplete }) {
               whileTap={{ scale: 0.98 }}
               onClick={handleInit}
               disabled={loading}
-              className="w-full py-4 rounded-xl text-base font-bold text-white flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-full text-base font-bold text-white flex items-center justify-center gap-2"
               style={{ background: C.primary, border: "none", cursor: loading ? "not-allowed" : "pointer" }}
             >
               {loading ? (
@@ -687,7 +687,7 @@ export default function RunPayroll({ onComplete }) {
             className="space-y-5"
           >
             <div>
-              <h2 className="font-bold text-xl mb-1" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+              <h2 className="text-xl mb-1" style={{ color: C.textPrimary }}>
                 Earnings Review
               </h2>
               <p className="text-sm" style={{ color: C.textMuted }}>
@@ -761,7 +761,7 @@ export default function RunPayroll({ onComplete }) {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 onClick={() => setCurrentStep(0)}
-                className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold"
+                className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-semibold"
                 style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}`, cursor: "pointer" }}
               >
                 <ArrowLeft size={14} /> Back
@@ -771,7 +771,7 @@ export default function RunPayroll({ onComplete }) {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleProcess}
                 disabled={loading}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2"
                 style={{ background: C.primary, border: "none", cursor: loading ? "not-allowed" : "pointer" }}
               >
                 {loading ? (
@@ -794,7 +794,7 @@ export default function RunPayroll({ onComplete }) {
             className="space-y-5"
           >
             <div>
-              <h2 className="font-bold text-xl mb-1" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+              <h2 className="text-xl mb-1" style={{ color: C.textPrimary }}>
                 Deductions Review
               </h2>
               <p className="text-sm" style={{ color: C.textMuted }}>
@@ -876,7 +876,7 @@ export default function RunPayroll({ onComplete }) {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 onClick={() => setCurrentStep(1)}
-                className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold"
+                className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-semibold"
                 style={{ background: C.surfaceAlt, color: C.textSecondary, border: `1px solid ${C.border}`, cursor: "pointer" }}
               >
                 <ArrowLeft size={14} /> Back
@@ -886,7 +886,7 @@ export default function RunPayroll({ onComplete }) {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleApprove}
                 disabled={loading}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-full text-sm font-bold text-white flex items-center justify-center gap-2"
                 style={{ background: C.primary, border: "none", cursor: loading ? "not-allowed" : "pointer" }}
               >
                 {loading ? (
@@ -909,7 +909,7 @@ export default function RunPayroll({ onComplete }) {
             className="space-y-6"
           >
             <div>
-              <h2 className="font-bold text-xl mb-1" style={{ color: C.textPrimary, fontFamily: "Sora,sans-serif" }}>
+              <h2 className="text-xl mb-1" style={{ color: C.textPrimary }}>
                 Payroll Summary & Approval
               </h2>
               <p className="text-sm" style={{ color: C.textMuted }}>
@@ -930,7 +930,7 @@ export default function RunPayroll({ onComplete }) {
                   style={{ background: bg, borderColor: `${color}33` }}
                 >
                   <p className="text-sm font-medium" style={{ color }}>{label}</p>
-                  <p className="text-3xl font-bold mt-2" style={{ color, fontFamily: "Sora,sans-serif" }}>{value}</p>
+                  <p className="text-3xl font-bold mt-2" style={{ color }}>{value}</p>
                 </div>
               ))}
             </div>
@@ -965,7 +965,7 @@ export default function RunPayroll({ onComplete }) {
                 whileHover={{ scale: 1.02 }}
                 onClick={handleDownload}
                 disabled={downloadingCSV}
-                className="mt-3 w-full py-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2"
+                className="mt-3 w-full py-3 rounded-full text-sm font-bold flex items-center justify-center gap-2"
                 style={{
                   background: C.surface,
                   color:      C.primary,
@@ -1011,7 +1011,7 @@ export default function RunPayroll({ onComplete }) {
               whileTap={allApproved ? { scale: 0.98 } : {}}
               onClick={handleMarkPaid}
               disabled={loading || !allApproved}
-              className="w-full py-4 rounded-xl text-base font-bold text-white flex items-center justify-center gap-2 transition-all"
+              className="w-full py-4 rounded-full text-base font-bold text-white flex items-center justify-center gap-2 transition-all"
               style={{
                 background: allApproved ? C.success : C.border,
                 border:     "none",

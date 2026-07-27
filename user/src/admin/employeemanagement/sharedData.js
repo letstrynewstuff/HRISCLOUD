@@ -5,34 +5,17 @@
 //  Import from EditEmployee.jsx, ProfileChangeRequests.jsx, etc.
 // ─────────────────────────────────────────────────────────────
 
+import tokens from "../../styles/colors";
+
 /* ─── Design tokens (identical to AdminDashboard / EmployeeList) ─── */
 export const C = {
-  bg: "#F0F2F8",
-  bgMid: "#E8EBF4",
-  surface: "#FFFFFF",
-  surfaceHover: "#F7F8FC",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  borderHover: "rgba(79,70,229,0.35)",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  primaryGlow: "rgba(79,70,229,0.20)",
-  accent: "#06B6D4",
-  accentLight: "#ECFEFF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  purple: "#8B5CF6",
-  purpleLight: "#EDE9FE",
-  pink: "#EC4899",
-  pinkLight: "#FDF2F8",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-  navy: "#1E1B4B",
+  // Re-exported from the single source of truth so these 45 files re-theme
+  // with the rest of the app. See src/styles/colors.js and REBRAND-MIGRATION.md.
+  ...tokens,
+
+  // Keys this module adds on top of the shared set
+  surfaceHover: tokens.surfaceAlt,
+  borderHover: "rgba(79, 70, 229, 0.35)",
 };
 
 export const GRADE_LEVELS = [
@@ -47,32 +30,32 @@ export const GRADE_LEVELS = [
   {
     id: "g2",
     name: "Intermediate",
-    bg: "#F0FDF4",
-    color: "#16A34A",
+    bg: "#D1FAE5",
+    color: "#10B981",
     minSalary: 250000,
     maxSalary: 500000,
   },
   {
     id: "g3",
     name: "Senior",
-    bg: "#FFFBEB",
-    color: "#D97706",
+    bg: "#FEF3C7",
+    color: "#92400E",
     minSalary: 500000,
     maxSalary: 1000000,
   },
   {
     id: "g4",
     name: "Management",
-    bg: "#FAF5FF",
-    color: "#9333EA",
+    bg: "#EEF2FF",
+    color: "#4F46E5",
     minSalary: 1000000,
     maxSalary: 2500000,
   },
   {
     id: "g5",
     name: "Executive",
-    bg: "#FEF2F2",
-    color: "#DC2626",
+    bg: "#FEE2E2",
+    color: "#B91C1C",
     minSalary: 2500000,
     maxSalary: 5000000,
   },
@@ -87,13 +70,13 @@ export const ADMIN = {
 
 export const DEPT_COLORS = {
   Engineering: "#6366F1",
-  "Product & Design": "#06B6D4",
+  "Product & Design": "#6366F1",
   Finance: "#10B981",
   "Human Resources": "#F59E0B",
-  Operations: "#EC4899",
-  Marketing: "#8B5CF6",
+  Operations: "#6366F1",
+  Marketing: "#6366F1",
   Legal: "#EF4444",
-  Sales: "#F97316",
+  Sales: "#F59E0B",
 };
 
 export const DEPARTMENTS = Object.keys(DEPT_COLORS);

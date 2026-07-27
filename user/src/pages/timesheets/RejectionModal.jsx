@@ -49,16 +49,15 @@ export default function RejectionModal({
               <div className="flex items-center gap-3">
                 <div
                   className="w-10 h-10 rounded-xl flex items-center justify-center"
-                  style={{ background: "#FEE2E2" }}
+                  style={{ background: C.dangerLight }}
                 >
-                  <AlertCircle size={20} color="#DC2626" />
+                  <AlertCircle size={20} color="#B91C1C" />
                 </div>
                 <div>
                   <h3
-                    className="font-bold text-base"
+                    className="text-base"
                     style={{
                       color: C.textPrimary,
-                      fontFamily: "Sora,sans-serif",
                     }}
                   >
                     Reject Entry
@@ -70,7 +69,7 @@ export default function RejectionModal({
               </div>
               <button
                 onClick={handleClose}
-                className="p-1 rounded-lg hover:bg-gray-100"
+                className="p-1 rounded-full hover:bg-gray-100"
               >
                 <X size={16} color={C.textMuted} />
               </button>
@@ -80,7 +79,7 @@ export default function RejectionModal({
               className="block text-xs font-semibold mb-1.5"
               style={{ color: C.textSecondary }}
             >
-              Reason for rejection <span style={{ color: "#DC2626" }}>*</span>
+              Reason for rejection <span style={{ color: "#B91C1C" }}>*</span>
             </label>
             <textarea
               value={reason}
@@ -89,14 +88,13 @@ export default function RejectionModal({
               placeholder="e.g. Description too vague — please add more detail about the task and project."
               className="w-full rounded-xl px-3 py-2.5 text-sm outline-none resize-none"
               style={{
-                background: C.surfaceAlt ?? "#F8F9FC",
+                background: C.surfaceAlt ?? "#F7F8FC",
                 border: `1.5px solid ${reason.trim() ? C.primary : C.border}`,
                 color: C.textPrimary,
-                fontFamily: "DM Sans, sans-serif",
               }}
             />
             {!reason.trim() && (
-              <p className="text-xs mt-1" style={{ color: "#DC2626" }}>
+              <p className="text-xs mt-1" style={{ color: "#B91C1C" }}>
                 Rejection reason is required.
               </p>
             )}
@@ -104,9 +102,9 @@ export default function RejectionModal({
             <div className="flex gap-3 mt-5">
               <button
                 onClick={handleClose}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                 style={{
-                  background: C.surfaceAlt ?? "#F3F4F6",
+                  background: C.surfaceAlt ?? "#F0F2F8",
                   color: C.textSecondary,
                   border: `1px solid ${C.border}`,
                 }}
@@ -116,9 +114,9 @@ export default function RejectionModal({
               <button
                 onClick={handleConfirm}
                 disabled={!reason.trim() || loading}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+                className="flex-1 py-2.5 rounded-full text-sm font-semibold"
                 style={{
-                  background: !reason.trim() || loading ? "#F3F4F6" : "#DC2626",
+                  background: !reason.trim() || loading ? "#F0F2F8" : "#B91C1C",
                   color: !reason.trim() || loading ? C.textMuted : "#fff",
                   cursor: !reason.trim() || loading ? "not-allowed" : "pointer",
                   transition: "all 0.2s",

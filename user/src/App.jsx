@@ -27,6 +27,7 @@ import SettingsPage from "./pages/Settings";
 import RequestsPage from "./pages/Requests";
 import AnnouncementsPage from "./pages/Announcements";
 import LandingPage from "./pages/LandingPage";
+import NotFound from "./pages/NotFound";
 import RequestDemo from "./pages/RequestDemo";
 import ManagerPerformance from "./pages/ManagerPerformance";
 
@@ -577,6 +578,9 @@ function App() {
           </SuperAdminRoute>
         }
       />
+    
+      {/* Catch-all — an unmatched URL used to render a blank page */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

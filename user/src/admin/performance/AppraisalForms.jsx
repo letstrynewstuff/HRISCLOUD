@@ -27,7 +27,7 @@ const getForms = () =>
 const FORM_TYPE_COLORS = {
   "Self Assessment": { bg: C.primaryLight, color: C.primary },
   "Manager Review": { bg: C.successLight, color: C.success },
-  "360° Feedback": { bg: "#F3E8FF", color: "#7C3AED" },
+  "360° Feedback": { bg: "#E0E7FF", color: "#4F46E5" },
   "Peer Review": { bg: C.accentLight, color: C.accent },
   "Probation Review": { bg: C.warningLight, color: C.warning },
 };
@@ -84,7 +84,7 @@ function CreateFormModal({ cycles, onClose, onCreated }) {
         style={{
           background: C.surface,
           border: `1px solid ${C.border}`,
-          boxShadow: "0 24px 64px rgba(0,0,0,0.2)",
+          boxShadow: C.shadow.lift,
         }}
       >
         <div
@@ -96,7 +96,7 @@ function CreateFormModal({ cycles, onClose, onCreated }) {
           </p>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg"
+            className="p-1.5 rounded-full"
             style={{ background: C.surfaceAlt }}
           >
             <X size={14} color={C.textMuted} />
@@ -194,7 +194,7 @@ function CreateFormModal({ cycles, onClose, onCreated }) {
         <div className="flex gap-3 px-5 pb-5">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold"
             style={{
               background: C.surfaceAlt,
               color: C.textSecondary,
@@ -208,7 +208,7 @@ function CreateFormModal({ cycles, onClose, onCreated }) {
             whileTap={{ scale: 0.98 }}
             onClick={handleSubmit}
             disabled={saving}
-            className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2"
+            className="flex-1 py-2.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2"
             style={{ background: C.primary, opacity: saving ? 0.8 : 1 }}
           >
             {saving ? (
@@ -301,14 +301,14 @@ export default function AppraisalForms() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="font-semibold text-lg" style={{ color: C.textPrimary }}>
+        <h2 className="text-lg" style={{ color: C.textPrimary }}>
           Appraisal Forms Builder
         </h2>
         <div className="flex gap-2">
           <motion.button
             whileHover={{ scale: 1.04 }}
             onClick={load}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold"
             style={{
               background: C.surfaceAlt,
               border: `1px solid ${C.border}`,
@@ -321,7 +321,7 @@ export default function AppraisalForms() {
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold text-white"
+            className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold text-white"
             style={{ background: C.primary }}
           >
             <Plus size={16} /> New Form Template
@@ -354,13 +354,13 @@ export default function AppraisalForms() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              whileHover={{ y: -3, boxShadow: `0 8px 24px ${C.primaryGlow}` }}
+              whileHover={{ y: -3, boxShadow: C.shadow.lift }}
               className="rounded-2xl p-6 border cursor-pointer"
               style={{ background: C.surface, borderColor: C.border }}
             >
               <div className="flex items-start justify-between mb-3">
                 <h3
-                  className="font-semibold text-sm"
+                  className="text-sm"
                   style={{ color: C.textPrimary }}
                 >
                   {form.name}
@@ -384,7 +384,7 @@ export default function AppraisalForms() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="text-xs font-semibold px-3 py-1.5 rounded-xl"
+                  className="text-xs font-semibold px-3 py-1.5 rounded-full"
                   style={{ background: C.primaryLight, color: C.primary }}
                 >
                   Open Builder

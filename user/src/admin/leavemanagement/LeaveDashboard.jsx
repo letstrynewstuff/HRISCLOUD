@@ -28,9 +28,9 @@ import { leaveApi } from "../../api/service/leaveApi";
 const LEAVE_TYPE_UI = {
   "Annual Leave": { color: "#4F46E5", light: "#EEF2FF" },
   "Sick Leave": { color: "#EF4444", light: "#FEE2E2" },
-  "Maternity Leave": { color: "#EC4899", light: "#FDF2F8" },
-  "Paternity Leave": { color: "#06B6D4", light: "#ECFEFF" },
-  Compassionate: { color: "#8B5CF6", light: "#EDE9FE" },
+  "Maternity Leave": { color: "#6366F1", light: "#EEF2FF" },
+  "Paternity Leave": { color: "#6366F1", light: "#EEF2FF" },
+  Compassionate: { color: "#6366F1", light: "#E0E7FF" },
   "Study Leave": { color: "#10B981", light: "#D1FAE5" },
   "Unpaid Leave": { color: "#F59E0B", light: "#FEF3C7" },
 };
@@ -85,7 +85,7 @@ function StatCard({
       variants={fadeUp}
       initial="hidden"
       animate="visible"
-      whileHover={{ y: -3, boxShadow: `0 12px 32px rgba(79,70,229,0.12)` }}
+      whileHover={{ y: -3, boxShadow: C.shadow.lift }}
       onClick={() => tab && onTabChange?.(tab)}
       className="rounded-2xl p-5 flex flex-col gap-3 cursor-pointer"
       style={{ background: C.surface, border: `1px solid ${C.border}` }}
@@ -475,7 +475,7 @@ export default function LeaveDashboard({ onTabChange }) {
                 )}
               </div>
               <button
-                className="text-[11px] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-lg"
+                className="text-[11px] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-full"
                 style={{ background: C.primaryLight, color: C.primary }}
                 onClick={() => onTabChange?.("requests")}
               >

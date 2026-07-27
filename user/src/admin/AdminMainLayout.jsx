@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import AdminSideNavbar from "./AdminSideNavbar";
 import AdminMobileBottomNav from "./AdminMobileBottomNav";
+import C from "../styles/colors";
 
 export default function AdminMainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -11,8 +12,8 @@ export default function AdminMainLayout() {
 
   return (
     <div
-      className="flex w-full bg-slate-950 overflow-hidden relative"
-      style={{ height: "100dvh" }}
+      className="flex w-full overflow-hidden relative"
+      style={{ height: "100dvh", background: C.navy }}
     >
       <AdminSideNavbar
         sidebarOpen={sidebarOpen}
@@ -22,8 +23,9 @@ export default function AdminMainLayout() {
       />
 
       <main
-        className="flex-1 overflow-y-auto bg-slate-50 lg:pb-0"
+        className="flex-1 overflow-y-auto lg:pb-0"
         style={{
+          background: C.bg,
           paddingBottom: "calc(var(--bottom-nav-height, 4rem) + env(safe-area-inset-bottom, 0px))",
           WebkitOverflowScrolling: "touch",
         }}

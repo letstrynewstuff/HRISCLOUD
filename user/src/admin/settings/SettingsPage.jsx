@@ -1,5 +1,6 @@
 // src/admin/settings/AdminSettingsPage.jsx
 import { useState, useEffect } from "react";
+import C from "../../styles/colors";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Shield,
@@ -23,23 +24,6 @@ import BillingSubscription from "./BillingSubscription";
 import NotificationSettings from "./NotificationSettings";
 import { authApi } from "../../api/service/authApi";
 
-const C = {
-  bg: "#F0F2F8",
-  surface: "#FFFFFF",
-  surfaceAlt: "#F7F8FC",
-  border: "#E4E7F0",
-  primary: "#4F46E5",
-  primaryLight: "#EEF2FF",
-  success: "#10B981",
-  successLight: "#D1FAE5",
-  warning: "#F59E0B",
-  warningLight: "#FEF3C7",
-  danger: "#EF4444",
-  dangerLight: "#FEE2E2",
-  textPrimary: "#0F172A",
-  textSecondary: "#64748B",
-  textMuted: "#94A3B8",
-};
 
 const SETTINGS_SECTIONS = [
   { id: "company", label: "Company Profile", icon: Building2 },
@@ -81,7 +65,7 @@ export default function AdminSettingsPage() {
   return (
     <div
       className="min-h-screen"
-      style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
+      style={{ background: C.bg }}
     >
       <div className="flex h-screen overflow-hidden">
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -98,7 +82,7 @@ export default function AdminSettingsPage() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setSidebarOpen((p) => !p)}
-              className="p-2 rounded-xl"
+              className="p-2 rounded-full"
               style={{ background: C.surface }}
             >
               <Menu size={16} color={C.textSecondary} />
@@ -133,7 +117,7 @@ export default function AdminSettingsPage() {
             {/* Admin avatar */}
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold ml-auto"
-              style={{ background: "linear-gradient(135deg,#4F46E5,#06B6D4)" }}
+              style={{ background: "linear-gradient(135deg,#4F46E5,#6366F1)" }}
             >
               {initials}
             </div>
@@ -179,7 +163,7 @@ export default function AdminSettingsPage() {
                             key={section.id}
                             whileHover={{ x: 2 }}
                             onClick={() => setActiveSection(section.id)}
-                            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium mb-1 transition-all text-left"
+                            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-full text-sm font-medium mb-1 transition-all text-left"
                             style={{
                               background: active ? C.primary : "transparent",
                               color: active ? "#fff" : C.textSecondary,
