@@ -1,5 +1,8 @@
 import { test, expect } from "@playwright/test";
 import { PUBLIC_ROUTES, hasHorizontalScroll, fontsReady, parseRGB } from "./helpers.js";
+import { existsSync } from "node:fs";
+import { join, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 
 /**
  * Covers §3.2 M7–M12 and §3.5 R1–R5 — brand conformance as rendered, plus the
@@ -143,11 +146,36 @@ test.describe("responsive (R1–R5)", () => {
 });
 
 /**
- * Visual baselines — gap U4. Run with --update-snapshots to (re)record.
- * Animations are disabled so frames are deterministic.
+ * Visual baselines — gap U4.
+ *
+ * Screenshots are NOT portable across operating systems: font rasterisation,
+ * subpixel antialiasing and scrollbar metrics all differ, which is why
+ * Playwright suffixes them -darwin / -win32 / -linux. The committed baselines
+ * are rendered in the official Playwright container (`npm run test:visual`),
+ * so one -linux set is authoritative on macOS, Windows and Linux alike.
+ *
+ * Running natively on a host with no matching baseline SKIPS rather than
+ * fails — a Windows developer must not be blocked by a diff they cannot
+ * legitimately resolve. CI runs the containerised job, where it never skips.
  */
+const SNAP_DIR = join(dirname(fileURLToPath(import.meta.url)), "brand.spec.js-snapshots");
+
+/**
+ * Whether to skip. Only a NATIVE run on a host with no baseline skips —
+ * inside the container CI=1, so it always runs and can therefore record the
+ * first `-linux` set and fail honestly on a real diff.
+ */
+function skipVisual(name, projectName) {
+  if (process.env.CI) return false;
+  return !existsSync(join(SNAP_DIR, `${name}-${projectName}-${process.platform}.png`));
+}
+
 test.describe("visual regression", () => {
-  test("landing page", async ({ page }) => {
+  test("landing page", async ({ page }, testInfo) => {
+    test.skip(
+      skipVisual("landing", testInfo.project.name),
+      `no ${process.platform} baseline — run \`npm run test:visual\` (containerised, portable)`,
+    );
     await page.goto("/");
     await fontsReady(page);
     await page.waitForTimeout(400);
@@ -160,7 +188,11 @@ test.describe("visual regression", () => {
     });
   });
 
-  test("request demo", async ({ page }) => {
+  test("request demo", async ({ page }, testInfo) => {
+    test.skip(
+      skipVisual("request-demo", testInfo.project.name),
+      `no ${process.platform} baseline — run \`npm run test:visual\` (containerised, portable)`,
+    );
     await page.goto("/request-demo");
     await fontsReady(page);
     await page.waitForTimeout(300);
@@ -171,7 +203,11 @@ test.describe("visual regression", () => {
     });
   });
 
-  test("login", async ({ page }) => {
+  test("login", async ({ page }, testInfo) => {
+    test.skip(
+      skipVisual("login", testInfo.project.name),
+      `no ${process.platform} baseline — run \`npm run test:visual\` (containerised, portable)`,
+    );
     await page.goto("/login");
     await fontsReady(page);
     await page.waitForTimeout(300);

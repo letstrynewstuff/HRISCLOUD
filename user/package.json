@@ -14,7 +14,9 @@
     "lint:gate": "node scripts/lint-gate.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "verify:all": "npm run verify && npm run test:e2e"
+    "verify:all": "npm run verify && npm run test:e2e",
+    "test:visual": "node scripts/visual.mjs",
+    "test:visual:update": "node scripts/visual.mjs --update"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

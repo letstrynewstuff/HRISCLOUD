@@ -12,9 +12,28 @@ npm run audit:brand:list   # with file:line for each violation
 npm run lint:gate          # fails only on NEW lint errors above baseline
 npm run verify             # lint:gate + audit + build
 node scripts/brand-audit.selftest.mjs   # proves the audit can fail (13 mutants)
-npm run test:e2e           # 104 browser tests across 3 viewports
+npm run test:e2e           # browser tests across 3 viewports (skips visual)
+npm run test:visual        # visual baselines, in a container — portable
+npm run test:visual:update # re-record them (review the diff)
 npm run verify:all         # everything
 ```
+
+> **Visual baselines are cross-platform.** Screenshots are not portable between
+> operating systems — font rasterisation, subpixel antialiasing and scrollbar
+> metrics all differ, which is why Playwright suffixes them `-darwin`,
+> `-win32`, `-linux`. A macOS baseline can never match a Windows run.
+>
+> So the committed baselines are rendered inside the official Playwright
+> container (`mcr.microsoft.com/playwright:v1.62.0-noble`, pinned to the
+> installed version). One `-linux` set is authoritative on **macOS, Windows and
+> Linux alike** — `npm run test:visual` gives every developer the same result.
+>
+> A native `npm run test:e2e` on a host with no matching baseline **skips** the
+> three visual specs rather than failing: a Windows developer must not be
+> blocked by a diff they cannot legitimately resolve. In the container `CI=1`,
+> so it never skips there and a real regression always fails.
+>
+> Requires Docker. Everything else in the suite runs natively on any OS.
 
 > **Lint baseline.** The repo carries **113 pre-existing ESLint errors** that
 > predate the rebrand (78 `react-hooks/set-state-in-effect`, 14 `no-empty`,
