@@ -1160,7 +1160,7 @@ export default function LoginPage() {
       >
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center gap-2.5 mb-8">
-          <BantaHRLogo variant="light" size="lg" />
+          <BantaHRLogo variant="dark" size="lg" />
         </div>
 
         <div className="w-full max-w-sm">

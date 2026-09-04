@@ -220,8 +220,9 @@ export default function RequestDemo() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                background: "rgba(6,182,212,0.15)",
-                border: "1px solid rgba(6,182,212,0.3)",
+                background: T.cyan,
+                border: "1px solid rgba(8,145,178,0.9)",
+                boxShadow: "0 2px 8px rgba(6,182,212,0.35)",
                 borderRadius: 100,
                 padding: "5px 14px",
                 marginBottom: 28,
@@ -231,7 +232,7 @@ export default function RequestDemo() {
                 style={{
                   fontSize: 11,
                   fontWeight: 700,
-                  color: T.cyan,
+                  color: "#fff",
                   letterSpacing: "0.06em",
                 }}
               >

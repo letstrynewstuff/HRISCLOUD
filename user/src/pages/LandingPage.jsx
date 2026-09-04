@@ -989,7 +989,7 @@ export default function LandingPage() {
           src={bg_blue2}
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute top-0 right-[-8%] hidden w-[70%] max-w-none translate-y-[8%] select-none opacity-90 lg:block"
+          className="pointer-events-none absolute top-0 right-[-10%] z-0 block w-[80%] max-w-none translate-y-[4%] select-none opacity-70 lg:right-[-8%] lg:w-[70%] lg:translate-y-[8%] lg:opacity-90"
         />
 
         <Reveal>

@@ -1,5 +1,7 @@
 // src/styles/BantaHRLogo.jsx
 
+import { useId } from "react";
+
 
 const SIZES = { sm: 32, md: 42, lg: 56 };
 
@@ -14,6 +16,11 @@ export default function BantaHRLogo({
   const markColor = variant === "dark" ? "#4F46E5" : "#FFFFFF";
   const hrColor = "#06B6D4";
   const subtitleColor = variant === "dark" ? "#4F46E5" : "#FFFFFF";
+  // Unique per instance: several logos can render on one page (e.g. the
+  // request-demo panel + mobile header), and a shared id makes every mark
+  // point at the first definition — which fails to paint when that copy
+  // sits in a display:none branch, leaving a white icon on a white header.
+  const gradId = `banta-grad-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
 
   return (
     <div
@@ -35,7 +42,7 @@ export default function BantaHRLogo({
         aria-hidden="true"
       >
         {/* Rounded-square background */}
-        <rect width="56" height="56" rx="14" fill="url(#banta-grad)" />
+        <rect width="56" height="56" rx="14" fill={`url(#${gradId})`} />
 
         {/* Subtle inner glow ring */}
         <rect
@@ -108,7 +115,7 @@ export default function BantaHRLogo({
         {/* Gradient defs */}
         <defs>
           <linearGradient
-            id="banta-grad"
+            id={gradId}
             x1="0"
             y1="0"
             x2="56"
