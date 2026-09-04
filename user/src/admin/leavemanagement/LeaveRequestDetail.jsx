@@ -27,19 +27,15 @@ import {
 } from "lucide-react";
 import {C} from "../employeemanagement/sharedData";
 import { leaveApi } from "../../api/service/leaveApi";
+import { getLeaveTypeUi, FALLBACK_LEAVE_ICON } from "./leaveTypeUi";
 
-const LEAVE_TYPE_UI = {
-  "Annual Leave": { color: "#4F46E5", light: "#EEF2FF", icon: "☀️" },
-  "Sick Leave": { color: "#EF4444", light: "#FEE2E2", icon: "🏥" },
-  "Maternity Leave": { color: "#EC4899", light: "#FDF2F8", icon: "🤱" },
-  "Paternity Leave": { color: "#06B6D4", light: "#ECFEFF", icon: "👨‍👩‍👧" },
-  Compassionate: { color: "#8B5CF6", light: "#EDE9FE", icon: "🕊️" },
-  "Study Leave": { color: "#10B981", light: "#D1FAE5", icon: "📚" },
-  "Unpaid Leave": { color: "#F59E0B", light: "#FEF3C7", icon: "⏸️" },
-};
-const getTypeColor = (type) => LEAVE_TYPE_UI[type]?.color ?? C.primary;
-const getTypeLight = (type) => LEAVE_TYPE_UI[type]?.light ?? C.primaryLight;
-const getTypeIcon = (type) => LEAVE_TYPE_UI[type]?.icon ?? "📋";
+const getTypeColor = (type) => getLeaveTypeUi(type)?.color ?? C.primary;
+const getTypeLight = (type) => getLeaveTypeUi(type)?.light ?? C.primaryLight;
+// Returns the whole entry, not just the icon: binding a capitalised local from a
+// function call reads as "component created during render" to the React compiler,
+// so the icon is reached as a member expression (<typeUi.Icon />) at the JSX site.
+const getTypeUi = (type) =>
+  getLeaveTypeUi(type) ?? { Icon: FALLBACK_LEAVE_ICON };
 const getInitials = (name) =>
   name
     ?.split(" ")
@@ -398,6 +394,7 @@ export default function LeaveRequestDetail() {
 
   const typeColor = getTypeColor(request.leave_type);
   const typeLight = getTypeLight(request.leave_type);
+  const typeUi = getTypeUi(request.leave_type);
   const TODAY = new Date().toISOString().split("T")[0];
 
   const timeline = [
@@ -600,8 +597,11 @@ export default function LeaveRequestDetail() {
                       border: `1px solid ${typeColor}30`,
                     }}
                   >
-                    <div className="text-2xl">
-                      {getTypeIcon(request.leave_type)}
+                    <div
+                      className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+                      style={{ background: `${typeColor}1f` }}
+                    >
+                      <typeUi.Icon size={20} color={typeColor} />
                     </div>
                     <div>
                       <p
@@ -711,7 +711,16 @@ export default function LeaveRequestDetail() {
                   />
                   <InfoRow
                     label="Paid Leave"
-                    value={request.is_paid ? "Yes ✅" : "No ❌"}
+                    value={
+                      <span className="inline-flex items-center gap-1.5">
+                        {request.is_paid ? (
+                          <CheckCircle2 size={13} color={C.success} />
+                        ) : (
+                          <XCircle size={13} color={C.danger} />
+                        )}
+                        {request.is_paid ? "Yes" : "No"}
+                      </span>
+                    }
                     icon={FileText}
                   />
                   {request.approved_by_name && (

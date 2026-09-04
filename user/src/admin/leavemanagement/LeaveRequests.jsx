@@ -21,19 +21,10 @@ import {
 } from "lucide-react";
 import C from "../../styles/colors";
 import { leaveApi } from "../../api/service/leaveApi";
+import { getLeaveTypeUi } from "./leaveTypeUi";
 
-// ── Leave type UI ──────────────────────────────────────────────
-const LEAVE_TYPE_UI = {
-  "Annual Leave": { color: "#4F46E5", light: "#EEF2FF" },
-  "Sick Leave": { color: "#EF4444", light: "#FEE2E2" },
-  "Maternity Leave": { color: "#EC4899", light: "#FDF2F8" },
-  "Paternity Leave": { color: "#06B6D4", light: "#ECFEFF" },
-  Compassionate: { color: "#8B5CF6", light: "#EDE9FE" },
-  "Study Leave": { color: "#10B981", light: "#D1FAE5" },
-  "Unpaid Leave": { color: "#F59E0B", light: "#FEF3C7" },
-};
-const getTypeColor = (t) => LEAVE_TYPE_UI[t]?.color ?? C.primary;
-const getTypeLight = (t) => LEAVE_TYPE_UI[t]?.light ?? C.primaryLight;
+const getTypeColor = (t) => getLeaveTypeUi(t)?.color ?? C.primary;
+const getTypeLight = (t) => getLeaveTypeUi(t)?.light ?? C.primaryLight;
 const getInitials = (n) =>
   n
     ?.split(" ")
@@ -294,6 +285,7 @@ export default function LeaveRequests({ searchQuery = "", onTabChange }) {
         ? { col, dir: s.dir === "asc" ? "desc" : "asc" }
         : { col, dir: "asc" },
     );
+
 
   const SortIcon = ({ col }) => {
     if (sort.col !== col) return <ArrowUpDown size={11} color={C.textMuted} />;

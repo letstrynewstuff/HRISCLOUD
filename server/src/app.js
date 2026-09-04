@@ -4,6 +4,8 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
+
 // ── Route imports ─────────────────────────────────────────────
 import authRoutes          from "./routes/auth.routes.js";
 import announcementRoutes  from "./routes/announcement.routes.js";
@@ -85,21 +87,12 @@ app.use("/api/reports", reportRoutes);
 app.use("/api/settings", settingsRoutes);
 
 // ─────────────────────────────────────────
-// 404 Handler
+// 404 + Global Error Handler
 // ─────────────────────────────────────────
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: "Route not found" });
-});
-
-// ─────────────────────────────────────────
-// Global Error Handler
-// ─────────────────────────────────────────
-app.use((err, _req, res, _next) => {
-  console.error(err);
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || "Internal Server Error",
-  });
-});
+// Both live in middleware/errorHandler.js. Everything that throws leaves
+// as { success, message, errors? } with a message written for a human —
+// stack traces and Postgres internals stay in the server log.
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

@@ -174,9 +174,12 @@ function SidebarContent({
       </div>
 
       {/* Nav */}
+      {/* Work Later */}
       <nav
-        className="flex-1 overflow-y-auto px-2 space-y-1"
-        style={{ scrollbarWidth: "none" }}
+        className="flex-1 overflow-y-auto px-2 space-y-1 font-customDM"
+        style={{ scrollbarWidth: "none",
+        letterSpacing: 0.5,
+        }}
       >
         {NAV_ITEMS.map((item) => (
           <NavItem

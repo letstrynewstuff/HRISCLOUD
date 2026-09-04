@@ -14,7 +14,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 // import SideNavbar from "../components/SideNavbar";
-import Loader from "../components/Loader";
+import BantaHRLetterLoader from "../styles/BantaHRLetterLoader";
 import { useAuth } from "../components/useAuth";
 import { chatApi } from "../api/service/chatApi";
 import { getEmployees } from "../api/service/employeeApi";
@@ -1040,7 +1040,7 @@ export default function ChatPage() {
 
                 {loadingData ? (
                   <div className="flex flex-col items-center justify-center py-8 gap-4">
-                    <Loader />
+                    <BantaHRLetterLoader />
                     <p className="text-xs" style={{ color: C.textMuted }}>
                       Loading colleagues…
                     </p>
@@ -1256,7 +1256,7 @@ export default function ChatPage() {
                 >
                   {msgLoading ? (
                     <div className="flex flex-col items-center justify-center h-full gap-6">
-                      <Loader />
+                      <BantaHRLetterLoader />
                     </div>
                   ) : msgs.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full gap-3 py-20">

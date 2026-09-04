@@ -1,5 +1,6 @@
 // src/admin/leavemanagement/LeavePolicies.jsx
 
+
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -12,25 +13,19 @@ import {
   RefreshCw,
   Loader2,
   AlertTriangle,
+  CalendarDays,
+  AlarmClock,
+  Banknote,
+  Repeat,
 } from "lucide-react";
 import C from "../../styles/colors";
 import { leaveApi } from "../../api/service/leaveApi";
+import { LEAVE_TYPES_UI, getLeaveTypeUi } from "./leaveTypeUi";
 
-// ── Leave type UI map ─────────────────────────────────────────
-const LEAVE_TYPES_UI = [
-  { name: "Annual Leave", color: "#4F46E5", light: "#EEF2FF", icon: "☀️" },
-  { name: "Sick Leave", color: "#EF4444", light: "#FEE2E2", icon: "🏥" },
-  { name: "Maternity Leave", color: "#EC4899", light: "#FDF2F8", icon: "🤱" },
-  { name: "Paternity Leave", color: "#06B6D4", light: "#ECFEFF", icon: "👨‍👩‍👧" },
-  { name: "Compassionate", color: "#8B5CF6", light: "#EDE9FE", icon: "🕊️" },
-  { name: "Study Leave", color: "#10B981", light: "#D1FAE5", icon: "📚" },
-  { name: "Unpaid Leave", color: "#F59E0B", light: "#FEF3C7", icon: "⏸️" },
-];
-const getUI = (lt) =>
-  LEAVE_TYPES_UI.find((t) => t.name === lt) ?? LEAVE_TYPES_UI[0];
+const getUI = (lt) => getLeaveTypeUi(lt) ?? LEAVE_TYPES_UI[0];
 const getColor = (lt) => getUI(lt).color;
 const getLight = (lt) => getUI(lt).light;
-const getIcon = (lt) => getUI(lt).icon;
+const getIcon = (lt) => getUI(lt).Icon;
 
 const fadeUp = {
   hidden: { opacity: 0, y: 14 },
@@ -496,7 +491,7 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
           {filtered.map((policy, i) => {
             const color = getColor(policy.leave_type);
             const light = getLight(policy.leave_type);
-            const icon = getIcon(policy.leave_type);
+            const TypeIcon = getIcon(policy.leave_type);
             const expanded = expandedId === policy.id;
             const isActive = policy.is_active !== false;
 
@@ -515,10 +510,10 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <div
-                          className="w-9 h-9 rounded-xl flex items-center justify-center text-base"
+                          className="w-9 h-9 rounded-xl flex items-center justify-center"
                           style={{ background: light }}
                         >
-                          {icon}
+                          <TypeIcon size={16} color={color} />
                         </div>
                         <div>
                           <p
@@ -568,17 +563,17 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
                         {
                           label: "Days",
                           value: policy.days_allowed,
-                          icon: "📅",
+                          Icon: CalendarDays,
                         },
                         {
                           label: "Notice",
                           value: `${policy.notice_days ?? 0}d`,
-                          icon: "⏰",
+                          Icon: AlarmClock,
                         },
                         {
                           label: "Paid",
                           value: policy.is_paid ? "Yes" : "No",
-                          icon: "💰",
+                          Icon: Banknote,
                         },
                         {
                           label: "Carry Over",
@@ -586,7 +581,7 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
                             (policy.carry_over_days ?? 0) > 0
                               ? `${policy.carry_over_days}d`
                               : "No",
-                          icon: "🔄",
+                          Icon: Repeat,
                         },
                       ].map((s) => (
                         <div
@@ -597,7 +592,7 @@ export default function LeavePolicies({ searchQuery = "", onTabChange }) {
                             border: `1px solid ${C.border}`,
                           }}
                         >
-                          <span className="text-sm">{s.icon}</span>
+                          <s.Icon size={14} color={color} className="shrink-0" />
                           <div>
                             <p
                               className="text-[10px]"

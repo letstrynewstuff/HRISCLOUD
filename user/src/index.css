@@ -1,16 +1,86 @@
 
 
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700;1000&family=Sora:wght@600;700;800&display=swap");
 
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Plus Jakarta Sans", sans-serif;
 }
-
-body {
-  font-family: "Plus Jakarta Sans", sans-serif;
+@theme {
+  --font-custom: "Space Mono", monospace;
 }
+
+@theme {
+  --font-customDM: "DM Sans", sans-serif;
+}
+
+/* ── Marketing site theme (landing page) ─────────────────────
+   Brand tokens + fonts + animations consumed as Tailwind
+   utilities: bg-brand-navy, text-brand-indigo, font-display,
+   animate-typing, etc.                                        */
+@theme {
+  --font-display: "Sora", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+
+  --color-brand-navy: #0f1629;
+  --color-brand-navy-mid: #1a2545;
+  --color-brand-graphite: #101827;
+  --color-brand-kindgreen: #0A1A14;
+  --color-brand-indigo: #4f46e5;
+  --color-brand-indigo-light: #6366f1;
+  --color-brand-cyan: #06b6d4;
+  --color-brand-offwhite: #f8f9fc;
+  --color-brand-ink: #0f172a;
+  --color-brand-ink-mid: #334155;
+  --color-brand-ink-muted: #64748b;
+  --color-brand-line: #e2e8f0;
+
+  --animate-rotate-border: rotateBorder 3s linear infinite;
+  --animate-typing: typing 6s steps(30, end) infinite;
+
+  /* Trust Center slide-over. Driven by keyframes rather than a mounted-then-
+     toggled class so the panel animates on mount with no state in an effect. */
+  --animate-drawer-in: drawerIn 280ms cubic-bezier(0.32, 0.72, 0, 1);
+  --animate-scrim-in: scrimIn 220ms ease-out;
+}
+
+/* Registered so the conic-gradient angle can be animated.
+   Without @property, --angle is an unanimatable string. */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes rotateBorder {
+  to { --angle: 360deg; }
+}
+
+@keyframes drawerIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes scrimIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes typing {
+  0%   { width: 0; }
+  40%  { width: 95%; }
+  50%  { width: 95%; }
+  100% { width: 0; }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+} */
 
 :root {
   --top-bar-height: 4rem;   /* 64px — matches NavbarNew h-16 */

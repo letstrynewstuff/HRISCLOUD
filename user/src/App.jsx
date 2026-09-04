@@ -1,5 +1,3 @@
-
-
 // src/App.jsx
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoutes";
@@ -28,6 +26,15 @@ import RequestsPage from "./pages/Requests";
 import AnnouncementsPage from "./pages/Announcements";
 import LandingPage from "./pages/LandingPage";
 import RequestDemo from "./pages/RequestDemo";
+import Pricing from "./pages/Pricing";
+import Contact from "./pages/Contact";
+import TrustCenter from "./pages/TrustCenter";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Dpa from "./pages/Dpa";
+import TermsOfService from "./pages/TermsOfService";
+import Sla from "./pages/Sla";
+import WebsiteTerms from "./pages/WebsiteTerms";
+import ScrollToTop from "./components/ScrollToTop";
 import ManagerPerformance from "./pages/ManagerPerformance";
 
 // ── Admin pages ──
@@ -73,13 +80,23 @@ import EmployeeTimesheetsPage from "./pages/timesheets/EmployeeTimesheetsPage";
 
 function App() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       {/* ─── PUBLIC ─── */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<Register />} />
       <Route path="/company-register" element={<CompanyRegister />} />
       <Route path="/" element={<LandingPage />} />
       <Route path="/request-demo" element={<RequestDemo />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/trust" element={<TrustCenter />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/dpa" element={<Dpa />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/sla" element={<Sla />} />
+      <Route path="/website-terms" element={<WebsiteTerms />} />
 
       {/* ─── EMPLOYEE (Protected) ─── */}
       <Route element={<MainLayout />}>
@@ -224,7 +241,7 @@ function App() {
           element={
             <ProtectedRoute requireManager>
               <ManagerProfile />
-            </ProtectedRoute>
+              </ProtectedRoute> 
           }
         />
         <Route
@@ -232,7 +249,7 @@ function App() {
           element={
             <ProtectedRoute requireManager>
               <ManagerPerformance />
-            </ProtectedRoute>
+              </ProtectedRoute> 
           }
         />
       </Route>
@@ -577,7 +594,8 @@ function App() {
           </SuperAdminRoute>
         }
       />
-    </Routes>
+      </Routes>
+    </>
   );
 }
 

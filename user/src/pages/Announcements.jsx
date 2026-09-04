@@ -22,6 +22,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
+  TriangleAlert,
+  Scale,
+  CalendarSearch,
+  BellRing,
 } from "lucide-react";
 import {
   getAnnouncementFeed,
@@ -53,13 +57,23 @@ const C = {
   navy: "#1E1B4B",
 };
 
+// Change Icon
+
 const TYPE_CONFIG = {
-  general: { label: "General", color: C.primary,  bg: C.primaryLight,  icon: "📢" },
-  urgent:  { label: "Urgent",  color: C.danger,   bg: C.dangerLight,   icon: "⚠️" },
-  policy:  { label: "Policy",  color: C.purple,   bg: C.purpleLight,   icon: "📋" },
-  event:   { label: "Event",   color: C.warning,  bg: C.warningLight,  icon: "🎉" },
-  reminder:{ label: "Reminder",color: C.accent,   bg: C.accentLight,   icon: "🔔" },
+  general: { label: "General", color: C.primary,  bg: C.primaryLight,  icon: Megaphone },
+  urgent:  { label: "Urgent",  color: C.danger,   bg: C.dangerLight,   icon: TriangleAlert },
+  policy:  { label: "Policy",  color: C.purple,   bg: C.purpleLight,   icon: Scale },
+  event:   { label: "Event",   color: C.warning,  bg: C.warningLight,  icon: CalendarSearch },
+  reminder:{ label: "Reminder",color: C.accent,   bg: C.accentLight,   icon: BellRing },
 };
+
+// const TYPE_CONFIG = {
+//   general: { label: "General", color: C.primary,  bg: C.primaryLight,  icon: "📢" },
+//   urgent:  { label: "Urgent",  color: C.danger,   bg: C.dangerLight,   icon: "⚠️" },
+//   policy:  { label: "Policy",  color: C.purple,   bg: C.purpleLight,   icon: "📋" },
+//   event:   { label: "Event",   color: C.warning,  bg: C.warningLight,  icon: "🎉" },
+//   reminder:{ label: "Reminder",color: C.accent,   bg: C.accentLight,   icon: "🔔" },
+// };
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -81,6 +95,7 @@ const fmtDate = (d) =>
 function AnnouncementDetail({ ann, onClose }) {
   if (!ann) return null;
   const tc = TYPE_CONFIG[ann.type || "general"] || TYPE_CONFIG.general;
+  const TypeIcon = tc?.icon || null;
 
   return (
     <motion.div
@@ -107,7 +122,9 @@ function AnnouncementDetail({ ann, onClose }) {
           className="px-6 py-4 flex items-center gap-3 shrink-0"
           style={{ background: `linear-gradient(135deg, ${tc.color}, ${tc.color}cc)` }}
         >
-          <span className="text-xl">{tc.icon}</span>
+          <span className="text-xl">
+            {TypeIcon ? <TypeIcon size={20} /> : null}
+          </span>
           <span className="text-sm font-bold text-white uppercase tracking-wide">
             {tc.label}
           </span>
@@ -186,6 +203,7 @@ function AnnouncementDetail({ ann, onClose }) {
 /* ─── Announcement Card ─── */
 function AnnCard({ ann, index, onOpen, viewed }) {
   const tc = TYPE_CONFIG[ann.type || "general"] || TYPE_CONFIG.general;
+  const TypeIcon = tc?.icon || null;
 
   return (
     <motion.div
@@ -213,7 +231,7 @@ function AnnCard({ ann, index, onOpen, viewed }) {
           className="text-[11px] font-bold px-2 py-0.5 rounded-full"
           style={{ background: tc.bg, color: tc.color }}
         >
-          {tc.icon} {tc.label}
+          {TypeIcon ? <TypeIcon size={10} /> : null} {tc.label}
         </span>
         {ann.isPinned && (
           <span className="flex items-center gap-1 text-[10px] font-bold" style={{ color: C.warning }}>
@@ -483,8 +501,40 @@ export default function AnnouncementsFeed() {
               )}
             </AnimatePresence>
 
-            {/* ── TYPE FILTER CHIPS ── */}
+                        {/* ── TYPE FILTER CHIPS ── */}
             <div className="flex items-center gap-2 flex-wrap">
+              {["all", ...Object.keys(TYPE_CONFIG)].map((t) => {
+                const cfg = TYPE_CONFIG[t];
+                const Icon = cfg?.icon || null;
+                return (
+                  <button
+                    key={t}
+                    onClick={() => setFilterType(t)}
+                    className="px-3 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all capitalize"
+                    style={{
+                      background: filterType === t ? cfg?.color || C.primary : C.surface,
+                      color: filterType === t ? "#fff" : C.textSecondary,
+                      border: `1px solid ${filterType === t ? "transparent" : C.border}`,
+                    }}
+                  >
+                    {t === "all" ? (
+                      "All"
+                    ) : (
+                      <span className="inline-flex items-center gap-2">
+                        {Icon ? <Icon size={12} /> : null}
+                        {cfg.label}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+              <span className="text-xs ml-auto" style={{ color: C.textMuted }}>
+                {filtered.length} announcement{filtered.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+
+            {/* ── TYPE FILTER CHIPS ── */}
+            {/* <div className="flex items-center gap-2 flex-wrap">
               {["all", ...Object.keys(TYPE_CONFIG)].map((t) => {
                 const cfg = TYPE_CONFIG[t];
                 return (
@@ -498,14 +548,21 @@ export default function AnnouncementsFeed() {
                       border: `1px solid ${filterType === t ? "transparent" : C.border}`,
                     }}
                   >
-                    {t === "all" ? "All" : `${cfg.icon} ${cfg.label}`}
+                    {t === "all" ? (
+                      "All"
+                    ) : (
+                      <span className="inline-flex items-center gap-2">
+                        {cfg.icon ? <cfg.icon size={12} /> : null}
+                        {cfg.label}
+                      </span>
+                    )}
                   </button>
                 );
               })}
               <span className="text-xs ml-auto" style={{ color: C.textMuted }}>
                 {filtered.length} announcement{filtered.length !== 1 ? "s" : ""}
               </span>
-            </div>
+            </div> */}
 
             {/* ── CONTENT ── */}
             {loading ? (

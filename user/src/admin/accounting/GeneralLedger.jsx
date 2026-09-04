@@ -904,7 +904,7 @@ import {
 } from "lucide-react";
 import { C } from "../employeemanagement/sharedData";
 import API from "../../api/axios";
-import Loader from "../../components/Loader";
+import {Loader} from "../../components/Loader";
 
 const VAT_RATE        = 0.075;
 const TAX_EXEMPT_CODE = "127669ED";

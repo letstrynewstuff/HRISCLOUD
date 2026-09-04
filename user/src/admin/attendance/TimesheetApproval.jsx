@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { timesheetAdminApi } from "../../api/service/timesheetApi";
 import { C } from "../employeemanagement/sharedData";
-import Loader from "../../components/Loader";
+import {Loader} from "../../components/Loader";
 
 // ─── helpers ───────────────────────────────────────────────────
 const fmt = (d) =>

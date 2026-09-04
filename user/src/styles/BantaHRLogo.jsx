@@ -11,8 +11,9 @@ export default function BantaHRLogo({
 }) {
   const h = SIZES[size] ?? 42;
   const iconSize = h;
-  const markColor = variant === "dark" ? "#0F1629" : "#FFFFFF";
-  const hrColor = variant === "dark" ? "#4F46E5" : "#06B6D4";
+  const markColor = variant === "dark" ? "#4F46E5" : "#FFFFFF";
+  const hrColor = "#06B6D4";
+  const subtitleColor = variant === "dark" ? "#4F46E5" : "#FFFFFF";
 
   return (
     <div
@@ -151,10 +152,7 @@ export default function BantaHRLogo({
               fontSize: h * 0.22,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              color:
-                variant === "dark"
-                  ? "rgba(15,22,41,0.45)"
-                  : "rgba(255,255,255,0.5)",
+              color: subtitleColor,
               marginTop: 1,
             }}
           >

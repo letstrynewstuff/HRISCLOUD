@@ -35,6 +35,8 @@ import BantaHRLogo from "../styles/BantaHRLogo";
 // path depends on role:
 //   • manager/admin → /manager/performance  (ManagerPerformance.jsx)
 //   • everyone else → /performance          (Performance.jsx)
+
+//Change font
 const BASE_NAV = [
   { label: "Home", icon: Home, path: "/dashboard" },
   { label: "Attendance", icon: Clock, path: "/attendance" },
@@ -118,8 +120,10 @@ function SidebarContent({
 
       {/* Navigation */}
       <nav
-        className="flex-1 px-2 space-y-0.5 overflow-y-auto"
-        style={{ scrollbarWidth: "none" }}
+        className="flex-1 px-2 space-y-0.5 overflow-y-auto font-customDM"
+        style={{ scrollbarWidth: "none",
+          letterSpacing: 0.5,
+         }}
       >
         {navItems.map((item) => {
           const Icon = item.icon;

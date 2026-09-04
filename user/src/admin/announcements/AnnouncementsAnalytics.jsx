@@ -28,6 +28,10 @@ import {
   Star,
   ChevronDown,
   ChevronLeft,
+  TriangleAlert,
+  Scale,
+  CalendarSearch,
+  BellRing,
   ChevronRight as ChevronRightIcon,
 } from "lucide-react";
 import {
@@ -60,21 +64,11 @@ const C = {
 };
 
 const TYPE_CONFIG = {
-  general: {
-    label: "General",
-    color: C.primary,
-    bg: C.primaryLight,
-    icon: "📢",
-  },
-  urgent: { label: "Urgent", color: C.danger, bg: C.dangerLight, icon: "⚠️" },
-  policy: { label: "Policy", color: C.purple, bg: C.purpleLight, icon: "📋" },
-  event: { label: "Event", color: C.warning, bg: C.warningLight, icon: "🎉" },
-  reminder: {
-    label: "Reminder",
-    color: C.accent,
-    bg: C.accentLight,
-    icon: "🔔",
-  },
+  general: { label: "General", color: C.primary,  bg: C.primaryLight,  icon: Megaphone },
+  urgent:  { label: "Urgent",  color: C.danger,   bg: C.dangerLight,   icon: TriangleAlert },
+  policy:  { label: "Policy",  color: C.purple,   bg: C.purpleLight,   icon: Scale },
+  event:   { label: "Event",   color: C.warning,  bg: C.warningLight,  icon: CalendarSearch },
+  reminder:{ label: "Reminder",color: C.accent,   bg: C.accentLight,   icon: BellRing },
 };
 
 const fadeUp = {
@@ -99,6 +93,7 @@ const fmtDate = (d) =>
 function AnnouncementDetail({ ann, onClose }) {
   if (!ann) return null;
   const tc = TYPE_CONFIG[ann.type || "general"] || TYPE_CONFIG.general;
+  const TypeIcon = tc?.icon || null;
 
   return (
     <motion.div
@@ -130,7 +125,9 @@ function AnnouncementDetail({ ann, onClose }) {
             background: `linear-gradient(135deg, ${tc.color}, ${tc.color}cc)`,
           }}
         >
-          <span className="text-xl">{tc.icon}</span>
+          <span className="text-xl">
+            {TypeIcon ? <TypeIcon size={20} /> : null}
+          </span>
           <span className="text-sm font-bold text-white uppercase tracking-wide">
             {tc.label}
           </span>
@@ -229,6 +226,7 @@ function AnnouncementDetail({ ann, onClose }) {
 /* ─── Announcement Card ─── */
 function AnnCard({ ann, index, onOpen, viewed }) {
   const tc = TYPE_CONFIG[ann.type || "general"] || TYPE_CONFIG.general;
+  const TypeIcon = tc?.icon || null;
 
   return (
     <motion.div
@@ -258,7 +256,7 @@ function AnnCard({ ann, index, onOpen, viewed }) {
           className="text-[11px] font-bold px-2 py-0.5 rounded-full"
           style={{ background: tc.bg, color: tc.color }}
         >
-          {tc.icon} {tc.label}
+          {TypeIcon ? <TypeIcon size={10} /> : null} {tc.label}
         </span>
         {ann.isPinned && (
           <span
@@ -546,6 +544,7 @@ export default function AnnouncementsFeed() {
           >
             {["all", ...Object.keys(TYPE_CONFIG)].map((t) => {
               const cfg = TYPE_CONFIG[t];
+              const Icon = cfg?.icon || null;
               return (
                 <button
                   key={t}
@@ -558,7 +557,14 @@ export default function AnnouncementsFeed() {
                     border: `1px solid ${filterType === t ? "transparent" : C.border}`,
                   }}
                 >
-                  {t === "all" ? "All" : `${cfg.icon} ${cfg.label}`}
+                  {t === "all" ? (
+                    "All"
+                  ) : (
+                    <span className="inline-flex items-center gap-2">
+                      {Icon ? <Icon size={12} /> : null}
+                      {cfg.label}
+                    </span>
+                  )}
                 </button>
               );
             })}

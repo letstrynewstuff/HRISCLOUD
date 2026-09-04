@@ -4,13 +4,16 @@
 //           /payroll/dashboard, /payroll/runs, /performance/dashboard,
 //           /approvals, /announcements, /trainings/dashboard
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback,  } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 
-import Loader from "../components/Loader";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+import BantaHRLetterLoader from "../styles/BantaHRLetterLoader";
 import C from "../styles/colors";
 import {
+  LayoutDashboard,
   Users,
   UserPlus,
   UserCheck,
@@ -58,6 +61,7 @@ import {
   Play,
   LogOut,
   Shield,
+  Pin,
 } from "lucide-react";
 
 // ─── API imports ───────────────────────────────────────────────
@@ -78,8 +82,7 @@ import API from "../api/axios";
 // Auth helpers
 const authApi = {
   getMe: () => API.get("/auth/me").then((r) => r.data),
-  logout: (refreshToken) =>
-    API.post("/auth/logout", { refreshToken }).then((r) => r.data),
+  logout: () => API.post("/auth/logout").then((r) => r.data),
 };
 const announcementApi = {
   feed: (params = {}) =>
@@ -343,11 +346,8 @@ export default function AdminDashboard() {
   /* ── Logout ── */
   const handleLogout = async () => {
     try {
-      const rt = localStorage.getItem("refreshToken");
-      if (rt) await authApi.logout(rt);
+      await authApi.logout();
     } catch {}
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("accessToken");
     navigate("/login");
   };
 
@@ -478,7 +478,7 @@ export default function AdminDashboard() {
         className="fixed inset-0 flex items-center justify-center"
         style={{ background: C.bg }}
       >
-        <Loader />
+        <BantaHRLetterLoader />
       </div>
     );
   }
@@ -727,47 +727,93 @@ export default function AdminDashboard() {
               initial="hidden"
               animate="visible"
               custom={0}
-              className="flex items-center justify-between"
+              className="relative overflow-hidden rounded-2xl"
+              style={{
+                background:
+                  "linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(6, 182, 212, 0.08), rgba(15, 23, 42, 0.04))",
+                border: `1px solid ${C.border}`,
+              }}
             >
-              <div>
-                <h1
-                  className="text-xl font-bold"
-                  style={{
-                    color: C.textPrimary,
-                    fontFamily: "Sora,sans-serif",
-                  }}
-                >
-                  HR Command Centre
-                </h1>
-                <p
-                  className="text-sm mt-0.5"
-                  style={{ color: C.textSecondary }}
-                >
-                  {dateStr} · {greeting}, {adminName.split(" ")[0]} 👋
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                {lastRefresh && (
-                  <span className="text-[10px]" style={{ color: C.textMuted }}>
-                    Updated{" "}
-                    {lastRefresh.toLocaleTimeString("en-NG", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "radial-gradient(circle at top right, rgba(255,255,255,0.2), transparent 35%)",
+                }}
+              />
+
+              <div className="relative flex items-center justify-between gap-4 p-4 md:p-5">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div
+                      className="w-8 h-8 rounded-xl flex items-center justify-center"
+                      style={{
+                        background: "rgba(99, 102, 241, 0.08)",
+                        border: `1px solid ${C.border}`,
+                      }}
+                    >
+                      <LayoutDashboard size={16} style={{ color: C.primary }} />
+                    </div>
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-[0.18em]"
+                      style={{ color: C.textMuted }}
+                    >
+                      Overview
+                    </span>
+                  </div>
+
+                  <h1
+                    className="text-xl font-bold"
+                    style={{
+                      color: C.textPrimary,
+                      fontFamily: "Sora, sans-serif",
+                    }}
+                  >
+                    HR Command Centre
+                  </h1>
+
+                  <div className="flex items-end">
+                    <p
+                      className="text-sm whitespace-nowrap"
+                      style={{ color: C.textSecondary }}
+                    >
+                      {dateStr} · {greeting}, {adminName.split(" ")[0]}
+                    </p>
+
+                    <div className="w-14 h-7 shrink-0">
+                      <DotLottieReact
+                        src="https://lottie.host/782a5fba-166a-45c3-bf63-3dfc677b7dc3/KnoY1ZkE7K.lottie"
+                        loop
+                        autoplay
+                        className="w-full h-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  {lastRefresh && (
+                    <span className="text-[10px]" style={{ color: C.textMuted }}>
+                      Updated{" "}
+                      {lastRefresh.toLocaleTimeString("en-NG", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  )}
+                  <motion.div
+                    animate={{ opacity: [1, 0.4, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="w-2 h-2 rounded-full"
+                    style={{ background: C.success }}
+                  />
+                  <span
+                    className="text-xs font-medium"
+                    style={{ color: C.success }}
+                  >
+                    Live
                   </span>
-                )}
-                <motion.div
-                  animate={{ opacity: [1, 0.4, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="w-2 h-2 rounded-full"
-                  style={{ background: C.success }}
-                />
-                <span
-                  className="text-xs font-medium"
-                  style={{ color: C.success }}
-                >
-                  Live
-                </span>
+                </div>
               </div>
             </motion.div>
 
@@ -1511,7 +1557,7 @@ export default function AdminDashboard() {
                     <div className="flex flex-col items-center py-10 gap-2">
                       <CheckCircle2 size={32} color={C.success} />
                       <p className="text-sm" style={{ color: C.textMuted }}>
-                        All caught up! 🎉
+                        All caught up!
                       </p>
                     </div>
                   ) : (
@@ -1627,7 +1673,7 @@ export default function AdminDashboard() {
                                 className="text-[9px] font-bold"
                                 style={{ color: C.warning }}
                               >
-                                📌
+                                <Pin size={15} color={C.primary} />
                               </span>
                             )}
                             <span

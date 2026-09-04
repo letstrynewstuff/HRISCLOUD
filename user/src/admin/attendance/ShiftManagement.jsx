@@ -4,7 +4,7 @@ import { motion as Motion, AnimatePresence } from "framer-motion";
 import { Plus, Edit2, X, RefreshCw } from "lucide-react";
 import { attendanceApi } from "../../api/service/attendanceApi";
 import { C } from "../employeemanagement/sharedData";
-import Loader from "../../components/Loader";
+import {Loader} from "../../components/Loader";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 

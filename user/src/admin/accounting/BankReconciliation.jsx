@@ -38,7 +38,7 @@ import {
   formatNaira,
   COA_TYPE_COLORS,
 } from "../../api/service/accountingApi";
-import Loader from "../../components/Loader";
+import {Loader} from "../../components/Loader";
 
 const ACCOUNT_TYPES = ["Asset", "Liability", "Equity", "Income", "Expense"];
 

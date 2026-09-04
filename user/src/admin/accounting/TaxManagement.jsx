@@ -28,7 +28,7 @@ import {
   koboToNaira,
   TAX_STATUS_COLORS,
 } from "../../api/service/accountingApi";
-import Loader from "../../components/Loader";
+import {Loader} from "../../components/Loader";
 
 // ── Helpers ───────────────────────────────────────────────────
 const currentPeriod = () => {

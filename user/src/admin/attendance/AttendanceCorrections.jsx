@@ -6,7 +6,7 @@ import { attendanceApi } from "../../api/service/attendanceApi";
 import { getEmployees } from "../../api/service/employeeApi";
 import { C } from "../employeemanagement/sharedData";
 
-import Loader from "../../components/Loader";
+import {Loader} from "../../components/Loader";
 
 export default function AttendanceCorrections() {
   const [records, setRecords] = useState([]);

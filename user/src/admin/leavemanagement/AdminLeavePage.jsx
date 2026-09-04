@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 // import AdminSideNavbar from "../AdminSideNavbar";
-import Loader from "../../components/Loader";
+import BantaHRLetterLoader from "../../styles/BantaHRLetterLoader";
 import C from "../../styles/colors";
 import { leaveApi } from "../../api/service/leaveApi";
 import { authApi } from "../../api/service/authApi";
@@ -101,7 +101,7 @@ export default function AdminLeavePage() {
         className="fixed inset-0 z-[9999] flex items-center justify-center"
         style={{ background: C.bg }}
       >
-        <Loader />
+        <BantaHRLetterLoader />
       </div>
     );
   }

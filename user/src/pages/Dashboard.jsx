@@ -8,6 +8,9 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+
+
 import {
   Clock,
   Calendar,
@@ -450,8 +453,17 @@ export default function EmployeeDashboard() {
                     className="text-white text-2xl md:text-3xl font-bold"
                     style={{ fontFamily: "Sora,sans-serif" }}
                   >
-                    {displayName} 👋
+                    {/* //Change Emoji */}
+                    {displayName}
                   </h1>
+                  <div className="w-25 h-15 shrink-0">
+                    <DotLottieReact
+                      src="https://lottie.host/782a5fba-166a-45c3-bf63-3dfc677b7dc3/KnoY1ZkE7K.lottie"
+                      loop
+                      autoplay
+                      className="w-full h-full"
+                    />
+                  </div>
               
                   <p className="text-indigo-300 text-sm mt-1">
                     {profile?.jobTitle ?? "—"} · {profile?.department ?? "—"}

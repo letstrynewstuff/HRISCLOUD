@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import SuperAdminSidebar from "./SuperAdminSidebar";
-import Loader from "../components/Loader";
+import BantaHRLetterLoader from "../styles/BantaHRLetterLoader";
 import C from "../styles/colors";
 import {
   Menu,
@@ -53,7 +53,7 @@ export default function SuperAdminLayout({
         className="fixed inset-0 flex items-center justify-center"
         style={{ background: C.bg }}
       >
-        <Loader />
+        <BantaHRLetterLoader />
       </div>
     );
   }
@@ -86,7 +86,7 @@ export default function SuperAdminLayout({
               backdropFilter: "blur(4px)",
             }}
           >
-            <Loader />
+            <BantaHRLetterLoader />
           </motion.div>
         )}
       </AnimatePresence>

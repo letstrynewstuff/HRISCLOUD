@@ -8,7 +8,7 @@ import { attendanceApi } from "../../api/service/attendanceApi";
 import { getEmployees } from "../../api/service/employeeApi";
 import { departmentApi } from "../../api/service/departmentApi";
 import { C } from "../employeemanagement/sharedData";
-import Loader from "../../components/Loader";
+import {Loader} from "../../components/Loader";
 
 const STATUS_CFG = {
   present: { bg: "#D1FAE5", color: "#10B981", label: "Present" },

@@ -1,8 +1,9 @@
 // src/components/Loader.jsx
 
 import React from "react";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
-const Loader = () => {
+export const Loader = () => {
   return (
     <div className="relative w-[110px] h-[110px] flex items-center justify-center">
       {/* Outer rotating ring */}
@@ -34,4 +35,15 @@ const Loader = () => {
   );
 };
 
-export default Loader;
+export const Loaders2 = () => {
+  return (
+    <div className="relative w-[300px] h-[300px] flex items-center justify-center">
+      <DotLottieReact
+      src="https://lottie.host/ba647833-680c-4369-bfa6-abd448e3bb8a/nzLUpDPKHt.lottie"
+      loop
+      autoplay
+    />
+    </div>
+  );
+};
+

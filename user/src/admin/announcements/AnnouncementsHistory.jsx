@@ -31,6 +31,10 @@ import {
   Pin,
   RotateCcw,
   ChevronDown,
+  TriangleAlert,
+  Scale,
+  CalendarSearch,
+  BellRing,
 } from "lucide-react";
 import { announcementApi } from "../../api/service/announcementApi";
 
@@ -67,21 +71,11 @@ const ADMIN = {
 };
 
 const TYPE_CONFIG = {
-  general: {
-    label: "General",
-    color: C.primary,
-    bg: C.primaryLight,
-    icon: "📢",
-  },
-  urgent: { label: "Urgent", color: C.danger, bg: C.dangerLight, icon: "⚠️" },
-  policy: { label: "Policy", color: C.purple, bg: C.purpleLight, icon: "📋" },
-  event: { label: "Event", color: C.warning, bg: C.warningLight, icon: "🎉" },
-  reminder: {
-    label: "Reminder",
-    color: C.accent,
-    bg: C.accentLight,
-    icon: "🔔",
-  },
+  general: { label: "General", color: C.primary,  bg: C.primaryLight,  icon: Megaphone },
+  urgent:  { label: "Urgent",  color: C.danger,   bg: C.dangerLight,   icon: TriangleAlert },
+  policy:  { label: "Policy",  color: C.purple,   bg: C.purpleLight,   icon: Scale },
+  event:   { label: "Event",   color: C.warning,  bg: C.warningLight,  icon: CalendarSearch },
+  reminder:{ label: "Reminder",color: C.accent,   bg: C.accentLight,   icon: BellRing },
 };
 
 // Map DB audience values to display status labels
@@ -216,6 +210,7 @@ function DeleteModal({ ann, onConfirm, onCancel, loading }) {
 function ViewModal({ ann, onClose }) {
   if (!ann) return null;
   const tc = TYPE_CONFIG[ann.type || "general"] || TYPE_CONFIG.general;
+  const TypeIcon = tc?.icon || null;
   const status = deriveStatus(ann);
   const sc = STATUS_CONFIG[status] || STATUS_CONFIG.active;
   const engRate = ann.views > 0 ? Math.round((ann.views / ann.views) * 100) : 0; // placeholder; extend with real ack data
@@ -254,7 +249,9 @@ function ViewModal({ ann, onClose }) {
             background: `linear-gradient(135deg, ${tc.color}, ${tc.color}cc)`,
           }}
         >
-          <span className="text-xl">{tc.icon}</span>
+          <span className="text-xl">
+            {TypeIcon ? <TypeIcon size={20} /> : null}
+          </span>
           <span className="text-sm font-bold text-white">{tc.label}</span>
           <span
             className="ml-auto text-[11px] font-bold text-white/70 px-2 py-0.5 rounded-full"
@@ -391,6 +388,7 @@ function RowMenu({ ann, onView, onDelete, onClose }) {
 function AnnCard({ ann, index, onView, onDelete }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const tc = TYPE_CONFIG[ann.type || "general"] || TYPE_CONFIG.general;
+  const TypeIcon = tc?.icon || null;
   const status = deriveStatus(ann);
   const sc = STATUS_CONFIG[status] || STATUS_CONFIG.active;
 
@@ -415,7 +413,10 @@ function AnnCard({ ann, index, onView, onDelete }) {
           className="text-[11px] font-bold px-2.5 py-0.5 rounded-full"
           style={{ background: tc.bg, color: tc.color }}
         >
-          {tc.icon} {tc.label}
+          <span className="inline-flex items-center gap-1.5">
+            {TypeIcon ? <TypeIcon size={10} /> : null}
+            {tc.label}
+          </span>
         </span>
         {ann.isPinned && (
           <span

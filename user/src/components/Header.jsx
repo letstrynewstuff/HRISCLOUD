@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Search, Menu, ChevronRight, Bell } from "lucide-react";
 import  C  from "../styles/colors";
-import Loader from "./Loader"; 
+import BantaHRLetterLoader from "../styles/BantaHRLetterLoader";
+
 
 export default function Header({
   title = "Dashboard",
@@ -36,7 +37,7 @@ export default function Header({
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-white/60 backdrop-blur-sm"
           >
-            <Loader />
+            <BantaHRLetterLoader />
           </motion.div>
         )}
       </AnimatePresence>

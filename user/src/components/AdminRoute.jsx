@@ -1,6 +1,9 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
-import Loader from "../components/Loader"; // Ensure the path is correct
+
+import BantaHRLetterLoader from "../styles/BantaHRLetterLoader";
+
+
 
 export default function AdminRoute({ children }) {
   const { user, loading } = useAuth();
@@ -9,7 +12,7 @@ export default function AdminRoute({ children }) {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen w-full bg-[#F0F2F8]">
-        <Loader />
+        <BantaHRLetterLoader />
       </div>
     );
   }

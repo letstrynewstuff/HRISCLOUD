@@ -20,13 +20,30 @@ import {
   Shield,
   Smartphone,
   KeyRound,
-  Sparkles,
-  ChevronRight,
-  X,
+  Bot,
+  Megaphone,
+  ChartNoAxesCombined,
+  Rocket,
 } from "lucide-react";
 import { authApi } from "../api/service/authApi";
+import { normalizeError } from "../api/errors";
 import C from "../styles/colors";
 import { useNavigate } from "react-router-dom";
+
+const featureData = [
+    { id: 0,
+      emoji: Rocket, 
+      text: "Real-time Payroll Processing", },
+    { id: 1,
+      emoji: ChartNoAxesCombined, 
+      text: "Advanced HR Analytics", },
+    { id: 2,
+      emoji: Megaphone, 
+      text: "Smart Announcements Engine", },
+    { id: 3,
+      emoji: Bot, 
+      text: "Interactive Org Char", },
+];
 
 /* ─── Framer variants ─── */
 const panelIn = {
@@ -265,8 +282,9 @@ const LeftPanel = () => (
     />
 
     {/* Logo */}
-   
+   <div className="pt-10 ml-10">
     <BantaHRLogo variant="light" size="lg" />
+    </div>
 
     {/* Hero text */}
     <div className="relative z-10 flex-1 flex flex-col justify-center px-10">
@@ -299,14 +317,14 @@ const LeftPanel = () => (
         transition={{ delay: 0.5 }}
         className="mt-8 space-y-3"
       >
-        {[
-          { icon: "⚡", label: "Real-time Payroll Processing" },
-          { icon: "📊", label: "Advanced HR Analytics" },
-          { icon: "🔔", label: "Smart Announcements Engine" },
-          { icon: "🌳", label: "Interactive Org Chart" },
-        ].map((f, i) => (
+
+        {/* Change Emogi */}
+        {featureData.map((f, i) =>{ 
+          const Icon = f.emoji;
+
+          return(
           <Motion.div
-            key={f.label}
+            key={f.text}
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.55 + i * 0.08 }}
@@ -314,17 +332,18 @@ const LeftPanel = () => (
             style={{
               background: "rgba(255,255,255,0.06)",
               border: "1px solid rgba(255,255,255,0.08)",
+              color:  "rgba(255,255,255,0.75)",
             }}
           >
-            <span className="text-base">{f.icon}</span>
+            <Icon/>
             <span
               className="text-sm font-medium"
-              style={{ color: "rgba(255,255,255,0.75)" }}
             >
-              {f.label}
+              {f.text}
             </span>
           </Motion.div>
-        ))}
+        );
+        })}
       </Motion.div>
     </div>
   </div>
@@ -381,6 +400,14 @@ export default function LoginPage() {
     return () => clearTimeout(timer);
   }, [loggedIn]);
 
+  /* ─── Clear an error as soon as the user starts fixing it ─── */
+  const clearError = (field) =>
+    setErrors((prev) => {
+      if (!prev[field] && !prev.general) return prev;
+      const { [field]: _dropped, general: _g, ...rest } = prev;
+      return rest;
+    });
+
   /* ─── Login ─── */
   const handleLogin = async () => {
     const e = {};
@@ -394,16 +421,40 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const data = await authApi.login(email, password);
-      localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+
+      if (data?.accessToken) {
+        localStorage.setItem("accessToken", data.accessToken);
+      }
+      if (data?.refreshToken) {
+        localStorage.setItem("refreshToken", data.refreshToken);
+      }
+
+      const u = data?.user;
+      if (!u) throw new Error("Sign-in succeeded but no profile was returned.");
+
+      const first = u.firstName ?? u.first_name ?? "";
+      const last = u.lastName ?? u.last_name ?? "";
+
       setLoggedIn({
-        role: data.user.role, // "hr_admin" etc.
-        name: `${data.user.firstName} ${data.user.lastName}`,
-        initials: `${data.user.firstName[0]}${data.user.lastName[0]}`,
-        email: data.user.email,
+        role: u.role, // "hr_admin" etc.
+        name: `${first} ${last}`.trim() || u.email,
+        initials:
+          `${first[0] ?? ""}${last[0] ?? ""}`.toUpperCase() ||
+          (u.email?.[0]?.toUpperCase() ?? "U"),
+        email: u.email,
       });
     } catch (err) {
-      setErrors({ general: err.message ?? "Invalid email or password." });
+      // normalizeError turns axios' "Request failed with status code 401"
+      // into the server's real "Invalid email or password.", and splits out
+      // any per-field messages from a 422.
+      const { message, fieldErrors, hasFieldErrors } = normalizeError(err);
+
+      setErrors({
+        ...fieldErrors,
+        // When the server named specific fields, the inline messages under
+        // each input already say it — a duplicate banner on top is noise.
+        ...(hasFieldErrors ? {} : { general: message }),
+      });
     } finally {
       setLoading(false);
     }
@@ -423,7 +474,8 @@ export default function LoginPage() {
       setOtpRunning(true);
       setView("otp");
     } catch (err) {
-      setErrors({ forgotEmail: err.message });
+      const { message, fieldErrors } = normalizeError(err);
+      setErrors({ forgotEmail: fieldErrors.email ?? message });
     } finally {
       setLoading(false);
     }
@@ -481,7 +533,10 @@ export default function LoginPage() {
       await authApi.resetPassword(otp, newPw);
       setView("success");
     } catch (err) {
-      setPwErrors({ newPw: err.message });
+      const { message, fieldErrors } = normalizeError(err);
+      setPwErrors({
+        newPw: fieldErrors.password ?? fieldErrors.newPw ?? message,
+      });
     } finally {
       setLoading(false);
     }
@@ -590,7 +645,10 @@ export default function LoginPage() {
         label="Work Email"
         type="email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          clearError("email");
+        }}
         placeholder="your.name@bantahr.ng"
         error={errors.email}
         icon={Mail}
@@ -601,7 +659,10 @@ export default function LoginPage() {
         label="Password"
         type={showPw ? "text" : "password"}
         value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          clearError("password");
+        }}
         placeholder="Enter your password"
         error={errors.password}
         icon={Lock}
@@ -726,7 +787,10 @@ export default function LoginPage() {
         label="Work Email"
         type="email"
         value={forgotEmail}
-        onChange={(e) => setForgotEmail(e.target.value)}
+        onChange={(e) => {
+          setForgotEmail(e.target.value);
+          clearError("forgotEmail");
+        }}
         placeholder="your.name@bantahr.ng"
         error={errors.forgotEmail}
         icon={Mail}

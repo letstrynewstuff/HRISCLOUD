@@ -23,19 +23,10 @@ import {
 } from "lucide-react";
 import C from "../../styles/colors";
 import { leaveApi } from "../../api/service/leaveApi";
+import { getLeaveTypeUi } from "./leaveTypeUi";
 
-// ── UI-only leave type config ──────────────────────────────────
-const LEAVE_TYPE_UI = {
-  "Annual Leave": { color: "#4F46E5", light: "#EEF2FF" },
-  "Sick Leave": { color: "#EF4444", light: "#FEE2E2" },
-  "Maternity Leave": { color: "#EC4899", light: "#FDF2F8" },
-  "Paternity Leave": { color: "#06B6D4", light: "#ECFEFF" },
-  Compassionate: { color: "#8B5CF6", light: "#EDE9FE" },
-  "Study Leave": { color: "#10B981", light: "#D1FAE5" },
-  "Unpaid Leave": { color: "#F59E0B", light: "#FEF3C7" },
-};
-const getTypeColor = (type) => LEAVE_TYPE_UI[type]?.color ?? C.primary;
-const getTypeLight = (type) => LEAVE_TYPE_UI[type]?.light ?? C.primaryLight;
+const getTypeColor = (type) => getLeaveTypeUi(type)?.color ?? C.primary;
+const getTypeLight = (type) => getLeaveTypeUi(type)?.light ?? C.primaryLight;
 const getInitials = (name) =>
   name
     ?.split(" ")
