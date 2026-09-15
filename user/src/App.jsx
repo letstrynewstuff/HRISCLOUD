@@ -1,5 +1,3 @@
-
-
 // src/App.jsx
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoutes";
@@ -88,14 +86,7 @@ function App() {
 
       {/* ─── EMPLOYEE (Protected) ─── */}
       <Route element={<MainLayout />}>
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+  
         <Route
           path="/dashboard"
           element={
