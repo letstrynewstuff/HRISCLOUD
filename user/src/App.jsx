@@ -29,6 +29,9 @@ import AnnouncementsPage from "./pages/Announcements";
 import LandingPage from "./pages/LandingPage";
 import RequestDemo from "./pages/RequestDemo";
 import ManagerPerformance from "./pages/ManagerPerformance";
+import EmployeeReportsPage from "./pages/reports/EmployeeReportsPage";
+import SalaryAdvancePage from "./pages/salaryadvance/SalaryAdvancePage";
+import LoansPage from "./pages/loans/LoansPage";
 
 // ── Admin pages ──
 import AdminDashboard from "./admin/AdminDashboard";
@@ -53,6 +56,7 @@ import AdminTrainingPage from "./admin/Training/TrainingPage";
 import AdminPerformancePage from "./admin/performance/PerformancePage";
 import AdminPayrollPage from "./admin/payroll/PayrollPage";
 import AdminReportsPage from "./admin/reports/ReportsPage";
+import AssetsPage from "./admin/assets/AssetsPage";
 import AdminSettingsPage from "./admin/settings/SettingsPage";
 import AdminBenefitsPage from "./admin/benefits/BenefitsPage";
 import DocumentTemplates from "./admin/documents/DocumentTemplates";
@@ -70,6 +74,7 @@ import MainLayout from "./components/MainLayout";
 import AdminMainLayout from "./admin/AdminMainLayout";
 import AccountingPage from "./admin/accounting/AccountingPage";
 import EmployeeTimesheetsPage from "./pages/timesheets/EmployeeTimesheetsPage";
+import EmployeeAssetsPage from "./pages/assets/Assets";
 
 function App() {
   return (
@@ -124,6 +129,14 @@ function App() {
           }
         />
         <Route
+          path="/employeeassets"
+          element={
+            <ProtectedRoute>
+              <EmployeeAssetsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/timesheet"
           element={
             <ProtectedRoute>
@@ -172,6 +185,22 @@ function App() {
           }
         />
         <Route
+          path="/salary-advance"
+          element={
+            <ProtectedRoute>
+              <SalaryAdvancePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/loans"
+          element={
+            <ProtectedRoute>
+              <LoansPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/training"
           element={
             <ProtectedRoute>
@@ -208,6 +237,14 @@ function App() {
           element={
             <ProtectedRoute>
               <RequestsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reports"
+          element={
+            <ProtectedRoute>
+              <EmployeeReportsPage />
             </ProtectedRoute>
           }
         />
@@ -265,6 +302,7 @@ function App() {
             </AdminRoute>
           }
         />
+
         <Route
           path="/admin/employeemanagement/admin-addemployees"
           element={
@@ -330,6 +368,14 @@ function App() {
           element={
             <AdminRoute>
               <OrgChart />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/assets"
+          element={
+            <AdminRoute>
+              <AssetsPage />
             </AdminRoute>
           }
         />

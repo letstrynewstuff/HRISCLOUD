@@ -388,17 +388,18 @@ export default function AnnouncementsFeed() {
   }, [page]);
 
   useEffect(() => {
-    fetchFeed();
+    void Promise.resolve().then(fetchFeed);
   }, [fetchFeed]);
 
   const handleOpen = async (ann) => {
     setSelected(ann);
     if (!viewed.has(ann.id)) {
       setViewed((p) => new Set([...p, ann.id]));
-      // fire-and-forget
       try {
         await recordAnnouncementView(ann.id);
-      } catch (_) {}
+      } catch (_) {
+        // View tracking is best effort and should not block opening the announcement.
+      }
       // update local view count
       setAnnouncements((p) =>
         p.map((a) =>

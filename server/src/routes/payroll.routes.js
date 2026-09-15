@@ -34,6 +34,7 @@ import {
 } from "../controllers/payroll.controller.js";
 // Add to your existing imports at the top
 import { getPaymentFile as getExportFile } from "../controllers/payroll.export.controller.js";
+import { getPayrollAnomalies } from "../controllers/payroll.anomaly.controller.js";
 
 const router = Router();
 const HR  = ["hr_admin", "super_admin"];
@@ -59,6 +60,12 @@ router.get("/history",   authenticate, requireRole(MGR), getHistory);
 // IMPORTANT: specific sub-routes (/payment-file, /process, etc.) must be
 // declared BEFORE the bare GET /runs/:id route to avoid Express matching
 // the literal strings "payment-file" or "process" as an :id param.
+router.get(
+  "/runs/:id/anomalies",
+  authenticate,
+  requireRole(HR),
+  getPayrollAnomalies,
+);
 
 router.get("/runs",    authenticate, requireRole(MGR), listPayrollRuns);
 router.post("/runs",   authenticate, requireRole(HR),  initRunRules, initPayrollRun);

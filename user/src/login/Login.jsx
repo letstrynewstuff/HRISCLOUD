@@ -382,32 +382,77 @@ export default function LoginPage() {
   }, [loggedIn]);
 
   /* ─── Login ─── */
+  // const handleLogin = async () => {
+  //   const e = {};
+  //   if (!email.trim()) e.email = "Email is required";
+  //   else if (!/\S+@\S+\.\S+/.test(email))
+  //     e.email = "Enter a valid email address";
+  //   if (!password) e.password = "Password is required";
+  //   setErrors(e);
+  //   if (Object.keys(e).length) return;
+
+  //   setLoading(true);
+  //   try {
+  //     const data = await authApi.login(email, password);
+  //     localStorage.setItem("accessToken", data.accessToken);
+  //     localStorage.setItem("refreshToken", data.refreshToken);
+  //     setLoggedIn({
+  //       role: data.user.role, // "hr_admin" etc.
+  //       name: `${data.user.firstName} ${data.user.lastName}`,
+  //       initials: `${data.user.firstName[0]}${data.user.lastName[0]}`,
+  //       email: data.user.email,
+  //     });
+  //   } catch (err) {
+  //     setErrors({ general: err.message ?? "Invalid email or password." });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  
   const handleLogin = async () => {
     const e = {};
-    if (!email.trim()) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(email))
+
+    if (!email.trim()) {
+      e.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
       e.email = "Enter a valid email address";
-    if (!password) e.password = "Password is required";
+    }
+
+    if (!password) {
+      e.password = "Password is required";
+    }
+
     setErrors(e);
+
     if (Object.keys(e).length) return;
 
     setLoading(true);
+
     try {
       const data = await authApi.login(email, password);
+
+      // Store ONLY the access token.
+      // The refresh token is already stored securely in the HttpOnly cookie.
       localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
+
       setLoggedIn({
-        role: data.user.role, // "hr_admin" etc.
+        role: data.user.role,
         name: `${data.user.firstName} ${data.user.lastName}`,
         initials: `${data.user.firstName[0]}${data.user.lastName[0]}`,
         email: data.user.email,
       });
     } catch (err) {
-      setErrors({ general: err.message ?? "Invalid email or password." });
+      setErrors({
+        general:
+          err.response?.data?.message ||
+          err.message ||
+          "Invalid email or password.",
+      });
     } finally {
       setLoading(false);
     }
   };
+  
   /* ─── Send OTP ─── */
 
   const handleSendOtp = async () => {

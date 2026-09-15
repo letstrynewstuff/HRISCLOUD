@@ -3,14 +3,6 @@
 
 
 // src/pages/ManagerPerformance.jsx
-//
-// Dedicated Performance + Appraisals page for MANAGERS ONLY.
-// Access enforced at route level via ProtectedRoute requireManager.
-//
-// KEY FIX: StarPicker now uses plain inline SVG path — not lucide Star —
-// so fill/unfill state is always visible regardless of Tailwind/CSS resets.
-// A live score preview shows the blended appraisal score as the manager
-// rates each criterion, using the same weighted formula as the backend.
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";

@@ -554,7 +554,11 @@ export default function AnnouncementsHistory() {
   }, [page, filterStatus]);
 
   useEffect(() => {
-    fetchAnnouncements();
+    const timeoutId = setTimeout(() => {
+      fetchAnnouncements();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
   }, [fetchAnnouncements]);
 
   const handleDelete = async () => {

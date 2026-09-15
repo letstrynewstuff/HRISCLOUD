@@ -1,7 +1,6 @@
 // src/admin/payroll/PayrollPage.jsx
 import { useState } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
-// import AdminSideNavbar from "../AdminSideNavbar";
 import { DollarSign, Search, Menu } from "lucide-react";
 import { PayrollProvider } from "../../components/PayrollContext";
 import { useAuth } from "../../components/useAuth";
@@ -22,7 +21,7 @@ const TABS = [
   // { id: "payslip", label: "Payslip Lookup" },
   // { id: "salary", label: "Salary Config" },
   { id: "deductions", label: "Deductions" },
-  { id: "reports", label: "Statutory Reports" },
+  // { id: "reports", label: "Statutory Reports" },
 ];
 
 const panelVariants = {
@@ -104,12 +103,7 @@ function PayrollInner() {
       style={{ background: C.bg, fontFamily: "'DM Sans','Sora',sans-serif" }}
     >
       <div className="flex h-screen overflow-hidden">
-        {/* <AdminSideNavbar
-          sidebarOpen={sidebarOpen}
-          collapsed={sidebarCollapsed}
-          setCollapsed={setSidebarCollapsed}
-          pendingApprovals={0}
-        /> */}
+     
 
         <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           <header

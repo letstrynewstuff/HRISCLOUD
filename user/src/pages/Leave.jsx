@@ -1,14 +1,7 @@
 // src/pages/employee/Leave.jsx
-// Production-ready employee leave page
-// — No mock data. All data from API.
-// — Uses motion (not Motion) from framer-motion
-// — Colors from C imported from styles/colors
-// — Wired to /auth/me, /leave/balances/me, /leave/requests/me,
-//   /leave/policies, /leave/requests (POST), /leave/calendar
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-// import SideNavbar from "../components/SideNavbar";
 import {
   Plane,
   Heart,

@@ -42,19 +42,64 @@ export default function EmployeeLayout() {
   if (isAdmin) return null;
 
   return (
+    // <Stack screenOptions={{ headerShown: false }}>
+    //   <Stack.Screen name="dashboard" />
+    //   <Stack.Screen name="attendance" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="profile" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="team-manager" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="timesheets" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="leave" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="payslips" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="documents" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="performance" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="training" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="announcements" options={{ animation: "slide_from_right" }} />
+    //   <Stack.Screen name="reports" options={{ animation: "slide_from_right" }} />
+    // </Stack>
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="dashboard" />
-      <Stack.Screen name="attendance" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="profile" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="team-manager" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="timesheets" options={{ animation: "slide_from_right" }} />
+      <Stack.Screen name="assets" options={{ animation: "slide_from_right" }} />
+      <Stack.Screen
+        name="attendance"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="profile"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="team-manager"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="timesheets"
+        options={{ animation: "slide_from_right" }}
+      />
       <Stack.Screen name="leave" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="payslips" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="documents" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="performance" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="training" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="announcements" options={{ animation: "slide_from_right" }} />
-      <Stack.Screen name="reports" options={{ animation: "slide_from_right" }} />
+      <Stack.Screen
+        name="payslips"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="documents"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="performance"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="training"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="announcements"
+        options={{ animation: "slide_from_right" }}
+      />
+      <Stack.Screen
+        name="reports"
+        options={{ animation: "slide_from_right" }}
+      />
     </Stack>
   );
 }

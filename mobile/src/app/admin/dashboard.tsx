@@ -75,10 +75,10 @@ const QUICK_ACTIONS = [
   },
   {
     key: "attendance",
-    label: "Attendance",
+    label: "Assets",
     icon: <Clock size={22} color="#0891B2" />,
     iconBg: "#CFFAFE",
-    route: "/admin/attendance",
+    route: "/admin/assets",
   },
   {
     key: "documents",

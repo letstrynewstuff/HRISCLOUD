@@ -1,7 +1,4 @@
 // src/app/admin/_layout.tsx
-// Guards every screen under /admin/*.
-// ONLY standalone admins (hr_admin, super_admin) allowed.
-// Employees (even managers/HR) are NOT allowed.
 
 import { useEffect } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
@@ -67,6 +64,7 @@ export default function AdminLayout() {
         name="training"
         options={{ animation: "slide_from_right" }}
       />
+      <Stack.Screen name="assets" options={{ animation: "slide_from_right" }} />
       <Stack.Screen
         name="performance"
         options={{ animation: "slide_from_right" }}

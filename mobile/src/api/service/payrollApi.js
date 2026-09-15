@@ -54,6 +54,13 @@ export const listRuns = (params = {}) =>
  * GET /payroll/runs/:id
  * Returns: { run: {...}, records: [...], total: N }
  */
+// export const getPayrollAnomalies = (runId) =>
+//   API.get(`/payroll/runs/${runId}/anomalies`).then((r) => r.data);
+export const getPayrollAnomalies = (runId) => {
+  console.log("Hitting API base URL:", API.defaults.baseURL); // TEMP
+  return API.get(`/payroll/runs/${runId}/anomalies`).then((r) => r.data);
+};
+
 export const getRun = (id) =>
   API.get(`/payroll/runs/${id}`).then((r) => r.data);
 

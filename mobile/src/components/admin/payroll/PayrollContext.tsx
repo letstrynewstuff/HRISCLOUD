@@ -88,8 +88,15 @@ export function PayrollProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<PayrollMode>("manual");
   const [activeRunId, setActiveRunId] = useState<string | null>(null);
 
+  // const startRun = useCallback(async (input: StartRunInput) => {
+  //   const res: any = await payrollApi.createRun(input);
+  //   const run = res?.data ?? res;
+  //   if (run?.id) setActiveRunId(run.id);
+  //   return run;
+  // }, []);
+
   const startRun = useCallback(async (input: StartRunInput) => {
-    const res: any = await payrollApi.createRun(input);
+    const res: any = await payrollApi.initRun(input); // ✅ was createRun
     const run = res?.data ?? res;
     if (run?.id) setActiveRunId(run.id);
     return run;
@@ -109,8 +116,13 @@ export function PayrollProvider({ children }: { children: ReactNode }) {
     return res?.data ?? res;
   }, []);
 
+  // const runMarkPaid = useCallback(async (runId: string) => {
+  //   const res: any = await payrollApi.markRunPaid(runId);
+  //   return res?.data ?? res;
+  // }, []);
+
   const runMarkPaid = useCallback(async (runId: string) => {
-    const res: any = await payrollApi.markRunPaid(runId);
+    const res: any = await payrollApi.markPaid(runId); // ✅ was markRunPaid
     return res?.data ?? res;
   }, []);
 
