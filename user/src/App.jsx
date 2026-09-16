@@ -7,6 +7,8 @@ import AdminRoute from "./components/AdminRoute";
 import LoginPage from "./login/Login";
 import Register from "./login/Register";
 import CompanyRegister from "./login/CompanyRegister";
+import Pricing from "./pages/Pricing";
+import Contact from "./pages/Contact";
 
 // ── Employee pages ──
 import Dashboard from "./pages/Dashboard";
@@ -82,11 +84,12 @@ function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/company-register" element={<CompanyRegister />} />
       <Route path="/" element={<LandingPage />} />
+      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/contact" element={<Contact />} />
       <Route path="/request-demo" element={<RequestDemo />} />
 
       {/* ─── EMPLOYEE (Protected) ─── */}
       <Route element={<MainLayout />}>
-  
         <Route
           path="/dashboard"
           element={
